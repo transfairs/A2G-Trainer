@@ -1,4 +1,4 @@
-![.NET Framework](https://img.shields.io/badge/.NET-4.0-blueviolet)
+![C#](https://img.shields.io/badge/language-C%23-239120?logo=c-sharp&logoColor=white) ![.NET Framework](https://img.shields.io/badge/.NET-4.0-blueviolet)
 
 # A2G-Trainer
 
