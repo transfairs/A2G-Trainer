@@ -197,6 +197,7 @@ namespace A2G_Trainer_XP
             this.WillEndlichSpielen = new System.Windows.Forms.CheckBox();
             this.ContractTab = new System.Windows.Forms.TabPage();
             this.ContractBox = new System.Windows.Forms.GroupBox();
+            this.Retires = new System.Windows.Forms.CheckBox();
             this.UnsetContractDetail = new System.Windows.Forms.CheckBox();
             this.YearsLabel1 = new System.Windows.Forms.Label();
             this.DMLabel4 = new System.Windows.Forms.Label();
@@ -246,7 +247,8 @@ namespace A2G_Trainer_XP
             this.SaveBtn = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ReloadBtn = new System.Windows.Forms.Button();
-            this.Retires = new System.Windows.Forms.CheckBox();
+            this.TeamContractDurationLabel = new System.Windows.Forms.Label();
+            this.TeamContractDurationInput = new System.Windows.Forms.TextBox();
             this.MainTabControl.SuspendLayout();
             this.PersonalTab.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -2206,6 +2208,17 @@ namespace A2G_Trainer_XP
             this.ContractBox.TabStop = false;
             this.ContractBox.Text = "Vertragsdetails";
             // 
+            // Retires
+            // 
+            this.Retires.CheckAlign = System.Drawing.ContentAlignment.TopRight;
+            this.Retires.Location = new System.Drawing.Point(4, 171);
+            this.Retires.Name = "Retires";
+            this.Retires.Size = new System.Drawing.Size(133, 17);
+            this.Retires.TabIndex = 7;
+            this.Retires.Tag = "128";
+            this.Retires.Text = "Beendet Karriere";
+            this.Retires.UseVisualStyleBackColor = true;
+            // 
             // UnsetContractDetail
             // 
             this.UnsetContractDetail.CheckAlign = System.Drawing.ContentAlignment.TopRight;
@@ -2462,7 +2475,7 @@ namespace A2G_Trainer_XP
             this.AboutBox.Controls.Add(this.AboutTitleLabel);
             this.AboutBox.Location = new System.Drawing.Point(3, 115);
             this.AboutBox.Name = "AboutBox";
-            this.AboutBox.Size = new System.Drawing.Size(370, 180);
+            this.AboutBox.Size = new System.Drawing.Size(370, 137);
             this.AboutBox.TabIndex = 1;
             this.AboutBox.TabStop = false;
             this.AboutBox.Text = "Über";
@@ -2525,7 +2538,7 @@ namespace A2G_Trainer_XP
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(66, 13);
             this.VersionLabel.TabIndex = 1;
-            this.VersionLabel.Text = "v0.1.0 alpha";
+            this.VersionLabel.Text = "v0.2.0 alpha";
             // 
             // AboutTitleLabel
             // 
@@ -2539,6 +2552,8 @@ namespace A2G_Trainer_XP
             // 
             // TeamBus
             // 
+            this.TeamBus.Controls.Add(this.TeamContractDurationLabel);
+            this.TeamBus.Controls.Add(this.TeamContractDurationInput);
             this.TeamBus.Controls.Add(this.TeamAgeLabel);
             this.TeamBus.Controls.Add(this.TeamAgeInput);
             this.TeamBus.Controls.Add(this.TeamFormLabel);
@@ -2676,16 +2691,22 @@ namespace A2G_Trainer_XP
             this.ReloadBtn.UseVisualStyleBackColor = true;
             this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
             // 
-            // EndsCareer
+            // TeamContractDurationLabel
             // 
-            this.Retires.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.Retires.Location = new System.Drawing.Point(4, 171);
-            this.Retires.Name = "EndsCareer";
-            this.Retires.Size = new System.Drawing.Size(133, 17);
-            this.Retires.TabIndex = 7;
-            this.Retires.Tag = "128";
-            this.Retires.Text = "Beendet Karriere";
-            this.Retires.UseVisualStyleBackColor = true;
+            this.TeamContractDurationLabel.AutoSize = true;
+            this.TeamContractDurationLabel.Location = new System.Drawing.Point(234, 76);
+            this.TeamContractDurationLabel.Name = "TeamContractDurationLabel";
+            this.TeamContractDurationLabel.Size = new System.Drawing.Size(79, 13);
+            this.TeamContractDurationLabel.TabIndex = 70;
+            this.TeamContractDurationLabel.Text = "Vertragslaufzeit";
+            // 
+            // TeamContractDurationInput
+            // 
+            this.TeamContractDurationInput.Location = new System.Drawing.Point(319, 73);
+            this.TeamContractDurationInput.Name = "TeamContractDurationInput";
+            this.TeamContractDurationInput.Size = new System.Drawing.Size(43, 20);
+            this.TeamContractDurationInput.TabIndex = 6;
+            this.TeamContractDurationInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // Trainer
             // 
@@ -2969,6 +2990,8 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.CheckBox JoinedThisSeason;
         private System.Windows.Forms.CheckBox UnsetContractDetail;
         private System.Windows.Forms.CheckBox Retires;
+        private System.Windows.Forms.Label TeamContractDurationLabel;
+        private System.Windows.Forms.TextBox TeamContractDurationInput;
     }
 }
 

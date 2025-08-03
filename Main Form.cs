@@ -454,6 +454,7 @@ namespace A2G_Trainer_XP
                 bool hasAge = !String.IsNullOrEmpty(this.TeamAgeInput.Text);
                 bool hasCondition = !String.IsNullOrEmpty(this.TeamConditionInput.Text);
                 bool hasFreshness = !String.IsNullOrEmpty(this.TeamFreshnessInput.Text);
+                bool hasContractDuration = !String.IsNullOrEmpty(this.TeamContractDurationInput.Text);
 
                 foreach (Player player in this.playerController.EntityList)
                 {
@@ -462,6 +463,7 @@ namespace A2G_Trainer_XP
                     if (hasAge) player.Age = byte.Parse(this.TeamAgeInput.Text);
                     if (hasCondition) player.Condition = byte.Parse(this.TeamConditionInput.Text);
                     if (hasFreshness) player.Freshness = byte.Parse(this.TeamFreshnessInput.Text);
+                    if (hasContractDuration) player.ContractDuration = byte.Parse(this.TeamContractDurationInput.Text);
                 }
                 /*
                                 SelectedListViewItemCollection selectedPlayers = this.PlayerListView.SelectedItems;
