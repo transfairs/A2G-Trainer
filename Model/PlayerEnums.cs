@@ -24,6 +24,30 @@ namespace A2G_Trainer_XP.Model
             Musterprofi    = 1 << 6,
             Skandalnudel   = 1 << 7
         }
+        public enum Career : byte
+        {
+            None = 0,
+            Unknown0 = 1 << 0,
+            Unknown1 = 1 << 1,
+            Unknown2 = 1 << 2,
+            Unknown3 = 1 << 3,
+            Unknown4 = 1 << 4,
+            Unknown5 = 1 << 5,
+            Unknown6 = 1 << 6,
+            Retires  = 1 << 7
+        }
+        public enum Contract : byte
+        {
+            None             = 0,
+            Leased           = 1 << 0,
+            BuyOption        = 1 << 1,
+            Unknown          = 1 << 2,
+            JoinedThisSeason = 1 << 3,
+            OptionPlayer     = 1 << 4,
+            OptionClub       = 1 << 5,
+            Seated           = 1 << 6,
+            Unset            = 1 << 7
+        }
         public enum Country : byte
         {
             Sonstige        =  0,

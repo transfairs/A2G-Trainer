@@ -92,6 +92,17 @@ namespace A2G_Trainer_XP.Controller
             player.YellowCardsSeason    = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "4A"));
             #endregion
 
+            #region Contract
+            player.Salary           = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "B4"), 2), 0);
+            player.ShowUpBonus      = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "B6"), 2), 0);
+            player.GoalsBonus       = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "B8"), 2), 0);
+            player.TransferFee      = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "BA"), 2), 0);
+            player.ContractDuration = (byte)this.memory.ReadByte(GetAddress(this.memory, player, "C0"));
+            player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, "C1"));
+            player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, "C2"));
+            player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, "D7"));
+            #endregion
+
             #region Other
             /* Unknowm values */
             // 1, 8, 18, 27, 32, 33, 37, 39, 3B-43, 4D-55, 59, 5C - 6A, 6D, 6E, 73-76, 79
@@ -170,7 +181,7 @@ namespace A2G_Trainer_XP.Controller
 
             #region Constitution
             this.memory.WriteBytes(GetAddress(this.memory, player, "34"), BitConverter.GetBytes((ushort)player.Unhappy));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "36"), BitConverter.GetBytes((ushort)player.Happy));
+            this.memory.WriteBytes(GetAddress(this.memory, player, "36"), BitConverter.GetBytes((byte)player.Happy));
 
             this.memory.WriteBytes(GetAddress(this.memory, player, "44"), BitConverter.GetBytes(player.InjuredDays));
             this.memory.WriteBytes(GetAddress(this.memory, player, "47"), BitConverter.GetBytes(player.Vulnerable));
@@ -178,6 +189,17 @@ namespace A2G_Trainer_XP.Controller
             this.memory.WriteBytes(GetAddress(this.memory, player, "48"), new byte[] { (byte)player.RedCardBannedMatches });
             this.memory.WriteBytes(GetAddress(this.memory, player, "49"), BitConverter.GetBytes(player.Doped));
             this.memory.WriteBytes(GetAddress(this.memory, player, "4A"), new byte[] { (byte)player.YellowCardsSeason });
+            #endregion
+
+            #region Contract
+            this.memory.WriteBytes(GetAddress(this.memory, player, "B4"), BitConverter.GetBytes(player.Salary));
+            this.memory.WriteBytes(GetAddress(this.memory, player, "B6"), BitConverter.GetBytes(player.ShowUpBonus));
+            this.memory.WriteBytes(GetAddress(this.memory, player, "B8"), BitConverter.GetBytes(player.GoalsBonus));
+            this.memory.WriteBytes(GetAddress(this.memory, player, "BA"), BitConverter.GetBytes(player.TransferFee));
+            this.memory.WriteBytes(GetAddress(this.memory, player, "C0"), new byte[] { (byte)player.ContractDuration });
+            this.memory.WriteBytes(GetAddress(this.memory, player, "C1"), BitConverter.GetBytes((byte)player.ContractDetails));
+            this.memory.WriteBytes(GetAddress(this.memory, player, "C2"), new byte[] { (byte)player.YearsInClub });
+            this.memory.WriteBytes(GetAddress(this.memory, player, "D7"), BitConverter.GetBytes((byte)player.Career));
             #endregion
 
             #region Other

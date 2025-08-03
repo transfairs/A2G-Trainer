@@ -128,6 +128,16 @@ namespace A2G_Trainer_XP.Model
         public bool IsVerhandlungGeplatzt   { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.VerhandlungGeplatzt);   set => this.Multiplex(PlayerEnums.Unhappy.ScheissTrainer, value, nameof(this.IsVerhandlungGeplatzt)); }
         public bool IsScheissManager        { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.ScheissManager);        set => this.Multiplex(PlayerEnums.Unhappy.ScheissTrainer, value, nameof(this.IsScheissManager)); }
         public bool IsScheissNachwuchsrunde { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.ScheissNachwuchsrunde); set => this.Multiplex(PlayerEnums.Unhappy.ScheissNachwuchsrunde, value, nameof(this.IsScheissNachwuchsrunde)); }
+
+        public bool IsLeased { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Leased); set => this.Multiplex(PlayerEnums.Contract.Leased, value, nameof(this.IsLeased)); }
+        public bool HasBuyOption { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.BuyOption); set => this.Multiplex(PlayerEnums.Contract.BuyOption, value, nameof(this.HasBuyOption)); }
+        public bool IsUnknownContractDetail { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Unknown); set => this.Multiplex(PlayerEnums.Contract.Unknown, value, nameof(this.IsUnknownContractDetail)); }
+        public bool IsJoinedThisSeason { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.JoinedThisSeason); set => this.Multiplex(PlayerEnums.Contract.JoinedThisSeason, value, nameof(this.IsJoinedThisSeason)); }
+        public bool HasOptionPlayer { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.OptionPlayer); set => this.Multiplex(PlayerEnums.Contract.OptionPlayer, value, nameof(this.HasOptionPlayer)); }
+        public bool HasOptionClub { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.OptionClub); set => this.Multiplex(PlayerEnums.Contract.OptionClub, value, nameof(this.HasOptionClub)); }
+        public bool IsSeatedGuarantee { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Seated); set => this.Multiplex(PlayerEnums.Contract.Seated, value, nameof(this.IsSeatedGuarantee)); }
+        public bool IsUnsetContractDetail { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Unset); set => this.Multiplex(PlayerEnums.Contract.Unset, value, nameof(this.IsUnsetContractDetail)); }
+        public bool IsRetires { get => this.Career.HasFlag(PlayerEnums.Career.Retires); set => this.Multiplex(PlayerEnums.Career.Retires, value, nameof(this.IsRetires)); }
         #endregion
 
         #region Overview
@@ -197,6 +207,25 @@ namespace A2G_Trainer_XP.Model
         private bool doped = false;
         public byte YellowCardsSeason { get => this.yellowCardsSeason; set { this.yellowCardsSeason = value; this.OnPropertyChanged(nameof(this.YellowCardsSeason)); } }
         private byte yellowCardsSeason = 0;
+        #endregion
+
+        #region Contract
+        public ushort Salary { get => this.salary; set { this.salary = value; this.OnPropertyChanged(nameof(this.Salary)); } }
+        private ushort salary = 0;
+        public ushort ShowUpBonus { get => this.showUpBonus; set { this.showUpBonus = value; this.OnPropertyChanged(nameof(this.ShowUpBonus)); } }
+        private ushort showUpBonus = 0;
+        public ushort GoalsBonus { get => this.goalsBonus; set { this.goalsBonus = value; this.OnPropertyChanged(nameof(this.GoalsBonus)); } }
+        private ushort goalsBonus = 0;
+        public ushort TransferFee { get => this.transferFee; set { this.transferFee = value; this.OnPropertyChanged(nameof(this.TransferFee)); } }
+        private ushort transferFee = 0;
+        public byte ContractDuration { get => this.contractDuration; set { this.contractDuration = value; this.OnPropertyChanged(nameof(this.ContractDuration)); } }
+        private byte contractDuration = 0;
+        public PlayerEnums.Contract ContractDetails { get => this.contractDetails; set => this.Setter(value); }
+        private PlayerEnums.Contract contractDetails = PlayerEnums.Contract.None;
+        public byte YearsInClub { get => this.yearsInClub; set { this.yearsInClub = value; this.OnPropertyChanged(nameof(this.YearsInClub)); } }
+        private byte yearsInClub = 0;
+        public PlayerEnums.Career Career { get => this.career; set => this.Setter(value); }
+        private PlayerEnums.Career career = PlayerEnums.Career.None;
         #endregion
 
         #region NotImplemented
@@ -318,6 +347,24 @@ namespace A2G_Trainer_XP.Model
             }
             if (helper != null) this.OnPropertyChanged(helper);
         }
+        private void Setter(PlayerEnums.Contract contract, bool enabled = true, string helper = null)
+        {
+            if (enabled)
+            {
+                this.contractDetails = contract;
+                this.OnPropertyChanged(nameof(this.ContractDetails));
+            }
+            if (helper != null) this.OnPropertyChanged(helper);
+        }
+        private void Setter(PlayerEnums.Career career, bool enabled = true, string helper = null)
+        {
+            if (enabled)
+            {
+                this.career = career;
+                this.OnPropertyChanged(nameof(this.Career));
+            }
+            if (helper != null) this.OnPropertyChanged(helper);
+        }
         private void Setter(PlayerEnums.Health health, bool enabled = true, string helper = null)
         {
             if (enabled)
@@ -383,6 +430,26 @@ namespace A2G_Trainer_XP.Model
                 this.OnPropertyChanged(nameof(this.Skills));
             else
                 this.OnPropertyChanged(nameof(this.NegativeSkills));
+            if (helper != null) this.OnPropertyChanged(helper);
+        }
+        private void Multiplex(PlayerEnums.Contract contract, bool enabled, string helper)
+        {
+            if (enabled)
+            {
+                this.contractDetails |= contract;
+            }
+            else this.contractDetails &= ~contract;
+            this.OnPropertyChanged(nameof(this.ContractDetails));
+            if (helper != null) this.OnPropertyChanged(helper);
+        }
+        private void Multiplex(PlayerEnums.Career career, bool enabled, string helper)
+        {
+            if (enabled)
+            {
+                this.career |= career;
+            }
+            else this.career &= ~career;
+            this.OnPropertyChanged(nameof(this.Career));
             if (helper != null) this.OnPropertyChanged(helper);
         }
         private void Multiplex(PlayerEnums.Happy happy, bool enabled, string helper)

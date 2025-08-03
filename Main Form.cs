@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -87,6 +88,13 @@ namespace A2G_Trainer_XP
                 this.TeamAgeInput.KeyPress += this.NumericOnly_KeyPress;
                 this.TeamConditionInput.KeyPress += this.NumericOnly_KeyPress;
                 this.TeamFreshnessInput.KeyPress += this.NumericOnly_KeyPress;
+                this.SalaryInput.KeyPress += this.NumericOnly_KeyPress;
+                this.ShowUpBonusInput.KeyPress += this.NumericOnly_KeyPress;
+                this.GoalBonusInput.KeyPress += this.NumericOnly_KeyPress;
+                this.FixedTransferFeeInput.KeyPress += this.NumericOnly_KeyPress;
+                this.ContractDurationInput.KeyPress += this.NumericOnly_KeyPress;
+                this.YearsInClubInput.KeyPress += this.NumericOnly_KeyPress;
+                this.Retires.KeyPress += this.NumericOnly_KeyPress;
 
                 this.LevelInput.TextChanged += this.ByteMax255_TextChanged;
                 this.AgeInput.TextChanged += this.ByteMax255_TextChanged;
@@ -100,6 +108,13 @@ namespace A2G_Trainer_XP
                 this.TeamAgeInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamConditionInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamFreshnessInput.TextChanged += this.ByteMax255_TextChanged;
+                this.SalaryInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
+                this.ShowUpBonusInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
+                this.GoalBonusInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
+                this.FixedTransferFeeInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
+                this.ContractDurationInput.TextChanged += this.ByteMax255_TextChanged;
+                this.YearsInClubInput.TextChanged += this.ByteMax255_TextChanged;
+                this.Retires.TextChanged += this.ByteMax255_TextChanged;
 
                 this.LastNameInput.DataBindings.Add("Text", this.bindingSource, "Lastname");
                 this.FirstNameInput.DataBindings.Add("Text", this.bindingSource, "Firstname");
@@ -270,6 +285,22 @@ namespace A2G_Trainer_XP
                 this.RedCardsInput.DataBindings.Add("Text", this.bindingSource, "RedCardBannedMatches");
                 this.YellowCardsInput.DataBindings.Add("Text", this.bindingSource, "YellowCardsSeason");
 
+                this.SalaryInput.DataBindings.Add("Text", this.bindingSource, "Salary");
+                this.ShowUpBonusInput.DataBindings.Add("Text", this.bindingSource, "ShowUpBonus");
+                this.GoalBonusInput.DataBindings.Add("Text", this.bindingSource, "GoalsBonus");
+                this.FixedTransferFeeInput.DataBindings.Add("Text", this.bindingSource, "TransferFee");
+                this.ContractDurationInput.DataBindings.Add("Text", this.bindingSource, "ContractDuration");
+                this.Leased.DataBindings.Add("Checked", this.bindingSource, "IsLeased");
+                this.LeasedWithOption.DataBindings.Add("Checked", this.bindingSource, "HasBuyOption");
+                this.UnknownContractCheckbox.DataBindings.Add("Checked", this.bindingSource, "IsUnknownContractDetail");
+                this.JoinedThisSeason.DataBindings.Add("Checked", this.bindingSource, "IsJoinedThisSeason");
+                this.OptionPlayer.DataBindings.Add("Checked", this.bindingSource, "HasOptionPlayer");
+                this.OptionClub.DataBindings.Add("Checked", this.bindingSource, "HasOptionClub");
+                this.SeatedGuarantee.DataBindings.Add("Checked", this.bindingSource, "IsSeatedGuarantee");
+                this.UnsetContractDetail.DataBindings.Add("Checked", this.bindingSource, "IsUnsetContractDetail");
+                this.YearsInClubInput.DataBindings.Add("Text", this.bindingSource, "YearsInClub");
+                this.Retires.DataBindings.Add("Checked", this.bindingSource, "IsRetires");
+
                 this.GithubLinkLabel.Links.Clear();
                 this.GithubLinkLabel.Links.Add(8, 41, "https://github.com/transfairs/a2g-trainer");
                 this.AnstossJuengerLinkLabel.Links.Clear();
@@ -345,6 +376,15 @@ namespace A2G_Trainer_XP
             }
         }
 
+        private void TwoByteMaxNumber_TextChanged(object sender, EventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            if (!string.IsNullOrEmpty(textBox.Text) && !ushort.TryParse(textBox.Text, out _))
+            {
+                textBox.Text = "65535";
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
         private void ByteMax255_TextChanged(object sender, EventArgs e)
         {
             var textBox = (TextBox)sender;
@@ -354,6 +394,37 @@ namespace A2G_Trainer_XP
                 textBox.SelectionStart = textBox.Text.Length;
             }
         }
+        /*
+        private void CurrencyTextBox_Leave(object sender, EventArgs e)
+        {
+            var tb = (TextBox)sender;
+
+            if (decimal.TryParse(tb.Text, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal value))
+            {
+                tb.Text = string.Format("{0:N0} DM", value);
+            }
+            else
+            {
+                tb.Text = "0";
+            }
+        }
+
+        private void CurrencyTextBox_Enter(object sender, EventArgs e)
+        {
+            var tb = (TextBox)sender;
+
+            string numericPart = tb.Text.Replace("DM", "").Replace(",", "").Replace(".", "").Trim();
+
+            if (decimal.TryParse(numericPart, out decimal value))
+            {
+                tb.Text = value.ToString();
+            }
+            else
+            {
+                tb.Text = "0";
+            }
+        }
+        */
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -432,6 +503,11 @@ namespace A2G_Trainer_XP
         private void StrajkLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.LinkLabel_LinkClicked(sender, e);
+        }
+
+        private void ReloadBtn_Click(object sender, EventArgs e)
+        {
+            this.RefreshPlayerListView();
         }
     }
 }
