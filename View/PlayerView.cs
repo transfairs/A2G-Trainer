@@ -2,80 +2,48 @@
 using A2G_Trainer_XP.Model;
 using Memory;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
 
-namespace A2G_Trainer_XP
+namespace A2G_Trainer_XP.View
 {
-    public partial class Trainer : Form
+    public partial class PlayerView : EntityView
     {
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        #endregion
-
-        internal Mem Memory { get => this.memory; private set => this.memory = value; }
-        private Mem memory;
-        internal Game Anstoss { get => this.anstoss; private set => this.anstoss = value; }
-        private Game anstoss;
-        internal bool ShutDown { get => this.shutDown; private set => this.shutDown = value; }
-        private bool shutDown;
-
-        private BindingSource bindingSource;
-
-        private ClubController clubController;
-        private PlayerController playerController;
-        private readonly ProcessController processController;
-
-        public Trainer()
+        public PlayerView(Mem memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();
-
-            this.memory = new Mem();
-            this.ShutDown = false;
-            this.Anstoss = new Game();
-
-            this.FormClosing += (s, e) => this.ShutDown = true;
-
             InitPlayerListView();
-
-            foreach (TabPage page in this.MainTabControl.TabPages)
-            {
-                //page.BackgroundImage = Properties.Resources.TabControl;
-                //page.BackgroundImageLayout = ImageLayout.Stretch;
-            }
-
-            this.processController = new ProcessController(this);
-            this.Load += (s, e) => { new Thread(this.processController.Observe).Start(); };
-
         }
 
+        public PlayerView(IContainer container) : base(container)
+        {
+            InitializeComponent();
+            InitPlayerListView();
+        }
         private void InitPlayerListView()
         {
-            PlayerListView.Columns.Add("Pos", 35);
-            PlayerListView.Columns.Add("Name", 105);
-            PlayerListView.Columns.Add("Stärke", 45, HorizontalAlignment.Center);
+            this.PlayerListView.Columns.Add("Pos", 35);
+            this.PlayerListView.Columns.Add("Name", 105);
+            this.PlayerListView.Columns.Add("Stärke", 45, HorizontalAlignment.Center);
+            this.PlayerListView.SelectedIndexChanged += this.PlayerListView_SelectedIndexChanged;
         }
 
+        #region InitMainTabControl
         internal void InitMainTabControl()
         {
             this.NationalityCombo.DataSource = Enum.GetValues(typeof(PlayerEnums.Country)).Cast<PlayerEnums.Country>().Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
             this.NationalityCombo.DisplayMember = "Text";
             this.NationalityCombo.ValueMember = "Value";
 
-            if (this.PlayerListView != null && this.PlayerListView.Items !=null && this.PlayerListView.Items.Count > 0)
+            if (this.PlayerListView != null && this.PlayerListView.Items != null && this.PlayerListView.Items.Count > 0)
             {
                 this.bindingSource = new BindingSource
                 {
                     DataSource = this.PlayerListView.Items[0].Tag
                 };
+
                 this.LevelInput.KeyPress += this.NumericOnly_KeyPress;
                 this.AgeInput.KeyPress += this.NumericOnly_KeyPress;
                 this.ConditionInput.KeyPress += this.NumericOnly_KeyPress;
@@ -108,10 +76,10 @@ namespace A2G_Trainer_XP
                 this.TeamAgeInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamConditionInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamFreshnessInput.TextChanged += this.ByteMax255_TextChanged;
-                this.SalaryInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
-                this.ShowUpBonusInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
-                this.GoalBonusInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
-                this.FixedTransferFeeInput.TextChanged += this.TwoByteMaxNumber_TextChanged;
+                this.SalaryInput.TextChanged += this.UshortMaxNumber_TextChanged;
+                this.ShowUpBonusInput.TextChanged += this.UshortMaxNumber_TextChanged;
+                this.GoalBonusInput.TextChanged += this.UshortMaxNumber_TextChanged;
+                this.FixedTransferFeeInput.TextChanged += this.UshortMaxNumber_TextChanged;
                 this.ContractDurationInput.TextChanged += this.ByteMax255_TextChanged;
                 this.YearsInClubInput.TextChanged += this.ByteMax255_TextChanged;
                 this.Retires.TextChanged += this.ByteMax255_TextChanged;
@@ -309,6 +277,7 @@ namespace A2G_Trainer_XP
                 this.StrajkLinkLabel.Links.Add(19, 7, "https://www.anstoss-juenger.de/index.php/topic,6260.0.html");
             }
         }
+        #endregion
 
         internal void RefreshPlayerListView()
         {
@@ -316,8 +285,8 @@ namespace A2G_Trainer_XP
             {
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
-                this.clubController = new ClubController(this.memory, this.processController.IsGog);
-                this.playerController = new PlayerController(this.memory, this.clubController.Club, this.processController.IsGog);
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog);
+                this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog);
 
                 Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;
                 Console.WriteLine($"Refresh: {player}");
@@ -351,137 +320,6 @@ namespace A2G_Trainer_XP
                 }
             }
         }
-        private void ClearAllFields(Control parent)
-        {
-            foreach (Control ctrl in parent.Controls)
-            {
-                if (ctrl is TextBox tb)
-                    tb.Clear();
-                else if (ctrl is ComboBox cb)
-                    cb.SelectedIndex = -1;
-                else if (ctrl is CheckBox chk)
-                    chk.Checked = false;
-                else if (ctrl is RadioButton rb)
-                    rb.Checked = false;
-                else if (ctrl.HasChildren)
-                    ClearAllFields(ctrl);
-            }
-        }
-
-        private void NumericOnly_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void TwoByteMaxNumber_TextChanged(object sender, EventArgs e)
-        {
-            var textBox = (TextBox)sender;
-            if (!string.IsNullOrEmpty(textBox.Text) && !ushort.TryParse(textBox.Text, out _))
-            {
-                textBox.Text = "65535";
-                textBox.SelectionStart = textBox.Text.Length;
-            }
-        }
-        private void ByteMax255_TextChanged(object sender, EventArgs e)
-        {
-            var textBox = (TextBox)sender;
-            if (!string.IsNullOrEmpty(textBox.Text) && !byte.TryParse(textBox.Text, out _))
-            {
-                textBox.Text = "255";
-                textBox.SelectionStart = textBox.Text.Length;
-            }
-        }
-        /*
-        private void CurrencyTextBox_Leave(object sender, EventArgs e)
-        {
-            var tb = (TextBox)sender;
-
-            if (decimal.TryParse(tb.Text, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal value))
-            {
-                tb.Text = string.Format("{0:N0} DM", value);
-            }
-            else
-            {
-                tb.Text = "0";
-            }
-        }
-
-        private void CurrencyTextBox_Enter(object sender, EventArgs e)
-        {
-            var tb = (TextBox)sender;
-
-            string numericPart = tb.Text.Replace("DM", "").Replace(",", "").Replace(".", "").Trim();
-
-            if (decimal.TryParse(numericPart, out decimal value))
-            {
-                tb.Text = value.ToString();
-            }
-            else
-            {
-                tb.Text = "0";
-            }
-        }
-        */
-
-        private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            string url = e.Link.LinkData as string;
-            if (!string.IsNullOrEmpty(url))
-            {
-                Process.Start(url);
-            }
-        }
-
-        private bool IsGameRunning()
-        {
-            if (this.memory.mProc.Process == null)
-            {
-                System.Windows.Forms.MessageBox.Show(this, "Anstoss-2-Gold-Prozess nicht gefunden", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            return true;
-        }
-        private void SaveBtn_Click(object sender, EventArgs e)
-        {
-            if (this.IsGameRunning())
-            {
-                bool hasLevel = !String.IsNullOrEmpty(this.TeamLevelInput.Text);
-                bool hasForm = !String.IsNullOrEmpty(this.TeamFormInput.Text);
-                bool hasAge = !String.IsNullOrEmpty(this.TeamAgeInput.Text);
-                bool hasCondition = !String.IsNullOrEmpty(this.TeamConditionInput.Text);
-                bool hasFreshness = !String.IsNullOrEmpty(this.TeamFreshnessInput.Text);
-                bool hasContractDuration = !String.IsNullOrEmpty(this.TeamContractDurationInput.Text);
-
-                foreach (Player player in this.playerController.EntityList)
-                {
-                    if (hasLevel) player.Level = byte.Parse(this.TeamLevelInput.Text);
-                    if (hasForm) player.Form = byte.Parse(this.TeamFormInput.Text);
-                    if (hasAge) player.Age = byte.Parse(this.TeamAgeInput.Text);
-                    if (hasCondition) player.Condition = byte.Parse(this.TeamConditionInput.Text);
-                    if (hasFreshness) player.Freshness = byte.Parse(this.TeamFreshnessInput.Text);
-                    if (hasContractDuration) player.ContractDuration = byte.Parse(this.TeamContractDurationInput.Text);
-                }
-                /*
-                                SelectedListViewItemCollection selectedPlayers = this.PlayerListView.SelectedItems;
-
-                                if (selectedPlayers.Count > 0)
-                                {
-                                    Player player = PlayerListView.SelectedItems[0].Tag as Player;
-
-                                    this.playerController.Save(player);
-                                    this.playerController.RefreshPlayerList(this.clubController.Club);
-                                    this.RefreshPlayerListView();
-                                }
-                */
-                this.playerController.SaveEntityList();
-                this.ClearAllFields(this.TeamBus);
-                this.RefreshPlayerListView();
-            }
-        }
         private void PlayerListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectedListViewItemCollection selectedPlayers = PlayerListView.SelectedItems;
@@ -510,6 +348,37 @@ namespace A2G_Trainer_XP
         private void ReloadBtn_Click(object sender, EventArgs e)
         {
             this.RefreshPlayerListView();
+        }
+
+        private void SaveBtn_Click(object sender, EventArgs e)
+        {
+            if (this.IsGameRunning())
+            {
+                bool hasLevel = !String.IsNullOrEmpty(this.TeamLevelInput.Text);
+                bool hasForm = !String.IsNullOrEmpty(this.TeamFormInput.Text);
+                bool hasAge = !String.IsNullOrEmpty(this.TeamAgeInput.Text);
+                bool hasCondition = !String.IsNullOrEmpty(this.TeamConditionInput.Text);
+                bool hasFreshness = !String.IsNullOrEmpty(this.TeamFreshnessInput.Text);
+                bool hasContractDuration = !String.IsNullOrEmpty(this.TeamContractDurationInput.Text);
+
+                foreach (Player player in this.playerController.EntityList)
+                {
+                    if (hasLevel) player.Level = byte.Parse(this.TeamLevelInput.Text);
+                    if (hasForm) player.Form = byte.Parse(this.TeamFormInput.Text);
+                    if (hasAge) player.Age = byte.Parse(this.TeamAgeInput.Text);
+                    if (hasCondition) player.Condition = byte.Parse(this.TeamConditionInput.Text);
+                    if (hasFreshness) player.Freshness = byte.Parse(this.TeamFreshnessInput.Text);
+                    if (hasContractDuration) player.ContractDuration = byte.Parse(this.TeamContractDurationInput.Text);
+                }
+                this.playerController.SaveEntityList();
+                this.ClearAllFields(this.TeamBus);
+                this.RefreshPlayerListView();
+            }
+        }
+
+        private void GithubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.LinkLabel_LinkClicked(sender, e);
         }
     }
 }

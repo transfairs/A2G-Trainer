@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.Controller
 {
-    class ProcessController
+    public class ProcessController
     {
         private readonly Trainer trainer;
         private Process gameProcess;
@@ -78,8 +78,10 @@ namespace A2G_Trainer_XP.Controller
                             this.trainer.Memory.OpenProcess(this.gameProcess.Id);
                             if (!this.initialised)
                             {
-                                this.trainer.RefreshPlayerListView();
-                                this.trainer.InitMainTabControl();
+                                this.trainer.PlayerView.RefreshPlayerListView();
+                                this.trainer.PlayerView.InitMainTabControl();
+                                this.trainer.ClubView.RefreshValues();
+                                this.trainer.ClubView.InitClubTabControl();
                             }
                             this.initialised = true;
                         }

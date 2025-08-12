@@ -1,14 +1,14 @@
 ﻿
-namespace A2G_Trainer_XP
+namespace A2G_Trainer_XP.View
 {
-    partial class Trainer
+    partial class PlayerView
     {
         /// <summary>
         /// Erforderliche Designervariable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
+        /// <summary> 
         /// Verwendete Ressourcen bereinigen.
         /// </summary>
         /// <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
@@ -21,7 +21,7 @@ namespace A2G_Trainer_XP
             base.Dispose(disposing);
         }
 
-        #region Vom Windows Form-Designer generierter Code
+        #region Vom Komponenten-Designer generierter Code
 
         /// <summary>
         /// Erforderliche Methode für die Designerunterstützung.
@@ -29,9 +29,6 @@ namespace A2G_Trainer_XP
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Trainer));
-            this.PlayerListView = new System.Windows.Forms.ListView();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.PersonalTab = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -232,6 +229,8 @@ namespace A2G_Trainer_XP
             this.VersionLabel = new System.Windows.Forms.Label();
             this.AboutTitleLabel = new System.Windows.Forms.Label();
             this.TeamBus = new System.Windows.Forms.GroupBox();
+            this.TeamContractDurationLabel = new System.Windows.Forms.Label();
+            this.TeamContractDurationInput = new System.Windows.Forms.TextBox();
             this.TeamAgeLabel = new System.Windows.Forms.Label();
             this.TeamAgeInput = new System.Windows.Forms.TextBox();
             this.TeamFormLabel = new System.Windows.Forms.Label();
@@ -243,12 +242,9 @@ namespace A2G_Trainer_XP
             this.TeamLevelLabel = new System.Windows.Forms.Label();
             this.TeamLevelInput = new System.Windows.Forms.TextBox();
             this.TeamDescription = new System.Windows.Forms.Label();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.SaveBtn = new System.Windows.Forms.Button();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.PlayerListView = new System.Windows.Forms.ListView();
             this.ReloadBtn = new System.Windows.Forms.Button();
-            this.TeamContractDurationLabel = new System.Windows.Forms.Label();
-            this.TeamContractDurationInput = new System.Windows.Forms.TextBox();
+            this.SaveBtn = new System.Windows.Forms.Button();
             this.MainTabControl.SuspendLayout();
             this.PersonalTab.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -278,19 +274,6 @@ namespace A2G_Trainer_XP
             this.TeamBus.SuspendLayout();
             this.SuspendLayout();
             // 
-            // PlayerListView
-            // 
-            this.PlayerListView.FullRowSelect = true;
-            this.PlayerListView.HideSelection = false;
-            this.PlayerListView.Location = new System.Drawing.Point(10, 10);
-            this.PlayerListView.MultiSelect = false;
-            this.PlayerListView.Name = "PlayerListView";
-            this.PlayerListView.Size = new System.Drawing.Size(200, 416);
-            this.PlayerListView.TabIndex = 40;
-            this.PlayerListView.UseCompatibleStateImageBehavior = false;
-            this.PlayerListView.View = System.Windows.Forms.View.Details;
-            this.PlayerListView.SelectedIndexChanged += new System.EventHandler(this.PlayerListView_SelectedIndexChanged);
-            // 
             // MainTabControl
             // 
             this.MainTabControl.Controls.Add(this.PersonalTab);
@@ -300,13 +283,13 @@ namespace A2G_Trainer_XP
             this.MainTabControl.Controls.Add(this.ConstitutionTab);
             this.MainTabControl.Controls.Add(this.ContractTab);
             this.MainTabControl.Controls.Add(this.OtherTab);
-            this.MainTabControl.Location = new System.Drawing.Point(226, 9);
+            this.MainTabControl.Location = new System.Drawing.Point(229, 13);
             this.MainTabControl.Margin = new System.Windows.Forms.Padding(0);
             this.MainTabControl.Name = "MainTabControl";
             this.MainTabControl.Padding = new System.Drawing.Point(0, 0);
             this.MainTabControl.SelectedIndex = 0;
-            this.MainTabControl.Size = new System.Drawing.Size(387, 390);
-            this.MainTabControl.TabIndex = 36;
+            this.MainTabControl.Size = new System.Drawing.Size(387, 375);
+            this.MainTabControl.TabIndex = 41;
             // 
             // PersonalTab
             // 
@@ -314,7 +297,7 @@ namespace A2G_Trainer_XP
             this.PersonalTab.Location = new System.Drawing.Point(4, 22);
             this.PersonalTab.Name = "PersonalTab";
             this.PersonalTab.Padding = new System.Windows.Forms.Padding(3);
-            this.PersonalTab.Size = new System.Drawing.Size(379, 364);
+            this.PersonalTab.Size = new System.Drawing.Size(379, 349);
             this.PersonalTab.TabIndex = 0;
             this.PersonalTab.Text = "Überblick";
             this.PersonalTab.UseVisualStyleBackColor = true;
@@ -641,7 +624,7 @@ namespace A2G_Trainer_XP
             this.PositionTab.Location = new System.Drawing.Point(4, 22);
             this.PositionTab.Name = "PositionTab";
             this.PositionTab.Padding = new System.Windows.Forms.Padding(3);
-            this.PositionTab.Size = new System.Drawing.Size(379, 364);
+            this.PositionTab.Size = new System.Drawing.Size(379, 349);
             this.PositionTab.TabIndex = 1;
             this.PositionTab.Text = "Positionen";
             this.PositionTab.UseVisualStyleBackColor = true;
@@ -929,7 +912,7 @@ namespace A2G_Trainer_XP
             this.SkillTab.Controls.Add(this.FieldPlayerSkillBox);
             this.SkillTab.Location = new System.Drawing.Point(4, 22);
             this.SkillTab.Name = "SkillTab";
-            this.SkillTab.Size = new System.Drawing.Size(379, 364);
+            this.SkillTab.Size = new System.Drawing.Size(379, 349);
             this.SkillTab.TabIndex = 2;
             this.SkillTab.Text = "Fähigkeiten";
             this.SkillTab.UseVisualStyleBackColor = true;
@@ -1390,7 +1373,7 @@ namespace A2G_Trainer_XP
             this.PropertiesTab.Controls.Add(this.CharacterBox);
             this.PropertiesTab.Location = new System.Drawing.Point(4, 22);
             this.PropertiesTab.Name = "PropertiesTab";
-            this.PropertiesTab.Size = new System.Drawing.Size(379, 364);
+            this.PropertiesTab.Size = new System.Drawing.Size(379, 349);
             this.PropertiesTab.TabIndex = 3;
             this.PropertiesTab.Text = "Eigenschaften";
             this.PropertiesTab.UseVisualStyleBackColor = true;
@@ -1403,7 +1386,7 @@ namespace A2G_Trainer_XP
             this.HealthBox.Controls.Add(this.NormalHealthLabel);
             this.HealthBox.Location = new System.Drawing.Point(15, 240);
             this.HealthBox.Name = "HealthBox";
-            this.HealthBox.Size = new System.Drawing.Size(165, 112);
+            this.HealthBox.Size = new System.Drawing.Size(165, 106);
             this.HealthBox.TabIndex = 27;
             this.HealthBox.TabStop = false;
             this.HealthBox.Text = "Gesundheitszustand";
@@ -1763,13 +1746,14 @@ namespace A2G_Trainer_XP
             // 
             // ConstitutionTab
             // 
+            this.ConstitutionTab.AutoScroll = true;
             this.ConstitutionTab.Controls.Add(this.CardBox);
             this.ConstitutionTab.Controls.Add(this.InjuryBox);
             this.ConstitutionTab.Controls.Add(this.HappyBox);
             this.ConstitutionTab.Controls.Add(this.UnhappyBox);
             this.ConstitutionTab.Location = new System.Drawing.Point(4, 22);
             this.ConstitutionTab.Name = "ConstitutionTab";
-            this.ConstitutionTab.Size = new System.Drawing.Size(379, 364);
+            this.ConstitutionTab.Size = new System.Drawing.Size(379, 349);
             this.ConstitutionTab.TabIndex = 4;
             this.ConstitutionTab.Text = "Verfassung";
             this.ConstitutionTab.UseVisualStyleBackColor = true;
@@ -1783,7 +1767,7 @@ namespace A2G_Trainer_XP
             this.CardBox.Controls.Add(this.YellowCardsLabel);
             this.CardBox.Location = new System.Drawing.Point(4, 318);
             this.CardBox.Name = "CardBox";
-            this.CardBox.Size = new System.Drawing.Size(370, 45);
+            this.CardBox.Size = new System.Drawing.Size(355, 45);
             this.CardBox.TabIndex = 30;
             this.CardBox.TabStop = false;
             this.CardBox.Text = "Karten";
@@ -1840,7 +1824,7 @@ namespace A2G_Trainer_XP
             this.InjuryBox.Controls.Add(this.InjuredDaysInput);
             this.InjuryBox.Location = new System.Drawing.Point(4, 273);
             this.InjuryBox.Name = "InjuryBox";
-            this.InjuryBox.Size = new System.Drawing.Size(370, 45);
+            this.InjuryBox.Size = new System.Drawing.Size(355, 45);
             this.InjuryBox.TabIndex = 29;
             this.InjuryBox.TabStop = false;
             this.InjuryBox.Text = "Verletzungen";
@@ -1848,7 +1832,7 @@ namespace A2G_Trainer_XP
             // Doped
             // 
             this.Doped.AutoSize = true;
-            this.Doped.Location = new System.Drawing.Point(277, 19);
+            this.Doped.Location = new System.Drawing.Point(266, 19);
             this.Doped.Name = "Doped";
             this.Doped.Size = new System.Drawing.Size(61, 17);
             this.Doped.TabIndex = 24;
@@ -1902,7 +1886,7 @@ namespace A2G_Trainer_XP
             this.HappyBox.Controls.Add(this.TollerVertrag);
             this.HappyBox.Location = new System.Drawing.Point(4, 3);
             this.HappyBox.Name = "HappyBox";
-            this.HappyBox.Size = new System.Drawing.Size(370, 68);
+            this.HappyBox.Size = new System.Drawing.Size(355, 68);
             this.HappyBox.TabIndex = 27;
             this.HappyBox.TabStop = false;
             this.HappyBox.Text = "Zufriedenheit";
@@ -1910,7 +1894,7 @@ namespace A2G_Trainer_XP
             // TollerTrainer
             // 
             this.TollerTrainer.AutoSize = true;
-            this.TollerTrainer.Location = new System.Drawing.Point(277, 19);
+            this.TollerTrainer.Location = new System.Drawing.Point(266, 20);
             this.TollerTrainer.Name = "TollerTrainer";
             this.TollerTrainer.Size = new System.Drawing.Size(84, 17);
             this.TollerTrainer.TabIndex = 5;
@@ -1982,7 +1966,7 @@ namespace A2G_Trainer_XP
             this.UnhappyBox.Controls.Add(this.WillEndlichSpielen);
             this.UnhappyBox.Location = new System.Drawing.Point(4, 71);
             this.UnhappyBox.Name = "UnhappyBox";
-            this.UnhappyBox.Size = new System.Drawing.Size(370, 202);
+            this.UnhappyBox.Size = new System.Drawing.Size(355, 202);
             this.UnhappyBox.TabIndex = 28;
             this.UnhappyBox.TabStop = false;
             this.UnhappyBox.Text = "Unbehagen";
@@ -2168,7 +2152,7 @@ namespace A2G_Trainer_XP
             this.ContractTab.Controls.Add(this.ContractBox);
             this.ContractTab.Location = new System.Drawing.Point(4, 22);
             this.ContractTab.Name = "ContractTab";
-            this.ContractTab.Size = new System.Drawing.Size(379, 364);
+            this.ContractTab.Size = new System.Drawing.Size(379, 349);
             this.ContractTab.TabIndex = 6;
             this.ContractTab.Text = "Vertrag";
             this.ContractTab.UseVisualStyleBackColor = true;
@@ -2460,7 +2444,7 @@ namespace A2G_Trainer_XP
             this.OtherTab.Controls.Add(this.TeamBus);
             this.OtherTab.Location = new System.Drawing.Point(4, 22);
             this.OtherTab.Name = "OtherTab";
-            this.OtherTab.Size = new System.Drawing.Size(379, 364);
+            this.OtherTab.Size = new System.Drawing.Size(379, 349);
             this.OtherTab.TabIndex = 5;
             this.OtherTab.Text = "Team";
             this.OtherTab.UseVisualStyleBackColor = true;
@@ -2492,6 +2476,7 @@ namespace A2G_Trainer_XP
             this.GithubLinkLabel.TabStop = true;
             this.GithubLinkLabel.Text = "Github: https://github.com/transfairs/a2g-trainer";
             this.GithubLinkLabel.UseCompatibleTextRendering = true;
+            this.GithubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.GithubLinkLabel_LinkClicked);
             // 
             // AlexanderLabel
             // 
@@ -2571,6 +2556,23 @@ namespace A2G_Trainer_XP
             this.TeamBus.TabIndex = 0;
             this.TeamBus.TabStop = false;
             this.TeamBus.Text = "Mannschaft";
+            // 
+            // TeamContractDurationLabel
+            // 
+            this.TeamContractDurationLabel.AutoSize = true;
+            this.TeamContractDurationLabel.Location = new System.Drawing.Point(234, 76);
+            this.TeamContractDurationLabel.Name = "TeamContractDurationLabel";
+            this.TeamContractDurationLabel.Size = new System.Drawing.Size(79, 13);
+            this.TeamContractDurationLabel.TabIndex = 70;
+            this.TeamContractDurationLabel.Text = "Vertragslaufzeit";
+            // 
+            // TeamContractDurationInput
+            // 
+            this.TeamContractDurationInput.Location = new System.Drawing.Point(319, 73);
+            this.TeamContractDurationInput.Name = "TeamContractDurationInput";
+            this.TeamContractDurationInput.Size = new System.Drawing.Size(43, 20);
+            this.TeamContractDurationInput.TabIndex = 6;
+            this.TeamContractDurationInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // TeamAgeLabel
             // 
@@ -2666,63 +2668,47 @@ namespace A2G_Trainer_XP
             this.TeamDescription.TabIndex = 0;
             this.TeamDescription.Text = "Legen Sie hier Werte für die gesamte Mannschaft fest.";
             // 
-            // SaveBtn
+            // PlayerListView
             // 
-            this.SaveBtn.Location = new System.Drawing.Point(499, 403);
-            this.SaveBtn.Name = "SaveBtn";
-            this.SaveBtn.Size = new System.Drawing.Size(114, 23);
-            this.SaveBtn.TabIndex = 35;
-            this.SaveBtn.Text = "Speichern";
-            this.SaveBtn.UseVisualStyleBackColor = true;
-            this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            this.PlayerListView.FullRowSelect = true;
+            this.PlayerListView.HideSelection = false;
+            this.PlayerListView.Location = new System.Drawing.Point(15, 13);
+            this.PlayerListView.MultiSelect = false;
+            this.PlayerListView.Name = "PlayerListView";
+            this.PlayerListView.Size = new System.Drawing.Size(200, 400);
+            this.PlayerListView.TabIndex = 42;
+            this.PlayerListView.UseCompatibleStateImageBehavior = false;
+            this.PlayerListView.View = System.Windows.Forms.View.Details;
             // 
             // ReloadBtn
             // 
-            this.ReloadBtn.Location = new System.Drawing.Point(224, 403);
+            this.ReloadBtn.Location = new System.Drawing.Point(227, 391);
             this.ReloadBtn.Name = "ReloadBtn";
             this.ReloadBtn.Size = new System.Drawing.Size(114, 23);
-            this.ReloadBtn.TabIndex = 41;
+            this.ReloadBtn.TabIndex = 44;
             this.ReloadBtn.Text = "Team neu laden";
             this.ReloadBtn.UseVisualStyleBackColor = true;
             this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
             // 
-            // TeamContractDurationLabel
+            // SaveBtn
             // 
-            this.TeamContractDurationLabel.AutoSize = true;
-            this.TeamContractDurationLabel.Location = new System.Drawing.Point(234, 76);
-            this.TeamContractDurationLabel.Name = "TeamContractDurationLabel";
-            this.TeamContractDurationLabel.Size = new System.Drawing.Size(79, 13);
-            this.TeamContractDurationLabel.TabIndex = 70;
-            this.TeamContractDurationLabel.Text = "Vertragslaufzeit";
+            this.SaveBtn.Location = new System.Drawing.Point(503, 391);
+            this.SaveBtn.Name = "SaveBtn";
+            this.SaveBtn.Size = new System.Drawing.Size(114, 23);
+            this.SaveBtn.TabIndex = 43;
+            this.SaveBtn.Text = "Speichern";
+            this.SaveBtn.UseVisualStyleBackColor = true;
+            this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
             // 
-            // TeamContractDurationInput
+            // PlayerView
             // 
-            this.TeamContractDurationInput.Location = new System.Drawing.Point(319, 73);
-            this.TeamContractDurationInput.Name = "TeamContractDurationInput";
-            this.TeamContractDurationInput.Size = new System.Drawing.Size(43, 20);
-            this.TeamContractDurationInput.TabIndex = 6;
-            this.TeamContractDurationInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // Trainer
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
-            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(630, 447);
+            this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.MainTabControl);
             this.Controls.Add(this.PlayerListView);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Trainer";
-            this.Text = "A2G - Trainer";
+            this.Name = "PlayerView";
+            this.Size = new System.Drawing.Size(630, 423);
             this.MainTabControl.ResumeLayout(false);
             this.PersonalTab.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
@@ -2774,136 +2760,10 @@ namespace A2G_Trainer_XP
 
         #endregion
 
-        private System.Windows.Forms.ListView PlayerListView;
         private System.Windows.Forms.TabControl MainTabControl;
         private System.Windows.Forms.TabPage PersonalTab;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TabPage PositionTab;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.GroupBox MainPositionBox;
-        private System.Windows.Forms.RadioButton MainStriker;
-        private System.Windows.Forms.RadioButton MainRightWing;
-        private System.Windows.Forms.RadioButton MainLeftWing;
-        private System.Windows.Forms.RadioButton MainCentralMidfield;
-        private System.Windows.Forms.RadioButton MainDefensive;
-        private System.Windows.Forms.RadioButton MainRightBack;
-        private System.Windows.Forms.RadioButton MainLeftBack;
-        private System.Windows.Forms.RadioButton MainMan2Man;
-        private System.Windows.Forms.RadioButton MainSweeper;
-        private System.Windows.Forms.RadioButton MainGoalKeeper;
-        private System.Windows.Forms.GroupBox SecondaryPositionsBox;
-        private System.Windows.Forms.CheckBox Striker;
-        private System.Windows.Forms.CheckBox CentralMidfield;
-        private System.Windows.Forms.CheckBox Defensive;
-        private System.Windows.Forms.CheckBox LeftWing;
-        private System.Windows.Forms.CheckBox RightWing;
-        private System.Windows.Forms.CheckBox RightBack;
-        private System.Windows.Forms.CheckBox LeftBack;
-        private System.Windows.Forms.CheckBox Man2Man;
-        private System.Windows.Forms.CheckBox Sweeper;
-        private System.Windows.Forms.CheckBox GoalKeeper;
-        private System.Windows.Forms.TabPage SkillTab;
-        private System.Windows.Forms.GroupBox FieldPlayerSkillBox;
-        private System.Windows.Forms.TabPage PropertiesTab;
-        private System.Windows.Forms.CheckBox NegativeBeidfuessigkeitLabel;
-        private System.Windows.Forms.CheckBox NegativeSpielmacherLabel;
-        private System.Windows.Forms.CheckBox NegativeTechnikLabel;
-        private System.Windows.Forms.CheckBox NegativeLaufstaerkeLabel;
-        private System.Windows.Forms.CheckBox NegativeTorinstinktLabel;
-        private System.Windows.Forms.CheckBox NegativeFlankenLabel;
-        private System.Windows.Forms.CheckBox NegativeFreistoesseLabel;
-        private System.Windows.Forms.CheckBox NegativeSchusskraftLabel;
-        private System.Windows.Forms.CheckBox NegativeSchnelligkeitLabel;
-        private System.Windows.Forms.CheckBox NegativeZweikampfLabel;
-        private System.Windows.Forms.CheckBox NegativeKopfballLabel;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox BeidfuessigkeitLabel;
-        private System.Windows.Forms.CheckBox SpielmacherLabel;
-        private System.Windows.Forms.CheckBox TechnikLabel;
-        private System.Windows.Forms.CheckBox LaufstaerkeLabel;
-        private System.Windows.Forms.CheckBox TorinstinktLabel;
-        private System.Windows.Forms.CheckBox FlankenLabel;
-        private System.Windows.Forms.CheckBox FreistoesseLabel;
-        private System.Windows.Forms.CheckBox SchusskraftLabel;
-        private System.Windows.Forms.CheckBox SchnelligkeitLabel;
-        private System.Windows.Forms.CheckBox ZweikampfLabel;
-        private System.Windows.Forms.CheckBox KopfballLabel;
-        private System.Windows.Forms.GroupBox KeeperSkillBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox Fangsicherheit;
-        private System.Windows.Forms.CheckBox Herauslaufen;
-        private System.Windows.Forms.CheckBox StarkeReflexe;
-        private System.Windows.Forms.CheckBox Elfmetertoeter;
-        private System.Windows.Forms.CheckBox NegFangsicherheitLabel;
-        private System.Windows.Forms.CheckBox NegHerauslaufenLabel;
-        private System.Windows.Forms.CheckBox NegStarkeReflexeLabel;
-        private System.Windows.Forms.CheckBox NegElfmetertoeterLabel;
-        private System.Windows.Forms.CheckBox Ballsicherheit;
-        private System.Windows.Forms.CheckBox Fausten;
-        private System.Windows.Forms.CheckBox NegBallsicherheitLabel;
-        private System.Windows.Forms.CheckBox NegFaustenLabel;
-        private System.Windows.Forms.GroupBox HealthBox;
-        private System.Windows.Forms.RadioButton KneeProblemsLabel;
-        private System.Windows.Forms.RadioButton AnfaelligkeitLabel;
-        private System.Windows.Forms.RadioButton RobustLabel;
-        private System.Windows.Forms.RadioButton NormalHealthLabel;
-        private System.Windows.Forms.GroupBox PersonalityBox;
-        private System.Windows.Forms.RadioButton TalentLabel;
-        private System.Windows.Forms.RadioButton HeimspielerLabel;
-        private System.Windows.Forms.RadioButton FlexiblePlayerLabel;
-        private System.Windows.Forms.RadioButton SchwalbenkoenigLabel;
-        private System.Windows.Forms.RadioButton NoPropLabel;
-        private System.Windows.Forms.RadioButton FairPlayerLabel;
-        private System.Windows.Forms.RadioButton FuehrungspersonLabel;
-        private System.Windows.Forms.RadioButton AllrounderLabel;
-        private System.Windows.Forms.RadioButton KaempfernaturLabel;
-        private System.Windows.Forms.RadioButton TreterLabel;
-        private System.Windows.Forms.RadioButton TrainingsweltmeisterLabel;
-        private System.Windows.Forms.RadioButton TrainingsfaulLabel;
-        private System.Windows.Forms.GroupBox CharacterBox;
-        private System.Windows.Forms.RadioButton MusterprofiLabel;
-        private System.Windows.Forms.RadioButton GeldgeierLabel;
-        private System.Windows.Forms.RadioButton SkandalnudelLabel;
-        private System.Windows.Forms.RadioButton PhlegmaLabel;
-        private System.Windows.Forms.RadioButton NervenBuendelLabel;
-        private System.Windows.Forms.RadioButton MannOhneNervenLabel;
-        private System.Windows.Forms.RadioButton FrohnaturLabel;
-        private System.Windows.Forms.RadioButton HitzkopfLabel;
-        private System.Windows.Forms.RadioButton NormalCharLabel;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private System.Windows.Forms.Button SaveBtn;
-        private System.Windows.Forms.TabPage ConstitutionTab;
-        private System.Windows.Forms.GroupBox UnhappyBox;
-        private System.Windows.Forms.CheckBox ScheissTrainer;
-        private System.Windows.Forms.CheckBox BloedeFans;
-        private System.Windows.Forms.CheckBox UngerechteBehandlung;
-        private System.Windows.Forms.CheckBox VerletztUndNieBesucht;
-        private System.Windows.Forms.CheckBox SchlechteStimmung;
-        private System.Windows.Forms.CheckBox ScheissVertrag;
-        private System.Windows.Forms.CheckBox FalschePosition;
-        private System.Windows.Forms.CheckBox GehtNichtNachLeistung;
-        private System.Windows.Forms.CheckBox MiesePraemien;
-        private System.Windows.Forms.CheckBox WillMehrGeld;
-        private System.Windows.Forms.CheckBox WillEndlichSpielen;
-        private System.Windows.Forms.GroupBox HappyBox;
-        private System.Windows.Forms.CheckBox TollerVertragDoppelt;
-        private System.Windows.Forms.CheckBox TollePraemien;
-        private System.Windows.Forms.CheckBox TolleStimmung;
-        private System.Windows.Forms.CheckBox TollerVertrag;
-        private System.Windows.Forms.CheckBox TollerTrainer;
-        private System.Windows.Forms.GroupBox CardBox;
-        private System.Windows.Forms.GroupBox InjuryBox;
-        private System.Windows.Forms.Label RedCardsGames;
-        private System.Windows.Forms.TextBox RedCardsInput;
-        private System.Windows.Forms.Label RedCardsLabel;
-        private System.Windows.Forms.TextBox YellowCardsInput;
-        private System.Windows.Forms.Label YellowCardsLabel;
-        private System.Windows.Forms.Label InjuryDays;
-        private System.Windows.Forms.Label InjuredLabel;
-        private System.Windows.Forms.TextBox InjuredDaysInput;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.Label DebugLabel;
         private System.Windows.Forms.GroupBox PersonalBox;
         private System.Windows.Forms.Label Form;
         private System.Windows.Forms.TextBox FormInput;
@@ -2932,51 +2792,141 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.TextBox LastNameInput;
         private System.Windows.Forms.Label FirstNameLabel;
         private System.Windows.Forms.TextBox FirstNameInput;
-        private System.Windows.Forms.CheckBox Vulnerable;
-        private System.Windows.Forms.TabPage OtherTab;
-        private System.Windows.Forms.GroupBox TeamBus;
-        private System.Windows.Forms.CheckBox Doped;
-        private System.Windows.Forms.CheckBox MieseMannschaft;
-        private System.Windows.Forms.CheckBox BloedeMitspieler;
-        private System.Windows.Forms.CheckBox VerhandlungGeplatzt;
-        private System.Windows.Forms.Label TeamFormLabel;
-        private System.Windows.Forms.TextBox TeamFormInput;
-        private System.Windows.Forms.Label TeamFreshnessLabel;
-        private System.Windows.Forms.TextBox TeamFreshnessInput;
-        private System.Windows.Forms.Label TeamConditionLabel;
-        private System.Windows.Forms.TextBox TeamConditionInput;
-        private System.Windows.Forms.Label TeamLevelLabel;
-        private System.Windows.Forms.TextBox TeamLevelInput;
-        private System.Windows.Forms.Label TeamDescription;
-        private System.Windows.Forms.Label TeamAgeLabel;
-        private System.Windows.Forms.TextBox TeamAgeInput;
-        private System.Windows.Forms.CheckBox ScheissManager;
-        private System.Windows.Forms.CheckBox ScheissNachwuchsrunde;
-        private System.Windows.Forms.GroupBox AboutBox;
-        private System.Windows.Forms.Label AlexanderLabel;
-        private System.Windows.Forms.LinkLabel StrajkLinkLabel;
-        private System.Windows.Forms.LinkLabel AnstossJuengerLinkLabel;
-        private System.Windows.Forms.Label VersionLabel;
-        private System.Windows.Forms.Label AboutTitleLabel;
-        private System.Windows.Forms.LinkLabel GithubLinkLabel;
-        private System.Windows.Forms.Label DebugLabel;
+        private System.Windows.Forms.TabPage PositionTab;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.GroupBox SecondaryPositionsBox;
+        private System.Windows.Forms.CheckBox Striker;
+        private System.Windows.Forms.CheckBox CentralMidfield;
+        private System.Windows.Forms.CheckBox Defensive;
+        private System.Windows.Forms.CheckBox LeftWing;
+        private System.Windows.Forms.CheckBox RightWing;
+        private System.Windows.Forms.CheckBox RightBack;
+        private System.Windows.Forms.CheckBox LeftBack;
+        private System.Windows.Forms.CheckBox Man2Man;
+        private System.Windows.Forms.CheckBox Sweeper;
+        private System.Windows.Forms.CheckBox GoalKeeper;
+        private System.Windows.Forms.GroupBox MainPositionBox;
+        private System.Windows.Forms.RadioButton MainStriker;
+        private System.Windows.Forms.RadioButton MainRightWing;
+        private System.Windows.Forms.RadioButton MainLeftWing;
+        private System.Windows.Forms.RadioButton MainCentralMidfield;
+        private System.Windows.Forms.RadioButton MainDefensive;
+        private System.Windows.Forms.RadioButton MainRightBack;
+        private System.Windows.Forms.RadioButton MainLeftBack;
+        private System.Windows.Forms.RadioButton MainMan2Man;
+        private System.Windows.Forms.RadioButton MainSweeper;
+        private System.Windows.Forms.RadioButton MainGoalKeeper;
+        private System.Windows.Forms.TabPage SkillTab;
+        private System.Windows.Forms.GroupBox KeeperSkillBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox Ballsicherheit;
+        private System.Windows.Forms.CheckBox Fausten;
+        private System.Windows.Forms.CheckBox Fangsicherheit;
+        private System.Windows.Forms.CheckBox Herauslaufen;
+        private System.Windows.Forms.CheckBox StarkeReflexe;
+        private System.Windows.Forms.CheckBox Elfmetertoeter;
+        private System.Windows.Forms.CheckBox NegBallsicherheitLabel;
+        private System.Windows.Forms.CheckBox NegFaustenLabel;
+        private System.Windows.Forms.CheckBox NegFangsicherheitLabel;
+        private System.Windows.Forms.CheckBox NegHerauslaufenLabel;
+        private System.Windows.Forms.CheckBox NegStarkeReflexeLabel;
+        private System.Windows.Forms.CheckBox NegElfmetertoeterLabel;
+        private System.Windows.Forms.GroupBox FieldPlayerSkillBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox BeidfuessigkeitLabel;
+        private System.Windows.Forms.CheckBox SpielmacherLabel;
+        private System.Windows.Forms.CheckBox TechnikLabel;
+        private System.Windows.Forms.CheckBox LaufstaerkeLabel;
+        private System.Windows.Forms.CheckBox TorinstinktLabel;
+        private System.Windows.Forms.CheckBox FlankenLabel;
+        private System.Windows.Forms.CheckBox FreistoesseLabel;
+        private System.Windows.Forms.CheckBox SchusskraftLabel;
+        private System.Windows.Forms.CheckBox SchnelligkeitLabel;
+        private System.Windows.Forms.CheckBox ZweikampfLabel;
+        private System.Windows.Forms.CheckBox KopfballLabel;
+        private System.Windows.Forms.CheckBox NegativeBeidfuessigkeitLabel;
+        private System.Windows.Forms.CheckBox NegativeSpielmacherLabel;
+        private System.Windows.Forms.CheckBox NegativeTechnikLabel;
+        private System.Windows.Forms.CheckBox NegativeLaufstaerkeLabel;
+        private System.Windows.Forms.CheckBox NegativeTorinstinktLabel;
+        private System.Windows.Forms.CheckBox NegativeFlankenLabel;
+        private System.Windows.Forms.CheckBox NegativeFreistoesseLabel;
+        private System.Windows.Forms.CheckBox NegativeSchusskraftLabel;
+        private System.Windows.Forms.CheckBox NegativeSchnelligkeitLabel;
+        private System.Windows.Forms.CheckBox NegativeZweikampfLabel;
+        private System.Windows.Forms.CheckBox NegativeKopfballLabel;
+        private System.Windows.Forms.TabPage PropertiesTab;
+        private System.Windows.Forms.GroupBox HealthBox;
+        private System.Windows.Forms.RadioButton KneeProblemsLabel;
+        private System.Windows.Forms.RadioButton AnfaelligkeitLabel;
+        private System.Windows.Forms.RadioButton RobustLabel;
+        private System.Windows.Forms.RadioButton NormalHealthLabel;
+        private System.Windows.Forms.GroupBox PersonalityBox;
         private System.Windows.Forms.RadioButton AuswaertsSpielerLabel;
-        private System.Windows.Forms.Button ReloadBtn;
+        private System.Windows.Forms.RadioButton TalentLabel;
+        private System.Windows.Forms.RadioButton HeimspielerLabel;
+        private System.Windows.Forms.RadioButton FlexiblePlayerLabel;
+        private System.Windows.Forms.RadioButton SchwalbenkoenigLabel;
+        private System.Windows.Forms.RadioButton NoPropLabel;
+        private System.Windows.Forms.RadioButton FairPlayerLabel;
+        private System.Windows.Forms.RadioButton FuehrungspersonLabel;
+        private System.Windows.Forms.RadioButton AllrounderLabel;
+        private System.Windows.Forms.RadioButton KaempfernaturLabel;
+        private System.Windows.Forms.RadioButton TreterLabel;
+        private System.Windows.Forms.RadioButton TrainingsweltmeisterLabel;
+        private System.Windows.Forms.RadioButton TrainingsfaulLabel;
+        private System.Windows.Forms.GroupBox CharacterBox;
+        private System.Windows.Forms.RadioButton MusterprofiLabel;
+        private System.Windows.Forms.RadioButton GeldgeierLabel;
+        private System.Windows.Forms.RadioButton SkandalnudelLabel;
+        private System.Windows.Forms.RadioButton PhlegmaLabel;
+        private System.Windows.Forms.RadioButton NervenBuendelLabel;
+        private System.Windows.Forms.RadioButton MannOhneNervenLabel;
+        private System.Windows.Forms.RadioButton FrohnaturLabel;
+        private System.Windows.Forms.RadioButton HitzkopfLabel;
+        private System.Windows.Forms.RadioButton NormalCharLabel;
+        private System.Windows.Forms.TabPage ConstitutionTab;
+        private System.Windows.Forms.GroupBox CardBox;
+        private System.Windows.Forms.Label RedCardsGames;
+        private System.Windows.Forms.TextBox RedCardsInput;
+        private System.Windows.Forms.Label RedCardsLabel;
+        private System.Windows.Forms.TextBox YellowCardsInput;
+        private System.Windows.Forms.Label YellowCardsLabel;
+        private System.Windows.Forms.GroupBox InjuryBox;
+        private System.Windows.Forms.CheckBox Doped;
+        private System.Windows.Forms.CheckBox Vulnerable;
+        private System.Windows.Forms.Label InjuryDays;
+        private System.Windows.Forms.Label InjuredLabel;
+        private System.Windows.Forms.TextBox InjuredDaysInput;
+        private System.Windows.Forms.GroupBox HappyBox;
+        private System.Windows.Forms.CheckBox TollerTrainer;
+        private System.Windows.Forms.CheckBox TollerVertragDoppelt;
+        private System.Windows.Forms.CheckBox TollePraemien;
+        private System.Windows.Forms.CheckBox TolleStimmung;
+        private System.Windows.Forms.CheckBox TollerVertrag;
+        private System.Windows.Forms.GroupBox UnhappyBox;
+        private System.Windows.Forms.CheckBox ScheissNachwuchsrunde;
+        private System.Windows.Forms.CheckBox ScheissManager;
+        private System.Windows.Forms.CheckBox VerhandlungGeplatzt;
+        private System.Windows.Forms.CheckBox BloedeMitspieler;
+        private System.Windows.Forms.CheckBox ScheissTrainer;
+        private System.Windows.Forms.CheckBox BloedeFans;
+        private System.Windows.Forms.CheckBox UngerechteBehandlung;
+        private System.Windows.Forms.CheckBox VerletztUndNieBesucht;
+        private System.Windows.Forms.CheckBox SchlechteStimmung;
+        private System.Windows.Forms.CheckBox MieseMannschaft;
+        private System.Windows.Forms.CheckBox ScheissVertrag;
+        private System.Windows.Forms.CheckBox FalschePosition;
+        private System.Windows.Forms.CheckBox GehtNichtNachLeistung;
+        private System.Windows.Forms.CheckBox MiesePraemien;
+        private System.Windows.Forms.CheckBox WillMehrGeld;
+        private System.Windows.Forms.CheckBox WillEndlichSpielen;
         private System.Windows.Forms.TabPage ContractTab;
         private System.Windows.Forms.GroupBox ContractBox;
-        private System.Windows.Forms.Label GoalBonusLabel;
-        private System.Windows.Forms.TextBox GoalBonusInput;
-        private System.Windows.Forms.Label ShowupLabel;
-        private System.Windows.Forms.TextBox ShowUpBonusInput;
-        private System.Windows.Forms.Label SalaryLabel;
-        private System.Windows.Forms.TextBox SalaryInput;
-        private System.Windows.Forms.CheckBox UnknownContractCheckbox;
-        private System.Windows.Forms.CheckBox LeasedWithOption;
-        private System.Windows.Forms.CheckBox Leased;
-        private System.Windows.Forms.Label ContractYearsLabel;
-        private System.Windows.Forms.TextBox ContractDurationInput;
-        private System.Windows.Forms.Label FixedTransferFeeLabel;
-        private System.Windows.Forms.TextBox FixedTransferFeeInput;
+        private System.Windows.Forms.CheckBox Retires;
+        private System.Windows.Forms.CheckBox UnsetContractDetail;
         private System.Windows.Forms.Label YearsLabel1;
         private System.Windows.Forms.Label DMLabel4;
         private System.Windows.Forms.Label DMLabel3;
@@ -2988,10 +2938,43 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.CheckBox OptionClub;
         private System.Windows.Forms.CheckBox OptionPlayer;
         private System.Windows.Forms.CheckBox JoinedThisSeason;
-        private System.Windows.Forms.CheckBox UnsetContractDetail;
-        private System.Windows.Forms.CheckBox Retires;
+        private System.Windows.Forms.CheckBox UnknownContractCheckbox;
+        private System.Windows.Forms.CheckBox LeasedWithOption;
+        private System.Windows.Forms.CheckBox Leased;
+        private System.Windows.Forms.Label ContractYearsLabel;
+        private System.Windows.Forms.TextBox ContractDurationInput;
+        private System.Windows.Forms.Label FixedTransferFeeLabel;
+        private System.Windows.Forms.TextBox FixedTransferFeeInput;
+        private System.Windows.Forms.Label GoalBonusLabel;
+        private System.Windows.Forms.TextBox GoalBonusInput;
+        private System.Windows.Forms.Label ShowupLabel;
+        private System.Windows.Forms.TextBox ShowUpBonusInput;
+        private System.Windows.Forms.Label SalaryLabel;
+        private System.Windows.Forms.TextBox SalaryInput;
+        private System.Windows.Forms.TabPage OtherTab;
+        private System.Windows.Forms.GroupBox AboutBox;
+        private System.Windows.Forms.LinkLabel GithubLinkLabel;
+        private System.Windows.Forms.Label AlexanderLabel;
+        private System.Windows.Forms.LinkLabel StrajkLinkLabel;
+        private System.Windows.Forms.LinkLabel AnstossJuengerLinkLabel;
+        private System.Windows.Forms.Label VersionLabel;
+        private System.Windows.Forms.Label AboutTitleLabel;
+        private System.Windows.Forms.GroupBox TeamBus;
         private System.Windows.Forms.Label TeamContractDurationLabel;
         private System.Windows.Forms.TextBox TeamContractDurationInput;
+        private System.Windows.Forms.Label TeamAgeLabel;
+        private System.Windows.Forms.TextBox TeamAgeInput;
+        private System.Windows.Forms.Label TeamFormLabel;
+        private System.Windows.Forms.TextBox TeamFormInput;
+        private System.Windows.Forms.Label TeamFreshnessLabel;
+        private System.Windows.Forms.TextBox TeamFreshnessInput;
+        private System.Windows.Forms.Label TeamConditionLabel;
+        private System.Windows.Forms.TextBox TeamConditionInput;
+        private System.Windows.Forms.Label TeamLevelLabel;
+        private System.Windows.Forms.TextBox TeamLevelInput;
+        private System.Windows.Forms.Label TeamDescription;
+        private System.Windows.Forms.ListView PlayerListView;
+        private System.Windows.Forms.Button ReloadBtn;
+        private System.Windows.Forms.Button SaveBtn;
     }
 }
-

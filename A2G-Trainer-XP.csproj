@@ -74,13 +74,14 @@
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
+    <Compile Include="Model\ClubEnums.cs" />
     <Compile Include="Model\PlayerEnums.cs" />
     <Compile Include="Model\Settings.cs" />
-    <Compile Include="Main Form.cs">
+    <Compile Include="Trainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main Form.Designer.cs">
-      <DependentUpon>Main Form.cs</DependentUpon>
+    <Compile Include="Trainer.Designer.cs">
+      <DependentUpon>Trainer.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Entity.cs" />
     <Compile Include="Model\Game.cs" />
@@ -89,13 +90,34 @@
     <Compile Include="Controller\Tools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Main Form.resx">
-      <DependentUpon>Main Form.cs</DependentUpon>
+    <Compile Include="View\ClubView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ClubView.Designer.cs">
+      <DependentUpon>ClubView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\EntityView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\PlayerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\PlayerView.Designer.cs">
+      <DependentUpon>PlayerView.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Trainer.resx">
+      <DependentUpon>Trainer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\ClubView.resx">
+      <DependentUpon>ClubView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\PlayerView.resx">
+      <DependentUpon>PlayerView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -118,8 +140,6 @@
     <Content Include="Resources\TabControl.jpg" />
     <Content Include="Trainer-Logo.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="View\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
