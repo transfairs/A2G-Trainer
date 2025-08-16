@@ -60,11 +60,13 @@ namespace A2G_Trainer_XP
         private void SpielerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.playerView);
+            this.PlayerView.RefreshPlayerListView();
         }
 
         private void VereinToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.clubView);
+            this.ClubView.RefreshValues();
         }
     }
 }
