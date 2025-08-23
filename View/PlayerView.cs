@@ -33,6 +33,9 @@ namespace A2G_Trainer_XP.View
         #region InitMainTabControl
         internal void InitMainTabControl()
         {
+            this.ClubSelect.DataSource = this.clubController.EntityList;
+            this.ClubSelect.DisplayMember = "ClubName";
+
             this.NationalityCombo.DataSource = Enum.GetValues(typeof(PlayerEnums.Country)).Cast<PlayerEnums.Country>().Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
             this.NationalityCombo.DisplayMember = "Text";
             this.NationalityCombo.ValueMember = "Value";
@@ -43,6 +46,14 @@ namespace A2G_Trainer_XP.View
                 {
                     DataSource = this.PlayerListView.Items[0].Tag
                 };
+                /*
+                BindingSource clubBindingSource = new BindingSource
+                {
+                    DataSource = this.clubController.Club
+                };
+
+                this.ClubSelect.DataBindings.Add("SelectedValue", clubBindingSource, "ClubName");
+                */
 
                 this.LevelInput.KeyPress += this.NumericOnly_KeyPress;
                 this.AgeInput.KeyPress += this.NumericOnly_KeyPress;

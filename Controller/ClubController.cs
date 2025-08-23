@@ -1,6 +1,9 @@
 ﻿using A2G_Trainer_XP.Model;
 using Memory;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace A2G_Trainer_XP.Controller
@@ -13,72 +16,106 @@ namespace A2G_Trainer_XP.Controller
         public ClubController(Mem memory, bool isGog) : base(memory)
         {
             this.baseAddress = isGog ? Settings.ClubAddressGog : Settings.ClubAddress;
-            this.GetEntity();
+            this.Club = this.GetEntity();
+            this.EntityList = this.GetEntityList();
+        }
+
+        public BindingList<Club> GetEntityList()
+        {
+            // Console.WriteLine($"{club.PlayerCount} Players found.");
+
+            int end = 294;
+
+            BindingList<Club> output = new BindingList<Club>();
+
+            for (int i = 0; i <= end; i++)
+            {
+                string offset = "64FA8";
+                if (i > 0)
+                {
+                    offset = Tools.SumHex(new string[] { output.Last().Offset, Settings.ClubOffset.ToString() });
+                }
+                output.Add(this.GetEntity(offset));
+            }
+
+            List<Club> sorted = output.OrderBy(c => c.ClubName).ToList();
+
+            output.RaiseListChangedEvents = false;
+            output.Clear();
+            foreach (Club c in sorted)
+                output.Add(c);
+            output.RaiseListChangedEvents = true;
+            output.ResetBindings();
+
+            return output;
         }
 
         internal override Club GetEntity(string offset = "")
         {
-            this.Club = new Club();
+            Club club = new Club()
+            {
+                Offset = offset
+            };
             if (this.memory.mProc.MainModule != null)
             {
-                this.Club.Initilisation = true;
-                this.Club.PlayerCount = (ushort) this.memory.ReadByte($"{this.memory.mProc.MainModule.ModuleName}+{this.baseAddress},{Tools.SumHex(new string[] { "E6", offset })}");
-
-                this.Club.ClubName = this.memory.ReadString(GetAddress(this.memory, this.Club, "0"), length: 19, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-
-                this.Club.EarningsLeagueGames = BitConverter.ToInt32(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "290"), 4), 0);
-                this.Club.EarningsFriendlyGames = BitConverter.ToInt32(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "2B8"), 4), 0);
-                this.Club.EarningsAds = BitConverter.ToInt32(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "470"), 4), 0);
-
-                this.Club.StadiumName = this.memory.ReadString(GetAddress(this.memory, this.Club, "81C"), length: 28, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-
-                this.Club.Roof = (ClubEnums.Roof)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "890"), 2), 0);
-                this.Club.DisplayUnit = (ClubEnums.DisplayUnit)(this.memory.ReadByte(GetAddress(this.memory, this.Club, "896")));
-                this.Club.HasFloodLight = this.memory.ReadByte(GetAddress(this.memory, this.Club, "897")) > 0;
-                this.Club.HasGrassHeating = this.memory.ReadByte(GetAddress(this.memory, this.Club, "898")) > 0;
-                this.Club.FieldCondition = ClubEnums.MapToCondition((byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "89B")));
-
-                this.Club.BlockAWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "884"));
-                this.Club.BlockBWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "885"));
-                this.Club.BlockCWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "886"));
-                this.Club.BlockDWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "887"));
-                this.Club.BlockEWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "888"));
-                this.Club.BlockFWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "889"));
-                this.Club.BlockGWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "88A"));
-                this.Club.BlockHWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "88B"));
-                this.Club.BlockIWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "88C"));
-                this.Club.BlockJWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "88D"));
-                this.Club.BlockKWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "88E"));
-                this.Club.BlockLWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, this.Club, "88F"));
-
-                this.Club.BlockAStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "854"), 2), 0);
-                this.Club.BlockBStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "856"), 2), 0);
-                this.Club.BlockCStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "858"), 2), 0);
-                this.Club.BlockDStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "85A"), 2), 0);
-                this.Club.BlockEStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "85C"), 2), 0);
-                this.Club.BlockFStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "85E"), 2), 0);
-                this.Club.BlockGStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "860"), 2), 0);
-                this.Club.BlockHStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "862"), 2), 0);
-                this.Club.BlockIStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "864"), 2), 0);
-                this.Club.BlockJStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "866"), 2), 0);
-                this.Club.BlockKStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "868"), 2), 0);
-                this.Club.BlockLStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "86A"), 2), 0);
-                this.Club.BlockASeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "86C"), 2), 0); // -72FF4
-                this.Club.BlockBSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "86E"), 2), 0);
-                this.Club.BlockCSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "870"), 2), 0);
-                this.Club.BlockDSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "872"), 2), 0);
-                this.Club.BlockESeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "874"), 2), 0);
-                this.Club.BlockFSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "876"), 2), 0);
-                this.Club.BlockGSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "878"), 2), 0);
-                this.Club.BlockHSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "87A"), 2), 0);
-                this.Club.BlockISeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "87C"), 2), 0);
-                this.Club.BlockJSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "87E"), 2), 0);
-                this.Club.BlockKSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "880"), 2), 0);
-                this.Club.BlockLSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, this.Club, "882"), 2), 0);
+                club.Initilisation = true;
+                club.PlayerCount = (ushort) this.memory.ReadByte($"{this.memory.mProc.MainModule.ModuleName}+{this.baseAddress},{Tools.SumHex(new string[] { "E6", offset })}");
+                
+                club.ClubName = this.memory.ReadString(GetAddress(this.memory, club, "0"), length: 19, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+                
+                club.EarningsLeagueGames = BitConverter.ToInt32(this.memory.ReadBytes(GetAddress(this.memory, club, "290"), 4), 0);
+                club.EarningsFriendlyGames = BitConverter.ToInt32(this.memory.ReadBytes(GetAddress(this.memory, club, "2B8"), 4), 0);
+                club.EarningsAds = BitConverter.ToInt32(this.memory.ReadBytes(GetAddress(this.memory, club, "470"), 4), 0);
+                
+                club.StadiumName = this.memory.ReadString(GetAddress(this.memory, club, "81C"), length: 28, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+                
+                club.Roof = (ClubEnums.Roof)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "890"), 2), 0);
+                club.DisplayUnit = (ClubEnums.DisplayUnit)(this.memory.ReadByte(GetAddress(this.memory, club, "896")));
+                club.HasFloodLight = this.memory.ReadByte(GetAddress(this.memory, club, "897")) > 0;
+                club.HasGrassHeating = this.memory.ReadByte(GetAddress(this.memory, club, "898")) > 0;
+                club.FieldCondition = ClubEnums.MapToCondition((byte)this.memory.ReadByte(GetAddress(this.memory, club, "89B")));
+                
+                club.BlockAWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "884"));
+                club.BlockBWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "885"));
+                club.BlockCWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "886"));
+                club.BlockDWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "887"));
+                club.BlockEWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "888"));
+                club.BlockFWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "889"));
+                club.BlockGWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "88A"));
+                club.BlockHWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "88B"));
+                club.BlockIWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "88C"));
+                club.BlockJWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "88D"));
+                club.BlockKWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "88E"));
+                club.BlockLWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, "88F"));
+                
+                club.BlockAStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "854"), 2), 0);
+                club.BlockBStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "856"), 2), 0);
+                club.BlockCStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "858"), 2), 0);
+                club.BlockDStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "85A"), 2), 0);
+                club.BlockEStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "85C"), 2), 0);
+                club.BlockFStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "85E"), 2), 0);
+                club.BlockGStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "860"), 2), 0);
+                club.BlockHStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "862"), 2), 0);
+                club.BlockIStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "864"), 2), 0);
+                club.BlockJStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "866"), 2), 0);
+                club.BlockKStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "868"), 2), 0);
+                club.BlockLStandings = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "86A"), 2), 0);
+                club.BlockASeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "86C"), 2), 0); // -72FF4
+                club.BlockBSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "86E"), 2), 0);
+                club.BlockCSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "870"), 2), 0);
+                club.BlockDSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "872"), 2), 0);
+                club.BlockESeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "874"), 2), 0);
+                club.BlockFSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "876"), 2), 0);
+                club.BlockGSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "878"), 2), 0);
+                club.BlockHSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "87A"), 2), 0);
+                club.BlockISeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "87C"), 2), 0);
+                club.BlockJSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "87E"), 2), 0);
+                club.BlockKSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "880"), 2), 0);
+                club.BlockLSeats = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, club, "882"), 2), 0);
             }
-            this.Club.Initilisation = false;
+            club.Initilisation = false;
 
-            return this.Club;
+            return club;
         }
         public void Save()
         {

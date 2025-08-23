@@ -245,6 +245,7 @@ namespace A2G_Trainer_XP.View
             this.PlayerListView = new System.Windows.Forms.ListView();
             this.ReloadBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
+            this.ClubSelect = new System.Windows.Forms.ComboBox();
             this.MainTabControl.SuspendLayout();
             this.PersonalTab.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -2672,10 +2673,10 @@ namespace A2G_Trainer_XP.View
             // 
             this.PlayerListView.FullRowSelect = true;
             this.PlayerListView.HideSelection = false;
-            this.PlayerListView.Location = new System.Drawing.Point(15, 13);
+            this.PlayerListView.Location = new System.Drawing.Point(15, 40);
             this.PlayerListView.MultiSelect = false;
             this.PlayerListView.Name = "PlayerListView";
-            this.PlayerListView.Size = new System.Drawing.Size(200, 400);
+            this.PlayerListView.Size = new System.Drawing.Size(200, 373);
             this.PlayerListView.TabIndex = 42;
             this.PlayerListView.UseCompatibleStateImageBehavior = false;
             this.PlayerListView.View = System.Windows.Forms.View.Details;
@@ -2700,9 +2701,19 @@ namespace A2G_Trainer_XP.View
             this.SaveBtn.UseVisualStyleBackColor = true;
             this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
             // 
+            // ClubSelect
+            // 
+            this.ClubSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClubSelect.FormattingEnabled = true;
+            this.ClubSelect.Location = new System.Drawing.Point(15, 13);
+            this.ClubSelect.Name = "ClubSelect";
+            this.ClubSelect.Size = new System.Drawing.Size(200, 21);
+            this.ClubSelect.TabIndex = 45;
+            // 
             // PlayerView
             // 
             this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
+            this.Controls.Add(this.ClubSelect);
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.MainTabControl);
@@ -2976,5 +2987,6 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.ListView PlayerListView;
         private System.Windows.Forms.Button ReloadBtn;
         private System.Windows.Forms.Button SaveBtn;
+        private System.Windows.Forms.ComboBox ClubSelect;
     }
 }
