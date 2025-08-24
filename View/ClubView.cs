@@ -10,6 +10,7 @@ namespace A2G_Trainer_XP.View
 {
     public partial class ClubView : EntityView
     {
+        private Club club;
         public ClubView(Mem memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();
@@ -24,6 +25,9 @@ namespace A2G_Trainer_XP.View
 
         internal void InitClubTabControl()
         {
+            this.ClubSelect.DataSource = this.clubController.EntityList;
+            this.ClubSelect.DisplayMember = "ClubName";
+
             this.DisplayUnit.DataSource = Enum.GetValues(typeof(ClubEnums.DisplayUnit)).Cast<ClubEnums.DisplayUnit>().Select(c => new { Value = c, Text = ClubEnums.GetDescription(c) }).ToList();
             this.DisplayUnit.DisplayMember = "Text";
             this.DisplayUnit.ValueMember = "Value";
@@ -33,9 +37,11 @@ namespace A2G_Trainer_XP.View
             this.FieldCondition.ValueMember = "Value";
 
 
+
+
             this.bindingSource = new BindingSource
             {
-                DataSource = this.clubController.Club
+                DataSource = this.club
             };
 
             this.ConstructionWeeksBlockA.KeyPress += this.NumericOnly_KeyPress;
@@ -186,16 +192,19 @@ namespace A2G_Trainer_XP.View
             this.BlockLSeatsInput.DataBindings.Add("Text", this.bindingSource, "BlockLSeats");
         }
 
-        internal void RefreshValues()
+        internal void RefreshValues(Club club = null)
         {
             if (this.IsGameRunning())
             {
                 this.ClearAllFields(this);
 
+
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog);
+                this.club = club ?? this.clubController.Club;
+                Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
                 if (this.bindingSource != null)
                 {
-                    this.bindingSource.DataSource = this.clubController.Club;
+                    this.bindingSource.DataSource = this.club;
                     this.bindingSource.ResetBindings(false);
                 }
             }
@@ -210,7 +219,16 @@ namespace A2G_Trainer_XP.View
             if (this.IsGameRunning())
             {
                 this.clubController.Save();
-                this.RefreshValues();
+                this.RefreshValues(this.club);
+            }
+        }
+
+        private void ClubSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.IsGameRunning())
+            {
+                Club club = this.ClubSelect.SelectedItem as Club;
+                this.RefreshValues(club);
             }
         }
     }

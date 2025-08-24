@@ -158,6 +158,9 @@ namespace A2G_Trainer_XP.Model
         private ushort playerCount = 0;
         #endregion
 
+        public String SquadAddress { get => this.squadAddress; set { this.squadAddress = value; this.OnPropertyChanged(nameof(this.SquadAddress)); } }
+        private String squadAddress;
+
         #region Setter
         private void Setter(ClubEnums.DisplayUnit displayUnit, bool enabled = true, string helper = null)
         {

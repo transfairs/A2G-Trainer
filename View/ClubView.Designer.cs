@@ -149,6 +149,7 @@ namespace A2G_Trainer_XP.View
             this.BlockCStandingsInput = new System.Windows.Forms.TextBox();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.ReloadBtn = new System.Windows.Forms.Button();
+            this.ClubSelect = new System.Windows.Forms.ComboBox();
             this.ClubTabControl.SuspendLayout();
             this.GeneralTab.SuspendLayout();
             this.FinanceBox.SuspendLayout();
@@ -1339,9 +1340,20 @@ namespace A2G_Trainer_XP.View
             this.ReloadBtn.UseVisualStyleBackColor = true;
             this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
             // 
+            // ClubSelect
+            // 
+            this.ClubSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClubSelect.FormattingEnabled = true;
+            this.ClubSelect.Location = new System.Drawing.Point(140, 393);
+            this.ClubSelect.Name = "ClubSelect";
+            this.ClubSelect.Size = new System.Drawing.Size(354, 21);
+            this.ClubSelect.TabIndex = 46;
+            this.ClubSelect.SelectedIndexChanged += new System.EventHandler(this.ClubSelect_SelectedIndexChanged);
+            // 
             // ClubView
             // 
             this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
+            this.Controls.Add(this.ClubSelect);
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.ClubTabControl);
@@ -1482,5 +1494,6 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox ConstructionWeeksBlockB;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox ClubSelect;
     }
 }
