@@ -36,6 +36,13 @@ namespace A2G_Trainer_XP.View
             this.ClubSelect.DataSource = this.clubController.EntityList;
             this.ClubSelect.DisplayMember = "ClubName";
 
+            if (!this.ClubSelect.Visible)
+            {
+                int diff = this.PlayerListView.Location.Y - this.ClubSelect.Location.Y;
+                this.PlayerListView.Location = new System.Drawing.Point(this.PlayerListView.Location.X, this.ClubSelect.Location.Y);
+                this.PlayerListView.Size = new System.Drawing.Size(this.PlayerListView.Size.Width, this.PlayerListView.Size.Height + diff);
+            }
+
             this.NationalityCombo.DataSource = Enum.GetValues(typeof(PlayerEnums.Country)).Cast<PlayerEnums.Country>().Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
             this.NationalityCombo.DisplayMember = "Text";
             this.NationalityCombo.ValueMember = "Value";
@@ -279,13 +286,6 @@ namespace A2G_Trainer_XP.View
                 this.UnsetContractDetail.DataBindings.Add("Checked", this.bindingSource, "IsUnsetContractDetail");
                 this.YearsInClubInput.DataBindings.Add("Text", this.bindingSource, "YearsInClub");
                 this.Retires.DataBindings.Add("Checked", this.bindingSource, "IsRetires");
-
-                this.GithubLinkLabel.Links.Clear();
-                this.GithubLinkLabel.Links.Add(8, 41, "https://github.com/transfairs/a2g-trainer");
-                this.AnstossJuengerLinkLabel.Links.Clear();
-                this.AnstossJuengerLinkLabel.Links.Add(37, 18, "https://www.anstoss-juenger.de/index.php/topic,4619.0.html");
-                this.StrajkLinkLabel.Links.Clear();
-                this.StrajkLinkLabel.Links.Add(19, 7, "https://www.anstoss-juenger.de/index.php/topic,6260.0.html");
             }
         }
         #endregion

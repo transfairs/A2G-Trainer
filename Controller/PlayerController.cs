@@ -16,7 +16,7 @@ namespace A2G_Trainer_XP.Controller
             RefreshPlayerList(club);
         }
 
-        internal void RefreshPlayerList(Club club)
+        internal void RefreshPlayerList(Club club, PlayerEnums.PlayerAddressType playerType = PlayerEnums.PlayerAddressType.OWN)
         {
             this.EntityList = new BindingList<Player>();
 
@@ -29,7 +29,7 @@ namespace A2G_Trainer_XP.Controller
                 {
                     offset = Tools.SumHex(new string[] { this.EntityList.Last().Offset, Settings.PlayerOffset.ToString() });
                 }
-                this.EntityList.Add(this.GetEntity(offset));
+                this.EntityList.Add(this.GetEntity(offset, playerType));
             }
         }
 
@@ -41,66 +41,67 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
-        internal override Player GetEntity(string offset)
+        internal override Player GetEntity(string offset, Enum type = null)
         {
             Player player = new Player
             {
-                Offset = offset
+                Offset = offset,
+                Addresses = PlayerAddresses.From((PlayerEnums.PlayerAddressType) type)
             };
             #region Overview
-            player.Id          = (uint) this.memory.ReadByte(GetAddress(this.memory, player, ""));
-            player.Firstname   = this.memory.ReadString(GetAddress(this.memory, player, "2"), length: 9, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-            player.Lastname    = this.memory.ReadString(GetAddress(this.memory, player, "C"), length: 15, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-            player.SkinColor   = (PlayerEnums.SkinColor) this.memory.ReadByte(GetAddress(this.memory, player, "1C"));
-            player.HairColor   = (PlayerEnums.HairColor) this.memory.ReadByte(GetAddress(this.memory, player, "1D"));
-            player.Age         = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "1E"));
-            player.Level       = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "1F"));
-            player.Form        = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "25"));
-            player.Condition   = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "30"));
-            player.Freshness   = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "31"));
-            player.Nationality = (PlayerEnums.Country)this.memory.ReadByte(GetAddress(this.memory, player, "38"));
+            player.Id          = (uint) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]));
+            player.Firstname   = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+            player.Lastname    = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+            player.SkinColor   = (PlayerEnums.SkinColor) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]));
+            player.HairColor   = (PlayerEnums.HairColor) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAIR]));
+            player.Age         = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.AGE]));
+            player.Level       = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEVEL]));
+            player.Form        = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FORM]));
+            player.Condition   = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONDITION]));
+            player.Freshness   = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FRESHNESS]));
+            player.Nationality = (PlayerEnums.Country)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NATIONALITY]));
             #endregion
 
             #region Position
-            player.Position           = (PlayerEnums.Position)this.memory.ReadByte(GetAddress(this.memory, player, "20"));
+            player.Position           = (PlayerEnums.Position)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.POSITION]));
             player.SecondaryPositions = new List<PlayerEnums.Position>
             {
-                (PlayerEnums.Position)this.memory.ReadByte(GetAddress(this.memory, player, "21")),
-                (PlayerEnums.Position)this.memory.ReadByte(GetAddress(this.memory, player, "22"))
+                (PlayerEnums.Position)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SECONDARY_1])),
+                (PlayerEnums.Position)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SECONDARY_2]))
             };
             #endregion
 
             #region Skills
-            player.Skills         = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "28"), 2), 0);
-            player.NegativeSkills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "2A"), 2), 0);
+            player.Skills         = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), 2), 0);
+            player.NegativeSkills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), 2), 0);
             #endregion
 
             #region Character
-            player.Personality = (PlayerEnums.Personality)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "2C"), 2), 0);
-            player.Character   = (PlayerEnums.Character)this.memory.ReadByte(GetAddress(this.memory, player, "2E"));
-            player.Health      = (PlayerEnums.Health)this.memory.ReadByte(GetAddress(this.memory, player, "2F"));
+            player.Personality = (PlayerEnums.Personality)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.PERSONALITY]), 2), 0);
+            player.Character   = (PlayerEnums.Character)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CHARACTER]));
+            player.Health      = (PlayerEnums.Health)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HEALTH]));
             #endregion
 
             #region Constitution
-            player.Unhappy              = (PlayerEnums.Unhappy)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "34"), 2), 0);
-            player.Happy                = (PlayerEnums.Happy)this.memory.ReadByte(GetAddress(this.memory, player, "36"));
-            player.InjuredDays          = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "44"), 2), 0);
-            player.Injury               = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "46"));
-            player.Vulnerable           = this.memory.ReadByte(GetAddress(this.memory, player, "47")) != 0;
-            player.RedCardBannedMatches = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "48"));
-            player.Doped                = this.memory.ReadByte(GetAddress(this.memory, player, "49")) != 0;
-            player.YellowCardsSeason    = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "4A"));
+            player.Unhappy              = (PlayerEnums.Unhappy)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.UNHAPPY]), 2), 0);
+            player.Happy                = (PlayerEnums.Happy)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAPPY]));
+            player.InjuredDays          = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURED_DAYS]), 2), 0);
+            player.Injury               = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURY]));
+            player.Vulnerable           = this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE])) != 0;
+            player.RedCardBannedMatches = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES]));
+            player.Doped                = this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED])) != 0;
+            player.YellowCardsSeason    = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YELLOW_CARDS]));
             #endregion
 
             #region Contract
-            player.Salary           = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "B4"), 2), 0);
-            player.ShowUpBonus      = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "B6"), 2), 0);
-            player.GoalsBonus       = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "B8"), 2), 0);
-            player.TransferFee      = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "BA"), 2), 0);
-            player.ContractDuration = (byte)this.memory.ReadByte(GetAddress(this.memory, player, "C0"));
-            player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, "C1"));
-            player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, "C2"));
-            player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, "D7"));
+            player.Salary           = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SALARY]), 2), 0);
+            player.ShowUpBonus      = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SHOWUP]), 2), 0);
+            player.GoalsBonus       = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.GOALS_BONUS]), 2), 0);
+            player.TransferFee      = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.TRANSFER_FEE]), 2), 0);
+            player.ContractDuration = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DURATION]));
+            player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]));
+            player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]));
+            player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]));
             #endregion
 
             #region Other
@@ -141,65 +142,66 @@ namespace A2G_Trainer_XP.Controller
         {
             Console.WriteLine($"Save: {player}");
             #region Overview
-            this.memory.WriteMemory(GetAddress(this.memory, player, "2"), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-            this.memory.WriteMemory(GetAddress(this.memory, player, "C"), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+            this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+            this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
 
-            this.memory.WriteBytes(GetAddress(this.memory, player, "1C"), new byte[] { (byte) player.SkinColor });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "1D"), new byte[] { (byte) player.HairColor });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]), new byte[] { (byte) player.SkinColor });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAIR]), new byte[] { (byte) player.HairColor });
 
-            this.memory.WriteBytes(GetAddress(this.memory, player, "1E"), new byte[] { player.Age });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "1F"), new byte[] { player.Level });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "25"), new byte[] { player.Form });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "30"), new byte[] { player.Condition });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "31"), new byte[] { player.Freshness });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.AGE]), new byte[] { player.Age });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEVEL]), new byte[] { player.Level });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FORM]), new byte[] { player.Form });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONDITION]), new byte[] { player.Condition });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FRESHNESS]), new byte[] { player.Freshness });
 
-            this.memory.WriteBytes(GetAddress(this.memory, player, "38"), new byte[] { (byte)player.Nationality });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NATIONALITY]), new byte[] { (byte)player.Nationality });
             #endregion
 
             #region Positions
-            this.memory.WriteBytes(GetAddress(this.memory, player, "20"), new byte[] { (byte)player.Position });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.POSITION]), new byte[] { (byte)player.Position });
             if (player.SecondaryPositions.Count > 0)
             {
-                this.memory.WriteBytes(GetAddress(this.memory, player, "21"), new byte[] { (byte)player.SecondaryPositions[0] });
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SECONDARY_1]), new byte[] { (byte)player.SecondaryPositions[0] });
                 if (player.SecondaryPositions.Count > 1)
                 {
-                    this.memory.WriteBytes(GetAddress(this.memory, player, "22"), new byte[] { (byte)player.SecondaryPositions[1] });
+                    this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SECONDARY_2]), new byte[] { (byte)player.SecondaryPositions[1] });
                 }
             }
             #endregion
 
             #region Skills
-            this.memory.WriteBytes(GetAddress(this.memory, player, "28"), BitConverter.GetBytes((ushort)player.Skills));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "2A"), BitConverter.GetBytes((ushort)player.NegativeSkills));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), BitConverter.GetBytes((ushort)player.Skills));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), BitConverter.GetBytes((ushort)player.NegativeSkills));
             #endregion
 
             #region Character
-            this.memory.WriteBytes(GetAddress(this.memory, player, "2C"), BitConverter.GetBytes((ushort)player.Personality));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "2E"), new byte[] { (byte)player.Character });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "2F"), new byte[] { (byte)player.Health });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.PERSONALITY]), BitConverter.GetBytes((ushort)player.Personality));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CHARACTER]), new byte[] { (byte)player.Character });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HEALTH]), new byte[] { (byte)player.Health });
             #endregion
 
             #region Constitution
-            this.memory.WriteBytes(GetAddress(this.memory, player, "34"), BitConverter.GetBytes((ushort)player.Unhappy));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "36"), BitConverter.GetBytes((byte)player.Happy));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.UNHAPPY]), BitConverter.GetBytes((ushort)player.Unhappy));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAPPY]), BitConverter.GetBytes((byte)player.Happy));
 
-            this.memory.WriteBytes(GetAddress(this.memory, player, "44"), BitConverter.GetBytes(player.InjuredDays));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "47"), BitConverter.GetBytes(player.Vulnerable));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURED_DAYS]), BitConverter.GetBytes(player.InjuredDays));
+            // this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURY]), BitConverter.GetBytes(player.Injury));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE]), BitConverter.GetBytes(player.Vulnerable));
 
-            this.memory.WriteBytes(GetAddress(this.memory, player, "48"), new byte[] { (byte)player.RedCardBannedMatches });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "49"), BitConverter.GetBytes(player.Doped));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "4A"), new byte[] { (byte)player.YellowCardsSeason });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES]), new byte[] { (byte)player.RedCardBannedMatches });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED]), BitConverter.GetBytes(player.Doped));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YELLOW_CARDS]), new byte[] { (byte)player.YellowCardsSeason });
             #endregion
 
             #region Contract
-            this.memory.WriteBytes(GetAddress(this.memory, player, "B4"), BitConverter.GetBytes(player.Salary));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "B6"), BitConverter.GetBytes(player.ShowUpBonus));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "B8"), BitConverter.GetBytes(player.GoalsBonus));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "BA"), BitConverter.GetBytes(player.TransferFee));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "C0"), new byte[] { (byte)player.ContractDuration });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "C1"), BitConverter.GetBytes((byte)player.ContractDetails));
-            this.memory.WriteBytes(GetAddress(this.memory, player, "C2"), new byte[] { (byte)player.YearsInClub });
-            this.memory.WriteBytes(GetAddress(this.memory, player, "D7"), BitConverter.GetBytes((byte)player.Career));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SALARY]), BitConverter.GetBytes(player.Salary));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SHOWUP]), BitConverter.GetBytes(player.ShowUpBonus));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.GOALS_BONUS]), BitConverter.GetBytes(player.GoalsBonus));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.TRANSFER_FEE]), BitConverter.GetBytes(player.TransferFee));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DURATION]), new byte[] { (byte)player.ContractDuration });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]), BitConverter.GetBytes((byte)player.ContractDetails));
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]), new byte[] { (byte)player.YearsInClub });
+            this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]), BitConverter.GetBytes((byte)player.Career));
             #endregion
 
             #region Other

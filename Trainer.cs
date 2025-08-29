@@ -18,12 +18,19 @@ namespace A2G_Trainer_XP
         internal Mem Memory { get => this.memory; private set => this.memory = value; }
         private Mem memory;
 
-        private EntityView current;
+        private UserControl current;
         internal ClubView ClubView { get => this.clubView; private set => this.clubView = value; }
         private ClubView clubView;
         internal PlayerView PlayerView { get => this.playerView; private set => this.playerView = value; }
         private PlayerView playerView;
+        internal AboutView AboutView { get => this.aboutView; private set => this.aboutView = value; }
+        private AboutView aboutView;
+        internal HelpView HelpView { get => this.helpView; private set => this.helpView = value; }
+        private HelpView helpView;
+
         protected readonly ProcessController processController;
+
+        private readonly string windowTitle;
 
 
         public Trainer()
@@ -37,36 +44,57 @@ namespace A2G_Trainer_XP
             this.FormClosing += (s, e) => this.ShutDown = true;
 
             this.processController = new ProcessController(this);
-            this.playerView = new PlayerView(this.memory, this.processController);
-            this.clubView = new ClubView(this.memory, this.processController);
+            this.PlayerView = new PlayerView(this.memory, this.processController);
+            this.ClubView = new ClubView(this.memory, this.processController);
+
+            this.AboutView = new AboutView();
+            this.HelpView = new HelpView();
 
             this.Load += (s, e) => { new Thread(this.processController.Observe).Start(); };
 
+            this.windowTitle = this.Text;
+
             this.ShowScreen(this.playerView);
         }
 
-        private void ShowScreen(EntityView entityView)
+        private void ShowScreen(UserControl userControl, String title = null)
         {
-            if (this.current != entityView)
+            if (this.current != userControl)
             {
                 this.ContentPanel.SuspendLayout();
                 this.ContentPanel.Controls.Clear();
-                this.ContentPanel.Controls.Add(entityView);
-                this.current = entityView;
+                this.ContentPanel.Controls.Add(userControl);
+                this.Text = this.windowTitle + (title != null ? " :: " + title : "");
+                this.current = userControl;
                 this.ContentPanel.ResumeLayout();
+
             }
         }
 
-        private void SpielerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AllClubsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ShowScreen(this.playerView);
+        }
+
+        private void OwnClubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.ClubView, "Eigener Verein");
+            this.ClubView.RefreshValues();
+        }
+
+        private void OwnPlayersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.PlayerView, "Einge Mannschaft");
             this.PlayerView.RefreshPlayerListView();
         }
 
-        private void VereinToolStripMenuItem_Click(object sender, EventArgs e)
+        private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ShowScreen(this.clubView);
-            this.ClubView.RefreshValues();
+            this.ShowScreen(this.HelpView, "Hilfe");
+        }
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.AboutView, "Über");
         }
     }
 }

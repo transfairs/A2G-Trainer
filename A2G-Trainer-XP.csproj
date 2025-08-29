@@ -75,6 +75,7 @@
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
     <Compile Include="Model\ClubEnums.cs" />
+    <Compile Include="Model\PlayerAddresses.cs" />
     <Compile Include="Model\PlayerEnums.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Trainer.cs">
@@ -99,6 +100,18 @@
     <Compile Include="View\EntityView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\AboutView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\AboutView.Designer.cs">
+      <DependentUpon>AboutView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\HelpView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\HelpView.Designer.cs">
+      <DependentUpon>HelpView.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\PlayerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -115,6 +128,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\ClubView.resx">
       <DependentUpon>ClubView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\AboutView.resx">
+      <DependentUpon>AboutView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\HelpView.resx">
+      <DependentUpon>HelpView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\PlayerView.resx">
       <DependentUpon>PlayerView.cs</DependentUpon>

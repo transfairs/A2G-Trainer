@@ -1,5 +1,6 @@
 ﻿using A2G_Trainer_XP.Model;
 using Memory;
+using System;
 using System.ComponentModel;
 
 namespace A2G_Trainer_XP.Controller
@@ -29,6 +30,6 @@ namespace A2G_Trainer_XP.Controller
             return $"{memory.mProc.MainModule.ModuleName}+{this.baseAddress},{Tools.SumHex(new string[] { baseOffset, entity.Offset })}";
         }
 
-        internal abstract E GetEntity(string offset);
+        internal abstract E GetEntity(string offset, Enum type);
     }
 }

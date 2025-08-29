@@ -35,8 +35,16 @@ namespace A2G_Trainer_XP
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.ansichtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.spielerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vereinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.spielerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alleVereineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eigeneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.ausAnderemVereinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ansichtToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.überToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ContentPanel = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +57,9 @@ namespace A2G_Trainer_XP
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ansichtToolStripMenuItem});
+            this.ansichtToolStripMenuItem,
+            this.alleVereineToolStripMenuItem,
+            this.ansichtToolStripMenuItem1});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(630, 24);
@@ -59,25 +69,82 @@ namespace A2G_Trainer_XP
             // ansichtToolStripMenuItem
             // 
             this.ansichtToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.spielerToolStripMenuItem,
-            this.vereinToolStripMenuItem});
+            this.vereinToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.spielerToolStripMenuItem});
             this.ansichtToolStripMenuItem.Name = "ansichtToolStripMenuItem";
-            this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-            this.ansichtToolStripMenuItem.Text = "Ansicht";
-            // 
-            // spielerToolStripMenuItem
-            // 
-            this.spielerToolStripMenuItem.Name = "spielerToolStripMenuItem";
-            this.spielerToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-            this.spielerToolStripMenuItem.Text = "Spieler";
-            this.spielerToolStripMenuItem.Click += new System.EventHandler(this.SpielerToolStripMenuItem_Click);
+            this.ansichtToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.ansichtToolStripMenuItem.Text = "Verein";
             // 
             // vereinToolStripMenuItem
             // 
             this.vereinToolStripMenuItem.Name = "vereinToolStripMenuItem";
-            this.vereinToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-            this.vereinToolStripMenuItem.Text = "Verein";
-            this.vereinToolStripMenuItem.Click += new System.EventHandler(this.VereinToolStripMenuItem_Click);
+            this.vereinToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.vereinToolStripMenuItem.Text = "Eigener";
+            this.vereinToolStripMenuItem.Click += new System.EventHandler(this.OwnClubToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(110, 6);
+            // 
+            // spielerToolStripMenuItem
+            // 
+            this.spielerToolStripMenuItem.Name = "spielerToolStripMenuItem";
+            this.spielerToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.spielerToolStripMenuItem.Text = "Alle";
+            this.spielerToolStripMenuItem.Click += new System.EventHandler(this.AllClubsToolStripMenuItem_Click);
+            // 
+            // alleVereineToolStripMenuItem
+            // 
+            this.alleVereineToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.eigeneToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.ausAnderemVereinToolStripMenuItem});
+            this.alleVereineToolStripMenuItem.Name = "alleVereineToolStripMenuItem";
+            this.alleVereineToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.alleVereineToolStripMenuItem.Text = "Spieler";
+            // 
+            // eigeneToolStripMenuItem
+            // 
+            this.eigeneToolStripMenuItem.Name = "eigeneToolStripMenuItem";
+            this.eigeneToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.eigeneToolStripMenuItem.Text = "Eigene";
+            this.eigeneToolStripMenuItem.Click += new System.EventHandler(this.OwnPlayersToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(130, 6);
+            // 
+            // ausAnderemVereinToolStripMenuItem
+            // 
+            this.ausAnderemVereinToolStripMenuItem.Name = "ausAnderemVereinToolStripMenuItem";
+            this.ausAnderemVereinToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.ausAnderemVereinToolStripMenuItem.Text = "Dynamisch";
+            // 
+            // ansichtToolStripMenuItem1
+            // 
+            this.ansichtToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hilfeToolStripMenuItem,
+            this.überToolStripMenuItem});
+            this.ansichtToolStripMenuItem1.Name = "ansichtToolStripMenuItem1";
+            this.ansichtToolStripMenuItem1.Size = new System.Drawing.Size(24, 20);
+            this.ansichtToolStripMenuItem1.Text = "?";
+            // 
+            // hilfeToolStripMenuItem
+            // 
+            this.hilfeToolStripMenuItem.Name = "hilfeToolStripMenuItem";
+            this.hilfeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hilfeToolStripMenuItem.Text = "Hilfe";
+            this.hilfeToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
+            // 
+            // überToolStripMenuItem
+            // 
+            this.überToolStripMenuItem.Name = "überToolStripMenuItem";
+            this.überToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.überToolStripMenuItem.Text = "Über";
+            this.überToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // ContentPanel
             // 
@@ -115,6 +182,14 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.ToolStripMenuItem vereinToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.Panel ContentPanel;
+        private System.Windows.Forms.ToolStripMenuItem alleVereineToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem eigeneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ausAnderemVereinToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem ansichtToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem hilfeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem überToolStripMenuItem;
     }
 }
 

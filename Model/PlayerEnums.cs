@@ -12,6 +12,47 @@ namespace A2G_Trainer_XP.Model
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
 
+        public enum PlayerAddressType { OWN, OTHER }
+
+        public enum AddressKey
+        {
+            ID,
+            AGE,
+            FIRSTNAME,
+            LASTNAME,
+            LEVEL,
+            FORM,
+            SKIN,
+            HAIR,
+            CONDITION,
+            FRESHNESS,
+            NATIONALITY,
+            POSITION,
+            SECONDARY_1,
+            SECONDARY_2,
+            SKILLS,
+            NEG_SKILLS,
+            PERSONALITY,
+            CHARACTER,
+            HEALTH,
+            UNHAPPY,
+            HAPPY,
+            INJURED_DAYS,
+            INJURY,
+            VULNERABLE,
+            BANNED_MATCHES,
+            DOPED,
+            YELLOW_CARDS,
+            SALARY,
+            SHOWUP,
+            GOALS_BONUS,
+            TRANSFER_FEE,
+            CONTRACT_DURATION,
+            CONTRACT_DETAILS,
+            YEARS_IN_CLUB,
+            CAREER
+        }
+
         public enum Character : byte
         {
             Normal         = 0,

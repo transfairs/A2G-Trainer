@@ -10,6 +10,9 @@ namespace A2G_Trainer_XP.Model
         public uint Id { get => this.id; set { this.id = value; this.OnPropertyChanged(nameof(this.Id)); } }
         private uint id = 0;
 
+        public PlayerAddresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
+        private PlayerAddresses addresses;
+
         #region Helpers
         private readonly List<string> positionHelpers = new List<string>() { nameof(IsTO), nameof(IsL), nameof(IsMD), nameof(IsLV), nameof(IsRV), nameof(IsRM), nameof(IsLM), nameof(IsDM), nameof(IsOM), nameof(IsS) };
         private readonly List<string> secondaryPositionHelpers = new List<string>() { nameof(IsSecondaryTO), nameof(IsSecondaryL), nameof(IsSecondaryMD), nameof(IsSecondaryLV), nameof(IsSecondaryRV), nameof(IsSecondaryRM), nameof(IsSecondaryLM), nameof(IsSecondaryDM), nameof(IsSecondaryOM), nameof(IsSecondaryS) };
@@ -278,6 +281,7 @@ namespace A2G_Trainer_XP.Model
         {
             helper.ForEach(this.OnPropertyChanged);
         }
+
         #region Setter
         protected void Setter(PlayerEnums.SkinColor value, bool enabled = true, string helper = null)
         {
@@ -482,7 +486,6 @@ namespace A2G_Trainer_XP.Model
             this.NotifyHelpers(this.secondaryPositionHelpers);
         }
         #endregion
-
 
         public override string ToString()
         {

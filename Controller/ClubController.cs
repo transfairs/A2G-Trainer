@@ -50,7 +50,7 @@ namespace A2G_Trainer_XP.Controller
             return output;
         }
 
-        internal override Club GetEntity(string offset = "")
+        internal override Club GetEntity(string offset = "", Enum type = null)
         {
             Club club = new Club()
             {

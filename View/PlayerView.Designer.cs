@@ -221,13 +221,6 @@ namespace A2G_Trainer_XP.View
             this.SalaryLabel = new System.Windows.Forms.Label();
             this.SalaryInput = new System.Windows.Forms.TextBox();
             this.OtherTab = new System.Windows.Forms.TabPage();
-            this.AboutBox = new System.Windows.Forms.GroupBox();
-            this.GithubLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.AlexanderLabel = new System.Windows.Forms.Label();
-            this.StrajkLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.AnstossJuengerLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.VersionLabel = new System.Windows.Forms.Label();
-            this.AboutTitleLabel = new System.Windows.Forms.Label();
             this.TeamBus = new System.Windows.Forms.GroupBox();
             this.TeamContractDurationLabel = new System.Windows.Forms.Label();
             this.TeamContractDurationInput = new System.Windows.Forms.TextBox();
@@ -271,7 +264,6 @@ namespace A2G_Trainer_XP.View
             this.ContractTab.SuspendLayout();
             this.ContractBox.SuspendLayout();
             this.OtherTab.SuspendLayout();
-            this.AboutBox.SuspendLayout();
             this.TeamBus.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -2441,7 +2433,6 @@ namespace A2G_Trainer_XP.View
             // 
             // OtherTab
             // 
-            this.OtherTab.Controls.Add(this.AboutBox);
             this.OtherTab.Controls.Add(this.TeamBus);
             this.OtherTab.Location = new System.Drawing.Point(4, 22);
             this.OtherTab.Name = "OtherTab";
@@ -2449,92 +2440,6 @@ namespace A2G_Trainer_XP.View
             this.OtherTab.TabIndex = 5;
             this.OtherTab.Text = "Team";
             this.OtherTab.UseVisualStyleBackColor = true;
-            // 
-            // AboutBox
-            // 
-            this.AboutBox.Controls.Add(this.GithubLinkLabel);
-            this.AboutBox.Controls.Add(this.AlexanderLabel);
-            this.AboutBox.Controls.Add(this.StrajkLinkLabel);
-            this.AboutBox.Controls.Add(this.AnstossJuengerLinkLabel);
-            this.AboutBox.Controls.Add(this.VersionLabel);
-            this.AboutBox.Controls.Add(this.AboutTitleLabel);
-            this.AboutBox.Location = new System.Drawing.Point(3, 115);
-            this.AboutBox.Name = "AboutBox";
-            this.AboutBox.Size = new System.Drawing.Size(370, 137);
-            this.AboutBox.TabIndex = 1;
-            this.AboutBox.TabStop = false;
-            this.AboutBox.Text = "Über";
-            // 
-            // GithubLinkLabel
-            // 
-            this.GithubLinkLabel.AutoSize = true;
-            this.GithubLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(8, 41);
-            this.GithubLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.GithubLinkLabel.Location = new System.Drawing.Point(6, 38);
-            this.GithubLinkLabel.Name = "GithubLinkLabel";
-            this.GithubLinkLabel.Size = new System.Drawing.Size(241, 17);
-            this.GithubLinkLabel.TabIndex = 6;
-            this.GithubLinkLabel.TabStop = true;
-            this.GithubLinkLabel.Text = "Github: https://github.com/transfairs/a2g-trainer";
-            this.GithubLinkLabel.UseCompatibleTextRendering = true;
-            this.GithubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.GithubLinkLabel_LinkClicked);
-            // 
-            // AlexanderLabel
-            // 
-            this.AlexanderLabel.AutoSize = true;
-            this.AlexanderLabel.Location = new System.Drawing.Point(6, 65);
-            this.AlexanderLabel.Name = "AlexanderLabel";
-            this.AlexanderLabel.Size = new System.Drawing.Size(197, 13);
-            this.AlexanderLabel.TabIndex = 4;
-            this.AlexanderLabel.Text = "Nach einer Idee von Alexander Neufeld.";
-            // 
-            // StrajkLinkLabel
-            // 
-            this.StrajkLinkLabel.AutoSize = true;
-            this.StrajkLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(19, 7);
-            this.StrajkLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.StrajkLinkLabel.Location = new System.Drawing.Point(6, 110);
-            this.StrajkLinkLabel.Name = "StrajkLinkLabel";
-            this.StrajkLinkLabel.Size = new System.Drawing.Size(231, 17);
-            this.StrajkLinkLabel.TabIndex = 8;
-            this.StrajkLinkLabel.TabStop = true;
-            this.StrajkLinkLabel.Text = "Besonderen Dank an strajk- für die Vorarbeit!";
-            this.StrajkLinkLabel.UseCompatibleTextRendering = true;
-            this.StrajkLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.StrajkLinkLabel_LinkClicked);
-            // 
-            // AnstossJuengerLinkLabel
-            // 
-            this.AnstossJuengerLinkLabel.AutoSize = true;
-            this.AnstossJuengerLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(37, 18);
-            this.AnstossJuengerLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.AnstossJuengerLinkLabel.Location = new System.Drawing.Point(6, 87);
-            this.AnstossJuengerLinkLabel.Name = "AnstossJuengerLinkLabel";
-            this.AnstossJuengerLinkLabel.Size = new System.Drawing.Size(331, 17);
-            this.AnstossJuengerLinkLabel.TabIndex = 7;
-            this.AnstossJuengerLinkLabel.TabStop = true;
-            this.AnstossJuengerLinkLabel.Text = "Mit Unterstützung der Mitglieder des anstoss-juenger.de-Forums.";
-            this.AnstossJuengerLinkLabel.UseCompatibleTextRendering = true;
-            this.AnstossJuengerLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.AnstossJuengerLinkLabel_LinkClicked);
-            // 
-            // VersionLabel
-            // 
-            this.VersionLabel.AutoSize = true;
-            this.VersionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.VersionLabel.Location = new System.Drawing.Point(298, 20);
-            this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(66, 13);
-            this.VersionLabel.TabIndex = 1;
-            this.VersionLabel.Text = "v0.3.0 alpha";
-            // 
-            // AboutTitleLabel
-            // 
-            this.AboutTitleLabel.AutoSize = true;
-            this.AboutTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AboutTitleLabel.Location = new System.Drawing.Point(6, 16);
-            this.AboutTitleLabel.Name = "AboutTitleLabel";
-            this.AboutTitleLabel.Size = new System.Drawing.Size(95, 17);
-            this.AboutTitleLabel.TabIndex = 0;
-            this.AboutTitleLabel.Text = "A2G - Trainer";
             // 
             // TeamBus
             // 
@@ -2709,6 +2614,7 @@ namespace A2G_Trainer_XP.View
             this.ClubSelect.Name = "ClubSelect";
             this.ClubSelect.Size = new System.Drawing.Size(200, 21);
             this.ClubSelect.TabIndex = 45;
+            this.ClubSelect.Visible = false;
             // 
             // PlayerView
             // 
@@ -2761,8 +2667,6 @@ namespace A2G_Trainer_XP.View
             this.ContractBox.ResumeLayout(false);
             this.ContractBox.PerformLayout();
             this.OtherTab.ResumeLayout(false);
-            this.AboutBox.ResumeLayout(false);
-            this.AboutBox.PerformLayout();
             this.TeamBus.ResumeLayout(false);
             this.TeamBus.PerformLayout();
             this.ResumeLayout(false);
@@ -2963,13 +2867,6 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Label SalaryLabel;
         private System.Windows.Forms.TextBox SalaryInput;
         private System.Windows.Forms.TabPage OtherTab;
-        private System.Windows.Forms.GroupBox AboutBox;
-        private System.Windows.Forms.LinkLabel GithubLinkLabel;
-        private System.Windows.Forms.Label AlexanderLabel;
-        private System.Windows.Forms.LinkLabel StrajkLinkLabel;
-        private System.Windows.Forms.LinkLabel AnstossJuengerLinkLabel;
-        private System.Windows.Forms.Label VersionLabel;
-        private System.Windows.Forms.Label AboutTitleLabel;
         private System.Windows.Forms.GroupBox TeamBus;
         private System.Windows.Forms.Label TeamContractDurationLabel;
         private System.Windows.Forms.TextBox TeamContractDurationInput;
