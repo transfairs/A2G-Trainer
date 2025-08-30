@@ -79,20 +79,21 @@ namespace A2G_Trainer_XP
             // vereinToolStripMenuItem
             // 
             this.vereinToolStripMenuItem.Name = "vereinToolStripMenuItem";
-            this.vereinToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.vereinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.vereinToolStripMenuItem.Text = "Eigener";
             this.vereinToolStripMenuItem.Click += new System.EventHandler(this.OwnClubToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(110, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // spielerToolStripMenuItem
             // 
+            this.spielerToolStripMenuItem.Enabled = false;
             this.spielerToolStripMenuItem.Name = "spielerToolStripMenuItem";
-            this.spielerToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
-            this.spielerToolStripMenuItem.Text = "Alle";
+            this.spielerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spielerToolStripMenuItem.Text = "Alle (kommt später)";
             this.spielerToolStripMenuItem.Click += new System.EventHandler(this.AllClubsToolStripMenuItem_Click);
             // 
             // alleVereineToolStripMenuItem
@@ -108,20 +109,21 @@ namespace A2G_Trainer_XP
             // eigeneToolStripMenuItem
             // 
             this.eigeneToolStripMenuItem.Name = "eigeneToolStripMenuItem";
-            this.eigeneToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.eigeneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.eigeneToolStripMenuItem.Text = "Eigene";
             this.eigeneToolStripMenuItem.Click += new System.EventHandler(this.OwnPlayersToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(130, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // ausAnderemVereinToolStripMenuItem
             // 
             this.ausAnderemVereinToolStripMenuItem.Name = "ausAnderemVereinToolStripMenuItem";
-            this.ausAnderemVereinToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.ausAnderemVereinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ausAnderemVereinToolStripMenuItem.Text = "Dynamisch";
+            this.ausAnderemVereinToolStripMenuItem.Click += new System.EventHandler(this.AllPlayersToolStripMenuItem_Click);
             // 
             // ansichtToolStripMenuItem1
             // 
@@ -135,14 +137,14 @@ namespace A2G_Trainer_XP
             // hilfeToolStripMenuItem
             // 
             this.hilfeToolStripMenuItem.Name = "hilfeToolStripMenuItem";
-            this.hilfeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hilfeToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.hilfeToolStripMenuItem.Text = "Hilfe";
             this.hilfeToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
             // 
             // überToolStripMenuItem
             // 
             this.überToolStripMenuItem.Name = "überToolStripMenuItem";
-            this.überToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.überToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.überToolStripMenuItem.Text = "Über";
             this.überToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 

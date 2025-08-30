@@ -199,7 +199,7 @@ namespace A2G_Trainer_XP.View
                 this.ClearAllFields(this);
 
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog);
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, this.clubController == null ? PlayerEnums.PlayerAddressType.OWN : this.clubController.Type);
                 this.club = club ?? this.clubController.Club;
                 Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
                 if (this.bindingSource != null)

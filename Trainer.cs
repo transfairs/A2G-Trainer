@@ -64,17 +64,20 @@ namespace A2G_Trainer_XP
                 this.ContentPanel.SuspendLayout();
                 this.ContentPanel.Controls.Clear();
                 this.ContentPanel.Controls.Add(userControl);
-                this.Text = this.windowTitle + (title != null ? " :: " + title : "");
                 this.current = userControl;
                 this.ContentPanel.ResumeLayout();
-
             }
+            this.Text = this.windowTitle + (title != null ? " :: " + title : "");
         }
 
         private void AllClubsToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
-
+        private void AllPlayersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.PlayerView, "Dynamische Mannschaft");
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.PlayerAddressType.OTHER);
+        }
         private void OwnClubToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.ClubView, "Eigener Verein");
@@ -84,7 +87,7 @@ namespace A2G_Trainer_XP
         private void OwnPlayersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.PlayerView, "Einge Mannschaft");
-            this.PlayerView.RefreshPlayerListView();
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.PlayerAddressType.OWN);
         }
 
         private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -96,5 +99,6 @@ namespace A2G_Trainer_XP
         {
             this.ShowScreen(this.AboutView, "Über");
         }
+
     }
 }

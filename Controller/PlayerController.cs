@@ -10,13 +10,15 @@ namespace A2G_Trainer_XP.Controller
 {
     public class PlayerController : EntityController<Player>
     {
-        public PlayerController(Mem memory, Club club, bool isGog) : base(memory)
+        public PlayerController(Mem memory, Club club, bool isGog, PlayerEnums.PlayerAddressType type) : base(memory)
         {
-            this.baseAddress = isGog ? Settings.PlayerAddressGog : Settings.PlayerAddress;
-            RefreshPlayerList(club);
+            this.isGog = isGog;
+            this.settings = Settings.PlayerAddress;
+            this.UpdateBaseAddress(type);
+            this.RefreshPlayerList(club);
         }
 
-        internal void RefreshPlayerList(Club club, PlayerEnums.PlayerAddressType playerType = PlayerEnums.PlayerAddressType.OWN)
+        internal void RefreshPlayerList(Club club)
         {
             this.EntityList = new BindingList<Player>();
 
@@ -29,7 +31,7 @@ namespace A2G_Trainer_XP.Controller
                 {
                     offset = Tools.SumHex(new string[] { this.EntityList.Last().Offset, Settings.PlayerOffset.ToString() });
                 }
-                this.EntityList.Add(this.GetEntity(offset, playerType));
+                this.EntityList.Add(this.GetEntity(offset, this.Type));
             }
         }
 
@@ -71,9 +73,11 @@ namespace A2G_Trainer_XP.Controller
             };
             #endregion
 
-            #region Skills
-            player.Skills         = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), 2), 0);
-            player.NegativeSkills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), 2), 0);
+            try
+            {
+                #region Skills
+                player.Skills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), 2), 0);
+                player.NegativeSkills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), 2), 0);
             #endregion
 
             #region Character
@@ -102,7 +106,12 @@ namespace A2G_Trainer_XP.Controller
             player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]));
             player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]));
             player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]));
-            #endregion
+                #endregion
+            }
+            catch (ArgumentNullException e)
+            {
+                Console.WriteLine($"{e}");
+            }
 
             #region Other
             /* Unknowm values */

@@ -78,7 +78,8 @@ namespace A2G_Trainer_XP.Controller
                             this.trainer.Memory.OpenProcess(this.gameProcess.Id);
                             if (!this.initialised)
                             {
-                                this.trainer.PlayerView.RefreshPlayerListView();
+                                Console.WriteLine($"PC: {this.trainer.PlayerView.PlayerController}");
+                                this.trainer.PlayerView.RefreshPlayerListView(this.trainer.PlayerView.PlayerController== null ? PlayerEnums.PlayerAddressType.OWN : this.trainer.PlayerView.PlayerController.Type);
                                 this.trainer.PlayerView.InitMainTabControl();
                                 this.trainer.ClubView.RefreshValues();
                                 this.trainer.ClubView.InitClubTabControl();

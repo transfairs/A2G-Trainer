@@ -33,15 +33,7 @@ namespace A2G_Trainer_XP.View
         #region InitMainTabControl
         internal void InitMainTabControl()
         {
-            this.ClubSelect.DataSource = this.clubController.EntityList;
-            this.ClubSelect.DisplayMember = "ClubName";
-
-            if (!this.ClubSelect.Visible)
-            {
-                int diff = this.PlayerListView.Location.Y - this.ClubSelect.Location.Y;
-                this.PlayerListView.Location = new System.Drawing.Point(this.PlayerListView.Location.X, this.ClubSelect.Location.Y);
-                this.PlayerListView.Size = new System.Drawing.Size(this.PlayerListView.Size.Width, this.PlayerListView.Size.Height + diff);
-            }
+            this.ShowClubLabel();
 
             this.NationalityCombo.DataSource = Enum.GetValues(typeof(PlayerEnums.Country)).Cast<PlayerEnums.Country>().Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
             this.NationalityCombo.DisplayMember = "Text";
@@ -288,16 +280,21 @@ namespace A2G_Trainer_XP.View
                 this.Retires.DataBindings.Add("Checked", this.bindingSource, "IsRetires");
             }
         }
+
+        private void ShowClubLabel()
+        {
+            this.CurrentClubLabel.Text = String.IsNullOrEmpty(this.clubController.Club.ClubName) ? "Dynamischer Verein" : this.clubController.Club.ClubName;
+        }
         #endregion
 
-        internal void RefreshPlayerListView()
+        internal void RefreshPlayerListView(PlayerEnums.PlayerAddressType type)
         {
             if (this.IsGameRunning())
             {
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog);
-                this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog);
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
+                this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
 
                 Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;
                 Console.WriteLine($"Refresh: {player}");
@@ -328,6 +325,8 @@ namespace A2G_Trainer_XP.View
                         this.PlayerListView.Items[pId].Focused = true;
                         this.PlayerListView.EnsureVisible(pId);
                     }
+
+                    this.ShowClubLabel();
                 }
             }
         }
@@ -358,7 +357,7 @@ namespace A2G_Trainer_XP.View
 
         private void ReloadBtn_Click(object sender, EventArgs e)
         {
-            this.RefreshPlayerListView();
+            this.RefreshPlayerListView(this.playerController.Type);
         }
 
         private void SaveBtn_Click(object sender, EventArgs e)
@@ -383,7 +382,7 @@ namespace A2G_Trainer_XP.View
                 }
                 this.playerController.SaveEntityList();
                 this.ClearAllFields(this.TeamBus);
-                this.RefreshPlayerListView();
+                this.RefreshPlayerListView(this.playerController.Type);
             }
         }
 

@@ -8,6 +8,7 @@ namespace A2G_Trainer_XP.Controller
     public abstract class EntityController<E> : INotifyPropertyChanged where E : Entity
     {
         protected string baseAddress;
+        protected string[] settings;
         internal BindingList<E> EntityList { get { return entityList; } set { entityList = value; } }
         private BindingList<E> entityList;
 
@@ -18,10 +19,22 @@ namespace A2G_Trainer_XP.Controller
         protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
 
+        public PlayerEnums.PlayerAddressType Type { get => this.type; set => this.type = value; }
+        private PlayerEnums.PlayerAddressType type;
+        protected bool isGog;
+
         protected EntityController(Mem memory)
         {
             this.memory = memory;
             this.EntityList = new BindingList<E>();
+        }
+
+        public void UpdateBaseAddress(PlayerEnums.PlayerAddressType type)
+        {
+            this.Type = type;
+            int selection = (this.Type == PlayerEnums.PlayerAddressType.OWN ? 0 : 2) | (this.isGog ? 1 : 0);
+            this.baseAddress = settings[selection];
+            Console.WriteLine($"({this.Type}, {this.isGog}): {selection}");
         }
 
 

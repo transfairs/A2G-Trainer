@@ -238,7 +238,7 @@ namespace A2G_Trainer_XP.View
             this.PlayerListView = new System.Windows.Forms.ListView();
             this.ReloadBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
-            this.ClubSelect = new System.Windows.Forms.ComboBox();
+            this.CurrentClubLabel = new System.Windows.Forms.Label();
             this.MainTabControl.SuspendLayout();
             this.PersonalTab.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -2606,20 +2606,21 @@ namespace A2G_Trainer_XP.View
             this.SaveBtn.UseVisualStyleBackColor = true;
             this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
             // 
-            // ClubSelect
+            // CurrentClubLabel
             // 
-            this.ClubSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ClubSelect.FormattingEnabled = true;
-            this.ClubSelect.Location = new System.Drawing.Point(15, 13);
-            this.ClubSelect.Name = "ClubSelect";
-            this.ClubSelect.Size = new System.Drawing.Size(200, 21);
-            this.ClubSelect.TabIndex = 45;
-            this.ClubSelect.Visible = false;
+            this.CurrentClubLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+            this.CurrentClubLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CurrentClubLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.CurrentClubLabel.Location = new System.Drawing.Point(15, 13);
+            this.CurrentClubLabel.Name = "CurrentClubLabel";
+            this.CurrentClubLabel.Size = new System.Drawing.Size(200, 18);
+            this.CurrentClubLabel.TabIndex = 46;
+            this.CurrentClubLabel.Text = "Eigener Verein";
             // 
             // PlayerView
             // 
             this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
-            this.Controls.Add(this.ClubSelect);
+            this.Controls.Add(this.CurrentClubLabel);
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.MainTabControl);
@@ -2884,6 +2885,6 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.ListView PlayerListView;
         private System.Windows.Forms.Button ReloadBtn;
         private System.Windows.Forms.Button SaveBtn;
-        private System.Windows.Forms.ComboBox ClubSelect;
+        private System.Windows.Forms.Label CurrentClubLabel;
     }
 }

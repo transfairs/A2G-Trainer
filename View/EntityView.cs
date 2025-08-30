@@ -20,6 +20,7 @@ namespace A2G_Trainer_XP.View
         private Mem memory;
 
         protected ClubController clubController;
+        public PlayerController PlayerController { get => this.playerController; private set { } }
         protected PlayerController playerController;
         protected ProcessController processController;
 
