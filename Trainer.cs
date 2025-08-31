@@ -32,7 +32,6 @@ namespace A2G_Trainer_XP
 
         private readonly string windowTitle;
 
-
         public Trainer()
         {
             InitializeComponent();
@@ -55,6 +54,7 @@ namespace A2G_Trainer_XP
             this.windowTitle = this.Text;
 
             this.ShowScreen(this.playerView);
+
         }
 
         private void ShowScreen(UserControl userControl, String title = null)
@@ -70,24 +70,31 @@ namespace A2G_Trainer_XP
             this.Text = this.windowTitle + (title != null ? " :: " + title : "");
         }
 
-        private void AllClubsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-        private void AllPlayersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.ShowScreen(this.PlayerView, "Dynamische Mannschaft");
-            this.PlayerView.RefreshPlayerListView(PlayerEnums.PlayerAddressType.OTHER);
-        }
         private void OwnClubToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.ClubView, "Eigener Verein");
-            this.ClubView.RefreshValues();
+            this.ClubView.RefreshValues(PlayerEnums.AddressType.OWN);
         }
-
+        private void AllClubsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.ClubView, "Alle Vereine");
+            this.ClubView.RefreshValues(PlayerEnums.AddressType.OTHER);
+        }
         private void OwnPlayersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ShowScreen(this.PlayerView, "Einge Mannschaft");
-            this.PlayerView.RefreshPlayerListView(PlayerEnums.PlayerAddressType.OWN);
+            this.ShowScreen(this.PlayerView, "Eigene Mannschaft");
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.OWN);
+        }
+        private void OpponentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.PlayerView, "Nächster Gegner");
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.OPPONENT);
+        }
+
+        private void DynamicTeamToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.PlayerView, "Dynamische Mannschaft");
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.OTHER);
         }
 
         private void HelpToolStripMenuItem_Click(object sender, EventArgs e)

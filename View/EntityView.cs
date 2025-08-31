@@ -19,6 +19,7 @@ namespace A2G_Trainer_XP.View
         internal Mem Memory { get => this.memory; private set => this.memory = value; }
         private Mem memory;
 
+        public ClubController ClubController { get => this.clubController; private set { } }
         protected ClubController clubController;
         public PlayerController PlayerController { get => this.playerController; private set { } }
         protected PlayerController playerController;

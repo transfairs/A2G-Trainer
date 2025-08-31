@@ -74,8 +74,9 @@
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
+    <Compile Include="Model\AddressPresets.cs" />
     <Compile Include="Model\ClubEnums.cs" />
-    <Compile Include="Model\PlayerAddresses.cs" />
+    <Compile Include="Model\Addresses.cs" />
     <Compile Include="Model\PlayerEnums.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Trainer.cs">

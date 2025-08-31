@@ -8,6 +8,9 @@ namespace A2G_Trainer_XP.Model
         public bool Initilisation { get => this.initilisation; set => this.initilisation = value; }
         private bool initilisation = true;
 
+        public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
+        private Addresses addresses;
+
         #region Helper
         public bool IsBlockARoof { get => this.Roof.HasFlag(ClubEnums.Roof.BlockA); set => this.Multiplex(ClubEnums.Roof.BlockA, value, nameof(this.IsBlockARoof)); }
         public bool IsBlockBRoof { get => this.Roof.HasFlag(ClubEnums.Roof.BlockB); set => this.Multiplex(ClubEnums.Roof.BlockB, value, nameof(this.IsBlockBRoof)); }
@@ -156,6 +159,10 @@ namespace A2G_Trainer_XP.Model
             }
         }
         private ushort playerCount = 0;
+
+        public byte AmateurPlayerCount { get => this.amateurPlayerCount; set { this.amateurPlayerCount = value; this.OnPropertyChanged(nameof(this.AmateurPlayerCount)); } }
+        private byte amateurPlayerCount;
+
         #endregion
 
         public String SquadAddress { get => this.squadAddress; set { this.squadAddress = value; this.OnPropertyChanged(nameof(this.SquadAddress)); } }

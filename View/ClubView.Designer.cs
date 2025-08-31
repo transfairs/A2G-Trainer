@@ -1348,7 +1348,6 @@ namespace A2G_Trainer_XP.View
             this.ClubSelect.Name = "ClubSelect";
             this.ClubSelect.Size = new System.Drawing.Size(354, 21);
             this.ClubSelect.TabIndex = 46;
-            this.ClubSelect.Visible = false;
             this.ClubSelect.SelectedIndexChanged += new System.EventHandler(this.ClubSelect_SelectedIndexChanged);
             // 
             // ClubView

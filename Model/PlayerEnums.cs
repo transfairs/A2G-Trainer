@@ -12,7 +12,12 @@ namespace A2G_Trainer_XP.Model
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
 
-        public enum PlayerAddressType { OWN, OTHER }
+        public enum AddressType
+        {
+            OWN,
+            OPPONENT,
+            OTHER
+        }
 
         public enum AddressKey
         {

@@ -42,6 +42,7 @@ namespace A2G_Trainer_XP
             this.eigeneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.ausAnderemVereinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dynamischesTeamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.überToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,7 +91,6 @@ namespace A2G_Trainer_XP
             // 
             // spielerToolStripMenuItem
             // 
-            this.spielerToolStripMenuItem.Enabled = false;
             this.spielerToolStripMenuItem.Name = "spielerToolStripMenuItem";
             this.spielerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.spielerToolStripMenuItem.Text = "Alle (kommt später)";
@@ -101,7 +101,8 @@ namespace A2G_Trainer_XP
             this.alleVereineToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.eigeneToolStripMenuItem,
             this.toolStripSeparator2,
-            this.ausAnderemVereinToolStripMenuItem});
+            this.ausAnderemVereinToolStripMenuItem,
+            this.dynamischesTeamToolStripMenuItem});
             this.alleVereineToolStripMenuItem.Name = "alleVereineToolStripMenuItem";
             this.alleVereineToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.alleVereineToolStripMenuItem.Text = "Spieler";
@@ -122,8 +123,15 @@ namespace A2G_Trainer_XP
             // 
             this.ausAnderemVereinToolStripMenuItem.Name = "ausAnderemVereinToolStripMenuItem";
             this.ausAnderemVereinToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ausAnderemVereinToolStripMenuItem.Text = "Dynamisch";
-            this.ausAnderemVereinToolStripMenuItem.Click += new System.EventHandler(this.AllPlayersToolStripMenuItem_Click);
+            this.ausAnderemVereinToolStripMenuItem.Text = "Nächster Gegner";
+            this.ausAnderemVereinToolStripMenuItem.Click += new System.EventHandler(this.OpponentToolStripMenuItem_Click);
+            // 
+            // dynamischesTeamToolStripMenuItem
+            // 
+            this.dynamischesTeamToolStripMenuItem.Name = "dynamischesTeamToolStripMenuItem";
+            this.dynamischesTeamToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dynamischesTeamToolStripMenuItem.Text = "Dynamisches Team";
+            this.dynamischesTeamToolStripMenuItem.Click += new System.EventHandler(this.DynamicTeamToolStripMenuItem_Click);
             // 
             // ansichtToolStripMenuItem1
             // 
@@ -192,6 +200,7 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.ToolStripMenuItem ansichtToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hilfeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem überToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dynamischesTeamToolStripMenuItem;
     }
 }
 

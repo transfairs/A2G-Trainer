@@ -192,14 +192,15 @@ namespace A2G_Trainer_XP.View
             this.BlockLSeatsInput.DataBindings.Add("Text", this.bindingSource, "BlockLSeats");
         }
 
-        internal void RefreshValues(Club club = null)
+        internal void RefreshValues(PlayerEnums.AddressType type, Club club = null)
         {
             if (this.IsGameRunning())
             {
                 this.ClearAllFields(this);
 
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog, this.clubController == null ? PlayerEnums.PlayerAddressType.OWN : this.clubController.Type);
+
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
                 this.club = club ?? this.clubController.Club;
                 Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
                 if (this.bindingSource != null)
@@ -211,7 +212,7 @@ namespace A2G_Trainer_XP.View
         }
         private void ReloadBtn_Click(object sender, System.EventArgs e)
         {
-            this.RefreshValues();
+            this.RefreshValues(this.clubController.Type);
         }
 
         private void SaveBtn_Click(object sender, System.EventArgs e)
@@ -219,7 +220,7 @@ namespace A2G_Trainer_XP.View
             if (this.IsGameRunning())
             {
                 this.clubController.Save();
-                this.RefreshValues(this.club);
+                this.RefreshValues(this.clubController.Type, this.club);
             }
         }
 
@@ -228,7 +229,7 @@ namespace A2G_Trainer_XP.View
             if (this.IsGameRunning())
             {
                 Club club = this.ClubSelect.SelectedItem as Club;
-                this.RefreshValues(club);
+                this.RefreshValues(this.clubController.Type, club);
             }
         }
     }

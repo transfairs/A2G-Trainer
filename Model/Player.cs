@@ -10,8 +10,8 @@ namespace A2G_Trainer_XP.Model
         public uint Id { get => this.id; set { this.id = value; this.OnPropertyChanged(nameof(this.Id)); } }
         private uint id = 0;
 
-        public PlayerAddresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
-        private PlayerAddresses addresses;
+        public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
+        private Addresses addresses;
 
         #region Helpers
         private readonly List<string> positionHelpers = new List<string>() { nameof(IsTO), nameof(IsL), nameof(IsMD), nameof(IsLV), nameof(IsRV), nameof(IsRM), nameof(IsLM), nameof(IsDM), nameof(IsOM), nameof(IsS) };

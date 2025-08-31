@@ -10,7 +10,12 @@ namespace A2G_Trainer_XP.Controller
 {
     public class PlayerController : EntityController<Player>
     {
-        public PlayerController(Mem memory, Club club, bool isGog, PlayerEnums.PlayerAddressType type) : base(memory)
+        public String OpponentOffset { get => this.opponentOffset; set => opponentOffset = value; }
+        private String opponentOffset;
+        public String OtherOffset { get => this.otherOffset; set => otherOffset = value; }
+        private String otherOffset;
+
+        public PlayerController(Mem memory, Club club, bool isGog, PlayerEnums.AddressType type) : base(memory)
         {
             this.isGog = isGog;
             this.settings = Settings.PlayerAddress;
@@ -24,14 +29,25 @@ namespace A2G_Trainer_XP.Controller
 
             Console.WriteLine($"{club.PlayerCount} Players found.");
 
-            for(int i=0; i < club.PlayerCount; i++)
+            string offset = string.Empty;
+            for (int i=0; i < club.PlayerCount + club.AmateurPlayerCount; i++)
             {
-                string offset = string.Empty;
                 if (i > 0)
                 {
                     offset = Tools.SumHex(new string[] { this.EntityList.Last().Offset, Settings.PlayerOffset.ToString() });
                 }
                 this.EntityList.Add(this.GetEntity(offset, this.Type));
+            }
+            if (this.Type == PlayerEnums.AddressType.OWN)
+            {
+                this.OpponentOffset = offset;
+                AddressPresets.InitOpponent(this.opponentOffset);
+                AddressPresets.InitDynamicTeam(this.opponentOffset);
+            }
+            if (this.Type == PlayerEnums.AddressType.OPPONENT)
+            {
+                this.OtherOffset = offset;
+                AddressPresets.InitDynamicTeam(this.otherOffset);
             }
         }
 
@@ -43,12 +59,12 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
-        internal override Player GetEntity(string offset, Enum type = null)
+        internal override Player GetEntity(string offset, PlayerEnums.AddressType type)
         {
             Player player = new Player
             {
                 Offset = offset,
-                Addresses = PlayerAddresses.From((PlayerEnums.PlayerAddressType) type)
+                Addresses = AddressPresets.From(type, false)
             };
             #region Overview
             player.Id          = (uint) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]));
@@ -110,7 +126,7 @@ namespace A2G_Trainer_XP.Controller
             }
             catch (ArgumentNullException e)
             {
-                Console.WriteLine($"{e}");
+                Console.WriteLine($"Exception in Player.GetEntity: {e}");
             }
 
             #region Other

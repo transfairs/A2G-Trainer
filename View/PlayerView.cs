@@ -4,6 +4,7 @@ using Memory;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
 
@@ -287,17 +288,26 @@ namespace A2G_Trainer_XP.View
         }
         #endregion
 
-        internal void RefreshPlayerListView(PlayerEnums.PlayerAddressType type)
+        internal void RefreshPlayerListView(PlayerEnums.AddressType type)
         {
             if (this.IsGameRunning())
             {
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
+
+                /* Backup solution, if PlayerCount is wrong.
+                if (type == PlayerEnums.AddressType.OPPONENT)
+                {
+                    String opponentName = this.Memory.ReadString($"{this.Memory.mProc.MainModule.ModuleName}+{Settings.OpponentName}", length: 19, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+                    Club opponent = this.clubController.EntityList.FirstOrDefault(c => c.ClubName == opponentName);
+                    this.clubController.Club = opponent ?? this.clubController.Club;
+                }
+                */
                 this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
 
                 Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;
-                Console.WriteLine($"Refresh: {player}");
+                //Console.WriteLine($"Refresh: {player}");
                 this.PlayerListView.Items.Clear();
 
                 if (this.playerController != null)
@@ -344,17 +354,6 @@ namespace A2G_Trainer_XP.View
                 }
             }
         }
-
-        private void AnstossJuengerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            this.LinkLabel_LinkClicked(sender, e);
-        }
-
-        private void StrajkLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            this.LinkLabel_LinkClicked(sender, e);
-        }
-
         private void ReloadBtn_Click(object sender, EventArgs e)
         {
             this.RefreshPlayerListView(this.playerController.Type);

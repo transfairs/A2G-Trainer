@@ -19,8 +19,8 @@ namespace A2G_Trainer_XP.Controller
         protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
 
-        public PlayerEnums.PlayerAddressType Type { get => this.type; set => this.type = value; }
-        private PlayerEnums.PlayerAddressType type;
+        public PlayerEnums.AddressType Type { get => this.type; set => this.type = value; }
+        private PlayerEnums.AddressType type;
         protected bool isGog;
 
         protected EntityController(Mem memory)
@@ -29,12 +29,12 @@ namespace A2G_Trainer_XP.Controller
             this.EntityList = new BindingList<E>();
         }
 
-        public void UpdateBaseAddress(PlayerEnums.PlayerAddressType type)
+        public void UpdateBaseAddress(PlayerEnums.AddressType type)
         {
             this.Type = type;
-            int selection = (this.Type == PlayerEnums.PlayerAddressType.OWN ? 0 : 2) | (this.isGog ? 1 : 0);
+            int selection = (this.Type == PlayerEnums.AddressType.OWN ? 0 : 2) | (this.isGog ? 1 : 0);
             this.baseAddress = settings[selection];
-            Console.WriteLine($"({this.Type}, {this.isGog}): {selection}");
+            Console.WriteLine($"({this.Type}, {this.isGog}): {selection} => {this.baseAddress}");
         }
 
 
@@ -43,6 +43,6 @@ namespace A2G_Trainer_XP.Controller
             return $"{memory.mProc.MainModule.ModuleName}+{this.baseAddress},{Tools.SumHex(new string[] { baseOffset, entity.Offset })}";
         }
 
-        internal abstract E GetEntity(string offset, Enum type);
+        internal abstract E GetEntity(string offset, PlayerEnums.AddressType type);
     }
 }

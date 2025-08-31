@@ -12,6 +12,59 @@ namespace A2G_Trainer_XP.Model
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
 
+        public enum AddressKey
+        {
+            NAME,
+            PLAYER_COUNT,
+            AMATEUR_PLAYER_COUNT,
+            EarningsLeagueGames,
+            EarningsFriendlyGames,
+            EarningsAds,
+            StadiumName,
+            ROOF,
+            DisplayUnit,
+            HasFloodLight,
+            HasGrassHeating,
+            FieldCondition,
+            BlockAWeeks,
+            BlockBWeeks,
+            BlockCWeeks,
+            BlockDWeeks,
+            BlockEWeeks,
+            BlockFWeeks,
+            BlockGWeeks,
+            BlockHWeeks,
+            BlockIWeeks,
+            BlockJWeeks,
+            BlockKWeeks,
+            BlockLWeeks,
+            BlockAStandings,
+            BlockBStandings,
+            BlockCStandings,
+            BlockDStandings,
+            BlockEStandings,
+            BlockFStandings,
+            BlockGStandings,
+            BlockHStandings,
+            BlockIStandings,
+            BlockJStandings,
+            BlockKStandings,
+            BlockLStandings,
+            BlockASeats,
+            BlockBSeats,
+            BlockCSeats,
+            BlockDSeats,
+            BlockESeats,
+            BlockFSeats,
+            BlockGSeats,
+            BlockHSeats,
+            BlockISeats,
+            BlockJSeats,
+            BlockKSeats,
+            BlockLSeats,
+            OPPONENT_NAME
+        }
+
         public static FieldCondition MapToCondition(byte value)
         {
             if (value >= 30)
