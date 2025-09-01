@@ -10,6 +10,11 @@ namespace A2G_Trainer_XP.Model
         public uint Id { get => this.id; set { this.id = value; this.OnPropertyChanged(nameof(this.Id)); } }
         private uint id = 0;
 
+        public ushort ClubId { get => this.clubId; set { this.clubId = value; this.OnPropertyChanged(nameof(this.ClubId)); } }
+        private ushort clubId;
+        public PlayerEnums.Country ClubCountry { get => this.clubCountry; set { this.clubCountry = value; this.OnPropertyChanged(nameof(this.ClubCountry)); } }
+        private PlayerEnums.Country clubCountry;
+
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
         private Addresses addresses;
 
@@ -233,8 +238,6 @@ namespace A2G_Trainer_XP.Model
 
         #region NotImplemented
         /*
-        public ushort TeamId { get => this.teamId; set => this. = this.Setter(value, this.teamId); }
-        private ushort teamId = 0;
         public byte PreviousForm { get => this.previousForm; set => this. = this.Setter(value, this.previousForm); }
         private byte previousForm = 0;
         public byte Jersey { get => this.jersey; set => this. = this.Setter(value, this.jersey); }

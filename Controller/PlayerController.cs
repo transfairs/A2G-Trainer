@@ -38,16 +38,10 @@ namespace A2G_Trainer_XP.Controller
                 }
                 this.EntityList.Add(this.GetEntity(offset, this.Type));
             }
-            if (this.Type == PlayerEnums.AddressType.OWN)
+
+            if (this.Type == PlayerEnums.AddressType.OWN || this.Type == PlayerEnums.AddressType.OPPONENT)
             {
-                this.OpponentOffset = offset;
-                AddressPresets.InitOpponent(this.opponentOffset);
-                AddressPresets.InitDynamicTeam(this.opponentOffset);
-            }
-            if (this.Type == PlayerEnums.AddressType.OPPONENT)
-            {
-                this.OtherOffset = offset;
-                AddressPresets.InitDynamicTeam(this.otherOffset);
+                this.InitOffsets(offset);
             }
         }
 
@@ -70,6 +64,8 @@ namespace A2G_Trainer_XP.Controller
             player.Id          = (uint) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]));
             player.Firstname   = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             player.Lastname    = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+            player.ClubId      = (ushort) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CLUB_ID]));
+            player.ClubCountry = (PlayerEnums.Country) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CLUB_COUNTRY]));
             player.SkinColor   = (PlayerEnums.SkinColor) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]));
             player.HairColor   = (PlayerEnums.HairColor) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAIR]));
             player.Age         = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.AGE]));
@@ -89,11 +85,9 @@ namespace A2G_Trainer_XP.Controller
             };
             #endregion
 
-            try
-            {
-                #region Skills
-                player.Skills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), 2), 0);
-                player.NegativeSkills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), 2), 0);
+            #region Skills
+            player.Skills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), 2), 0);
+            player.NegativeSkills = (PlayerEnums.Skills)BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), 2), 0);
             #endregion
 
             #region Character
@@ -122,12 +116,7 @@ namespace A2G_Trainer_XP.Controller
             player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]));
             player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]));
             player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]));
-                #endregion
-            }
-            catch (ArgumentNullException e)
-            {
-                Console.WriteLine($"Exception in Player.GetEntity: {e}");
-            }
+            #endregion
 
             #region Other
             /* Unknowm values */
@@ -137,7 +126,7 @@ namespace A2G_Trainer_XP.Controller
             #region NotImplemented
             /* Mainly statistical values with no benefit changing. */
             /*
-            player.TeamId                = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "23"), 2), 0);
+            player.ClubId                = this.memory.ReadByte(GetAddress(this.memory, player, "23"));
             player.PreviousForm          = this.memory.ReadByte(GetAddress(this.memory, player, "26"));
             player.Jersey                = this.memory.ReadByte(GetAddress(this.memory, player, "3A"));
             player.RedCardsSeason        = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "4B"));
@@ -157,8 +146,6 @@ namespace A2G_Trainer_XP.Controller
             player.Appearances1stLeague  = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "7A"), 2), 0);
             */
             #endregion
-
-            //Console.WriteLine($"{player.ToString()}: Unhappy: {player.Unhappy} | Happy: {player.Happy}");
 
             return player;
         }
@@ -257,6 +244,34 @@ namespace A2G_Trainer_XP.Controller
             this.memory.WriteBytes(GetAddress(this.memory, player, "7A"), new byte[] { (byte)player.Appearances1stLeague });
             */
             #endregion
+        }
+
+        private void InitOffsets(string offset)
+        {
+            this.OtherOffset = offset;
+
+            PlayerEnums.AddressType counterpartType = this.Type == PlayerEnums.AddressType.OWN
+                ? PlayerEnums.AddressType.OPPONENT
+                : PlayerEnums.AddressType.OWN;
+
+            ClubController counterpart = new ClubController(this.memory, this.isGog, counterpartType);
+
+            int count = counterpart.Club.PlayerCount + counterpart.Club.AmateurPlayerCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                this.OtherOffset = Tools.SumHex(
+                    new[] { this.OtherOffset, Settings.PlayerOffset.ToString() }
+                );
+            }
+
+            if (this.Type == PlayerEnums.AddressType.OWN)
+            {
+                this.OpponentOffset = offset;
+                AddressPresets.InitOpponent(this.OpponentOffset);
+            }
+
+            AddressPresets.InitDynamicTeam(this.OtherOffset);
         }
     }
 }

@@ -62,7 +62,9 @@ namespace A2G_Trainer_XP.Model
             BlockJSeats,
             BlockKSeats,
             BlockLSeats,
-            OPPONENT_NAME
+            OPPONENT_NAME,
+            ID,
+            COUNTRY
         }
 
         public static FieldCondition MapToCondition(byte value)

@@ -284,7 +284,7 @@ namespace A2G_Trainer_XP.View
 
         private void ShowClubLabel()
         {
-            this.CurrentClubLabel.Text = String.IsNullOrEmpty(this.clubController.Club.ClubName) ? "Dynamischer Verein" : this.clubController.Club.ClubName;
+            this.CurrentClubLabel.Text = String.IsNullOrEmpty(this.clubController.Club.ClubName) ? "!! Kein spielbarer Verein !!" : this.clubController.Club.ClubName;
         }
         #endregion
 
@@ -295,6 +295,24 @@ namespace A2G_Trainer_XP.View
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
+                Console.WriteLine($"Eigener/Gegner: {this.clubController.Club.ClubName}, {this.clubController.Club.Id}, {this.clubController.Club.Country}");
+                if (type == PlayerEnums.AddressType.DYNAMIC)
+                {
+                    ushort pc = this.clubController.Club.PlayerCount;
+                    byte apc = this.clubController.Club.AmateurPlayerCount;
+                    this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
+                    Player firstPlayer = this.playerController.EntityList.First();
+                    Club dynamic = this.clubController.EntityList.FirstOrDefault(c => c.Id == firstPlayer.ClubId && c.Country == firstPlayer.ClubCountry);
+                    if (dynamic == null)
+                    {
+                        this.clubController.Club.PlayerCount = pc;
+                        this.clubController.Club.AmateurPlayerCount = apc;
+                        this.clubController.Club.ClubName = "";
+                    }
+                    this.clubController.Club = dynamic ?? this.clubController.Club;
+
+                    //Console.WriteLine($"Erster Spieler: {firstPlayer.Lastname}, {firstPlayer.ClubCountry}, {firstPlayer.ClubId}, {this.ClubController.Club.ClubName}, {this.ClubController.Club.PlayerCount}, {this.ClubController.Club.AmateurPlayerCount}");
+                }
 
                 /* Backup solution, if PlayerCount is wrong.
                 if (type == PlayerEnums.AddressType.OPPONENT)

@@ -21,7 +21,7 @@ namespace A2G_Trainer_XP.Controller
             this.settings = Settings.ClubAddress;
             this.UpdateBaseAddress(type);
             this.showLog = true;
-            this.Club = this.GetEntity(type == PlayerEnums.AddressType.OTHER ? Settings.AllClubOffset : "", type);
+            this.Club = this.GetEntity(type == PlayerEnums.AddressType.ALL ? Settings.AllClubOffset : "", type);
             this.showLog = false;
             // Console.WriteLine($"{club.ClubName}, {type}: {club.PlayerCount} ({club.AmateurPlayerCount})");
             this.EntityList = this.GetEntityList();
@@ -31,18 +31,18 @@ namespace A2G_Trainer_XP.Controller
         {
             // Console.WriteLine($"{club.PlayerCount} Players found.");
 
-            int end = 294;
+            ushort end = 294;
 
             BindingList<Club> output = new BindingList<Club>();
 
-            for (int i = 0; i <= end; i++)
+            for (ushort i = 0; i <= end; i++)
             {
                 string offset = Settings.AllClubOffset;
                 if (i > 0)
                 {
                     offset = Tools.SumHex(new string[] { output.Last().Offset, Settings.ClubOffset.ToString() });
                 }
-                output.Add(this.GetEntity(offset, PlayerEnums.AddressType.OTHER));
+                output.Add(this.GetEntity(offset, PlayerEnums.AddressType.ALL));
             }
 
             List<Club> sorted = output.OrderBy(c => c.ClubName).ToList();
@@ -74,9 +74,11 @@ namespace A2G_Trainer_XP.Controller
                 club.AmateurPlayerCount = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT]));
 
                 club.ClubName = this.memory.ReadString(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.NAME]), length: 19, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+                club.Id = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.ID]));
+                club.Country = (PlayerEnums.Country) this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.COUNTRY]));
 
                 if (this.showLog)
-                    Console.WriteLine($"{club.ClubName}: {club.PlayerCount} ({club.AmateurPlayerCount})");
+                    Console.WriteLine($"{club.ClubName}: {club.Id} ({club.Country}), {club.PlayerCount} ({club.AmateurPlayerCount})");
 
 
                 if (type == PlayerEnums.AddressType.OWN)

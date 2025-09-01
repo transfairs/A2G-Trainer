@@ -78,7 +78,7 @@ namespace A2G_Trainer_XP
         private void AllClubsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.ClubView, "Alle Vereine");
-            this.ClubView.RefreshValues(PlayerEnums.AddressType.OTHER);
+            this.ClubView.RefreshValues(PlayerEnums.AddressType.ALL);
         }
         private void OwnPlayersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -94,7 +94,7 @@ namespace A2G_Trainer_XP
         private void DynamicTeamToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.PlayerView, "Dynamische Mannschaft");
-            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.OTHER);
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.DYNAMIC);
         }
 
         private void HelpToolStripMenuItem_Click(object sender, EventArgs e)

@@ -13,6 +13,8 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.AGE, "1E"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.FIRSTNAME, "2"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.LASTNAME, "C"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CLUB_COUNTRY, "23"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CLUB_ID, "24"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.LEVEL, "1F"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.FORM, "35"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SKIN, "1C"),
@@ -48,8 +50,10 @@ namespace A2G_Trainer_XP.Model
 
         public static readonly Addresses OWN_CLUB = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
-            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.OPPONENT_NAME, Settings.OpponentOffset),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.OPPONENT_NAME, "14E0"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "E6"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.ID, "102"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.COUNTRY, "103"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "A19"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.EarningsLeagueGames, "290"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.EarningsFriendlyGames, "2B8"),
@@ -98,17 +102,23 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockLSeats, "882")
         );
 
-        public static readonly Addresses OPPONENT = Addresses.Create(
+        public static readonly Addresses OPPONENT_CLUB = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "14E0"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "15C6"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.ID, "15E2"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.COUNTRY, "15E3"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "1EF9")
         );
+
+        public static Addresses DYNAMIC_CLUB { get { return AddressPresets.OPPONENT_CLUB; } }
 
         public static readonly Addresses ALL_CLUBS = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
             // new KeyValuePair<Enum, string>(ClubEnums.AddressKey.OPPONENT_NAME, Settings.OpponentOffset),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "DE"),
-            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "A19")
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.ID, "F4"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.COUNTRY, "F8"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "5BD")
         );
 
         public static Addresses OPPONENT_PLAYERS { get; private set; }
@@ -136,8 +146,9 @@ namespace A2G_Trainer_XP.Model
                 switch (type)
                 {
                     case PlayerEnums.AddressType.OWN: return AddressPresets.OWN_CLUB;
-                    case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT;
-                    case PlayerEnums.AddressType.OTHER: return AddressPresets.ALL_CLUBS;
+                    case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT_CLUB;
+                    case PlayerEnums.AddressType.DYNAMIC: return AddressPresets.DYNAMIC_CLUB;
+                    case PlayerEnums.AddressType.ALL: return AddressPresets.ALL_CLUBS;
                     default: throw new ArgumentOutOfRangeException("type");
                 }
             }
@@ -147,7 +158,7 @@ namespace A2G_Trainer_XP.Model
                 {
                     case PlayerEnums.AddressType.OWN: return AddressPresets.OWN_PLAYERS;
                     case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT_PLAYERS;
-                    case PlayerEnums.AddressType.OTHER: return AddressPresets.DYNAMIC_PLAYERS;
+                    case PlayerEnums.AddressType.DYNAMIC: return AddressPresets.DYNAMIC_PLAYERS;
                     default: throw new ArgumentOutOfRangeException("type");
                 }
             }

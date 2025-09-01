@@ -202,7 +202,7 @@ namespace A2G_Trainer_XP.View
 
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
                 this.club = club ?? this.clubController.Club;
-                Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
+                // Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
                 if (this.bindingSource != null)
                 {
                     this.bindingSource.DataSource = this.club;

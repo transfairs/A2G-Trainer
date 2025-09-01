@@ -34,7 +34,7 @@ namespace A2G_Trainer_XP.Controller
             this.Type = type;
             int selection = (this.Type == PlayerEnums.AddressType.OWN ? 0 : 2) | (this.isGog ? 1 : 0);
             this.baseAddress = settings[selection];
-            Console.WriteLine($"({this.Type}, {this.isGog}): {selection} => {this.baseAddress}");
+            // Console.WriteLine($"({this.Type}, {this.isGog}): {selection} => {this.baseAddress}");
         }
 
 

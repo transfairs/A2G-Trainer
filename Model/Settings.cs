@@ -11,8 +11,8 @@
 
         private const int    clubOffset          = 770;
         public const string  AllClubOffset       = "64FA8";
-        public const string  OpponentOffset      = "14E0";
-        public const string  OpponentName        = "0x4241E0";
+        // public const string  OpponentOffset      = "14E0";
+        // public const string  OpponentName        = "0x4241E0";
         private const string clubAddress         = "0x400710";
         private const string clubAddressAll      = "0x400710"; //"0x487CA8";
         private const string clubAddressGog      = "0x403850";

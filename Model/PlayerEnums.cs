@@ -16,7 +16,8 @@ namespace A2G_Trainer_XP.Model
         {
             OWN,
             OPPONENT,
-            OTHER
+            ALL,
+            DYNAMIC
         }
 
         public enum AddressKey
@@ -55,7 +56,9 @@ namespace A2G_Trainer_XP.Model
             CONTRACT_DURATION,
             CONTRACT_DETAILS,
             YEARS_IN_CLUB,
-            CAREER
+            CAREER,
+            CLUB_ID,
+            CLUB_COUNTRY
         }
 
         public enum Character : byte

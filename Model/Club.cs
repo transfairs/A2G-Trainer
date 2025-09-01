@@ -8,6 +8,12 @@ namespace A2G_Trainer_XP.Model
         public bool Initilisation { get => this.initilisation; set => this.initilisation = value; }
         private bool initilisation = true;
 
+        public byte Id { get => this.id; set { this.id = value; this.OnPropertyChanged(nameof(this.Id)); } }
+        private byte id;
+
+        public PlayerEnums.Country Country { get => this.country; set { this.country = value; this.OnPropertyChanged(nameof(this.Country)); } }
+        private PlayerEnums.Country country;
+
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
         private Addresses addresses;
 
