@@ -168,10 +168,16 @@ namespace A2G_Trainer_XP.Model
 
         public byte AmateurPlayerCount { get => this.amateurPlayerCount; set { this.amateurPlayerCount = value; this.OnPropertyChanged(nameof(this.AmateurPlayerCount)); } }
         private byte amateurPlayerCount;
-
+        public byte TraineeACount { get => this.traineeACount; set { this.traineeACount = value; this.OnPropertyChanged(nameof(this.TraineeACount)); } }
+        private byte traineeACount;
+        public byte TraineeBCount { get => this.traineeBCount; set { this.traineeBCount = value; this.OnPropertyChanged(nameof(this.TraineeBCount)); } }
+        private byte traineeBCount;
+        public byte TraineeCCount { get => this.traineeCCount; set { this.traineeCCount = value; this.OnPropertyChanged(nameof(this.TraineeCCount)); } }
+        private byte traineeCCount;
         #endregion
 
         public String SquadAddress { get => this.squadAddress; set { this.squadAddress = value; this.OnPropertyChanged(nameof(this.SquadAddress)); } }
+
         private String squadAddress;
 
         #region Setter

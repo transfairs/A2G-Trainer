@@ -30,5 +30,10 @@ namespace A2G_Trainer_XP.Model
 
             return new Addresses(transformed);
         }
+
+        public bool ContainsKey(Enum key)
+        {
+            return this.map.ContainsKey(key);
+        }
     }
 }

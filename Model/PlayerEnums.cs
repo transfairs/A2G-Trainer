@@ -17,7 +17,9 @@ namespace A2G_Trainer_XP.Model
             OWN,
             OPPONENT,
             ALL,
-            DYNAMIC
+            DYNAMIC,
+            NON_PLAYABLE,
+            TRAINEE
         }
 
         public enum AddressKey

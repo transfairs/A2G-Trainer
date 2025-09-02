@@ -21,7 +21,7 @@ namespace A2G_Trainer_XP.Controller
             this.settings = Settings.ClubAddress;
             this.UpdateBaseAddress(type);
             this.showLog = true;
-            this.Club = this.GetEntity(type == PlayerEnums.AddressType.ALL ? Settings.AllClubOffset : "", type);
+            this.Club = this.GetEntity(type == PlayerEnums.AddressType.ALL ? Settings.AllClubInitialOffset.Key : "", type);
             this.showLog = false;
             // Console.WriteLine($"{club.ClubName}, {type}: {club.PlayerCount} ({club.AmateurPlayerCount})");
             this.EntityList = this.GetEntityList();
@@ -29,20 +29,41 @@ namespace A2G_Trainer_XP.Controller
 
         public BindingList<Club> GetEntityList()
         {
-            // Console.WriteLine($"{club.PlayerCount} Players found.");
-
-            ushort end = 294;
-
             BindingList<Club> output = new BindingList<Club>();
 
-            for (ushort i = 0; i <= end; i++)
+            Dictionary<string, Tuple<ushort, PlayerEnums.AddressType>> clubRegions = new Dictionary<string, Tuple<ushort, PlayerEnums.AddressType>>
             {
-                string offset = Settings.AllClubOffset;
-                if (i > 0)
+                { Settings.AllClubInitialOffset.Key, Settings.AllClubInitialOffset.Value },
+                { Settings.NonPlayableInitialOffset.Key, Settings.NonPlayableInitialOffset.Value }
+            };
+
+            foreach (KeyValuePair<string, Tuple<ushort, PlayerEnums.AddressType>> clubRegion in clubRegions)
+            {
+                string lastTraineeOffset = clubRegion.Key;
+                for (ushort i = 0; i <= clubRegion.Value.Item1; i++)
                 {
-                    offset = Tools.SumHex(new string[] { output.Last().Offset, Settings.ClubOffset.ToString() });
+                    string offset = clubRegion.Key;
+                    if (i > 0)
+                    {
+                        offset = Tools.SumHex(new string[] { output.Last().Offset, clubRegion.Value.Item2 == PlayerEnums.AddressType.ALL ? Settings.ClubOffset : Settings.NonPlayableOffset });
+                    }
+                    Club c = this.GetEntity(offset, clubRegion.Value.Item2);
+
+                    if (clubRegion.Value.Item2 == PlayerEnums.AddressType.ALL)
+                    {
+                        string offsetBackup = c.Offset;
+                        if (i > 0)
+                        {
+                            lastTraineeOffset = Tools.SumHex(new string[] { lastTraineeOffset, Settings.AllTraineeOffset });
+                        }
+                        c.Offset = lastTraineeOffset;
+                        this.GetTraineeCount(c);
+                        lastTraineeOffset = c.Offset;
+                        c.Offset = offsetBackup;
+                    }
+
+                    output.Add(c);
                 }
-                output.Add(this.GetEntity(offset, PlayerEnums.AddressType.ALL));
             }
 
             List<Club> sorted = output.OrderBy(c => c.ClubName).ToList();
@@ -55,6 +76,22 @@ namespace A2G_Trainer_XP.Controller
             output.ResetBindings();
 
             return output;
+        }
+
+        private void GetTraineeCount(Club club)
+        {
+            if (club != null)
+            {
+                club.TraineeACount = 0;
+                club.TraineeBCount = 0;
+                club.TraineeCCount = 0;
+                if (club.Addresses.ContainsKey(ClubEnums.AddressKey.TRAINEE))
+                {
+                    club.TraineeACount = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.TRAINEE_A]));
+                    club.TraineeBCount = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.TRAINEE_B]));
+                    club.TraineeCCount = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.TRAINEE_C]));
+                }
+            }
         }
 
         internal override Club GetEntity(string offset, PlayerEnums.AddressType type)
@@ -71,14 +108,14 @@ namespace A2G_Trainer_XP.Controller
             {
                 club.Initilisation = true;
                 club.PlayerCount = (ushort) this.memory.ReadByte($"{this.memory.mProc.MainModule.ModuleName}+{this.baseAddress},{Tools.SumHex(new string[] { club.Addresses[ClubEnums.AddressKey.PLAYER_COUNT], offset })}");
-                club.AmateurPlayerCount = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT]));
+                club.AmateurPlayerCount = (byte) (club.Addresses[ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT].StartsWith("-") ? 0 : this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT])));
 
                 club.ClubName = this.memory.ReadString(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.NAME]), length: 19, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
                 club.Id = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.ID]));
                 club.Country = (PlayerEnums.Country) this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.COUNTRY]));
 
                 if (this.showLog)
-                    Console.WriteLine($"{club.ClubName}: {club.Id} ({club.Country}), {club.PlayerCount} ({club.AmateurPlayerCount})");
+                    Console.WriteLine($"{club.ClubName}: {club.Id} ({club.Country}), {club.PlayerCount} ({club.AmateurPlayerCount}), ({club.TraineeACount}, {club.TraineeBCount}, {club.TraineeCCount})");
 
 
                 if (type == PlayerEnums.AddressType.OWN)

@@ -34,7 +34,7 @@ namespace A2G_Trainer_XP.Controller
             {
                 if (i > 0)
                 {
-                    offset = Tools.SumHex(new string[] { this.EntityList.Last().Offset, Settings.PlayerOffset.ToString() });
+                    offset = Tools.SumHex(new string[] { this.EntityList.Last().Offset, Settings.PlayerOffset });
                 }
                 this.EntityList.Add(this.GetEntity(offset, this.Type));
             }
@@ -261,7 +261,7 @@ namespace A2G_Trainer_XP.Controller
             for (int i = 0; i < count; i++)
             {
                 this.OtherOffset = Tools.SumHex(
-                    new[] { this.OtherOffset, Settings.PlayerOffset.ToString() }
+                    new[] { this.OtherOffset, Settings.PlayerOffset }
                 );
             }
 

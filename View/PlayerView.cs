@@ -31,10 +31,16 @@ namespace A2G_Trainer_XP.View
             this.PlayerListView.SelectedIndexChanged += this.PlayerListView_SelectedIndexChanged;
         }
 
+        private void DisableEdits(bool enable)
+        {
+            this.SaveBtn.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
+            this.PlayerListView.Enabled = this.clubController.Type == PlayerEnums.AddressType.TRAINEE || enable;
+            this.ReloadBtn.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE;
+        }
+
         #region InitMainTabControl
         internal void InitMainTabControl()
         {
-            this.ShowClubLabel();
 
             this.NationalityCombo.DataSource = Enum.GetValues(typeof(PlayerEnums.Country)).Cast<PlayerEnums.Country>().Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
             this.NationalityCombo.DisplayMember = "Text";
@@ -54,6 +60,8 @@ namespace A2G_Trainer_XP.View
 
                 this.ClubSelect.DataBindings.Add("SelectedValue", clubBindingSource, "ClubName");
                 */
+                this.ShowClubLabel();
+                this.DisableEdits(this.IsClub());
 
                 this.LevelInput.KeyPress += this.NumericOnly_KeyPress;
                 this.AgeInput.KeyPress += this.NumericOnly_KeyPress;
@@ -281,10 +289,34 @@ namespace A2G_Trainer_XP.View
                 this.Retires.DataBindings.Add("Checked", this.bindingSource, "IsRetires");
             }
         }
+        private bool IsClub()
+        {
+            bool output = !String.IsNullOrEmpty(this.clubController.Club.ClubName);
+            int i = 0;
+            if (output)
+            {
+                Player previous = new Player
+                {
+                    ClubId = this.ClubController.Club.Id,
+                    ClubCountry = this.ClubController.Club.Country
+                };
+
+                foreach (Player player in this.PlayerController.EntityList)
+                {
+                    i++;
+                    if (previous.ClubId != player.ClubId || previous.ClubCountry != player.ClubCountry)
+                    {
+                        output = false;
+                        break;
+                    }
+                }
+            }
+            return output;
+        }
 
         private void ShowClubLabel()
         {
-            this.CurrentClubLabel.Text = String.IsNullOrEmpty(this.clubController.Club.ClubName) ? "!! Kein spielbarer Verein !!" : this.clubController.Club.ClubName;
+            this.CurrentClubLabel.Text = !this.IsClub() ? "!! Keine Vereinsansicht !!" : this.clubController.Club.ClubName;
         }
         #endregion
 
@@ -295,8 +327,7 @@ namespace A2G_Trainer_XP.View
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
-                Console.WriteLine($"Eigener/Gegner: {this.clubController.Club.ClubName}, {this.clubController.Club.Id}, {this.clubController.Club.Country}");
-                if (type == PlayerEnums.AddressType.DYNAMIC)
+                if (type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE)
                 {
                     ushort pc = this.clubController.Club.PlayerCount;
                     byte apc = this.clubController.Club.AmateurPlayerCount;
@@ -310,9 +341,15 @@ namespace A2G_Trainer_XP.View
                         this.clubController.Club.ClubName = "";
                     }
                     this.clubController.Club = dynamic ?? this.clubController.Club;
-
-                    //Console.WriteLine($"Erster Spieler: {firstPlayer.Lastname}, {firstPlayer.ClubCountry}, {firstPlayer.ClubId}, {this.ClubController.Club.ClubName}, {this.ClubController.Club.PlayerCount}, {this.ClubController.Club.AmateurPlayerCount}");
+                    if (type == PlayerEnums.AddressType.TRAINEE)
+                    {
+                        this.clubController.Club.ClubName = "Jugendspieler";
+                        this.clubController.Club.PlayerCount = (ushort)(this.clubController.Club.TraineeACount + this.clubController.Club.TraineeBCount + this.clubController.Club.TraineeCCount);
+                        this.clubController.Club.AmateurPlayerCount = Byte.MinValue;
+                    }
                 }
+                if (this.playerController != null && this.clubController != null)
+                    Console.WriteLine($": {this.clubController.Club.ClubName}, {type}, {this.clubController.Type}, {this.playerController.Type}");
 
                 /* Backup solution, if PlayerCount is wrong.
                 if (type == PlayerEnums.AddressType.OPPONENT)
@@ -355,6 +392,7 @@ namespace A2G_Trainer_XP.View
                     }
 
                     this.ShowClubLabel();
+                    this.DisableEdits(this.IsClub());
                 }
             }
         }

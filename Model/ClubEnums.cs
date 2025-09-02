@@ -64,7 +64,11 @@ namespace A2G_Trainer_XP.Model
             BlockLSeats,
             OPPONENT_NAME,
             ID,
-            COUNTRY
+            COUNTRY,
+            TRAINEE,
+            TRAINEE_A,
+            TRAINEE_B,
+            TRAINEE_C
         }
 
         public static FieldCondition MapToCondition(byte value)

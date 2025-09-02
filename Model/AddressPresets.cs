@@ -114,11 +114,21 @@ namespace A2G_Trainer_XP.Model
 
         public static readonly Addresses ALL_CLUBS = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
-            // new KeyValuePair<Enum, string>(ClubEnums.AddressKey.OPPONENT_NAME, Settings.OpponentOffset),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "DE"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.ID, "F4"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.COUNTRY, "F8"),
-            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "5BD")
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "5BD"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TRAINEE, "1"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TRAINEE_A, "-10CF7"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TRAINEE_B, "-10CF6"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TRAINEE_C, "-10CF5")
+        );
+        public static readonly Addresses NONPLAYABLE_CLUBS = Addresses.Create(
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "D8"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.ID, "74"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.COUNTRY, "73"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "-1")
         );
 
         public static Addresses OPPONENT_PLAYERS { get; private set; }
@@ -127,7 +137,7 @@ namespace A2G_Trainer_XP.Model
 
         public static Addresses InitPreset(string lastPlayer)
         {
-            return AddressPresets.OWN_PLAYERS.WithOffset(Tools.SumHex(new string[] { Settings.PlayerOffset.ToString(), lastPlayer }));
+            return AddressPresets.OWN_PLAYERS.WithOffset(Tools.SumHex(new string[] { Settings.PlayerOffset, lastPlayer }));
         }
 
         public static void InitOpponent(string lastPlayer)
@@ -147,8 +157,10 @@ namespace A2G_Trainer_XP.Model
                 {
                     case PlayerEnums.AddressType.OWN: return AddressPresets.OWN_CLUB;
                     case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT_CLUB;
+                    case PlayerEnums.AddressType.TRAINEE:
                     case PlayerEnums.AddressType.DYNAMIC: return AddressPresets.DYNAMIC_CLUB;
                     case PlayerEnums.AddressType.ALL: return AddressPresets.ALL_CLUBS;
+                    case PlayerEnums.AddressType.NON_PLAYABLE: return AddressPresets.NONPLAYABLE_CLUBS;
                     default: throw new ArgumentOutOfRangeException("type");
                 }
             }
@@ -158,6 +170,7 @@ namespace A2G_Trainer_XP.Model
                 {
                     case PlayerEnums.AddressType.OWN: return AddressPresets.OWN_PLAYERS;
                     case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT_PLAYERS;
+                    case PlayerEnums.AddressType.TRAINEE:
                     case PlayerEnums.AddressType.DYNAMIC: return AddressPresets.DYNAMIC_PLAYERS;
                     default: throw new ArgumentOutOfRangeException("type");
                 }

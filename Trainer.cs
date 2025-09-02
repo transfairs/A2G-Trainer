@@ -107,5 +107,10 @@ namespace A2G_Trainer_XP
             this.ShowScreen(this.AboutView, "Über");
         }
 
+        private void TraineeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.PlayerView, "Jugendspieler");
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.TRAINEE);
+        }
     }
 }

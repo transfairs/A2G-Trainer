@@ -47,6 +47,7 @@ namespace A2G_Trainer_XP
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.überToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ContentPanel = new System.Windows.Forms.Panel();
+            this.jugendspielerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -100,6 +101,7 @@ namespace A2G_Trainer_XP
             // 
             this.alleVereineToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.eigeneToolStripMenuItem,
+            this.jugendspielerToolStripMenuItem,
             this.toolStripSeparator2,
             this.ausAnderemVereinToolStripMenuItem,
             this.dynamischesTeamToolStripMenuItem});
@@ -111,7 +113,7 @@ namespace A2G_Trainer_XP
             // 
             this.eigeneToolStripMenuItem.Name = "eigeneToolStripMenuItem";
             this.eigeneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.eigeneToolStripMenuItem.Text = "Eigene";
+            this.eigeneToolStripMenuItem.Text = "Eigener Kader";
             this.eigeneToolStripMenuItem.Click += new System.EventHandler(this.OwnPlayersToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
@@ -164,6 +166,13 @@ namespace A2G_Trainer_XP
             this.ContentPanel.Size = new System.Drawing.Size(630, 423);
             this.ContentPanel.TabIndex = 43;
             // 
+            // jugendspielerToolStripMenuItem
+            // 
+            this.jugendspielerToolStripMenuItem.Name = "jugendspielerToolStripMenuItem";
+            this.jugendspielerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.jugendspielerToolStripMenuItem.Text = "Jugendspieler";
+            this.jugendspielerToolStripMenuItem.Click += new System.EventHandler(this.TraineeToolStripMenuItem_Click);
+            // 
             // Trainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -201,6 +210,7 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.ToolStripMenuItem hilfeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem überToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dynamischesTeamToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem jugendspielerToolStripMenuItem;
     }
 }
 

@@ -1,29 +1,40 @@
-﻿namespace A2G_Trainer_XP.Controller
+﻿using A2G_Trainer_XP.Model;
+using System;
+using System.Collections.Generic;
+
+namespace A2G_Trainer_XP.Controller
 {
     static class Settings
     {
-        private const bool   debug               = false;
-        private const int    playerOffset        = 178;
-        private const string playerAddress       = "0x423690";
-        private const string playerAddressAll    = "0x423690"; //"0x3B4F4C";
-        private const string playerAddressGog    = "0x4267D0";
-        private const string playerAddressAllGog = "0x4267D0"; //"0x3B8098";
+        private const bool   debug                    = false;
+        private const ushort clubCount                = 294;
+        private const ushort nonPlayableCount         = 100;
 
-        private const int    clubOffset          = 770;
-        public const string  AllClubOffset       = "64FA8";
-        // public const string  OpponentOffset      = "14E0";
-        // public const string  OpponentName        = "0x4241E0";
-        private const string clubAddress         = "0x400710";
-        private const string clubAddressAll      = "0x400710"; //"0x487CA8";
-        private const string clubAddressGog      = "0x403850";
-        private const string clubAddressAllGog   = "0x403850"; //"0x48ADE8";
+        private const string playerAddress            = "0x423690";
+        private const string clubAddress              = "0x400710";
+
+        private const string gogOffset                = "3140";
+        private const string playerOffset             = "178";
+        private const string clubOffset               = "770";
+        private const string allTraineeOffset         = "1A";
+        private const string nonPlayableOffset        = "138";
+
+        private const string allClubInitialOffset     = "64FA8";
+        private const string nonPlayableInitialOffset = "3D1190";
 
 
-        internal static bool   IsDebug           { get => debug;        }
-        internal static int    PlayerOffset      { get => playerOffset; }
-        internal static int    ClubOffset        { get => clubOffset;   }
 
-        internal static string[] PlayerAddress = { playerAddress, playerAddressGog, playerAddressAll, playerAddressAllGog };
-        internal static string[] ClubAddress   = { clubAddress,   clubAddressGog,   clubAddressAll,   clubAddressAllGog   };
+        internal static bool   IsDebug           { get => debug; }
+
+        internal static string PlayerOffset      { get => playerOffset; }
+        internal static string ClubOffset        { get => clubOffset; }
+        internal static string AllTraineeOffset  { get => allTraineeOffset; }
+        internal static string NonPlayableOffset { get => nonPlayableOffset; }
+
+        internal static KeyValuePair<string, Tuple<ushort, PlayerEnums.AddressType>> AllClubInitialOffset     = new KeyValuePair<string, Tuple<ushort, PlayerEnums.AddressType>>(allClubInitialOffset, new Tuple<ushort, PlayerEnums.AddressType>(clubCount, PlayerEnums.AddressType.ALL));
+        internal static KeyValuePair<string, Tuple<ushort, PlayerEnums.AddressType>> NonPlayableInitialOffset = new KeyValuePair<string, Tuple<ushort, PlayerEnums.AddressType>>(nonPlayableInitialOffset, new Tuple<ushort, PlayerEnums.AddressType>(nonPlayableCount, PlayerEnums.AddressType.NON_PLAYABLE));
+
+        internal static string[] PlayerAddress = { playerAddress, Tools.SumHex(new string[] { playerAddress, gogOffset }) };
+        internal static string[] ClubAddress   = { clubAddress,   Tools.SumHex(new string[] { clubAddress, gogOffset   }) };
     }
 }
