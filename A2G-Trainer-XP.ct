@@ -3,41 +3,52 @@
   <CheatEntries>
     <CheatEntry>
       <ID>55</ID>
-      <Description>"Coach (Player)"</Description>
+      <Description>"Coach"</Description>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
-          <ID>261</ID>
-          <Description>"Manager Level"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>857822</Address>
+          <ID>295</ID>
+          <Description>"Firstname"</Description>
+          <VariableType>String</VariableType>
+          <Length>9</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>A7AF4</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>56</ID>
-          <Description>"Level"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>05CEFD40</Address>
+          <ID>296</ID>
+          <Description>"Lastname"</Description>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00823690</Address>
           <Offsets>
-            <Offset>22</Offset>
+            <Offset>A7AFE</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>261</ID>
+          <Description>"Manager-Level"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>A7B16</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
           <ID>57</ID>
           <Description>"Age"</Description>
           <VariableType>Byte</VariableType>
-          <Address>05CEFD40</Address>
-          <Offsets>
-            <Offset>24</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>59</ID>
-          <Description>"Age (As Footballer) (+-178 offset in hex until you get it)"</Description>
-          <VariableType>Byte</VariableType>
           <Address>00823690</Address>
           <Offsets>
-            <Offset>206E</Offset>
+            <Offset>A7B18</Offset>
           </Offsets>
         </CheatEntry>
       </CheatEntries>
@@ -45,7 +56,6 @@
     <CheatEntry>
       <ID>0</ID>
       <Description>"Player #1"</Description>
-      <Options moAllowManualCollapseAndExpand="1"/>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
@@ -148,12 +158,22 @@
         </CheatEntry>
         <CheatEntry>
           <ID>11</ID>
-          <Description>"     Team ID"</Description>
+          <Description>"     ClubCountry"</Description>
           <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
+          <VariableType>Byte</VariableType>
           <Address>00823690</Address>
           <Offsets>
             <Offset>23</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>358</ID>
+          <Description>"     ClubID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>24</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
@@ -477,12 +497,93 @@
             <Offset>7A</Offset>
           </Offsets>
         </CheatEntry>
+        <CheatEntry>
+          <ID>271</ID>
+          <Description>"     Gehalt"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>B4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>270</ID>
+          <Description>"     Auflaufprämie"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>B6</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>269</ID>
+          <Description>"     Torprämie"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>B8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>268</ID>
+          <Description>"     Fixe Ablöse"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>BA</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>265</ID>
+          <Description>"     Ablöse bezahlt"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>BC</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>264</ID>
+          <Description>"     Vertragslaufzeit"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>C0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>266</ID>
+          <Description>"     0: Ausgeliehen, 1: Kaufoption, 2:, 3: In dieser Saison gekommen, 4:Option Spieler, 5: Option Verein, 6: Stammplatz"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>C1</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>267</ID>
+          <Description>"     Jahre im Verein, 0 = Kann nicht wechseln"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>C2</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>272</ID>
+          <Description>"     Bit 7 (=128): Beendet Karriere"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>D7</Offset>
+          </Offsets>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
       <ID>43</ID>
       <Description>"Player #2"</Description>
-      <Options moAllowManualCollapseAndExpand="1"/>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
@@ -526,7 +627,6 @@
     <CheatEntry>
       <ID>47</ID>
       <Description>"Player #3"</Description>
-      <Options moAllowManualCollapseAndExpand="1"/>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
@@ -743,7 +843,7 @@
       <VariableType>Byte</VariableType>
       <Address>00823690</Address>
       <Offsets>
-        <Offset>4d</Offset>
+        <Offset>4D</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
@@ -1055,6 +1155,662 @@
       <Offsets>
         <Offset>79</Offset>
       </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>302</ID>
+      <Description>"Club"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>301</ID>
+          <Description>"PlayerCount"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>E6</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>334</ID>
+          <Description>"Anzahl Amateurspieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>A19</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>274</ID>
+          <Description>"Vereinsname"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>356</ID>
+          <Description>"Vereins-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>102</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>359</ID>
+          <Description>"Land"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>103</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>303</ID>
+          <Description>"Vereinsvermögen am Anfang der Saison"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>154</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>275</ID>
+          <Description>"Stadionname"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>28</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>81C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>279</ID>
+          <Description>"Überdachung"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>890</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>280</ID>
+          <Description>"Block A Stehplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>854</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>281</ID>
+          <Description>"Block A Sitzplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>86C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>282</ID>
+          <Description>"Block A: Bauzeit"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>73878</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>283</ID>
+          <Description>"Block B Stehplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>856</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>284</ID>
+          <Description>"Block B Sitzplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>86E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>285</ID>
+          <Description>"Block C Sitzplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>870</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>286</ID>
+          <Description>"Block K Logen"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>868</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>287</ID>
+          <Description>"Block L Stehplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>86A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>288</ID>
+          <Description>"Block L Sitzplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>882</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>289</ID>
+          <Description>"Block L Bauzeit"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>73883</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>290</ID>
+          <Description>"Anzeigetafel"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>896</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>291</ID>
+          <Description>"Flutlicht"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>897</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>292</ID>
+          <Description>"Rasenheizung"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>898</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>293</ID>
+          <Description>"Rasenpflege"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>89B</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>297</ID>
+          <Description>"Ausgaben Fanartikel"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>00823690</Address>
+          <Offsets>
+            <Offset>73470</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>298</ID>
+          <Description>"Einnahmen Werbung"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>470</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>299</ID>
+          <Description>"Einnahmen Freundschaftsspiele"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>2B8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>300</ID>
+          <Description>"Einnahmen Ligaspiele"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>290</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>317</ID>
+      <Description>"Bremen"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>310</ID>
+          <Description>"Erster Verein, Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00887D86</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>308</ID>
+          <Description>"Erster Verein, Name"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00887CA8</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>304</ID>
+          <Description>"Vereinsvermögen Bremen (Anfang der Saison)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>887E4C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>318</ID>
+          <Description>"Bremen, Stadionname"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>28</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00888194</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>307</ID>
+          <Description>"Stärke, erster Spieler, erster Verein"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>007B4F6B</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>331</ID>
+          <Description>"Lokalrivale"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00887d94</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>374</ID>
+          <Description>"A-Jugendspieler, Bremen"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00876FB1</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>375</ID>
+          <Description>"B-Jugendspieler, Bremen"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00876FB2</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>376</ID>
+          <Description>"C-Jugendspieler, Bremen"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00876FB3</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>319</ID>
+      <Description>"Bayern"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>313</ID>
+          <Description>"Zweiter Verein, Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>008884f6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>312</ID>
+          <Description>"Zweiter Verein"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00888418</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>321</ID>
+          <Description>"Vereinsvermögen Bayern"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>8885BC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>322</ID>
+          <Description>"Stadionname"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>28</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>888904</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>323</ID>
+          <Description>"Block B, Stehplätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>0088893E</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>320</ID>
+      <Description>"Nürnberg"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>337</ID>
+          <Description>"12. Verein"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>0088D5E8</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>346</ID>
+          <Description>"Vereins-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>0088D6DC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>360</ID>
+          <Description>"Amateurspieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>0088DBA5</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>314</ID>
+          <Description>"Nürnberg, Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>0088D6C6</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>324</ID>
+      <Description>"Erster Eintrag nach großer Leere"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>007CB5A8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>325</ID>
+      <Description>"Stadien"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>String</VariableType>
+      <Length>20</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>007D44D0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>339</ID>
+      <Description>"Nächster Gegner"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>335</ID>
+          <Description>"Vereins-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00800710</Address>
+          <Offsets>
+            <Offset>15E2</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>336</ID>
+          <Description>"Land"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>800710</Address>
+          <Offsets>
+            <Offset>15E3</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>332</ID>
+          <Description>"Vereinsname"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>008241E0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>340</ID>
+          <Description>"Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>008242C6</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>338</ID>
+          <Description>"Amateurspieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00824BF9</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>327</ID>
+      <Description>"Dynamischer Kader"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>326</ID>
+          <Description>"Vorname, dynamischer Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>9</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>007B4F4E</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>306</ID>
+          <Description>"Nachname, dynamischer Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>007B4F58</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>342</ID>
+          <Description>"First Player, Verein"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>007B4F70</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>330</ID>
+          <Description>"Nachname, dynamischer Spieler, kleinerer Kader"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>007B3950</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>366</ID>
+      <Description>"Andere Länder, andere Sitten"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>365</ID>
+          <Description>"Lierse SK"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00BF3E90</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>361</ID>
+          <Description>"Aarhus GF"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00BF4AC0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>363</ID>
+          <Description>"Aarhus, Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00BF4B98</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>367</ID>
+          <Description>"Aarhus, Land"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>BF4B33</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>362</ID>
+          <Description>"Brondby"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>19</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>00BF4BF8</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>364</ID>
+          <Description>"Brondby, Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>00BF4CD0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>368</ID>
+          <Description>"Bröndby, Land"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>BF4C6B</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>369</ID>
+      <Description>"Jugendspieler"</Description>
+      <VariableType>String</VariableType>
+      <Length>7</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>anstoss2.exe+3B4398</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>371</ID>
+      <Description>"A-Jugendspieler, Holstein Kiel"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>008774F9</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>372</ID>
+      <Description>"B-Jugendspieler, Holstein Kiel"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>008774FA</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>373</ID>
+      <Description>"C-Jugendspieler, Holstein Kiel"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>008774FB</Address>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>

@@ -170,7 +170,7 @@ namespace A2G_Trainer_XP.View
             this.Logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Logo.Image = global::A2G_Trainer_XP.Properties.Resources.Trainer_Logo;
             this.Logo.InitialImage = null;
-            this.Logo.Location = new System.Drawing.Point(427, 57);
+            this.Logo.Location = new System.Drawing.Point(421, 51);
             this.Logo.Name = "Logo";
             this.Logo.Size = new System.Drawing.Size(200, 200);
             this.Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
