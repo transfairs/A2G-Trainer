@@ -77,8 +77,10 @@ namespace A2G_Trainer_XP
         }
         private void AllClubsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            /*
             this.ShowScreen(this.ClubView, "Alle Vereine");
             this.ClubView.RefreshValues(PlayerEnums.AddressType.ALL);
+            */
         }
         private void OwnPlayersToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -90,7 +92,11 @@ namespace A2G_Trainer_XP
             this.ShowScreen(this.PlayerView, "Nächster Gegner");
             this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.OPPONENT);
         }
-
+        private void TraineeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowScreen(this.PlayerView, "Jugendspieler");
+            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.TRAINEE);
+        }
         private void DynamicTeamToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.PlayerView, "Dynamische Mannschaft");
@@ -105,12 +111,6 @@ namespace A2G_Trainer_XP
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowScreen(this.AboutView, "Über");
-        }
-
-        private void TraineeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.ShowScreen(this.PlayerView, "Jugendspieler");
-            this.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.TRAINEE);
         }
     }
 }

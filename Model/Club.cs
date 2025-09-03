@@ -241,5 +241,15 @@ namespace A2G_Trainer_XP.Model
             if (helper != null) this.OnPropertyChanged(helper);
         }
         #endregion
+
+        public bool IsClubMember(Player player)
+        {
+            if (player != null)
+            {
+                return player.ClubCountry == this.Country && player.ClubId == this.Id;
+            }
+            return false;
+        }
+
     }
 }

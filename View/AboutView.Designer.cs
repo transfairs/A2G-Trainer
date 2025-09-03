@@ -39,10 +39,12 @@ namespace A2G_Trainer_XP.View
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.AboutTab = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.Logo = new System.Windows.Forms.PictureBox();
             this.AboutBox.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.AboutTab.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Logo)).BeginInit();
             this.SuspendLayout();
             // 
             // AboutBox
@@ -55,7 +57,7 @@ namespace A2G_Trainer_XP.View
             this.AboutBox.Controls.Add(this.AboutTitleLabel);
             this.AboutBox.Location = new System.Drawing.Point(6, 6);
             this.AboutBox.Name = "AboutBox";
-            this.AboutBox.Size = new System.Drawing.Size(367, 137);
+            this.AboutBox.Size = new System.Drawing.Size(367, 144);
             this.AboutBox.TabIndex = 2;
             this.AboutBox.TabStop = false;
             this.AboutBox.Text = "Über";
@@ -72,6 +74,7 @@ namespace A2G_Trainer_XP.View
             this.GithubLinkLabel.TabStop = true;
             this.GithubLinkLabel.Text = "Github: https://github.com/transfairs/a2g-trainer";
             this.GithubLinkLabel.UseCompatibleTextRendering = true;
+            this.GithubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.GithubLinkLabel_LinkClicked);
             // 
             // AlexanderLabel
             // 
@@ -84,16 +87,17 @@ namespace A2G_Trainer_XP.View
             // 
             // StrajkLinkLabel
             // 
-            this.StrajkLinkLabel.AutoSize = true;
             this.StrajkLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(19, 7);
             this.StrajkLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.StrajkLinkLabel.Location = new System.Drawing.Point(6, 110);
             this.StrajkLinkLabel.Name = "StrajkLinkLabel";
-            this.StrajkLinkLabel.Size = new System.Drawing.Size(231, 17);
+            this.StrajkLinkLabel.Size = new System.Drawing.Size(355, 28);
             this.StrajkLinkLabel.TabIndex = 8;
             this.StrajkLinkLabel.TabStop = true;
-            this.StrajkLinkLabel.Text = "Besonderen Dank an strajk- für die Vorarbeit!";
+            this.StrajkLinkLabel.Text = "Vielen Dank an strajk- für die Vorarbeit und an 22 für den Beistand bei der Adres" +
+    "srecherche!";
             this.StrajkLinkLabel.UseCompatibleTextRendering = true;
+            this.StrajkLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.StrajkLinkLabel_LinkClicked);
             // 
             // AnstossJuengerLinkLabel
             // 
@@ -107,6 +111,7 @@ namespace A2G_Trainer_XP.View
             this.AnstossJuengerLinkLabel.TabStop = true;
             this.AnstossJuengerLinkLabel.Text = "Mit Unterstützung der Mitglieder des anstoss-juenger.de-Forums.";
             this.AnstossJuengerLinkLabel.UseCompatibleTextRendering = true;
+            this.AnstossJuengerLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.AnstossJuengerLinkLabel_LinkClicked);
             // 
             // VersionLabel
             // 
@@ -156,12 +161,26 @@ namespace A2G_Trainer_XP.View
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(379, 370);
+            this.panel1.Size = new System.Drawing.Size(379, 239);
             this.panel1.TabIndex = 4;
+            // 
+            // Logo
+            // 
+            this.Logo.BackColor = System.Drawing.Color.Transparent;
+            this.Logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.Logo.Image = global::A2G_Trainer_XP.Properties.Resources.Trainer_Logo;
+            this.Logo.InitialImage = null;
+            this.Logo.Location = new System.Drawing.Point(427, 57);
+            this.Logo.Name = "Logo";
+            this.Logo.Size = new System.Drawing.Size(200, 200);
+            this.Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Logo.TabIndex = 43;
+            this.Logo.TabStop = false;
             // 
             // AboutView
             // 
             this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
+            this.Controls.Add(this.Logo);
             this.Controls.Add(this.MainTabControl);
             this.Name = "AboutView";
             this.Size = new System.Drawing.Size(630, 423);
@@ -170,6 +189,7 @@ namespace A2G_Trainer_XP.View
             this.MainTabControl.ResumeLayout(false);
             this.AboutTab.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Logo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -186,5 +206,6 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.TabControl MainTabControl;
         private System.Windows.Forms.TabPage AboutTab;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.PictureBox Logo;
     }
 }

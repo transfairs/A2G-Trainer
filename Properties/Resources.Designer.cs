@@ -71,6 +71,16 @@ namespace A2G_Trainer_XP.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Trainer_Logo {
+            get {
+                object obj = ResourceManager.GetObject("Trainer_Logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
         /// </summary>
         internal static System.Drawing.Icon Trainer_Logo_ico {

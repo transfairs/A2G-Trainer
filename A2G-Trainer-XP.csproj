@@ -158,6 +158,7 @@
   <ItemGroup>
     <None Include="Resources\Trainer-Logo.ico" />
     <Content Include="Resources\TabControl.jpg" />
+    <None Include="Resources\Trainer-Logo.png" />
     <Content Include="Trainer-Logo.ico" />
   </ItemGroup>
   <ItemGroup />

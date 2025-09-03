@@ -20,11 +20,19 @@ namespace A2G_Trainer_XP.Controller
             this.isGog = isGog;
             this.settings = Settings.ClubAddress;
             this.UpdateBaseAddress(type);
-            this.showLog = true;
+            this.showLog = false;
             this.Club = this.GetEntity(type == PlayerEnums.AddressType.ALL ? Settings.AllClubInitialOffset.Key : "", type);
             this.showLog = false;
             // Console.WriteLine($"{club.ClubName}, {type}: {club.PlayerCount} ({club.AmateurPlayerCount})");
             this.EntityList = this.GetEntityList();
+
+            if (this.EntityList != null)
+            {
+                Club clubInList = this.EntityList.FirstOrDefault(c => c.Id == this.Club.Id && c.Country == this.Club.Country);
+                this.Club.TraineeACount = clubInList.TraineeACount;
+                this.Club.TraineeBCount = clubInList.TraineeBCount;
+                this.Club.TraineeCCount = clubInList.TraineeCCount;
+            }
         }
 
         public BindingList<Club> GetEntityList()

@@ -34,8 +34,21 @@ namespace A2G_Trainer_XP.View
         private void DisableEdits(bool enable)
         {
             this.SaveBtn.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
-            this.PlayerListView.Enabled = this.clubController.Type == PlayerEnums.AddressType.TRAINEE || enable;
-            this.ReloadBtn.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE;
+            foreach (Control tabPage in this.MainTabControl.Controls)
+            {
+                if (tabPage is TabPage)
+                {
+                    foreach (Control control in tabPage.Controls)
+                    {
+                        if (!(control is VScrollBar || control is HScrollBar))
+                            control.Enabled = enable;
+                    }
+                    if (new Control[] { this.ConstitutionTab, this.ContractTab, this.OtherTab }.Contains(tabPage))
+                    {
+                        tabPage.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
+                    }
+                }
+            }
         }
 
         #region InitMainTabControl
@@ -324,32 +337,39 @@ namespace A2G_Trainer_XP.View
         {
             if (this.IsGameRunning())
             {
+                this.processController.UpdatePlayerOffsets();
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.OWN : type);
+
                 if (type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE)
                 {
                     ushort pc = this.clubController.Club.PlayerCount;
                     byte apc = this.clubController.Club.AmateurPlayerCount;
                     this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
                     Player firstPlayer = this.playerController.EntityList.First();
-                    Club dynamic = this.clubController.EntityList.FirstOrDefault(c => c.Id == firstPlayer.ClubId && c.Country == firstPlayer.ClubCountry);
-                    if (dynamic == null)
+
+                    if (type == PlayerEnums.AddressType.DYNAMIC)
                     {
-                        this.clubController.Club.PlayerCount = pc;
-                        this.clubController.Club.AmateurPlayerCount = apc;
-                        this.clubController.Club.ClubName = "";
+                        Club dynamic = this.clubController.EntityList.FirstOrDefault(c => c.IsClubMember(firstPlayer));
+                        if (dynamic == null)
+                        {
+                            this.clubController.Club.PlayerCount = pc;
+                            this.clubController.Club.AmateurPlayerCount = apc;
+                            this.clubController.Club.ClubName = "";
+                        }
+                        this.clubController.Club = dynamic ?? this.clubController.Club;
                     }
-                    this.clubController.Club = dynamic ?? this.clubController.Club;
                     if (type == PlayerEnums.AddressType.TRAINEE)
                     {
-                        this.clubController.Club.ClubName = "Jugendspieler";
+                        this.clubController.Club.ClubName = this.clubController.Club.IsClubMember(firstPlayer) ? "Jugendspieler" : "";
+                        Console.WriteLine($"3. Spieler {firstPlayer} gehört zum Club: {this.clubController.Club.ClubName}, {this.clubController.Club.IsClubMember(firstPlayer)}");
+
                         this.clubController.Club.PlayerCount = (ushort)(this.clubController.Club.TraineeACount + this.clubController.Club.TraineeBCount + this.clubController.Club.TraineeCCount);
                         this.clubController.Club.AmateurPlayerCount = Byte.MinValue;
+                        this.clubController.Type = type;
                     }
                 }
-                if (this.playerController != null && this.clubController != null)
-                    Console.WriteLine($": {this.clubController.Club.ClubName}, {type}, {this.clubController.Type}, {this.playerController.Type}");
 
                 /* Backup solution, if PlayerCount is wrong.
                 if (type == PlayerEnums.AddressType.OPPONENT)
@@ -362,7 +382,6 @@ namespace A2G_Trainer_XP.View
                 this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
 
                 Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;
-                //Console.WriteLine($"Refresh: {player}");
                 this.PlayerListView.Items.Clear();
 
                 if (this.playerController != null)
@@ -412,7 +431,10 @@ namespace A2G_Trainer_XP.View
         }
         private void ReloadBtn_Click(object sender, EventArgs e)
         {
-            this.RefreshPlayerListView(this.playerController.Type);
+            if (this.playerController != null)
+            {
+                this.RefreshPlayerListView(this.playerController.Type);
+            }
         }
 
         private void SaveBtn_Click(object sender, EventArgs e)

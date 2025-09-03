@@ -121,6 +121,9 @@
   <data name="TabControl" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\tabcontrol.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Trainer_Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Trainer-Logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Trainer_Logo_ico" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\trainer-logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

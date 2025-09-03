@@ -19,8 +19,8 @@ namespace A2G_Trainer_XP.View
             this.AnstossJuengerLinkLabel.Links.Clear();
             this.AnstossJuengerLinkLabel.Links.Add(37, 18, "https://www.anstoss-juenger.de/index.php/topic,4619.0.html");
             this.StrajkLinkLabel.Links.Clear();
-            this.StrajkLinkLabel.Links.Add(19, 7, "https://www.anstoss-juenger.de/index.php/topic,6260.0.html");
-
+            this.StrajkLinkLabel.Links.Add(15, 7, "https://www.anstoss-juenger.de/index.php/topic,6260.0.html");
+            this.StrajkLinkLabel.Links.Add(48, 2, "https://www.anstoss-juenger.de/index.php/topic,4619.msg434382.html#msg434382");
         }
 
         public AboutView(IContainer container)
@@ -28,6 +28,29 @@ namespace A2G_Trainer_XP.View
             container.Add(this);
 
             InitializeComponent();
+        }
+        private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string url = e.Link.LinkData as string;
+            if (!string.IsNullOrEmpty(url))
+            {
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+        }
+
+        private void GithubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.LinkLabel_LinkClicked(sender, e);
+        }
+
+        private void AnstossJuengerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.LinkLabel_LinkClicked(sender, e);
+        }
+
+        private void StrajkLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.LinkLabel_LinkClicked(sender, e);
         }
     }
 }

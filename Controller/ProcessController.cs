@@ -96,6 +96,12 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
+        public void UpdatePlayerOffsets()
+        {
+            Club own = new ClubController(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN).Club;
+            new PlayerController(this.trainer.Memory, own, this.IsGog, PlayerEnums.AddressType.OWN);
+        }
+
         private void ClearGameProcess()
         {
             if (this.trainer.IsHandleCreated && this.trainer.InvokeRequired)
