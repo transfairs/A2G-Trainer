@@ -1,5 +1,4 @@
 ﻿using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.Diagnostics;
 using System.Linq;

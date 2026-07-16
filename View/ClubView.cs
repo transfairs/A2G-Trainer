@@ -1,8 +1,6 @@
 ﻿using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
-using Memory;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,15 +9,8 @@ namespace A2G_Trainer_XP.View
     public partial class ClubView : EntityView
     {
         private Club club;
-        public ClubView(Mem memory, ProcessController controller) : base(memory, controller)
+        public ClubView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
-            InitializeComponent();
-        }
-
-        public ClubView(IContainer container) : base(container)
-        {
-            container.Add(this);
-
             InitializeComponent();
         }
 

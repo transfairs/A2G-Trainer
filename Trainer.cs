@@ -1,7 +1,6 @@
 ﻿using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
 using A2G_Trainer_XP.View;
-using Memory;
 using System;
 using System.Threading;
 using System.Windows.Forms;
@@ -15,8 +14,8 @@ namespace A2G_Trainer_XP
         internal Game Anstoss { get => this.anstoss; private set => this.anstoss = value; }
         private Game anstoss;
 
-        internal Mem Memory { get => this.memory; private set => this.memory = value; }
-        private Mem memory;
+        internal ProcessMemory Memory { get => this.memory; private set => this.memory = value; }
+        private ProcessMemory memory;
 
         private UserControl current;
         internal ClubView ClubView { get => this.clubView; private set => this.clubView = value; }
@@ -36,7 +35,7 @@ namespace A2G_Trainer_XP
         {
             InitializeComponent();
 
-            this.memory = new Mem();
+            this.memory = new ProcessMemory();
             this.Anstoss = new Game();
 
             this.ShutDown = false;

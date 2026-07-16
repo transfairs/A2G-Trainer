@@ -1,5 +1,4 @@
 ﻿using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.ComponentModel;
 
@@ -12,7 +11,7 @@ namespace A2G_Trainer_XP.Controller
         internal BindingList<E> EntityList { get { return entityList; } set { entityList = value; } }
         private BindingList<E> entityList;
 
-        protected Mem memory;
+        protected ProcessMemory memory;
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,7 +22,7 @@ namespace A2G_Trainer_XP.Controller
         private PlayerEnums.AddressType type;
         protected bool isGog;
 
-        protected EntityController(Mem memory)
+        protected EntityController(ProcessMemory memory)
         {
             this.memory = memory;
             this.EntityList = new BindingList<E>();
@@ -37,7 +36,7 @@ namespace A2G_Trainer_XP.Controller
         }
 
 
-        protected string GetAddress(Mem memory, Entity entity, string baseOffset)
+        protected string GetAddress(ProcessMemory memory, Entity entity, string baseOffset)
         {
             return $"{memory.mProc.MainModule.ModuleName}+{this.baseAddress},{Tools.SumHex(new string[] { baseOffset, entity.Offset })}";
         }

@@ -1,6 +1,5 @@
 ﻿using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,8 +16,8 @@ namespace A2G_Trainer_XP.View
         protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
         protected BindingSource bindingSource;
-        internal Mem Memory { get => this.memory; private set => this.memory = value; }
-        private Mem memory;
+        internal ProcessMemory Memory { get => this.memory; private set => this.memory = value; }
+        private ProcessMemory memory;
 
         public ClubController ClubController { get => this.clubController; private set { } }
         protected ClubController clubController;
@@ -28,17 +27,7 @@ namespace A2G_Trainer_XP.View
         protected PlayerController playerController;
         protected ProcessController processController;
 
-        protected EntityView()
-        {
-            this.memory = new Mem();
-        }
-        protected EntityView(IContainer container)
-        {
-            container.Add(this);
-            this.memory = new Mem();
-        }
-
-        protected EntityView(Mem memory, ProcessController processController)
+        protected EntityView(ProcessMemory memory, ProcessController processController)
         {
             this.memory = memory;
             this.processController = processController;

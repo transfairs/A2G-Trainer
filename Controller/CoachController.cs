@@ -1,5 +1,4 @@
 ﻿using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +12,7 @@ namespace A2G_Trainer_XP.Controller
         internal Coach Coach { get { return this.coach; } set { this.coach = value; } }
         private Coach coach;
 
-        public CoachController(Mem memory, bool isGog, PlayerEnums.AddressType type) : base(memory)
+        public CoachController(ProcessMemory memory, bool isGog, PlayerEnums.AddressType type) : base(memory)
         {
             this.isGog = isGog;
             this.settings = Settings.ClubAddress;

@@ -1,8 +1,6 @@
 ﻿using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
-using Memory;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,15 +9,8 @@ namespace A2G_Trainer_XP.View
     public partial class CoachView : EntityView
     {
         private Coach coach;
-        public CoachView(Mem memory, ProcessController controller) : base(memory, controller)
+        public CoachView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
-            InitializeComponent();
-        }
-
-        public CoachView(IContainer container) : base(container)
-        {
-            container.Add(this);
-
             InitializeComponent();
         }
 

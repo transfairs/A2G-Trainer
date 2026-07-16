@@ -1,5 +1,4 @@
 ﻿using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +14,7 @@ namespace A2G_Trainer_XP.Controller
 
         private readonly bool showLog = false;
 
-        public ClubController(Mem memory, bool isGog, PlayerEnums.AddressType type, bool loadFullList = false) : base(memory)
+        public ClubController(ProcessMemory memory, bool isGog, PlayerEnums.AddressType type, bool loadFullList = false) : base(memory)
         {
             this.isGog = isGog;
             this.settings = Settings.ClubAddress;

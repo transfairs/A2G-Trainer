@@ -1,9 +1,7 @@
 ﻿using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -15,19 +13,13 @@ namespace A2G_Trainer_XP.View
     {
         private Timer freezeTimer;
 
-        public PlayerView(Mem memory, ProcessController controller) : base(memory, controller)
+        public PlayerView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();
             InitPlayerListView();
             InitializeFreezeTimer();
         }
 
-        public PlayerView(IContainer container) : base(container)
-        {
-            InitializeComponent();
-            InitPlayerListView();
-            InitializeFreezeTimer();
-        }
         private void InitPlayerListView()
         {
             this.PlayerListView.Columns.Add("Pos", 35);
@@ -336,7 +328,6 @@ namespace A2G_Trainer_XP.View
             if (this.IsGameRunning())
             {
                 this.processController.UpdatePlayerOffsets();
-                //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.OWN : type,
                     loadFullList: type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE);
@@ -370,14 +361,6 @@ namespace A2G_Trainer_XP.View
                     }
                 }
 
-                /* Backup solution, if PlayerCount is wrong.
-                if (type == PlayerEnums.AddressType.OPPONENT)
-                {
-                    String opponentName = this.Memory.ReadString($"{this.Memory.mProc.MainModule.ModuleName}+{Settings.OpponentName}", length: 19, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-                    Club opponent = this.clubController.EntityList.FirstOrDefault(c => c.ClubName == opponentName);
-                    this.clubController.Club = opponent ?? this.clubController.Club;
-                }
-                */
                 this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
 
                 Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;

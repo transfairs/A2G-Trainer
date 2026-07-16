@@ -1,5 +1,4 @@
 ﻿using A2G_Trainer_XP.Model;
-using Memory;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +14,7 @@ namespace A2G_Trainer_XP.Controller
         public String OtherOffset { get => this.otherOffset; set => otherOffset = value; }
         private String otherOffset;
 
-        public PlayerController(Mem memory, Club club, bool isGog, PlayerEnums.AddressType type) : base(memory)
+        public PlayerController(ProcessMemory memory, Club club, bool isGog, PlayerEnums.AddressType type) : base(memory)
         {
             this.isGog = isGog;
             this.settings = Settings.PlayerAddress;
