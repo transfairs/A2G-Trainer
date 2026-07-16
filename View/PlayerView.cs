@@ -70,14 +70,7 @@ namespace A2G_Trainer_XP.View
                 {
                     DataSource = this.PlayerListView.Items[0].Tag
                 };
-                /*
-                BindingSource clubBindingSource = new BindingSource
-                {
-                    DataSource = this.clubController.Club
-                };
 
-                this.ClubSelect.DataBindings.Add("SelectedValue", clubBindingSource, "ClubName");
-                */
                 this.ShowClubLabel();
                 this.DisableEdits(this.IsClub());
 
@@ -345,7 +338,8 @@ namespace A2G_Trainer_XP.View
                 this.processController.UpdatePlayerOffsets();
                 //this.DebugLabel.Text = $"{this.processController.IsGog}: {this.memory.mProc.Process.MainModule.ModuleName}, {this.memory.mProc.Process.MainModule.FileName}";
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.OWN : type);
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.OWN : type,
+                    loadFullList: type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE);
 
                 if (type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE)
                 {
@@ -463,7 +457,20 @@ namespace A2G_Trainer_XP.View
                     if (hasContractDuration) player.ContractDuration = byte.Parse(this.TeamContractDurationInput.Text);
                 }
                 this.playerController.SaveEntityList();
-                this.ClearAllFields(this.TeamBus);
+
+                HashSet<Control> frozenControls = new HashSet<Control>();
+                if (this.TeamConditionFreezeCheck.Checked)
+                {
+                    frozenControls.Add(this.TeamConditionFreezeCheck);
+                    frozenControls.Add(this.TeamConditionInput);
+                }
+                if (this.TeamFreshnessFreezeCheck.Checked)
+                {
+                    frozenControls.Add(this.TeamFreshnessFreezeCheck);
+                    frozenControls.Add(this.TeamFreshnessInput);
+                }
+                this.ClearAllFields(this.TeamBus, frozenControls);
+
                 this.RefreshPlayerListView(this.playerController.Type);
             }
         }

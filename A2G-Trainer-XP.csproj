@@ -11,6 +11,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -70,12 +71,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\CoachController.cs" />
     <Compile Include="Controller\ClubController.cs" />
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\IMemoryAccess.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
     <Compile Include="Model\AddressPresets.cs" />
+    <Compile Include="Model\CoachEnums.cs" />
+    <Compile Include="Model\Coach.cs" />
     <Compile Include="Model\ClubEnums.cs" />
     <Compile Include="Model\Addresses.cs" />
     <Compile Include="Model\PlayerEnums.cs" />
@@ -93,6 +97,12 @@
     <Compile Include="Controller\Tools.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\CoachView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\CoachView.Designer.cs">
+      <DependentUpon>CoachView.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\ClubView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +137,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\CoachView.resx">
+      <DependentUpon>CoachView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\ClubView.resx">
       <DependentUpon>ClubView.cs</DependentUpon>

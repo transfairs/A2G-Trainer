@@ -2,6 +2,7 @@
 using A2G_Trainer_XP.Model;
 using Memory;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -21,6 +22,8 @@ namespace A2G_Trainer_XP.View
 
         public ClubController ClubController { get => this.clubController; private set { } }
         protected ClubController clubController;
+        public CoachController CoachController { get => this.coachController; private set { } }
+        protected CoachController coachController;
         public PlayerController PlayerController { get => this.playerController; private set { } }
         protected PlayerController playerController;
         protected ProcessController processController;
@@ -37,14 +40,17 @@ namespace A2G_Trainer_XP.View
 
         protected EntityView(Mem memory, ProcessController processController)
         {
-            this.memory = memory;this.processController = processController;
+            this.memory = memory;
             this.processController = processController;
         }
 
-        protected void ClearAllFields(Control parent)
+        protected void ClearAllFields(Control parent, ISet<Control> exclude = null)
         {
             foreach (Control ctrl in parent.Controls)
             {
+                if (exclude != null && exclude.Contains(ctrl))
+                    continue;
+
                 if (ctrl is TextBox tb)
                     tb.Clear();
                 else if (ctrl is ComboBox cb)
@@ -54,7 +60,7 @@ namespace A2G_Trainer_XP.View
                 else if (ctrl is RadioButton rb)
                     rb.Checked = false;
                 else if (ctrl.HasChildren)
-                    ClearAllFields(ctrl);
+                    ClearAllFields(ctrl, exclude);
             }
         }
         protected bool IsGameRunning(bool silent = false)

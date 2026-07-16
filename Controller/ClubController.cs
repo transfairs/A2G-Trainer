@@ -15,7 +15,7 @@ namespace A2G_Trainer_XP.Controller
 
         private readonly bool showLog = false;
 
-        public ClubController(Mem memory, bool isGog, PlayerEnums.AddressType type) : base(memory)
+        public ClubController(Mem memory, bool isGog, PlayerEnums.AddressType type, bool loadFullList = false) : base(memory)
         {
             this.isGog = isGog;
             this.settings = Settings.ClubAddress;
@@ -24,14 +24,23 @@ namespace A2G_Trainer_XP.Controller
             this.Club = this.GetEntity(type == PlayerEnums.AddressType.ALL ? Settings.AllClubInitialOffset.Key : "", type);
             this.showLog = false;
             // Console.WriteLine($"{club.ClubName}, {type}: {club.PlayerCount} ({club.AmateurPlayerCount})");
-            this.EntityList = this.GetEntityList();
 
-            if (this.EntityList != null)
+            // Scanning every club is only needed for DYNAMIC (club-membership lookup) and
+            // TRAINEE/ALL (trainee counts / club picker) - skip it for the common OWN/OPPONENT path.
+            if (loadFullList)
             {
-                Club clubInList = this.EntityList.FirstOrDefault(c => c.Id == this.Club.Id && c.Country == this.Club.Country);
-                this.Club.TraineeACount = clubInList.TraineeACount;
-                this.Club.TraineeBCount = clubInList.TraineeBCount;
-                this.Club.TraineeCCount = clubInList.TraineeCCount;
+                this.EntityList = this.GetEntityList();
+
+                if (this.EntityList != null)
+                {
+                    Club clubInList = this.EntityList.FirstOrDefault(c => c.Id == this.Club.Id && c.Country == this.Club.Country);
+                    if (clubInList != null)
+                    {
+                        this.Club.TraineeACount = clubInList.TraineeACount;
+                        this.Club.TraineeBCount = clubInList.TraineeBCount;
+                        this.Club.TraineeCCount = clubInList.TraineeCCount;
+                    }
+                }
             }
         }
 

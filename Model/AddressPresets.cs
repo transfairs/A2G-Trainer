@@ -140,6 +140,31 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "-1")
         );
 
+        public static readonly Addresses COACH = Addresses.Create(
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRSTNAME, "34B00"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LAST_NAME, "34B0A"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LEVEL, "34B22"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.AGE, "34B24"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY_NEXT_SEASON, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB_NEXT_SEASON, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.OPTION_TO_LEAVE, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.WEALTH, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.SALARY, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.POINT_BONUS, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TROPHY_ROUND, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TITLE, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.ACHIEVED_BONUS, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CONTRACT_DURATION, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.EXTEND_OPTION, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRUST, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONALTEAM, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONAL_BONUS, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRST_STOCK_COUNTRY, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRST_STOCK_TEAM, "")
+        );
         public static Addresses OPPONENT_PLAYERS { get; private set; }
 
         public static Addresses DYNAMIC_PLAYERS { get; private set; }

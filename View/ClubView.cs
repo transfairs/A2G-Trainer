@@ -233,7 +233,8 @@ namespace A2G_Trainer_XP.View
 
 
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type,
+                    loadFullList: type == PlayerEnums.AddressType.ALL);
                 this.club = club ?? this.clubController.Club;
                 // Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
                 if (this.bindingSource != null)
