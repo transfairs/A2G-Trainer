@@ -21,15 +21,19 @@ namespace A2G_Trainer_XP.Model
         #region Helpers
         private readonly List<string> positionHelpers = new List<string>() { nameof(IsTO), nameof(IsL), nameof(IsMD), nameof(IsLV), nameof(IsRV), nameof(IsRM), nameof(IsLM), nameof(IsDM), nameof(IsOM), nameof(IsS) };
         private readonly List<string> secondaryPositionHelpers = new List<string>() { nameof(IsSecondaryTO), nameof(IsSecondaryL), nameof(IsSecondaryMD), nameof(IsSecondaryLV), nameof(IsSecondaryRV), nameof(IsSecondaryRM), nameof(IsSecondaryLM), nameof(IsSecondaryDM), nameof(IsSecondaryOM), nameof(IsSecondaryS) };
-        public bool HasFairSkin  { get => this.SkinColor.HasFlag(PlayerEnums.SkinColor.Fair);  set => this.Setter(PlayerEnums.SkinColor.Fair, value, nameof(this.HasFairSkin)); }
-        public bool HasDarkSkin  { get => this.SkinColor.HasFlag(PlayerEnums.SkinColor.Dark);  set => this.Setter(PlayerEnums.SkinColor.Dark, value, nameof(this.HasDarkSkin)); }
-        public bool HasBlackSkin { get => this.SkinColor.HasFlag(PlayerEnums.SkinColor.Black); set => this.Setter(PlayerEnums.SkinColor.Black, value, nameof(this.HasBlackSkin)); }
-        public bool HasLightBlondHair { get => this.HairColor.HasFlag(PlayerEnums.HairColor.Hellblond); set => this.Setter(PlayerEnums.HairColor.Hellblond, value, nameof(this.HasLightBlondHair)); }
-        public bool HasBlondHair      { get => this.HairColor.HasFlag(PlayerEnums.HairColor.Blond);     set => this.Setter(PlayerEnums.HairColor.Blond, value, nameof(this.HasBlondHair)); }
-        public bool HasBrownHair      { get => this.HairColor.HasFlag(PlayerEnums.HairColor.Braun);     set => this.Setter(PlayerEnums.HairColor.Braun, value, nameof(this.HasBrownHair)); }
-        public bool IsGinger          { get => this.HairColor.HasFlag(PlayerEnums.HairColor.Rot);       set => this.Setter(PlayerEnums.HairColor.Rot, value, nameof(this.IsGinger)); }
-        public bool HasBlackHair      { get => this.HairColor.HasFlag(PlayerEnums.HairColor.Schwarz);   set => this.Setter(PlayerEnums.HairColor.Schwarz, value, nameof(this.HasBlackHair)); }
-        public bool HasNoHair         { get => this.HairColor.HasFlag(PlayerEnums.HairColor.Glatze);    set => this.Setter(PlayerEnums.HairColor.Glatze, value, nameof(this.HasNoHair)); }
+        // SkinColor/HairColor are plain (non-[Flags]) enums modelling a single selection, not bits -
+        // equality is the correct test. HasFlag(x) would be wrong here even for the non-zero members,
+        // and silently always-true for the zero-valued member (Fair/Hellblond), since Enum.HasFlag(0)
+        // is defined to always return true regardless of the actual value.
+        public bool HasFairSkin  { get => this.SkinColor == PlayerEnums.SkinColor.Fair;  set => this.Setter(PlayerEnums.SkinColor.Fair, value, nameof(this.HasFairSkin)); }
+        public bool HasDarkSkin  { get => this.SkinColor == PlayerEnums.SkinColor.Dark;  set => this.Setter(PlayerEnums.SkinColor.Dark, value, nameof(this.HasDarkSkin)); }
+        public bool HasBlackSkin { get => this.SkinColor == PlayerEnums.SkinColor.Black; set => this.Setter(PlayerEnums.SkinColor.Black, value, nameof(this.HasBlackSkin)); }
+        public bool HasLightBlondHair { get => this.HairColor == PlayerEnums.HairColor.Hellblond; set => this.Setter(PlayerEnums.HairColor.Hellblond, value, nameof(this.HasLightBlondHair)); }
+        public bool HasBlondHair      { get => this.HairColor == PlayerEnums.HairColor.Blond;     set => this.Setter(PlayerEnums.HairColor.Blond, value, nameof(this.HasBlondHair)); }
+        public bool HasBrownHair      { get => this.HairColor == PlayerEnums.HairColor.Braun;     set => this.Setter(PlayerEnums.HairColor.Braun, value, nameof(this.HasBrownHair)); }
+        public bool IsGinger          { get => this.HairColor == PlayerEnums.HairColor.Rot;       set => this.Setter(PlayerEnums.HairColor.Rot, value, nameof(this.IsGinger)); }
+        public bool HasBlackHair      { get => this.HairColor == PlayerEnums.HairColor.Schwarz;   set => this.Setter(PlayerEnums.HairColor.Schwarz, value, nameof(this.HasBlackHair)); }
+        public bool HasNoHair         { get => this.HairColor == PlayerEnums.HairColor.Glatze;    set => this.Setter(PlayerEnums.HairColor.Glatze, value, nameof(this.HasNoHair)); }
         public bool HasKopfball        { get => this.Skills.HasFlag(PlayerEnums.Skills.Kopfball)        && !this.IsTO; set => this.Multiplex(PlayerEnums.Skills.Kopfball,        true, value, nameof(this.HasKopfball)); }
         public bool HasZweikampf       { get => this.Skills.HasFlag(PlayerEnums.Skills.Zweikampf)       && !this.IsTO; set => this.Multiplex(PlayerEnums.Skills.Zweikampf,       true, value, nameof(this.HasZweikampf)); }
         public bool HasSchnelligkeit   { get => this.Skills.HasFlag(PlayerEnums.Skills.Schnelligkeit)   && !this.IsTO; set => this.Multiplex(PlayerEnums.Skills.Schnelligkeit,   true, value, nameof(this.HasSchnelligkeit)); }
@@ -163,7 +167,7 @@ namespace A2G_Trainer_XP.Model
         private PlayerEnums.HairColor hairColor = 0;
         public byte Age { get => this.age; set { this.age = value; this.OnPropertyChanged(nameof(this.Age)); } }
         private byte age = 0;
-        public byte Level { get => this.level; set { this.level = value; this.OnPropertyChanged(nameof(this.Age)); } }
+        public byte Level { get => this.level; set { this.level = value; this.OnPropertyChanged(nameof(this.Level)); } }
         private byte level = 0;
         public byte Form { get => this.form; set { this.form = value; this.OnPropertyChanged(nameof(this.Form)); } }
         private byte form = 0;
@@ -293,6 +297,13 @@ namespace A2G_Trainer_XP.Model
                 this.skinColor = value;
                 this.OnPropertyChanged(nameof(this.SkinColor));
             }
+            else if (this.skinColor == value)
+            {
+                // Unchecking the currently-selected option clears back to the neutral default,
+                // rather than leaving the (now supposedly "false") color in place.
+                this.skinColor = PlayerEnums.SkinColor.Fair;
+                this.OnPropertyChanged(nameof(this.SkinColor));
+            }
             if (helper != null) this.OnPropertyChanged(helper);
         }
         protected void Setter(PlayerEnums.HairColor value, bool enabled = true, string helper = null)
@@ -300,6 +311,11 @@ namespace A2G_Trainer_XP.Model
             if (enabled)
             {
                 this.hairColor = value;
+                this.OnPropertyChanged(nameof(this.HairColor));
+            }
+            else if (this.hairColor == value)
+            {
+                this.hairColor = PlayerEnums.HairColor.Hellblond;
                 this.OnPropertyChanged(nameof(this.HairColor));
             }
             if (helper != null) this.OnPropertyChanged(helper);
@@ -329,6 +345,11 @@ namespace A2G_Trainer_XP.Model
                 this.position = pos;
                 this.OnPropertyChanged(nameof(this.Position));
             }
+            else if (this.position == pos)
+            {
+                this.position = PlayerEnums.Position.None;
+                this.OnPropertyChanged(nameof(this.Position));
+            }
             this.NotifyHelpers(this.positionHelpers);
             if (helper != null) this.OnPropertyChanged(helper);
         }
@@ -350,6 +371,11 @@ namespace A2G_Trainer_XP.Model
             if (enabled)
             {
                 this.character = character;
+                this.OnPropertyChanged(nameof(this.Character));
+            }
+            else if (this.character == character)
+            {
+                this.character = PlayerEnums.Character.Normal;
                 this.OnPropertyChanged(nameof(this.Character));
             }
             if (helper != null) this.OnPropertyChanged(helper);
@@ -379,6 +405,11 @@ namespace A2G_Trainer_XP.Model
                 this.health = health;
                 this.OnPropertyChanged(nameof(this.Health));
             }
+            else if (this.health == health)
+            {
+                this.health = PlayerEnums.Health.Normal;
+                this.OnPropertyChanged(nameof(this.Health));
+            }
             if (helper != null) this.OnPropertyChanged(helper);
         }
         private void Setter(PlayerEnums.Personality personality, bool enabled = true, string helper = null)
@@ -386,6 +417,11 @@ namespace A2G_Trainer_XP.Model
             if (enabled)
             {
                 this.personality = personality;
+                this.OnPropertyChanged(nameof(this.Personality));
+            }
+            else if (this.personality == personality)
+            {
+                this.personality = PlayerEnums.Personality.None;
                 this.OnPropertyChanged(nameof(this.Personality));
             }
             if (helper != null) this.OnPropertyChanged(helper);

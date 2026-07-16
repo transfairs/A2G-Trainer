@@ -32,7 +32,7 @@ namespace A2G_Trainer_XP.Model
         private string lastname = string.Empty;
         public byte Age { get => this.age; set { this.age = value; this.OnPropertyChanged(nameof(this.Age)); } }
         private byte age = 0;
-        public byte Level { get => this.level; set { this.level = value; this.OnPropertyChanged(nameof(this.Age)); } }
+        public byte Level { get => this.level; set { this.level = value; this.OnPropertyChanged(nameof(this.Level)); } }
         private byte level = 0;
 
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
