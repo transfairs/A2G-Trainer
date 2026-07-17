@@ -54,10 +54,10 @@ jobs:
           Set-Content -Path Properties/VersionInfo.cs -Value $content -Encoding utf8
 
       - name: Build Trainer (standard)
-        run: msbuild A2G-Trainer-XP.csproj /t:Rebuild /p:Configuration=Release /p:Platform=x86
+        run: msbuild A2G-Trainer-XP.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86
 
       - name: Build Trainer (2007 CD)
-        run: msbuild A2G-Trainer-XP.csproj /t:Rebuild /p:Configuration=Release2007CD /p:Platform=x86
+        run: msbuild A2G-Trainer-XP.csproj /restore /t:Rebuild /p:Configuration=Release2007CD /p:Platform=x86
 
       - name: Package binaries
         shell: pwsh

@@ -65,6 +65,16 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <!-- CI runners no longer ship reference assemblies for the (2010-era) .NET Framework
+         v4.0 targeted for XP compatibility - this package supplies them without needing
+         a system-wide Developer Pack install (see MSB3644). Dev-time only, PrivateAssets
+         keeps it out of the shipped trainer. -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
