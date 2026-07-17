@@ -7,6 +7,13 @@
     <RootNamespace>A2G_Trainer_XP.Tests</RootNamespace>
     <AssemblyName>A2G-Trainer-XP.Tests</AssemblyName>
     <LangVersion>7.3</LangVersion>
+    <!--
+      ProcessMemory truncates every address to uint32 (it talks to a 32-bit game). The
+      self-attach integration tests use the test process's own module base/heap pointers as
+      real addresses, so this process itself must stay in the 32-bit range for that truncation
+      to be lossless - hence forcing x86 rather than the default AnyCPU/x64 test host.
+    -->
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

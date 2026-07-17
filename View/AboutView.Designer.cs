@@ -33,6 +33,7 @@ namespace A2G_Trainer_XP.View
             this.GithubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AlexanderLabel = new System.Windows.Forms.Label();
             this.StrajkLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.StrajkPrLabel = new System.Windows.Forms.Label();
             this.AnstossJuengerLinkLabel = new System.Windows.Forms.LinkLabel();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.AboutTitleLabel = new System.Windows.Forms.Label();
@@ -52,12 +53,13 @@ namespace A2G_Trainer_XP.View
             this.AboutBox.Controls.Add(this.GithubLinkLabel);
             this.AboutBox.Controls.Add(this.AlexanderLabel);
             this.AboutBox.Controls.Add(this.StrajkLinkLabel);
+            this.AboutBox.Controls.Add(this.StrajkPrLabel);
             this.AboutBox.Controls.Add(this.AnstossJuengerLinkLabel);
             this.AboutBox.Controls.Add(this.VersionLabel);
             this.AboutBox.Controls.Add(this.AboutTitleLabel);
             this.AboutBox.Location = new System.Drawing.Point(6, 6);
             this.AboutBox.Name = "AboutBox";
-            this.AboutBox.Size = new System.Drawing.Size(367, 144);
+            this.AboutBox.Size = new System.Drawing.Size(367, 180);
             this.AboutBox.TabIndex = 2;
             this.AboutBox.TabStop = false;
             this.AboutBox.Text = "Über";
@@ -98,7 +100,16 @@ namespace A2G_Trainer_XP.View
     "srecherche!";
             this.StrajkLinkLabel.UseCompatibleTextRendering = true;
             this.StrajkLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.StrajkLinkLabel_LinkClicked);
-            // 
+            //
+            // StrajkPrLabel
+            //
+            this.StrajkPrLabel.AutoSize = true;
+            this.StrajkPrLabel.Location = new System.Drawing.Point(6, 148);
+            this.StrajkPrLabel.Name = "StrajkPrLabel";
+            this.StrajkPrLabel.Size = new System.Drawing.Size(355, 26);
+            this.StrajkPrLabel.TabIndex = 9;
+            this.StrajkPrLabel.Text = "Vielen Dank an die Contributor:\r\n- strajk-";
+            //
             // AnstossJuengerLinkLabel
             // 
             this.AnstossJuengerLinkLabel.AutoSize = true;
@@ -121,7 +132,7 @@ namespace A2G_Trainer_XP.View
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(66, 13);
             this.VersionLabel.TabIndex = 1;
-            this.VersionLabel.Text = "v0.5.0 alpha";
+            this.VersionLabel.Text = "v0.6.0-alpha";
             // 
             // AboutTitleLabel
             // 
@@ -200,6 +211,7 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.LinkLabel GithubLinkLabel;
         private System.Windows.Forms.Label AlexanderLabel;
         private System.Windows.Forms.LinkLabel StrajkLinkLabel;
+        private System.Windows.Forms.Label StrajkPrLabel;
         private System.Windows.Forms.LinkLabel AnstossJuengerLinkLabel;
         private System.Windows.Forms.Label VersionLabel;
         private System.Windows.Forms.Label AboutTitleLabel;

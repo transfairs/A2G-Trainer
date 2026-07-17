@@ -21,6 +21,8 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - ✅ Runs on **Windows XP** (built against `.NET Framework 4.0`)
 - ✅ **Club editing** (name, finances, stadium details)  
 - ✅ **Stadium editor** with up to 2 × 32,767 seats per block  
+- ✅ **Freeze condition & freshness** in the Team tab so they stay fixed while you play  
+- ✅ **Automatic reconnect** — start the trainer before or after the game, it detects a game restart or a different savegame being loaded on its own  
 - ✅ **Help section** integrated into the UI  
 - ✅ Clean WinForms UI with tabbed views and menu navigation
 - ✅ Modular MVC architecture
@@ -31,11 +33,9 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - On **Windows 11**, no additional installation is necessary.  
 
 ## 🚀 Run Instructions
-1. Start **Anstoss 2 Gold** and **load your savegame**.  
-2. Launch `A2G-Trainer-XP.exe`. The tool will automatically detect the process and allow in-game editing.  
+1. Launch `A2G-Trainer-XP.exe` and start **Anstoss 2 Gold** — either order works.  
+2. Load your savegame. The tool detects the game automatically and reconnects on its own after a game restart or when you load a different savegame.  
 3. Use the **Tool Strip** to switch to the club view (finances, stadium, etc.) or edit other teams.
-
-> 📌 [`Memory.dll`](https://github.com/transfairs/memory.dll-xp) must reside in the same folder as the executable.
 
 ## 💡 Tips & Hints
 - To assign a **negative number of seats** to a stadium block, enter any value **greater than 32,767**.  
@@ -44,8 +44,8 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 ## 🔧 Build Instructions
 1. Open the solution in **Visual Studio 2019**  
 2. Ensure the target framework is **.NET Framework 4.0**  
-3. Include [`Memory.dll`](https://github.com/transfairs/memory.dll-xp).  
-4. Build the project (`Release|x86` recommended for XP)  
+3. Build the project (`Release|x86` recommended for XP)  
+4. Optional: run the **A2G-Trainer-XP.Tests** project (xUnit) to verify core logic before building a release  
 
 ## Extras
 Included in this repository is an updated **Cheat Engine table** originally created by [strajk-](https://www.anstoss-juenger.de/index.php/topic,4619.0.html) for the original version of *Anstoss 2 Gold* (not the GOG version).

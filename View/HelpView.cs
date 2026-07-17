@@ -40,11 +40,15 @@ namespace A2G_Trainer_XP.View
 \fs20\b0\cf0
 {\fs24\b Willkommen zu A2G-Trainer-XP!}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Um mit dem Editieren loszulegen, starten Sie {\b Anstoss 2 Gold} und laden Sie einen Spielstand. Jetzt öffnen Sie den Trainer oder starten ihn neu, wenn er bereits läuft. Los geht's!\par}\par
+{\pard\qj Um mit dem Editieren loszulegen, starten Sie {\b Anstoss 2 Gold} und laden Sie einen Spielstand. Der Trainer erkennt das Spiel automatisch - egal ob Sie ihn vor oder nach dem Spiel starten. Auch nach einem Neustart des Spiels oder dem Laden eines anderen Spielstands verbindet er sich von selbst neu, ganz ohne Ihr Zutun. Los geht's!\par}\par
 
 {\fs18\qc Damit Änderungen übernommen werden, das\par {\b\cf1 Spiel nach dem Editieren speichern und den Spielstand neu laden}.\par}
 \par
 Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} unter {\b Vereine absuchen} aufzurufen.\par
+\par
+{\fs24\b Werte einfrieren (Team-Tab)}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Im Team-Tab lassen sich {\b Kondition} und {\b Frische} nicht nur einmalig setzen, sondern auch dauerhaft {\b einfrieren}: Haken Sie die Checkbox neben dem jeweiligen Wert an und tragen Sie den gewünschten Wert ein. Solange die Checkbox angehakt bleibt, schreibt der Trainer diesen Wert laufend zurück - auch wenn das Spiel ihn von selbst verändert.\par}
 ";
 
             this.TraineeHelp.Rtf = @"{\rtf1\ansi
@@ -84,24 +88,6 @@ Sie können im Spiel zwar {\b Spieler suchen}, wenn Sie {\i NORACSA} haben, dies
 -------------------------------------------------------------------------------------------------------\par
 Die {\i Dynamische Mannschaft} belegt denselben Adressbereich im Speicher Ihres Rechners wie die Jugendspieler. Hat man zuletzt auf diese geklickt, erscheinen sie hier. Besser ist es jedoch, den Menüpunkt {\b Jugendspieler} zu verwenden, da dort eine {\cf3 vollständige Liste\cf0} generiert wird.\par
 Da dieser Adressbereich vom Spiel dynamisch gefüllt wird, achten Sie bitte immer darauf, den richtigen Verein zu bearbeiten.\par";
-
-            this.TraineeHelp.Rtf = @"{\rtf1\ansi
-{\colortbl ;\red255\green0\blue0;\red0\green0\blue255;\red0\green128\blue0;}
-{\fonttbl{\f0 Arial;}}
-\fs20\b0\cf0
-{\fs24\b Jugendspieler}\par
--------------------------------------------------------------------------------------------------------\par
-Die {\i Jugendspieler} lassen sich im Trainer anzeigen, jedoch {\b nicht bearbeiten}. Jegliche Änderungen werden vom Spiel ignoriert.\par\par
-
-{\fs24\b !! Keine Vereinsansicht !!}\par
--------------------------------------------------------------------------------------------------------\par
-Um eine vollständige Liste der {\i Jugendspieler} zu erhalten, navigieren Sie im Spiel auf den {\b Transfermarkt} und klicken dann auf {\b Jugendspieler}.\par
-Anschließend verwenden Sie den Menüpunkt {\b Jugendspieler} hier im Trainer oder klicken auf {\b Team neuladen}.\par\par
-
-{\fs24\b Adressbereich}\par
--------------------------------------------------------------------------------------------------------\par
-Die {\i Jugendspieler} teilen sich denselben Adressbereich im Speicher Ihres Rechners wie die {\i Dynamische Mannschaft}. Hat man zuletzt auf einen Verein geklickt, erscheinen diese Spieler eventuell hier.\par
-Da dieser Adressbereich dynamisch gefüllt wird, sollten Sie immer den richtigen Kontext beachten.\par";
             /*
             Image img = Image.FromFile("Trainer-Logo.ico");
             Clipboard.SetImage(img);
