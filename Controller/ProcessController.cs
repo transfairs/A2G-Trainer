@@ -40,7 +40,14 @@ namespace A2G_Trainer_XP.Controller
 
             if (this.gameProcess != null)
             {
+#if FORCE_GOG_ADDRESSING
+                // 2007er-CD-Release: nutzt dieselben Speicheradressen wie GOG, läuft aber
+                // nicht über run.exe, daher greift die Namenserkennung unten nicht - Build
+                // erzwingt die GOG-Adressierung unabhängig vom erkannten Prozessnamen.
+                this.IsGog = true;
+#else
                 this.IsGog = this.gameProcess.MainModule.ModuleName.Equals("run.exe");
+#endif
                 // Console.WriteLine($"{this.gameProcess.MainModule.ModuleName}: { this.gameProcess.MainModule.ModuleName.Equals("run.exe")}, {this.IsGog}");
             }
         }
