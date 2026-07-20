@@ -46,6 +46,7 @@ namespace A2G_Trainer_XP.Controller
 
         internal void SaveEntityList()
         {
+            Logger.Debug($"Saving {this.EntityList.Count} players");
             foreach (Player p in this.EntityList)
             {
                 this.Save(p);
@@ -151,7 +152,6 @@ namespace A2G_Trainer_XP.Controller
 
         public void Save(Player player)
         {
-            Logger.Info($"Save: {player}");
             #region Overview
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));

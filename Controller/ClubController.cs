@@ -198,7 +198,7 @@ namespace A2G_Trainer_XP.Controller
         }
         public void Save()
         {
-            Logger.Info($"Save: {this.Club.ClubName}");
+            Logger.Debug($"Saving club: {this.Club.ClubName}");
 
             this.memory.WriteMemory(GetAddress(this.memory, this.Club, "0"), "string", this.Club.ClubName.PadRight(19, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, this.Club, "81C"), "string", this.Club.StadiumName.PadRight(28, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));

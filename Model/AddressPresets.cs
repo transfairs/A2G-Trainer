@@ -150,7 +150,7 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY_NEXT_SEASON, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB_NEXT_SEASON, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.OPTION_TO_LEAVE, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.WEALTH, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.WEALTH, "34B90"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.SALARY, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.POINT_BONUS, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TROPHY_ROUND, ""),
@@ -162,8 +162,10 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONALTEAM, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONAL_BONUS, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRST_STOCK_COUNTRY, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRST_STOCK_TEAM, "")
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_COUNTRY, "34BD8"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_CLUB, "34BDA"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_SHARES, "34BDC"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_PRICE, "34BE0")
         );
         public static Addresses OPPONENT_PLAYERS { get; private set; }
 

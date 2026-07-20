@@ -21,15 +21,20 @@ namespace A2G_Trainer_XP.Controller
             "A2G-Trainer-XP");
         private static readonly string LogFilePath = Path.Combine(LogDirectory, "trainer.log");
 
-        // Gated behind Settings.IsDebug so a Release build's log stays readable; Info/Warn/Error
-        // always write, since they're the ones a bug report would actually need.
+        // Debug/Info are gated behind Settings.IsDebug so the log stays empty by default and never
+        // bloats for a user who hasn't opted into debugging; Warn/Error always write, since they
+        // flag an actual problem and are what a bug report would need.
         internal static void Debug(string message)
         {
             if (Settings.IsDebug)
                 Write(LogLevel.Debug, message, null);
         }
 
-        internal static void Info(string message) => Write(LogLevel.Info, message, null);
+        internal static void Info(string message)
+        {
+            if (Settings.IsDebug)
+                Write(LogLevel.Info, message, null);
+        }
 
         internal static void Warn(string message) => Write(LogLevel.Warn, message, null);
         internal static void Warn(string message, Exception ex) => Write(LogLevel.Warn, message, ex);

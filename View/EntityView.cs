@@ -43,7 +43,12 @@ namespace A2G_Trainer_XP.View
                 if (ctrl is TextBox tb)
                     tb.Clear();
                 else if (ctrl is ComboBox cb)
+                {
                     cb.SelectedIndex = -1;
+                    // For an editable (DropDown-style) combo, SelectedIndex alone doesn't blank the
+                    // visible text - only a DropDownList combo auto-clears its text that way.
+                    cb.Text = string.Empty;
+                }
                 else if (ctrl is CheckBox chk)
                     chk.Checked = false;
                 else if (ctrl is RadioButton rb)

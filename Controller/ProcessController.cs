@@ -80,6 +80,7 @@ namespace A2G_Trainer_XP.Controller
                 return false;
 
             this.IsGog = isGogCandidate;
+            Logger.Debug($"Attached to process {candidate.Id} ({candidate.MainModule.ModuleName}), IsGog={isGogCandidate}");
             return true;
         }
 
@@ -132,15 +133,34 @@ namespace A2G_Trainer_XP.Controller
                             this.trainer.Memory.OpenProcess(this.gameProcess.Id);
                             if (!this.initialised || clubChanged)
                             {
-                                this.trainer.PlayerView.RefreshPlayerListView(this.trainer.PlayerView.PlayerController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type);
-                                this.trainer.ClubView.RefreshValues(this.trainer.ClubView.ClubController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type);
+                                // Each view's refresh/init is fault-isolated - a bad address in one
+                                // view (e.g. an unmapped field) must not stop the others from ever
+                                // getting their data or their one-time bindings wired up.
+                                this.RefreshView("PlayerView", () => this.trainer.PlayerView.RefreshPlayerListView(this.trainer.PlayerView.PlayerController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type));
+                                this.RefreshView("ClubView", () => this.trainer.ClubView.RefreshValues(this.trainer.ClubView.ClubController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type));
+                                this.RefreshView("CoachView", () =>
+                                {
+                                    var activeTrainers = CoachController.GetActiveTrainers(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN);
+                                    this.trainer.RefreshTrainerMenu(activeTrainers);
+
+                                    // If the currently shown trainer slot no longer holds a manager
+                                    // in the (possibly just-loaded) savegame, fall back to the first
+                                    // one that does - editing/saving a stale, now-invalid slot must
+                                    // become impossible rather than silently keep working on it.
+                                    int validTrainerIndex = activeTrainers.Any(t => t.Key == this.trainer.CoachView.CurrentTrainerIndex)
+                                        ? this.trainer.CoachView.CurrentTrainerIndex
+                                        : activeTrainers.Select(t => t.Key).DefaultIfEmpty(0).First();
+
+                                    this.trainer.CoachView.RefreshValues(this.trainer.CoachView.CoachController == null ? PlayerEnums.AddressType.OWN : this.trainer.CoachView.CoachController.Type, trainerIndex: validTrainerIndex);
+                                });
 
                                 // Event handlers/data bindings must only ever be wired up once per app lifetime,
                                 // not on every reconnect - re-adding them would double them up.
                                 if (!this.viewsWired)
                                 {
-                                    this.trainer.PlayerView.InitMainTabControl();
-                                    this.trainer.ClubView.InitClubTabControl();
+                                    this.RefreshView("PlayerView.Init", () => this.trainer.PlayerView.InitMainTabControl());
+                                    this.RefreshView("ClubView.Init", () => this.trainer.ClubView.InitClubTabControl());
+                                    this.RefreshView("CoachView.Init", () => this.trainer.CoachView.InitClubTabControl());
                                     this.viewsWired = true;
                                 }
                             }
@@ -155,6 +175,20 @@ namespace A2G_Trainer_XP.Controller
                         }
                     }
                 }));
+            }
+        }
+
+        // Isolates one view's refresh/init from the others - see the call sites in
+        // UpdateGameProcess for why that isolation matters.
+        private void RefreshView(string viewName, Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"{viewName} konnte nicht aktualisiert werden", ex);
             }
         }
 
@@ -181,6 +215,8 @@ namespace A2G_Trainer_XP.Controller
 
             bool justRecovered = this.sawInvalidClubState;
             this.sawInvalidClubState = false;
+            if (justRecovered)
+                Logger.Debug("Savegame reload detected, refreshing views");
             return justRecovered;
         }
 

@@ -28,8 +28,12 @@ namespace A2G_Trainer_XP.Model
             NERVES,
             NATIONALTEAM,
             NATIONAL_BONUS,
-            FIRST_STOCK_COUNTRY,
-            FIRST_STOCK_TEAM
+            // Relative offsets for stock slot 0 (Aktie 1) - every further slot (up to the
+            // game's max of 6) sits at this offset + slotIndex * 0x10, see CoachController.
+            STOCK_COUNTRY,
+            STOCK_CLUB,
+            STOCK_SHARES,
+            STOCK_PRICE
         }
     }
 }

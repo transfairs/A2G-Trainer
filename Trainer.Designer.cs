@@ -44,6 +44,7 @@ namespace A2G_Trainer_XP
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.ausAnderemVereinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamischesTeamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.trainerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.überToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,6 +62,7 @@ namespace A2G_Trainer_XP
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ansichtToolStripMenuItem,
             this.alleVereineToolStripMenuItem,
+            this.trainerToolStripMenuItem,
             this.ansichtToolStripMenuItem1});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -142,7 +144,15 @@ namespace A2G_Trainer_XP
             this.dynamischesTeamToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.dynamischesTeamToolStripMenuItem.Text = "Dynamisches Team";
             this.dynamischesTeamToolStripMenuItem.Click += new System.EventHandler(this.DynamicTeamToolStripMenuItem_Click);
-            // 
+            //
+            // trainerToolStripMenuItem
+            //
+            // DropDownItems are populated at runtime (Trainer.RefreshTrainerMenu) - only savegames
+            // with more than one active manager actually have entries here.
+            this.trainerToolStripMenuItem.Name = "trainerToolStripMenuItem";
+            this.trainerToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.trainerToolStripMenuItem.Text = "Trainer";
+            //
             // ansichtToolStripMenuItem1
             // 
             this.ansichtToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -212,6 +222,7 @@ namespace A2G_Trainer_XP
         private System.Windows.Forms.ToolStripMenuItem überToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dynamischesTeamToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem jugendspielerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem trainerToolStripMenuItem;
     }
 }
 
