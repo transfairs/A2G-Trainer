@@ -26,7 +26,7 @@ namespace A2G_Trainer_XP.Controller
         {
             this.EntityList = new BindingList<Player>();
 
-            Console.WriteLine($"{club.PlayerCount} Players found.");
+            Logger.Debug($"{club.PlayerCount} Players found.");
 
             string offset = string.Empty;
             for (int i=0; i < club.PlayerCount + club.AmateurPlayerCount; i++)
@@ -151,7 +151,7 @@ namespace A2G_Trainer_XP.Controller
 
         public void Save(Player player)
         {
-            Console.WriteLine($"Save: {player}");
+            Logger.Info($"Save: {player}");
             #region Overview
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));

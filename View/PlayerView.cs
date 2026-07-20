@@ -116,7 +116,6 @@ namespace A2G_Trainer_XP.View
                 this.FormInput.DataBindings.Add("Text", this.bindingSource, "Form");
 
                 this.FairSkin.DataBindings.Add("Checked", this.bindingSource, "HasFairSkin");
-                // Console.WriteLine($"{((Player) this.bindingSource.DataSource).HasFairSkin}, {((Player) this.bindingSource.DataSource).SkinColor}");
                 this.DarkSkin.DataBindings.Add("Checked", this.bindingSource, "HasDarkSkin");
                 this.BlackSkin.DataBindings.Add("Checked", this.bindingSource, "HasBlackSkin");
 
@@ -353,7 +352,7 @@ namespace A2G_Trainer_XP.View
                     if (type == PlayerEnums.AddressType.TRAINEE)
                     {
                         this.clubController.Club.ClubName = this.clubController.Club.IsClubMember(firstPlayer) ? "Jugendspieler" : "";
-                        Console.WriteLine($"3. Spieler {firstPlayer} gehört zum Club: {this.clubController.Club.ClubName}, {this.clubController.Club.IsClubMember(firstPlayer)}");
+                        Logger.Debug($"3. Spieler {firstPlayer} gehört zum Club: {this.clubController.Club.ClubName}, {this.clubController.Club.IsClubMember(firstPlayer)}");
 
                         this.clubController.Club.PlayerCount = (ushort)(this.clubController.Club.TraineeACount + this.clubController.Club.TraineeBCount + this.clubController.Club.TraineeCCount);
                         this.clubController.Club.AmateurPlayerCount = Byte.MinValue;
@@ -489,7 +488,7 @@ namespace A2G_Trainer_XP.View
             }
             catch (Exception ex) {
                 // Fail safely
-                Console.WriteLine("Freeze Timer Exception: " + ex.Message);
+                Logger.Warn("Freeze Timer Exception", ex);
             }
         }
 

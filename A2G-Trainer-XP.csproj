@@ -91,6 +91,7 @@
     <Compile Include="Controller\ClubController.cs" />
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\ProcessMemory.cs" />
+    <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
     <Compile Include="Model\AddressPresets.cs" />

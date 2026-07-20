@@ -33,23 +33,54 @@ namespace A2G_Trainer_XP.Controller
             if (this.gameProcess != null && !this.gameProcess.HasExited)
                 return;
 
-            this.gameProcess = Process.GetProcesses()
-                .FirstOrDefault(p =>
+            var candidates = Process.GetProcesses()
+                .Where(p =>
                     p.MainWindowTitle.StartsWith("ANSTOSS 2") &&
                     !p.MainWindowTitle.Contains("Dateneditor"));
 
-            if (this.gameProcess != null)
+            // The game itself can pop up further top-level windows also titled "ANSTOSS 2 ..."
+            // (e.g. dialogs), so the title prefix alone can't tell those apart from the real game
+            // process - confirm a candidate actually holds readable club data before latching onto
+            // it, instead of trusting whichever one happens to be first.
+            foreach (Process candidate in candidates)
             {
-#if FORCE_GOG_ADDRESSING
-                // 2007er-CD-Release: nutzt dieselben Speicheradressen wie GOG, läuft aber
-                // nicht über run.exe, daher greift die Namenserkennung unten nicht - Build
-                // erzwingt die GOG-Adressierung unabhängig vom erkannten Prozessnamen.
-                this.IsGog = true;
-#else
-                this.IsGog = this.gameProcess.MainModule.ModuleName.Equals("run.exe");
-#endif
-                // Console.WriteLine($"{this.gameProcess.MainModule.ModuleName}: { this.gameProcess.MainModule.ModuleName.Equals("run.exe")}, {this.IsGog}");
+                if (TryAttach(candidate))
+                {
+                    this.gameProcess = candidate;
+                    return;
+                }
             }
+        }
+
+        private bool TryAttach(Process candidate)
+        {
+            if (!this.trainer.Memory.OpenProcess(candidate.Id))
+                return false;
+
+#if FORCE_GOG_ADDRESSING
+            // 2007er-CD-Release: nutzt dieselben Speicheradressen wie GOG, läuft aber
+            // nicht über run.exe, daher greift die Namenserkennung unten nicht - Build
+            // erzwingt die GOG-Adressierung unabhängig vom erkannten Prozessnamen.
+            bool isGogCandidate = true;
+#else
+            bool isGogCandidate = candidate.MainModule.ModuleName.Equals("run.exe");
+#endif
+
+            Club own;
+            try
+            {
+                own = new ClubController(this.trainer.Memory, isGogCandidate, PlayerEnums.AddressType.OWN).Club;
+            }
+            catch
+            {
+                return false;
+            }
+
+            if (own == null || own.PlayerCount <= 0)
+                return false;
+
+            this.IsGog = isGogCandidate;
+            return true;
         }
 
         internal void Observe()
@@ -74,7 +105,7 @@ namespace A2G_Trainer_XP.Controller
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception in Observe(): {ex.Message}");
+                Logger.Error("Exception in Observe()", ex);
             }
         }
 
@@ -101,7 +132,6 @@ namespace A2G_Trainer_XP.Controller
                             this.trainer.Memory.OpenProcess(this.gameProcess.Id);
                             if (!this.initialised || clubChanged)
                             {
-                                // Console.WriteLine($"PC: {this.trainer.PlayerView.PlayerController}");
                                 this.trainer.PlayerView.RefreshPlayerListView(this.trainer.PlayerView.PlayerController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type);
                                 this.trainer.ClubView.RefreshValues(this.trainer.ClubView.ClubController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type);
 
@@ -119,7 +149,9 @@ namespace A2G_Trainer_XP.Controller
                         catch (Exception ex)
                         {
                             this.initialised = false;
-                            Console.WriteLine("Konnte Prozess nicht öffnen: " + ex.Message);
+                            // Expected right after a fresh game launch (see comment above) - retried
+                            // every tick, so Warn rather than Error.
+                            Logger.Warn("Konnte Prozess nicht öffnen", ex);
                         }
                     }
                 }));

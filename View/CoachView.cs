@@ -42,6 +42,11 @@ namespace A2G_Trainer_XP.View
 
                 this.coachController = new CoachController(this.Memory, this.processController.IsGog, type);
                 this.coach = coach ?? this.CoachController.Coach;
+                // Keep the controller pointed at the exact object the UI is bound to - otherwise a
+                // caller-supplied coach (e.g. SaveBtn_Click re-displaying what it just saved) leaves
+                // coachController.Coach as the freshly-read (now stale) instance, and the next Save()
+                // silently writes that stale object instead of the user's newest edits.
+                this.coachController.Coach = this.coach;
 
                 if (this.bindingSource != null)
                 {

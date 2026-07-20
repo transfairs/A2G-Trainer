@@ -44,7 +44,7 @@ namespace A2G_Trainer_XP.Controller
 
         public void Save()
         {
-            Console.WriteLine($"Save: {this.Coach.Firstname} {this.Coach.Lastname}");
+            Logger.Info($"Save: {this.Coach.Firstname} {this.Coach.Lastname}");
 
             this.memory.WriteMemory(GetAddress(this.memory, this.Coach, this.Coach.Addresses[CoachEnums.AddressKey.FIRSTNAME]), "string", this.Coach.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, this.Coach, this.Coach.Addresses[CoachEnums.AddressKey.LAST_NAME]), "string", this.Coach.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));

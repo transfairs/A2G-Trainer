@@ -227,7 +227,11 @@ namespace A2G_Trainer_XP.View
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type,
                     loadFullList: type == PlayerEnums.AddressType.ALL);
                 this.club = club ?? this.clubController.Club;
-                // Console.WriteLine($"Verdienste: {this.club.EarningsLeagueGames}");
+                // Keep the controller pointed at the exact object the UI is bound to - otherwise a
+                // caller-supplied club (e.g. SaveBtn_Click re-displaying what it just saved) leaves
+                // clubController.Club as the freshly-read (now stale) instance, and the next Save()
+                // silently writes that stale object instead of the user's newest edits.
+                this.clubController.Club = this.club;
                 if (this.bindingSource != null)
                 {
                     this.bindingSource.DataSource = this.club;

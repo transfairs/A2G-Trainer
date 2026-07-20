@@ -12,17 +12,12 @@ namespace A2G_Trainer_XP.Controller
         internal Club Club { get { return this.club; } set { this.club = value; } }
         private Club club;
 
-        private readonly bool showLog = false;
-
         public ClubController(ProcessMemory memory, bool isGog, PlayerEnums.AddressType type, bool loadFullList = false) : base(memory)
         {
             this.isGog = isGog;
             this.settings = Settings.ClubAddress;
             this.UpdateBaseAddress(type);
-            this.showLog = false;
             this.Club = this.GetEntity(type == PlayerEnums.AddressType.ALL ? Settings.AllClubInitialOffset.Key : "", type);
-            this.showLog = false;
-            // Console.WriteLine($"{club.ClubName}, {type}: {club.PlayerCount} ({club.AmateurPlayerCount})");
 
             // Scanning every club is only needed for DYNAMIC (club-membership lookup) and
             // TRAINEE/ALL (trainee counts / club picker) - skip it for the common OWN/OPPONENT path.
@@ -130,8 +125,7 @@ namespace A2G_Trainer_XP.Controller
                 club.Id = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.ID]));
                 club.Country = (PlayerEnums.Country) this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.COUNTRY]));
 
-                if (this.showLog)
-                    Console.WriteLine($"{club.ClubName}: {club.Id} ({club.Country}), {club.PlayerCount} ({club.AmateurPlayerCount}), ({club.TraineeACount}, {club.TraineeBCount}, {club.TraineeCCount})");
+                Logger.Debug($"{club.ClubName}: {club.Id} ({club.Country}), {club.PlayerCount} ({club.AmateurPlayerCount}), ({club.TraineeACount}, {club.TraineeBCount}, {club.TraineeCCount})");
 
 
                 if (type == PlayerEnums.AddressType.OWN)
@@ -204,7 +198,7 @@ namespace A2G_Trainer_XP.Controller
         }
         public void Save()
         {
-            Console.WriteLine($"Save: {this.Club.ClubName}");
+            Logger.Info($"Save: {this.Club.ClubName}");
 
             this.memory.WriteMemory(GetAddress(this.memory, this.Club, "0"), "string", this.Club.ClubName.PadRight(19, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, this.Club, "81C"), "string", this.Club.StadiumName.PadRight(28, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
