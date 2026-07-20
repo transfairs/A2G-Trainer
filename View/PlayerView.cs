@@ -340,12 +340,18 @@ namespace A2G_Trainer_XP.View
 
                     if (type == PlayerEnums.AddressType.DYNAMIC)
                     {
+                        // The club table we scan only covers leagues the game actually models (~27
+                        // countries) - a dynamic club from a country outside that set (e.g. Slowakei)
+                        // will never show up here even though it was read correctly below. Only the
+                        // direct read's PlayerCount/AmateurPlayerCount get clobbered by constructing
+                        // the PlayerController above, so those are restored - the already-correct
+                        // ClubName is kept rather than blanked.
                         Club dynamic = this.clubController.EntityList.FirstOrDefault(c => c.IsClubMember(firstPlayer));
+                        Logger.Debug($"Dynamic match: firstPlayer ClubId={firstPlayer.ClubId} ClubCountry={firstPlayer.ClubCountry} -> {(dynamic != null ? $"found {dynamic.ClubName} ({dynamic.Id}, {dynamic.Country}), {dynamic.PlayerCount} players" : "NOT found in EntityList (keeping direct-read club)")}");
                         if (dynamic == null)
                         {
                             this.clubController.Club.PlayerCount = pc;
                             this.clubController.Club.AmateurPlayerCount = apc;
-                            this.clubController.Club.ClubName = "";
                         }
                         this.clubController.Club = dynamic ?? this.clubController.Club;
                     }

@@ -34,6 +34,8 @@ namespace A2G_Trainer_XP.Model
         private byte age = 0;
         public byte Level { get => this.level; set { this.level = value; this.OnPropertyChanged(nameof(this.Level)); } }
         private byte level = 0;
+        public CoachEnums.Difficulty Difficulty { get => this.difficulty; set { this.difficulty = value; this.OnPropertyChanged(nameof(this.Difficulty)); } }
+        private CoachEnums.Difficulty difficulty = CoachEnums.Difficulty.Realistisch;
 
         // Game supports up to 4 human-controlled managers per savegame; a save can use fewer.
         public const int MaxTrainers = 4;

@@ -162,11 +162,17 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONALTEAM, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONAL_BONUS, ""),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.DIFFICULTY, "34B34"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_COUNTRY, "34BD8"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_CLUB, "34BDA"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_SHARES, "34BDC"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_PRICE, "34BE0")
         );
+        public static readonly Addresses LEAGUE_SETTINGS = Addresses.Create(
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.MAIN_COUNTRY, "3940"),
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.ADDITIONAL_COUNTRY, "3944")
+        );
+
         public static Addresses OPPONENT_PLAYERS { get; private set; }
 
         public static Addresses DYNAMIC_PLAYERS { get; private set; }

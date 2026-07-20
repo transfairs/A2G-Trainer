@@ -53,27 +53,36 @@ namespace A2G_Trainer_XP.Controller
                 string lastTraineeOffset = clubRegion.Key;
                 for (ushort i = 0; i <= clubRegion.Value.Item1; i++)
                 {
-                    string offset = clubRegion.Key;
-                    if (i > 0)
+                    // One bad slot (e.g. an unmapped pointer target) must not abort the whole
+                    // 294+100-entry scan - skip it and keep going.
+                    try
                     {
-                        offset = Tools.SumHex(new string[] { output.Last().Offset, clubRegion.Value.Item2 == PlayerEnums.AddressType.ALL ? Settings.ClubOffset : Settings.NonPlayableOffset });
-                    }
-                    Club c = this.GetEntity(offset, clubRegion.Value.Item2);
-
-                    if (clubRegion.Value.Item2 == PlayerEnums.AddressType.ALL)
-                    {
-                        string offsetBackup = c.Offset;
+                        string offset = clubRegion.Key;
                         if (i > 0)
                         {
-                            lastTraineeOffset = Tools.SumHex(new string[] { lastTraineeOffset, Settings.AllTraineeOffset });
+                            offset = Tools.SumHex(new string[] { output.Last().Offset, clubRegion.Value.Item2 == PlayerEnums.AddressType.ALL ? Settings.ClubOffset : Settings.NonPlayableOffset });
                         }
-                        c.Offset = lastTraineeOffset;
-                        this.GetTraineeCount(c);
-                        lastTraineeOffset = c.Offset;
-                        c.Offset = offsetBackup;
-                    }
+                        Club c = this.GetEntity(offset, clubRegion.Value.Item2);
 
-                    output.Add(c);
+                        if (clubRegion.Value.Item2 == PlayerEnums.AddressType.ALL)
+                        {
+                            string offsetBackup = c.Offset;
+                            if (i > 0)
+                            {
+                                lastTraineeOffset = Tools.SumHex(new string[] { lastTraineeOffset, Settings.AllTraineeOffset });
+                            }
+                            c.Offset = lastTraineeOffset;
+                            this.GetTraineeCount(c);
+                            lastTraineeOffset = c.Offset;
+                            c.Offset = offsetBackup;
+                        }
+
+                        output.Add(c);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Warn($"Club scan: skipping slot i={i} in region {clubRegion.Value.Item2}", ex);
+                    }
                 }
             }
 

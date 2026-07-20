@@ -21,6 +21,15 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
+        public void CountrySelectionAddress_SecondEntry_IsBaseAddressPlusGogOffset()
+        {
+            // Shares the club pointer (0x400710) - league settings hang off the same struct, not a
+            // separate static pointer.
+            Assert.Equal("0x400710", Settings.CountrySelectionAddress[0]);
+            Assert.Equal(Tools.SumHex(new[] { "0x400710", "3140" }), Settings.CountrySelectionAddress[1]);
+        }
+
+        [Fact]
         public void AllClubInitialOffset_TargetsAllAddressType()
         {
             Assert.Equal(PlayerEnums.AddressType.ALL, Settings.AllClubInitialOffset.Value.Item2);
@@ -31,7 +40,7 @@ namespace A2G_Trainer_XP.Tests
         public void NonPlayableInitialOffset_TargetsNonPlayableAddressType()
         {
             Assert.Equal(PlayerEnums.AddressType.NON_PLAYABLE, Settings.NonPlayableInitialOffset.Value.Item2);
-            Assert.Equal((ushort)100, Settings.NonPlayableInitialOffset.Value.Item1);
+            Assert.Equal((ushort)130, Settings.NonPlayableInitialOffset.Value.Item1);
         }
     }
 }

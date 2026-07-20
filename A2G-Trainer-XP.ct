@@ -1986,6 +1986,61 @@
       <ZeroTerminate>1</ZeroTerminate>
       <Address>00859158</Address>
     </CheatEntry>
+    <CheatEntry>
+      <ID>395</ID>
+      <Description>"No description"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>anstoss2.exe+8AEA00</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>396</ID>
+      <Description>"Schwierigkeit"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>00857834</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>398</ID>
+      <Description>"No description"</Description>
+      <VariableType>String</VariableType>
+      <Length>7</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>anstoss2.exe+3B0BC8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>400</ID>
+      <Description>"No description"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>anstoss2.exe+3A484C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>401</ID>
+      <Description>"No description"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>anstoss2.exe+3AFD2F</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>402</ID>
+      <Description>"Hauptland"</Description>
+      <VariableType>Byte</VariableType>
+      <Address>anstoss2.exe+426640</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>403</ID>
+      <Description>"Zusatzland"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>00826644</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>404</ID>
+      <Description>"Zweites Zusatzland"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Byte</VariableType>
+      <Address>00826646</Address>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>

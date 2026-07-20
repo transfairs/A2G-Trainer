@@ -6,12 +6,13 @@ namespace A2G_Trainer_XP.Controller
 {
     static class Settings
     {
-        private const bool   debug                    = false;
+        private const bool   debug                    = true;
         private const ushort clubCount                = 294;
-        private const ushort nonPlayableCount         = 100;
+        private const ushort nonPlayableCount         = 130;
 
         private const string playerAddress            = "0x423690";
         private const string clubAddress              = "0x400710";
+        private const string countrySelectionAddress  = "0x400710";
 
         private const string gogOffset                = "3140";
         private const string playerOffset             = "178";
@@ -36,5 +37,6 @@ namespace A2G_Trainer_XP.Controller
 
         internal static string[] PlayerAddress = { playerAddress, Tools.SumHex(new string[] { playerAddress, gogOffset }) };
         internal static string[] ClubAddress   = { clubAddress,   Tools.SumHex(new string[] { clubAddress, gogOffset   }) };
+        internal static string[] CountrySelectionAddress = { countrySelectionAddress, Tools.SumHex(new string[] { countrySelectionAddress, gogOffset }) };
     }
 }

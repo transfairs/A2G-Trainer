@@ -51,6 +51,25 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
+        public void Coach_Difficulty_ResolvesToAddressForTrainerSlotZero()
+        {
+            // 34B00 (FIRSTNAME base for trainer slot 0, absolute 857800) + 34 = absolute 857834.
+            Assert.Equal("34B34", AddressPresets.COACH[CoachEnums.AddressKey.DIFFICULTY]);
+        }
+
+        [Fact]
+        public void LeagueSettings_MainCountry_IsAtBaseAddress()
+        {
+            Assert.Equal("3940", AddressPresets.LEAGUE_SETTINGS[LeagueEnums.AddressKey.MAIN_COUNTRY]);
+        }
+
+        [Fact]
+        public void LeagueSettings_AdditionalCountry_IsFourBytesPastMainCountry()
+        {
+            Assert.Equal("3944", AddressPresets.LEAGUE_SETTINGS[LeagueEnums.AddressKey.ADDITIONAL_COUNTRY]);
+        }
+
+        [Fact]
         public void From_Players_Own_ReturnsOwnPlayerPreset()
         {
             Addresses own = AddressPresets.From(PlayerEnums.AddressType.OWN, isClub: false);

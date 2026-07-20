@@ -48,5 +48,18 @@ namespace A2G_Trainer_XP.Tests
             Assert.Equal((byte)7, coach.Level);
             Assert.Contains(nameof(Coach.Level), raised);
         }
+
+        [Fact]
+        public void Difficulty_Set_RaisesPropertyChanged()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            coach.Difficulty = CoachEnums.Difficulty.UltraViolence;
+
+            Assert.Equal(CoachEnums.Difficulty.UltraViolence, coach.Difficulty);
+            Assert.Contains(nameof(Coach.Difficulty), raised);
+        }
     }
 }

@@ -21,6 +21,12 @@ namespace A2G_Trainer_XP.Controller
         // even when it's the same club/country as before (so Id/Country alone can't tell them apart).
         private bool sawInvalidClubState;
 
+        // Ending a turn in a hot-seat savegame swaps the next human manager's club straight into the
+        // "own club" slot without ever dipping through the invalid state above - tracked separately so
+        // that handoff (a change of Id/Country between two otherwise-valid reads) still triggers a refresh.
+        private byte? lastOwnClubId;
+        private PlayerEnums.Country? lastOwnClubCountry;
+
         public ProcessController(Trainer trainer)
         {
             this.trainer = trainer;
@@ -116,9 +122,10 @@ namespace A2G_Trainer_XP.Controller
             {
                 this.trainer.Invoke((MethodInvoker)(() =>
                 {
-                    // Once settled, also watch for the user loading a different savegame in the
-                    // still-running game (no process change, so the checks below wouldn't catch it).
-                    bool clubChanged = this.initialised && this.DetectReload();
+                    // Once settled, also watch for the user loading a different savegame, or the active
+                    // trainer changing (turn handoff), in the still-running game (no process change, so
+                    // the checks below wouldn't catch it).
+                    bool clubChanged = this.initialised && this.DetectOwnClubChange();
 
                     // Also retry (not just on a new PID) while !initialised: right after a fresh game
                     // launch, its club/player memory may not be populated yet, so the first read attempt
@@ -192,14 +199,17 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
-        // Returns true exactly once: the tick where the own club goes from unreadable/empty back to
-        // valid again - i.e. the moment a savegame load (same club or not) just finished.
-        private bool DetectReload()
+        // Returns true on the tick where either (a) the own club goes from unreadable/empty back to
+        // valid again - i.e. a savegame load (same club or not) just finished - or (b) two consecutive
+        // valid reads show a different club Id/Country - i.e. a turn handoff to another trainer just
+        // happened, without ever dipping through the invalid state.
+        private bool DetectOwnClubChange()
         {
             bool isValid;
+            Club own = null;
             try
             {
-                Club own = new ClubController(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN).Club;
+                own = new ClubController(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN).Club;
                 isValid = own != null && own.PlayerCount > 0;
             }
             catch
@@ -215,9 +225,18 @@ namespace A2G_Trainer_XP.Controller
 
             bool justRecovered = this.sawInvalidClubState;
             this.sawInvalidClubState = false;
+
+            bool handoffDetected = this.lastOwnClubId.HasValue &&
+                (this.lastOwnClubId.Value != own.Id || this.lastOwnClubCountry.Value != own.Country);
+            this.lastOwnClubId = own.Id;
+            this.lastOwnClubCountry = own.Country;
+
             if (justRecovered)
                 Logger.Debug("Savegame reload detected, refreshing views");
-            return justRecovered;
+            if (handoffDetected)
+                Logger.Debug("Trainer handoff detected (own club changed), refreshing views");
+
+            return justRecovered || handoffDetected;
         }
 
         public void UpdatePlayerOffsets()

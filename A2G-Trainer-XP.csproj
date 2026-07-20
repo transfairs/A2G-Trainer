@@ -90,6 +90,7 @@
     <Compile Include="Controller\CoachController.cs" />
     <Compile Include="Controller\ClubController.cs" />
     <Compile Include="Controller\EntityController.cs" />
+    <Compile Include="Controller\LeagueController.cs" />
     <Compile Include="Controller\ProcessMemory.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\PlayerController.cs" />
@@ -97,6 +98,8 @@
     <Compile Include="Model\AddressPresets.cs" />
     <Compile Include="Model\CoachEnums.cs" />
     <Compile Include="Model\Coach.cs" />
+    <Compile Include="Model\LeagueEnums.cs" />
+    <Compile Include="Model\LeagueSettings.cs" />
     <Compile Include="Model\Stock.cs" />
     <Compile Include="Model\ClubEnums.cs" />
     <Compile Include="Model\Addresses.cs" />

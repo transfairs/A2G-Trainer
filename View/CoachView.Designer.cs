@@ -42,18 +42,28 @@ namespace A2G_Trainer_XP.View
             this.LastNameInput = new System.Windows.Forms.TextBox();
             this.FirstNameLabel = new System.Windows.Forms.Label();
             this.FirstNameInput = new System.Windows.Forms.TextBox();
+            this.DifficultyLabel = new System.Windows.Forms.Label();
+            this.DifficultyInput = new System.Windows.Forms.ComboBox();
             this.StocksTab = new System.Windows.Forms.TabPage();
+            this.LeagueTab = new System.Windows.Forms.TabPage();
+            this.LeagueBox = new System.Windows.Forms.GroupBox();
+            this.MainCountryLabel = new System.Windows.Forms.Label();
+            this.MainCountryInput = new System.Windows.Forms.ComboBox();
+            this.AdditionalCountriesBox = new System.Windows.Forms.GroupBox();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.ReloadBtn = new System.Windows.Forms.Button();
             this.ClubTabControl.SuspendLayout();
             this.GeneralTab.SuspendLayout();
             this.PersonalBox.SuspendLayout();
+            this.LeagueTab.SuspendLayout();
+            this.LeagueBox.SuspendLayout();
             this.SuspendLayout();
             //
             // ClubTabControl
             //
             this.ClubTabControl.Controls.Add(this.GeneralTab);
             this.ClubTabControl.Controls.Add(this.StocksTab);
+            this.ClubTabControl.Controls.Add(this.LeagueTab);
             this.ClubTabControl.Location = new System.Drawing.Point(20, 13);
             this.ClubTabControl.Name = "ClubTabControl";
             this.ClubTabControl.SelectedIndex = 0;
@@ -83,9 +93,11 @@ namespace A2G_Trainer_XP.View
             this.PersonalBox.Controls.Add(this.LastNameInput);
             this.PersonalBox.Controls.Add(this.FirstNameLabel);
             this.PersonalBox.Controls.Add(this.FirstNameInput);
+            this.PersonalBox.Controls.Add(this.DifficultyLabel);
+            this.PersonalBox.Controls.Add(this.DifficultyInput);
             this.PersonalBox.Location = new System.Drawing.Point(6, 6);
             this.PersonalBox.Name = "PersonalBox";
-            this.PersonalBox.Size = new System.Drawing.Size(220, 195);
+            this.PersonalBox.Size = new System.Drawing.Size(220, 225);
             this.PersonalBox.TabIndex = 41;
             this.PersonalBox.TabStop = false;
             this.PersonalBox.Text = "Persönliche Daten";
@@ -173,6 +185,23 @@ namespace A2G_Trainer_XP.View
             this.WealthInput.TabIndex = 5;
             this.WealthInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             //
+            // DifficultyLabel
+            //
+            this.DifficultyLabel.AutoSize = true;
+            this.DifficultyLabel.Location = new System.Drawing.Point(7, 196);
+            this.DifficultyLabel.Name = "DifficultyLabel";
+            this.DifficultyLabel.Size = new System.Drawing.Size(80, 13);
+            this.DifficultyLabel.TabIndex = 49;
+            this.DifficultyLabel.Text = "Schwierigkeit";
+            //
+            // DifficultyInput
+            //
+            this.DifficultyInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DifficultyInput.Location = new System.Drawing.Point(90, 193);
+            this.DifficultyInput.Name = "DifficultyInput";
+            this.DifficultyInput.Size = new System.Drawing.Size(120, 21);
+            this.DifficultyInput.TabIndex = 6;
+            //
             // StocksTab
             //
             // Stock boxes (up to Coach.MaxStocks) are built at runtime in CoachView.cs, since their
@@ -185,6 +214,58 @@ namespace A2G_Trainer_XP.View
             this.StocksTab.TabIndex = 1;
             this.StocksTab.Text = "Aktien";
             this.StocksTab.UseVisualStyleBackColor = true;
+            //
+            // LeagueTab
+            //
+            this.LeagueTab.Controls.Add(this.LeagueBox);
+            this.LeagueTab.Controls.Add(this.AdditionalCountriesBox);
+            this.LeagueTab.Location = new System.Drawing.Point(4, 22);
+            this.LeagueTab.Name = "LeagueTab";
+            this.LeagueTab.Padding = new System.Windows.Forms.Padding(3);
+            this.LeagueTab.Size = new System.Drawing.Size(586, 346);
+            this.LeagueTab.TabIndex = 2;
+            this.LeagueTab.Text = "Länderauswahl";
+            this.LeagueTab.UseVisualStyleBackColor = true;
+            //
+            // LeagueBox
+            //
+            this.LeagueBox.Controls.Add(this.MainCountryLabel);
+            this.LeagueBox.Controls.Add(this.MainCountryInput);
+            this.LeagueBox.Location = new System.Drawing.Point(6, 6);
+            this.LeagueBox.Name = "LeagueBox";
+            this.LeagueBox.Size = new System.Drawing.Size(220, 60);
+            this.LeagueBox.TabIndex = 50;
+            this.LeagueBox.TabStop = false;
+            this.LeagueBox.Text = "Hauptland";
+            //
+            // MainCountryLabel
+            //
+            this.MainCountryLabel.AutoSize = true;
+            this.MainCountryLabel.Location = new System.Drawing.Point(7, 24);
+            this.MainCountryLabel.Name = "MainCountryLabel";
+            this.MainCountryLabel.Size = new System.Drawing.Size(31, 13);
+            this.MainCountryLabel.TabIndex = 51;
+            this.MainCountryLabel.Text = "Land";
+            //
+            // MainCountryInput
+            //
+            this.MainCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MainCountryInput.Location = new System.Drawing.Point(90, 21);
+            this.MainCountryInput.Name = "MainCountryInput";
+            this.MainCountryInput.Size = new System.Drawing.Size(120, 21);
+            this.MainCountryInput.TabIndex = 7;
+            //
+            // AdditionalCountriesBox
+            //
+            // The up to LeagueSettings.MaxAdditionalCountries combos are built at runtime in
+            // CoachView.cs, since their count is a game-data constant, not something the Designer
+            // can express statically (mirrors StocksTab's stock boxes).
+            this.AdditionalCountriesBox.Location = new System.Drawing.Point(6, 72);
+            this.AdditionalCountriesBox.Name = "AdditionalCountriesBox";
+            this.AdditionalCountriesBox.Size = new System.Drawing.Size(220, 160);
+            this.AdditionalCountriesBox.TabIndex = 52;
+            this.AdditionalCountriesBox.TabStop = false;
+            this.AdditionalCountriesBox.Text = "Bonusländer";
             //
             // SaveBtn
             //
@@ -218,6 +299,9 @@ namespace A2G_Trainer_XP.View
             this.GeneralTab.ResumeLayout(false);
             this.PersonalBox.ResumeLayout(false);
             this.PersonalBox.PerformLayout();
+            this.LeagueTab.ResumeLayout(false);
+            this.LeagueBox.ResumeLayout(false);
+            this.LeagueBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -239,6 +323,13 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.TextBox FirstNameInput;
         private System.Windows.Forms.Label WealthLabel;
         private System.Windows.Forms.TextBox WealthInput;
+        private System.Windows.Forms.Label DifficultyLabel;
+        private System.Windows.Forms.ComboBox DifficultyInput;
         private System.Windows.Forms.TabPage StocksTab;
+        private System.Windows.Forms.TabPage LeagueTab;
+        private System.Windows.Forms.GroupBox LeagueBox;
+        private System.Windows.Forms.Label MainCountryLabel;
+        private System.Windows.Forms.ComboBox MainCountryInput;
+        private System.Windows.Forms.GroupBox AdditionalCountriesBox;
     }
 }

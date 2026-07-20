@@ -43,6 +43,7 @@ namespace A2G_Trainer_XP.Controller
                 coach.Lastname  = this.memory.ReadString(GetAddress(this.memory, coach, coach.Addresses[CoachEnums.AddressKey.LAST_NAME]), length: 15, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
                 coach.Level     = (byte)this.memory.ReadByte(GetAddress(this.memory, coach, coach.Addresses[CoachEnums.AddressKey.LEVEL]));
                 coach.Age       = (byte)this.memory.ReadByte(GetAddress(this.memory, coach, coach.Addresses[CoachEnums.AddressKey.AGE]));
+                coach.Difficulty = (CoachEnums.Difficulty)this.memory.ReadByte(GetAddress(this.memory, coach, coach.Addresses[CoachEnums.AddressKey.DIFFICULTY]));
 
                 for (int slot = 0; slot < coach.Stocks.Length; slot++)
                 {
@@ -96,6 +97,7 @@ namespace A2G_Trainer_XP.Controller
 
             this.memory.WriteBytes(GetAddress(this.memory, this.Coach, this.Coach.Addresses[CoachEnums.AddressKey.LEVEL]), new byte[] { this.Coach.Level });
             this.memory.WriteBytes(GetAddress(this.memory, this.Coach, this.Coach.Addresses[CoachEnums.AddressKey.AGE]), new byte[] { this.Coach.Age });
+            this.memory.WriteBytes(GetAddress(this.memory, this.Coach, this.Coach.Addresses[CoachEnums.AddressKey.DIFFICULTY]), new byte[] { (byte)this.Coach.Difficulty });
 
             for (int slot = 0; slot < this.Coach.Stocks.Length; slot++)
             {
