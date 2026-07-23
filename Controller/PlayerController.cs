@@ -44,13 +44,18 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
-        internal void SaveEntityList()
+        // Returns one human-readable warning per Firstname/Lastname that couldn't be permanently
+        // saved (see Save(Player) / WritePersistentName below) - empty if everything went through.
+        // Callers (PlayerView) surface these to the user instead of leaving a silent, log-only trail.
+        internal List<string> SaveEntityList()
         {
             Logger.Debug($"Saving {this.EntityList.Count} players");
+            List<string> warnings = new List<string>();
             foreach (Player p in this.EntityList)
             {
-                this.Save(p);
+                warnings.AddRange(this.Save(p));
             }
+            return warnings;
         }
 
         internal override Player GetEntity(string offset, PlayerEnums.AddressType type)
@@ -182,26 +187,38 @@ namespace A2G_Trainer_XP.Controller
         // The pool is tightly packed with no padding between variable-length strings, so a
         // replacement with a DIFFERENT byte length than the current value would shift every later
         // name in the pool. We only write when the length matches exactly; otherwise we log and skip
-        // the persistent write; and the display cache write below still makes the change visible
-        // in-game until the next load, matching docs/manual-rename-workaround.md.
-        private void WritePersistentName(Player player)
+        // the persistent write (still returning a warning the caller can show the user) - the display
+        // cache write below still makes the change visible in-game until the next load, matching
+        // docs/manual-rename-workaround.md.
+        private List<string> WritePersistentName(Player player)
         {
             Encoding encoding = Encoding.GetEncoding("iso-8859-1");
             NamePoolResolver namePool = new NamePoolResolver(this.memory);
+            List<string> warnings = new List<string>();
 
-            this.TryWritePersistentName(namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, "Firstname", player);
-            this.TryWritePersistentName(namePool.ResolveLastnameAddress(player.NameRecordId), player.Lastname, encoding, "Lastname", player);
+            string firstnameWarning = this.TryWritePersistentName(namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, "Vorname", player);
+            if (firstnameWarning != null) warnings.Add(firstnameWarning);
+
+            string lastnameWarning = this.TryWritePersistentName(namePool.ResolveLastnameAddress(player.NameRecordId), player.Lastname, encoding, "Nachname", player);
+            if (lastnameWarning != null) warnings.Add(lastnameWarning);
+
+            return warnings;
         }
 
-        private void TryWritePersistentName(uint? address, string newValue, Encoding encoding, string fieldLabel, Player player)
+        // Returns null on success, or a user-facing (German) warning describing why the permanent
+        // write was skipped. Every skip is still logged via Logger.Warn for troubleshooting - the
+        // returned string is a friendlier, player-identified version for the UI.
+        private string TryWritePersistentName(uint? address, string newValue, Encoding encoding, string fieldLabel, Player player)
         {
             if (newValue == null)
-                return;
+                return null;
+
+            string playerLabel = $"{player.Firstname} {player.Lastname}".Trim();
 
             if (!address.HasValue)
             {
                 Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}): could not resolve a pool address (NamePoolResolver returned null).");
-                return;
+                return $"{playerLabel}: {fieldLabel} - Adresse nicht auflösbar.";
             }
 
             const int maxScan = 40;
@@ -209,7 +226,7 @@ namespace A2G_Trainer_XP.Controller
             if (currentBytes == null)
             {
                 Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address.Value:X}: ReadBytesAtAddress returned null.");
-                return;
+                return $"{playerLabel}: {fieldLabel} - Speicher nicht lesbar.";
             }
 
             int currentLength = Array.IndexOf(currentBytes, (byte)0);
@@ -219,14 +236,14 @@ namespace A2G_Trainer_XP.Controller
             if (currentLength < 0)
             {
                 Logger.Warn($"Skipping persistent {fieldLabel} write for player {player.NameRecordId}: couldn't find end of the current string within {maxScan} bytes.");
-                return;
+                return $"{playerLabel}: {fieldLabel} - Stringende nicht gefunden.";
             }
 
             byte[] newBytes = encoding.GetBytes(newValue);
             if (currentLength != newBytes.Length)
             {
                 Logger.Warn($"Skipping persistent {fieldLabel} write for player {player.NameRecordId}: length changed ({currentLength} -> {newBytes.Length} bytes) - would shift every later name in the pool. Use a same-length replacement for now.");
-                return;
+                return $"{playerLabel}: {fieldLabel}, Länge falsch (vorher: {currentLength}, nachher: {newBytes.Length}), nicht übernommen.";
             }
 
             byte[] toWrite = new byte[newBytes.Length + 1];
@@ -234,14 +251,18 @@ namespace A2G_Trainer_XP.Controller
             toWrite[newBytes.Length] = 0;
             this.memory.WriteBytesAtAddress(address.Value, toWrite);
             Logger.Debug($"Wrote persistent {fieldLabel} for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address.Value:X}.");
+            return null;
         }
 
-        public void Save(Player player)
+        // Returns one warning per Firstname/Lastname that couldn't be permanently saved (see
+        // WritePersistentName) - empty if everything went through. All the other fields below are
+        // unaffected by this and always write straight to their (already persistent) addresses.
+        public List<string> Save(Player player)
         {
             #region Overview
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-            this.WritePersistentName(player);
+            List<string> nameWarnings = this.WritePersistentName(player);
 
             this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]), new byte[] { (byte) player.SkinColor });
             this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAIR]), new byte[] { (byte) player.HairColor });
@@ -330,6 +351,8 @@ namespace A2G_Trainer_XP.Controller
             this.memory.WriteBytes(GetAddress(this.memory, player, "7A"), new byte[] { (byte)player.Appearances1stLeague });
             */
             #endregion
+
+            return nameWarnings;
         }
 
         public void Save (Player player, List<PlayerEnums.AddressKey> fieldsToSave)

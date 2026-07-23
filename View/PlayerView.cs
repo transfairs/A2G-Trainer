@@ -444,7 +444,17 @@ namespace A2G_Trainer_XP.View
                     if (hasFreshness) player.Freshness = byte.Parse(this.TeamFreshnessInput.Text);
                     if (hasContractDuration) player.ContractDuration = byte.Parse(this.TeamContractDurationInput.Text);
                 }
-                this.playerController.SaveEntityList();
+                List<string> nameWarnings = this.playerController.SaveEntityList();
+                if (nameWarnings.Count > 0)
+                {
+                    const int maxLines = 4;
+                    IEnumerable<string> shown = nameWarnings.Take(maxLines);
+                    int hidden = nameWarnings.Count - maxLines;
+                    string text = string.Join(Environment.NewLine + Environment.NewLine, shown)
+                        + (hidden > 0 ? $"{Environment.NewLine}{Environment.NewLine}... und {hidden} weitere" : "");
+
+                    MessageBox.Show(this, text, "Name nicht dauerhaft gespeichert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
 
                 HashSet<Control> frozenControls = new HashSet<Control>();
                 if (this.TeamConditionFreezeCheck.Checked)
