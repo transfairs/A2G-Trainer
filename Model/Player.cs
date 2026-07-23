@@ -10,6 +10,13 @@ namespace A2G_Trainer_XP.Model
         public uint Id { get => this.id; set { this.id = value; this.OnPropertyChanged(nameof(this.Id)); } }
         private uint id = 0;
 
+        // Same memory slot as Id above (offset 0 of the player struct), but read as the full 2-byte
+        // value instead of Id's single byte. This is the index into anstoss2.exe+516678's per-player
+        // record table that NamePoolResolver needs to find the player's permanent Firstname/Lastname.
+        // See Controller/NamePoolResolver.cs.
+        public ushort NameRecordId { get => this.nameRecordId; set { this.nameRecordId = value; this.OnPropertyChanged(nameof(this.NameRecordId)); } }
+        private ushort nameRecordId = 0;
+
         public ushort ClubId { get => this.clubId; set { this.clubId = value; this.OnPropertyChanged(nameof(this.ClubId)); } }
         private ushort clubId;
         public PlayerEnums.Country ClubCountry { get => this.clubCountry; set { this.clubCountry = value; this.OnPropertyChanged(nameof(this.ClubCountry)); } }

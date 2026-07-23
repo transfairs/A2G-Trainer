@@ -92,6 +92,7 @@
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\LeagueController.cs" />
     <Compile Include="Controller\ProcessMemory.cs" />
+    <Compile Include="Controller\NamePoolResolver.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />

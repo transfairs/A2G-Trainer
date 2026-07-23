@@ -34,6 +34,11 @@ namespace A2G_Trainer_XP.Controller
         [DllImport("kernel32.dll")]
         private static extern bool WriteProcessMemory(IntPtr hProcess, UIntPtr lpBaseAddress, byte[] lpBuffer, UIntPtr nSize, IntPtr lpNumberOfBytesWritten);
 
+        // Module base as a plain uint, for callers that need to build an address at runtime (e.g.
+        // NamePoolResolver) instead of through the "Module+hexA,hexB" dialect ResolveAddress below
+        // implements.
+        public uint ModuleBase => (uint)this.mProc.ModuleBaseAddress.ToInt64();
+
         public bool OpenProcess(int pid)
         {
             if (pid <= 0)
@@ -103,6 +108,40 @@ namespace A2G_Trainer_XP.Controller
                 return;
 
             WriteProcessMemory(this.mProc.Handle, (UIntPtr)finalAddress, data, (UIntPtr)data.Length, IntPtr.Zero);
+        }
+
+        // Reads/writes directly at an already-computed absolute address, bypassing ResolveAddress's
+        // pointer chase. ResolveAddress always does *(moduleBase+hexA)+hexB - one dereference baked
+        // into every AddressPresets entry - which doesn't fit addresses built at runtime from values
+        // just read out of memory (e.g. the name pool: pool-base-pointer, dereference it, then walk
+        // forward by a byte count computed on the fly). NamePoolResolver is the only current caller.
+        public byte[] ReadBytesAtAddress(uint address, int length)
+        {
+            if (address < MinValidAddress)
+                return null;
+
+            byte[] buffer = new byte[length];
+            if (!ReadProcessMemory(this.mProc.Handle, (UIntPtr)address, buffer, (UIntPtr)length, IntPtr.Zero))
+                return null;
+
+            return buffer;
+        }
+
+        public void WriteBytesAtAddress(uint address, byte[] data)
+        {
+            if (address < MinValidAddress)
+                return;
+
+            WriteProcessMemory(this.mProc.Handle, (UIntPtr)address, data, (UIntPtr)data.Length, IntPtr.Zero);
+        }
+
+        public string ReadStringAtAddress(uint address, int length, Encoding stringEncoding)
+        {
+            byte[] bytes = ReadBytesAtAddress(address, length);
+            if (bytes == null)
+                return "";
+
+            return stringEncoding.GetString(bytes).Split('\0')[0];
         }
 
         public void WriteMemory(string address, string type, string value, Encoding stringEncoding)

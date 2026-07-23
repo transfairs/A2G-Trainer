@@ -6,7 +6,7 @@ namespace A2G_Trainer_XP.Controller
 {
     static class Settings
     {
-        private const bool   debug                    = true;
+        private const bool   debug                    = false;
         private const ushort clubCount                = 294;
         private const ushort nonPlayableCount         = 130;
 
@@ -23,7 +23,22 @@ namespace A2G_Trainer_XP.Controller
         private const string allClubInitialOffset     = "64FA8";
         private const string nonPlayableInitialOffset = "3D1190";
 
+        // Anchors for the permanent Firstname/Lastname resolution (see Controller/NamePoolResolver.cs).
+        // Unlike playerAddress above (a transient display cache), these two are stable across restarts
+        // and across savegames sharing the same roster - found via live Cheat Engine tracing of the
+        // savegame-load path, see docs/pointer-investigation-guide.md.
+        //   namePoolPointerOffset: module-relative offset of a static pointer that always holds the
+        //     current savegame's name-string-pool base address.
+        //   playerRecordTableOffset/playerRecordStride: module-relative base and per-player stride of
+        //     an array where each player's record holds, at +0/+2, the index of their Firstname/
+        //     Lastname string within that pool.
+        private const uint namePoolPointerOffset    = 0x7FDD58;
+        private const uint playerRecordTableOffset  = 0x516678;
+        private const uint playerRecordStride       = 0xC8;
 
+        internal static uint NamePoolPointerOffset   { get => namePoolPointerOffset; }
+        internal static uint PlayerRecordTableOffset { get => playerRecordTableOffset; }
+        internal static uint PlayerRecordStride      { get => playerRecordStride; }
 
         internal static bool   IsDebug           { get => debug; }
 

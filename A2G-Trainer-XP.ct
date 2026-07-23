@@ -2041,6 +2041,42 @@
       <VariableType>Byte</VariableType>
       <Address>00826646</Address>
     </CheatEntry>
+    <CheatEntry>
+      <ID>417</ID>
+      <Description>"Spielernamenanker"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>anstoss2.exe+7FDD58</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>418</ID>
+      <Description>"Nachname eines Spielers"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>String</VariableType>
+      <Length>15</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>anstoss2.exe+7FDD58</Address>
+      <Offsets>
+        <Offset>478A</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>420</ID>
+      <Description>"Nachname des Trainers vom ersten Verein"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>String</VariableType>
+      <Length>15</Length>
+      <Unicode>0</Unicode>
+      <CodePage>0</CodePage>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>anstoss2.exe+7FDD58</Address>
+      <Offsets>
+        <Offset>0</Offset>
+      </Offsets>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>

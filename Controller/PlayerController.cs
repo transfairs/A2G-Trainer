@@ -62,8 +62,11 @@ namespace A2G_Trainer_XP.Controller
             };
             #region Overview
             player.Id          = (uint) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]));
-            player.Firstname   = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-            player.Lastname    = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+
+            byte[] nameRecordIdBytes = this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]), 2);
+            player.NameRecordId = nameRecordIdBytes != null ? BitConverter.ToUInt16(nameRecordIdBytes, 0) : (ushort)0;
+
+            this.ReadPersistentName(player);
             player.ClubId      = (ushort) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CLUB_ID]));
             player.ClubCountry = (PlayerEnums.Country) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CLUB_COUNTRY]));
             player.SkinColor   = (PlayerEnums.SkinColor) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]));
@@ -150,11 +153,95 @@ namespace A2G_Trainer_XP.Controller
             return player;
         }
 
+        // Reads Firstname/Lastname from their true, save-persistent pool address (see
+        // NamePoolResolver) instead of the transient display cache the rest of this file's addresses
+        // point at. Falls back to the old display-cache read if the pool can't be resolved (e.g. no
+        // savegame loaded yet), so this never leaves the fields blank.
+        private void ReadPersistentName(Player player)
+        {
+            Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+            NamePoolResolver namePool = new NamePoolResolver(this.memory);
+
+            uint? firstnameAddress = namePool.ResolveFirstnameAddress(player.NameRecordId);
+            player.Firstname = firstnameAddress.HasValue
+                ? this.memory.ReadStringAtAddress(firstnameAddress.Value, 32, encoding)
+                : this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: encoding);
+
+            uint? lastnameAddress = namePool.ResolveLastnameAddress(player.NameRecordId);
+            player.Lastname = lastnameAddress.HasValue
+                ? this.memory.ReadStringAtAddress(lastnameAddress.Value, 32, encoding)
+                : this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: encoding);
+
+            Logger.Debug($"ReadPersistentName: NameRecordId={player.NameRecordId} (Id={player.Id}) -> Firstname=\"{player.Firstname}\" (addr={(firstnameAddress.HasValue ? "0x" + firstnameAddress.Value.ToString("X") : "fallback")}), Lastname=\"{player.Lastname}\" (addr={(lastnameAddress.HasValue ? "0x" + lastnameAddress.Value.ToString("X") : "fallback")}).");
+        }
+
+        // Writes Firstname/Lastname to the permanent name pool in addition to the display cache
+        // below, so a rename actually survives a save/reload instead of being reset to the old value
+        // (see NamePoolResolver's header comment for why the display cache alone isn't enough).
+        //
+        // The pool is tightly packed with no padding between variable-length strings, so a
+        // replacement with a DIFFERENT byte length than the current value would shift every later
+        // name in the pool. We only write when the length matches exactly; otherwise we log and skip
+        // the persistent write; and the display cache write below still makes the change visible
+        // in-game until the next load, matching docs/manual-rename-workaround.md.
+        private void WritePersistentName(Player player)
+        {
+            Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+            NamePoolResolver namePool = new NamePoolResolver(this.memory);
+
+            this.TryWritePersistentName(namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, "Firstname", player);
+            this.TryWritePersistentName(namePool.ResolveLastnameAddress(player.NameRecordId), player.Lastname, encoding, "Lastname", player);
+        }
+
+        private void TryWritePersistentName(uint? address, string newValue, Encoding encoding, string fieldLabel, Player player)
+        {
+            if (newValue == null)
+                return;
+
+            if (!address.HasValue)
+            {
+                Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}): could not resolve a pool address (NamePoolResolver returned null).");
+                return;
+            }
+
+            const int maxScan = 40;
+            byte[] currentBytes = this.memory.ReadBytesAtAddress(address.Value, maxScan);
+            if (currentBytes == null)
+            {
+                Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address.Value:X}: ReadBytesAtAddress returned null.");
+                return;
+            }
+
+            int currentLength = Array.IndexOf(currentBytes, (byte)0);
+            string currentString = currentLength >= 0 ? encoding.GetString(currentBytes, 0, currentLength) : null;
+            Logger.Debug($"Persistent {fieldLabel} for player NameRecordId={player.NameRecordId} (Id={player.Id}): address=0x{address.Value:X}, current=\"{currentString}\" ({currentLength} bytes), new=\"{newValue}\".");
+
+            if (currentLength < 0)
+            {
+                Logger.Warn($"Skipping persistent {fieldLabel} write for player {player.NameRecordId}: couldn't find end of the current string within {maxScan} bytes.");
+                return;
+            }
+
+            byte[] newBytes = encoding.GetBytes(newValue);
+            if (currentLength != newBytes.Length)
+            {
+                Logger.Warn($"Skipping persistent {fieldLabel} write for player {player.NameRecordId}: length changed ({currentLength} -> {newBytes.Length} bytes) - would shift every later name in the pool. Use a same-length replacement for now.");
+                return;
+            }
+
+            byte[] toWrite = new byte[newBytes.Length + 1];
+            Array.Copy(newBytes, toWrite, newBytes.Length);
+            toWrite[newBytes.Length] = 0;
+            this.memory.WriteBytesAtAddress(address.Value, toWrite);
+            Logger.Debug($"Wrote persistent {fieldLabel} for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address.Value:X}.");
+        }
+
         public void Save(Player player)
         {
             #region Overview
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
             this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+            this.WritePersistentName(player);
 
             this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]), new byte[] { (byte) player.SkinColor });
             this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAIR]), new byte[] { (byte) player.HairColor });
