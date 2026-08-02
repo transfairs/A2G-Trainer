@@ -10,7 +10,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    # Pinned to the windows-2022 image (not windows-latest): that image guarantees a working
+    # VS2022 MSBuild install. windows-latest has moved on to a newer default VS whose MSBuild
+    # can't resolve Microsoft.NET.Sdk for this project (see the Setup MSBuild step below).
+    runs-on: windows-2022
 
     steps:
       - name: Checkout
