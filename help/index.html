@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2G-Trainer-XP :: Onlinehilfe</title>
+<link rel="icon" href="img/logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-window">
+
+  <div class="titlebar">
+    <img class="icon" src="img/logo.png" alt="">
+    <div class="title">A2G - Trainer :: Onlinehilfe</div>
+    <a class="version-badge" id="version-badge" href="https://github.com/transfairs/A2G-Trainer/releases/latest" target="_blank" rel="noopener">&#8987;&nbsp;Version wird geladen&hellip;</a>
+    <div class="dots"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+  </div>
+
+  <div class="menustrip">
+    <button data-target="start">Start</button>
+    <button data-target="verein">Verein</button>
+    <button data-target="spieler">Spieler</button>
+    <button data-target="jugend">Jugendspieler</button>
+    <button data-target="trainer">Trainer &amp; Liga</button>
+    <button data-target="tipps">Tipps &amp; Tricks</button>
+    <button data-target="faq">Fehlerbehebung</button>
+    <button data-target="changelog">Changelog</button>
+    <button data-target="ueber">Über</button>
+  </div>
+
+  <div class="content-area">
+    <div class="layout">
+
+      <nav class="side-list">
+        <h2>Inhalt</h2>
+        <ul>
+          <li><a href="#start" data-target="start">Erste Schritte</a></li>
+          <li><a href="#verein" data-target="verein">Verein</a></li>
+          <li><a href="#spieler" data-target="spieler">Spieler</a></li>
+          <li><a href="#jugend" data-target="jugend">Jugendspieler</a></li>
+          <li><a href="#trainer" data-target="trainer">Trainer &amp; Liga</a></li>
+          <li><a href="#tipps" data-target="tipps">Tipps &amp; Tricks</a></li>
+          <li><a href="#faq" data-target="faq">Fehlerbehebung / FAQ</a></li>
+          <li><a href="#changelog" data-target="changelog">Changelog</a></li>
+          <li><a href="#ueber" data-target="ueber">Über</a></li>
+        </ul>
+      </nav>
+
+      <!-- ===================== START ===================== -->
+      <section class="panel" id="panel-start">
+        <div class="panel-header">
+          <h1>Willkommen zu A2G-Trainer-XP</h1>
+          <p class="lead">Ein Trainer (Editor) für <strong>Anstoss 2 Gold</strong>, kompatibel mit der Original-CD und der GOG-Version, lauffähig von Windows&nbsp;XP bis Windows&nbsp;11.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <div class="download-banner">
+            <div class="download-icon">⬇️</div>
+            <div class="text">
+              <div class="download-heading">
+                <h3>Neueste Version herunterladen</h3>
+                <span class="version-pill" id="download-version">Version wird geladen&hellip;</span>
+              </div>
+              <p>Enthält beide <code>.exe</code>-Varianten (Original &amp; GOG), die Cheat-Engine-Tabellen und das Änderungsprotokoll. Der Link zeigt immer auf den aktuellsten Release.</p>
+            </div>
+            <a class="btn-download-lg" href="https://github.com/transfairs/A2G-Trainer/releases/latest/download/A2G-Trainer-XP-Latest.zip">Download</a>
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>So geht's los</legend>
+            <ol>
+              <li>Starten Sie <strong>Anstoss 2 Gold</strong> und laden Sie einen Spielstand.</li>
+              <li>Starten Sie <strong>A2G-Trainer-XP</strong>. Die Reihenfolge spielt keine Rolle, der Trainer erkennt das laufende Spiel automatisch.</li>
+              <li>Wechseln Sie über die Menüleiste zur gewünschten Ansicht, zum Beispiel <span class="menu-path">Verein → Eigener</span> oder <span class="menu-path">Spieler → Eigener Kader</span>.</li>
+              <li>Bearbeiten Sie die gewünschten Werte und klicken Sie auf <span class="btn-tag">Speichern</span>.</li>
+            </ol>
+          </fieldset>
+
+          <div class="callout tip">
+            <strong class="label">Automatische Verbindung</strong>
+            Der Trainer verbindet sich von selbst mit dem Spiel, egal ob er vor oder nach <em>Anstoss 2 Gold</em> gestartet wird. Auch nach einem Neustart des Spiels, dem Laden eines anderen Spielstands oder einem Zugwechsel im Hot-Seat-Modus erkennt er die neue Situation automatisch und aktualisiert sich, ganz ohne manuelles Neuverbinden.
+          </div>
+
+          <div class="callout warn">
+            <strong class="label">Wichtig, damit Änderungen ankommen</strong>
+            Speichern Sie nach dem Editieren das Spiel in <em>Anstoss 2 Gold</em> und laden Sie den Spielstand anschließend neu. Erst dann werden die Änderungen dauerhaft übernommen. Bei Vereinsdaten hilft es manchmal zusätzlich, im <strong>Transfermarkt</strong> unter <strong>Vereine absuchen</strong> den Verein noch einmal explizit aufzurufen.
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>Die Trainer-Oberfläche</legend>
+            <div class="screenshot-row">
+              <figure>
+                <img class="screenshot" src="img/screenshot_main.png" alt="Hauptansicht: Kaderliste links, Spielerdetails mit Registerkarten rechts">
+                <figcaption>Eigener Kader: Spielerliste links, Details mit Registerkarten rechts</figcaption>
+              </figure>
+              <figure>
+                <img class="screenshot" src="img/Help.png" alt="Die im Trainer integrierte Hilfe">
+                <figcaption>Diese Kurzhilfe ist zusätzlich direkt im Trainer eingebaut (Menü <span class="menu-path">? → Hilfe</span>)</figcaption>
+              </figure>
+            </div>
+          </fieldset>
+
+          <p>Diese Onlinehilfe erklärt alle Funktionen des Trainers im Detail. Wählen Sie oben in der Menüleiste oder links in der Liste einen Bereich:</p>
+
+          <div class="toc-grid">
+            <a class="toc-card" href="#verein" data-jump="verein"><h3>Verein</h3><p>Vereinsname, Stadion, Finanzen und Blockübersicht bearbeiten.</p></a>
+            <a class="toc-card" href="#spieler" data-jump="spieler"><h3>Spieler</h3><p>Kader, Gegner und dynamisches Team editieren: Fähigkeiten, Vertrag, Verfassung.</p></a>
+            <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Was bei Nachwuchsspielern dauerhaft gespeichert wird und was nicht.</p></a>
+            <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
+            <a class="toc-card" href="#tipps" data-jump="tipps"><h3>Tipps &amp; Tricks</h3><p>Kleine Kniffe, die vielen Nutzern Zeit sparen.</p></a>
+            <a class="toc-card" href="#faq" data-jump="faq"><h3>Fehlerbehebung</h3><p>Häufige Fragen und Lösungen, inklusive Logdatei.</p></a>
+            <a class="toc-card" href="#changelog" data-jump="changelog"><h3>Changelog</h3><p>Was sich von Version zu Version geändert hat.</p></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== VEREIN ===================== -->
+      <section class="panel" id="panel-verein">
+        <div class="panel-header">
+          <h1>Verein</h1>
+          <p class="lead">Erreichbar über <span class="menu-path">Verein → Eigener</span>. Die Vereinsansicht öffnet sich in einem eigenen Fenster mit zwei Registerkarten.</p>
+        </div>
+        <div class="subtabs">
+          <button data-sub="allgemein" class="active">Allgemein</button>
+          <button data-sub="stadion">Stadion</button>
+        </div>
+
+        <div class="subpanel active" data-sub="allgemein">
+          <fieldset class="groupbox">
+            <legend>Allgemeines</legend>
+            <dl class="field-list">
+              <dt>Vereinsname</dt><dd>Der angezeigte Name Ihres Vereins.</dd>
+              <dt>Stadionname</dt><dd>Der Name des Stadions.</dd>
+              <dt>Anzeigetafel</dt><dd>Art der Anzeigetafel im Stadion (Auswahlliste, z.&nbsp;B. „Videowand“).</dd>
+              <dt>Rasenheizung</dt><dd>Ein-/Ausschalten per Kontrollkästchen.</dd>
+              <dt>Flutlicht</dt><dd>Ein-/Ausschalten per Kontrollkästchen.</dd>
+              <dt>Rasenpflege</dt><dd>Zustand des Rasens (Auswahlliste, z.&nbsp;B. „Holprig“).</dd>
+            </dl>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Einnahmen</legend>
+            <dl class="field-list">
+              <dt>Werbung</dt><dd>Einnahmen aus Werbung (in DM).</dd>
+              <dt>Freundschaftsspiele</dt><dd>Einnahmen aus Freundschaftsspielen (in DM).</dd>
+              <dt>Ligaspiele</dt><dd>Einnahmen aus Ligaspielen (in DM).</dd>
+            </dl>
+          </fieldset>
+
+          <p>Über <span class="btn-tag">Werte neuladen</span> werden die aktuellen Werte erneut aus dem laufenden Spiel gelesen (z.&nbsp;B. nach einer Änderung im Spiel selbst), über <span class="btn-tag">Speichern</span> werden Ihre Eingaben zurückgeschrieben.</p>
+
+          <img class="screenshot" src="img/ClubView.png" alt="Vereinsansicht, Registerkarte Allgemein" style="max-width:420px">
+        </div>
+
+        <div class="subpanel" data-sub="stadion">
+          <fieldset class="groupbox">
+            <legend>Blockübersicht</legend>
+            <p>Für jeden der zwölf Stadionblöcke (A bis L) lassen sich folgende Werte einstellen:</p>
+            <dl class="field-list">
+              <dt>Sitzplätze</dt><dd>Anzahl Sitzplätze im Block (bis zu 32.767).</dd>
+              <dt>Stehplätze</dt><dd>Anzahl Stehplätze im Block (bis zu 32.767).</dd>
+              <dt>überdacht</dt><dd>Kontrollkästchen, ob der Block überdacht ist.</dd>
+              <dt>Wochen Bauzeit</dt><dd>Verbleibende Bauzeit des Blocks in Wochen.</dd>
+            </dl>
+          </fieldset>
+
+          <div class="callout tip">
+            <strong class="label">Negative Platzzahl eintragen</strong>
+            Um einem Block eine <em>negative</em> Anzahl Plätze zuzuweisen, tragen Sie einfach einen Wert <strong>größer als 32.767</strong> ein. Der Zähler läuft dann ins Negative um.
+          </div>
+
+          <div class="callout warn">
+            <strong class="label">Block A und die Bauzeit</strong>
+            Nach dem Bearbeiten eines Blocks setzt der Trainer <strong>Block A automatisch auf eine Woche Bauzeit</strong>. Das stellt sicher, dass das Spiel alle Änderungen tatsächlich übernimmt.
+          </div>
+
+          <p>Zum Vergleich: Die folgende Ansicht zeigt links die Trainer-Blockübersicht, rechts die zugehörige Stadion-Grafik im Spiel selbst.</p>
+          <img class="screenshot" src="img/Stadium.png" alt="Stadion-Registerkarte im Trainer neben der Stadionansicht im Spiel">
+        </div>
+      </section>
+
+      <!-- ===================== SPIELER ===================== -->
+      <section class="panel" id="panel-spieler">
+        <div class="panel-header">
+          <h1>Spieler</h1>
+          <p class="lead">Erreichbar über das Menü <span class="menu-path">Spieler</span>. Für jeden Spieler öffnet sich eine Detailansicht mit sieben Registerkarten.</p>
+        </div>
+        <div class="subtabs">
+          <button data-sub="uebersicht" class="active">Übersicht</button>
+          <button data-sub="persoenlich">Persönliche Daten</button>
+          <button data-sub="position">Positionen</button>
+          <button data-sub="faehigkeiten">Fähigkeiten</button>
+          <button data-sub="eigenschaften">Eigenschaften</button>
+          <button data-sub="verfassung">Verfassung</button>
+          <button data-sub="vertrag">Vertrag</button>
+          <button data-sub="team">Team</button>
+        </div>
+
+        <div class="subpanel active" data-sub="uebersicht">
+          <fieldset class="groupbox">
+            <legend>Vier Wege zur Spielerliste</legend>
+            <dl class="field-list">
+              <dt>Eigener Kader</dt><dd>Alle Spieler und Amateure Ihres eigenen Vereins. Menü: <span class="menu-path">Spieler → Eigener Kader</span>.</dd>
+              <dt>Nächster Gegner</dt><dd>Der Kader Ihres nächsten Gegners. Menü: <span class="menu-path">Spieler → Nächster Gegner</span>.</dd>
+              <dt>Dynamisches Team</dt><dd>Zeigt den zuletzt im Spiel über den Transfermarkt aufgerufenen Verein. Menü: <span class="menu-path">Spieler → Dynamisches Team</span>.</dd>
+              <dt>Jugendspieler</dt><dd>Eigene eigene Ansicht, siehe <a href="#jugend" data-jump="jugend">Abschnitt Jugendspieler</a>.</dd>
+            </dl>
+          </fieldset>
+
+          <div class="callout warn">
+            <strong class="label">Nur ganze Vereine bearbeiten</strong>
+            Es lassen sich zuverlässig <strong>nur ganze Vereine</strong> bearbeiten. Rufen Sie im Spiel dazu im <strong>Transfermarkt</strong> die Funktion <strong>Vereine absuchen</strong> auf und wählen Sie den gewünschten Verein aus. Spieler, die Sie stattdessen über die <em>Spielersuche</em> (NORACSA) gefunden haben, werden im Trainer zwar angezeigt, lassen sich aber <strong>nicht zuverlässig bearbeiten</strong>. Das kann im Spiel zu unvorhersehbarem Verhalten führen.
+          </div>
+
+          <img class="screenshot" src="img/TeamChoice.png" alt="Das Spieler-Menü mit den vier Ansichten" style="max-width:280px">
+        </div>
+
+        <div class="subpanel" data-sub="persoenlich">
+          <fieldset class="groupbox">
+            <legend>Persönliche Daten (Registerkarte „Überblick“)</legend>
+            <dl class="field-list">
+              <dt>Nachname / Vorname</dt><dd>Der Spielername. Siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a> für die Regeln zum dauerhaften Umbenennen.</dd>
+              <dt>Stärke</dt><dd>Die Gesamtstärke des Spielers.</dd>
+              <dt>Alter</dt><dd>Alter des Spielers in Jahren.</dd>
+              <dt>Nationalität</dt><dd>Auswahlliste mit allen Nationalitäten des Spiels.</dd>
+              <dt>Kondition / Frische / Form</dt><dd>Aktuelle Werte. Kondition und Frische lassen sich zusätzlich dauerhaft <a href="#spieler" data-jump="spieler:team">einfrieren</a>.</dd>
+              <dt>Hautfarbe</dt><dd>hell / dunkel / schwarz (Auswahlschalter).</dd>
+              <dt>Haarfarbe</dt><dd>hellblond / blond / braun / rot / schwarz / Glatze (Auswahlschalter).</dd>
+            </dl>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="position">
+          <fieldset class="groupbox">
+            <legend>Hauptposition</legend>
+            <p>Genau eine der folgenden Positionen ist als Hauptposition wählbar:</p>
+            <p>
+              <span class="chip">Torwart</span><span class="chip">Libero</span><span class="chip">Manndecker</span>
+              <span class="chip">Linker Verteidiger</span><span class="chip">Rechter Verteidiger</span>
+              <span class="chip">Defensives Mittelfeld</span><span class="chip">Zentrales Mittelfeld</span>
+              <span class="chip">Linkes Mittelfeld</span><span class="chip">Rechtes Mittelfeld</span><span class="chip">Stürmer</span>
+            </p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Nebenpositionen</legend>
+            <p>Zusätzlich lassen sich beliebig viele der oben genannten Positionen (außer Torwart) als Nebenpositionen ankreuzen, auf denen der Spieler ebenfalls eingesetzt werden kann.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="faehigkeiten">
+          <p>Für Feldspieler- und Torwart-Fähigkeiten gibt es jeweils zwei Kontrollkästchen pro Zeile: <span class="chip">+</span> für eine positive und <span class="chip">-</span> für eine negative Ausprägung der Fähigkeit.</p>
+          <fieldset class="groupbox">
+            <legend>Feldspieler-Fähigkeiten</legend>
+            <p>
+              <span class="chip">Kopfball</span><span class="chip">Zweikampf</span><span class="chip">Schnelligkeit</span>
+              <span class="chip">Schusskraft</span><span class="chip">Freistöße</span><span class="chip">Flanken</span>
+              <span class="chip">Torinstinkt</span><span class="chip">Laufstärke</span><span class="chip">Technik</span>
+              <span class="chip">Spielmacher</span><span class="chip">Beidfüßigkeit</span>
+            </p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Torwart-Fähigkeiten</legend>
+            <p>Nur bei Spielern mit Hauptposition „Torwart“ nutzbar:</p>
+            <p>
+              <span class="chip">Elfmetertöter</span><span class="chip">Starke Reflexe</span><span class="chip">Herauslaufen</span>
+              <span class="chip">Fangsicherheit</span><span class="chip">Fausten</span><span class="chip">Ballsicherheit</span>
+            </p>
+          </fieldset>
+          <img class="screenshot" src="img/Trainees.png" alt="Fähigkeiten-Editor mit +/- Spalten am Beispiel eines Jugendspielers" style="max-width:420px">
+        </div>
+
+        <div class="subpanel" data-sub="eigenschaften">
+          <fieldset class="groupbox">
+            <legend>Persönlichkeit</legend>
+            <p>Mehrere gleichzeitig ankreuzbar:</p>
+            <p>
+              <span class="chip">Führungsperson</span><span class="chip">Kämpfernatur</span><span class="chip">Trainingsweltmeister</span>
+              <span class="chip">Trainingsfaul</span><span class="chip">Treter</span><span class="chip">Fair Player</span>
+              <span class="chip">Schwalbenkönig</span><span class="chip">Allrounder</span><span class="chip">Flexibler Spieler</span>
+              <span class="chip">Heimspieler</span><span class="chip">Auswärtsspieler</span><span class="chip">Talent</span>
+            </p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Charakter</legend>
+            <p>
+              <span class="chip">Hitzkopf</span><span class="chip">Frohnatur</span><span class="chip">Mann ohne Nerven</span>
+              <span class="chip">Nervenbündel</span><span class="chip">Phlegma</span><span class="chip">Geldgeier</span>
+              <span class="chip">Musterprofi</span><span class="chip">Skandalnudel</span>
+            </p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Gesundheitszustand</legend>
+            <p><span class="chip">Robustheit</span><span class="chip">Anfälligkeit</span><span class="chip">Knieprobleme</span></p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="verfassung">
+          <fieldset class="groupbox">
+            <legend>Zufriedenheit</legend>
+            <p>Gründe, warum ein Spieler zufrieden ist:</p>
+            <p>
+              <span class="chip">toller Vertrag</span><span class="chip">tolle Prämien</span><span class="chip">tolle Stimmung</span>
+              <span class="chip">toller Vertrag (doppelt)</span><span class="chip">toller Trainer</span>
+            </p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Unbehagen</legend>
+            <p>Gründe, warum ein Spieler unzufrieden ist:</p>
+            <p>
+              <span class="chip">will endlich spielen</span><span class="chip">will mehr Geld</span><span class="chip">miese Prämien</span>
+              <span class="chip">geht nicht nach Leistung</span><span class="chip">falsche Position</span><span class="chip">Scheiß Vertrag</span>
+              <span class="chip">miese Mannschaft</span><span class="chip">schlechte Stimmung</span><span class="chip">verletzt und nie besucht</span>
+              <span class="chip">ungerechte Behandlung</span><span class="chip">blöde Fans</span><span class="chip">Scheiß Trainer</span>
+              <span class="chip">blöde Mitspieler</span><span class="chip">Verhandlung geplatzt</span><span class="chip">Scheiß Manager</span>
+              <span class="chip">Scheiß Nachwuchsrunde</span>
+            </p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Verletzungen</legend>
+            <dl class="field-list">
+              <dt>Fällt aus</dt><dd>Anzahl Tage, die der Spieler ausfällt.</dd>
+              <dt>Angeschlagen</dt><dd>Kontrollkästchen.</dd>
+              <dt>Gedopt</dt><dd>Kontrollkästchen.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Karten</legend>
+            <dl class="field-list">
+              <dt>Sperre</dt><dd>Anzahl Spiele Rotsperre.</dd>
+              <dt>Gelb</dt><dd>Anzahl gelber Karten.</dd>
+            </dl>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="vertrag">
+          <fieldset class="groupbox">
+            <legend>Vertragsdetails</legend>
+            <dl class="field-list">
+              <dt>Gehalt</dt><dd>Angabe x 1.000 DM.</dd>
+              <dt>Auflaufprämie</dt><dd>Angabe x 100 DM.</dd>
+              <dt>Torprämie</dt><dd>Angabe x 100 DM.</dd>
+              <dt>Fixe Ablöse</dt><dd>Angabe x 10.000 DM.</dd>
+              <dt>Vertragslaufzeit</dt><dd>Restlaufzeit in Jahren.</dd>
+              <dt>Stammplatz</dt><dd>Kontrollkästchen.</dd>
+              <dt>Beendet Karriere</dt><dd>Kontrollkästchen.</dd>
+              <dt>Verliehen</dt><dd>Kontrollkästchen.</dd>
+              <dt>mit Kaufoption</dt><dd>Kontrollkästchen.</dd>
+              <dt>In dieser Saison gekommen</dt><dd>Kontrollkästchen.</dd>
+              <dt>Option Spieler / Option Verein</dt><dd>Kontrollkästchen für die jeweiligen Vertragsoptionen.</dd>
+              <dt>Jahre im Verein</dt><dd>Bei „0“ kann der Spieler diese Saison nicht wechseln.</dd>
+            </dl>
+          </fieldset>
+          <div class="callout warn">
+            <strong class="label">Zwei unbekannte Kontrollkästchen</strong>
+            In dieser Registerkarte gibt es zwei zusätzliche Kontrollkästchen, deren genaue Bedeutung von der Community bisher nicht vollständig geklärt werden konnte. Sie werden im Trainer entsprechend als „[Unbekannter Wert]“ bzw. „[Ebenfalls unbekannt]“ angezeigt. Ändern Sie diese vorsichtshalber nicht, wenn Sie sich der Wirkung nicht sicher sind.
+          </div>
+          <img class="screenshot" src="img/ContractTab.png" alt="Registerkarte Vertrag" style="max-width:420px">
+        </div>
+
+        <div class="subpanel" data-sub="team">
+          <fieldset class="groupbox">
+            <legend>Kondition &amp; Frische einfrieren</legend>
+            <p>In der Registerkarte „Team“ lassen sich <strong>Kondition</strong> und <strong>Frische</strong> nicht nur einmalig setzen, sondern auch dauerhaft <strong>einfrieren</strong>: Haken Sie die Kontrollkästchen neben dem jeweiligen Wert an und tragen Sie den gewünschten Wert ein.</p>
+          </fieldset>
+          <div class="callout tip">
+            <strong class="label">Wie das Einfrieren wirkt</strong>
+            Solange die Checkbox angehakt bleibt, schreibt der Trainer diesen Wert laufend zurück in das Spiel, auch wenn das Spiel ihn von selbst verändert, zum Beispiel nach einem Spiel oder Training.
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== JUGENDSPIELER ===================== -->
+      <section class="panel" id="panel-jugend">
+        <div class="panel-header">
+          <h1>Jugendspieler</h1>
+          <p class="lead">Erreichbar über <span class="menu-path">Spieler → Jugendspieler</span>. Nutzt dieselbe Detailansicht mit denselben Registerkarten wie der <a href="#spieler" data-jump="spieler">eigene Kader</a>.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <div class="callout warn">
+            <strong class="label">Erst im Spiel besuchen, dann im Trainer neu laden</strong>
+            Um eine vollständige Liste der Jugendspieler zu erhalten, navigieren Sie im Spiel zunächst auf den <strong>Transfermarkt</strong> und klicken dann auf <strong>Jugendspieler</strong>. Wechseln Sie anschließend im Trainer über <span class="menu-path">Spieler → Jugendspieler</span> hierher oder klicken Sie auf <span class="btn-tag">Team neu laden</span>.
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>Was dauerhaft übernommen wird</legend>
+            <p>Folgende Felder werden bei Jugendspielern dauerhaft gespeichert, da sie über einen anderen, spielerbezogenen Speicherbereich geschrieben werden:</p>
+            <p>
+              <span class="chip">Name</span><span class="chip">Stärke</span><span class="chip">Alter</span>
+              <span class="chip">Haupt- &amp; Nebenpositionen</span><span class="chip">Fähigkeiten / Negative Fähigkeiten</span>
+              <span class="chip">Eigenschaften / Charakter / Gesundheitszustand</span><span class="chip">Hautfarbe / Haarfarbe</span>
+              <span class="chip">Form</span><span class="chip">Kondition / Frische</span><span class="chip">Nationalität</span>
+              <span class="chip">Unbehagen / Zufriedenheit</span><span class="chip">Gehalt / Auflaufprämie</span>
+            </p>
+            <p>Ein Namenswechsel wird dabei genau wie beim Kader nur bei gleicher Zeichenzahl dauerhaft übernommen, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>.</p>
+          </fieldset>
+
+          <div class="callout warn">
+            <strong class="label">Was weiterhin ignoriert wird</strong>
+            Die übrigen Vertragsfelder (Torprämie, Ablösesumme, Vertragslaufzeit, Vertragsdetails, Jahre im Verein, Karriere) sowie die Registerkarte „Team“ werden bei Jugendspielern weiterhin ignoriert.
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>Gemeinsamer Speicherbereich mit dem dynamischen Team</legend>
+            <p>Jugendspieler teilen sich denselben Adressbereich im Speicher wie das <strong>Dynamische Team</strong>. Haben Sie zuletzt im Spiel auf einen Verein geklickt, können dessen Spieler hier ebenfalls kurzzeitig erscheinen. Da dieser Bereich vom Spiel dynamisch befüllt wird, achten Sie immer auf den richtigen Kontext und laden Sie die Liste im Zweifel über <span class="btn-tag">Team neu laden</span> neu.</p>
+          </fieldset>
+
+          <img class="screenshot" src="img/Trainees.png" alt="Jugendspieler-Ansicht mit Fähigkeiten-Editor" style="max-width:460px">
+        </div>
+      </section>
+
+      <!-- ===================== TRAINER & LIGA ===================== -->
+      <section class="panel" id="panel-trainer">
+        <div class="panel-header">
+          <h1>Trainer &amp; Liga</h1>
+          <p class="lead">Manager-Daten, Aktienportfolio und Länder­einstellungen für die aktuelle Karriere.</p>
+        </div>
+        <div class="subtabs">
+          <button data-sub="allgemein" class="active">Allgemein</button>
+          <button data-sub="aktien">Aktien</button>
+          <button data-sub="liga">Länderauswahl</button>
+          <button data-sub="hotseat">Mehrspieler / Hot-Seat</button>
+        </div>
+
+        <div class="subpanel active" data-sub="allgemein">
+          <fieldset class="groupbox">
+            <legend>Persönliche Daten</legend>
+            <dl class="field-list">
+              <dt>Nachname / Vorname</dt><dd>Name des Managers.</dd>
+              <dt>Alter</dt><dd>Alter des Managers in Jahren.</dd>
+              <dt>Vermögen</dt><dd>Verfügbares Vermögen des Managers.</dd>
+              <dt>Schwierigkeit</dt><dd>Schwierigkeitsgrad des Managers (Auswahlliste, fünf Stufen von „Leicht &amp; Locker“ bis „Ultra Violence“).</dd>
+            </dl>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Kompetenzen</legend>
+            <p>Auf derselben Registerkarte zeigt die Gruppe <strong>Kompetenzen</strong> die Punkteverteilung des Managers. Über die Auswahlliste <strong>Level</strong> wird zugleich das aktuelle Level des Managers festgelegt und ausgewählt, welche der 16 gespeicherten Verteilungen (Level 0 bis 15) gerade angezeigt und bearbeitet wird:</p>
+            <p>
+              <span class="chip">Verhandlungsgeschick</span><span class="chip">Motivationsfähigkeit</span><span class="chip">Trainingsgestaltung</span>
+              <span class="chip">Autorität</span><span class="chip">Fremdsprachenkenntnisse</span><span class="chip">Ausstrahlung</span>
+            </p>
+            <p>Pro erreichtem Level stehen 6 Punkte zur Verfügung (Level&nbsp;1 &rarr; 6 Punkte, Level&nbsp;15 &rarr; 90 Punkte); eine Anzeige unterhalb der Felder zeigt die aktuell verteilte Summe im Verhältnis zur erwarteten Gesamtsumme.</p>
+          </fieldset>
+
+          <img class="screenshot" src="img/CoachView.png" alt="Trainer-Ansicht, Registerkarte Allgemein mit Kompetenzen" style="max-width:420px">
+        </div>
+
+        <div class="subpanel" data-sub="aktien">
+          <fieldset class="groupbox">
+            <legend>Bis zu sechs Aktienpositionen</legend>
+            <p>Jeder Manager kann bis zu sechs Aktienpakete gleichzeitig halten. Für jede belegte Position lassen sich folgende Werte bearbeiten:</p>
+            <dl class="field-list">
+              <dt>Land</dt><dd>Land des börsennotierten Vereins, wählbar sind nur das Hauptland und die aktiven Bonusländer aus der Länderauswahl.</dd>
+              <dt>Verein</dt><dd>Verein innerhalb des gewählten Landes (durchsuchbare Auswahlliste).</dd>
+              <dt>Anzahl Aktien</dt><dd>Gehaltene Stückzahl.</dd>
+              <dt>Kaufpreis</dt><dd>Einstandspreis der Aktien.</dd>
+            </dl>
+          </fieldset>
+          <div class="callout warn">
+            <strong class="label">Neue Positionen lassen sich nicht anlegen</strong>
+            Das Spiel unterstützt das Anlegen oder Löschen einer Aktienposition nicht über einen Speicher-Edit. Nur bereits vorhandene Positionen lassen sich verändern. Ein Feld ohne gehaltene Stückzahl wird deshalb im Trainer deaktiviert angezeigt.
+          </div>
+        </div>
+
+        <div class="subpanel" data-sub="liga">
+          <fieldset class="groupbox">
+            <legend>Hauptland</legend>
+            <p>Das Hauptland der Karriere ist eines der drei spielbaren Heimatligen: <span class="chip">Deutschland</span><span class="chip">England</span><span class="chip">Frankreich</span></p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Bonusländer</legend>
+            <p>Zusätzlich lassen sich im Spiel bis zu <strong>vier weitere Länder</strong> für die Karriere auswählen, aus denen dann ebenfalls Vereine an der Börse handelbar sind: <span class="chip">Deutschland</span><span class="chip">England</span><span class="chip">Frankreich</span><span class="chip">Italien</span><span class="chip">Spanien</span></p>
+            <p>Ein Bonusland-Feld lässt sich nur dann bearbeiten, wenn der jeweilige Slot im geladenen Spielstand bereits aktiv ist. Das Spiel unterstützt kein nachträgliches Hinzufügen oder Entfernen eines Slots, nur das Austauschen des dort hinterlegten Landes.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="hotseat">
+          <fieldset class="groupbox">
+            <legend>Mehrere menschliche Manager im selben Spielstand</legend>
+            <p>Enthält der geladene Spielstand mehr als einen aktiven menschlichen Manager (Hot-Seat-Modus), erscheint im Menü <span class="menu-path">Trainer</span> für jeden davon ein eigener Eintrag. Jeder Manager hat dabei seinen eigenen Verein und sein eigenes Aktienportfolio.</p>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- ===================== TIPPS & TRICKS ===================== -->
+      <section class="panel" id="panel-tipps">
+        <div class="panel-header">
+          <h1>Tipps &amp; Tricks</h1>
+          <p class="lead">Ein paar Kniffe rund um den Trainer, die im Alltag Zeit sparen.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <div class="callout tip">
+            <strong class="label">Negative Platzzahl im Stadion</strong>
+            Um einem Stadionblock eine negative Anzahl Plätze zuzuweisen, tragen Sie einen Wert <strong>größer als 32.767</strong> ein.
+          </div>
+
+          <div class="callout tip">
+            <strong class="label">Block A nach jeder Stadion-Änderung</strong>
+            Nach dem Bearbeiten eines beliebigen Stadionblocks setzt der Trainer <strong>Block A automatisch auf eine Woche Bauzeit</strong>, damit alle Änderungen sicher übernommen werden.
+          </div>
+
+          <div class="callout tip">
+            <strong class="label">Spieler dauerhaft umbenennen</strong>
+            Eine Namensänderung übersteht einen Speichervorgang und Neuladen nur dann dauerhaft, wenn der neue Name <strong>exakt dieselbe Anzahl Zeichen</strong> hat wie der alte. Ein Name mit abweichender Länge wird bis zum nächsten Tagesabschluss oder Neuladen zwar korrekt angezeigt, ist danach aber nicht mehr gespeichert. In diesem Fall zeigt der Trainer eine Warnung mit dem Namen des betroffenen Spielers an; Details landen zusätzlich in der Logdatei (siehe <a href="#faq" data-jump="faq">Fehlerbehebung</a>).
+          </div>
+
+          <div class="callout tip">
+            <strong class="label">Kondition &amp; Frische einfrieren</strong>
+            Im Team-Tab eines Spielers lassen sich Kondition und Frische per Kontrollkästchen dauerhaft einfrieren, sodass der Trainer sie laufend zurückschreibt, selbst wenn das Spiel sie verändert. Details siehe <a href="#spieler" data-jump="spieler:team">Spieler → Team</a>.
+          </div>
+
+          <div class="callout tip">
+            <strong class="label">Wenn Änderungen nicht ankommen</strong>
+            Speichern Sie zunächst im Spiel und laden Sie den Spielstand neu. Hilft das bei Vereinsdaten nicht, rufen Sie den Verein zusätzlich noch einmal explizit über <strong>Transfermarkt → Vereine absuchen</strong> auf.
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================== FAQ ===================== -->
+      <section class="panel" id="panel-faq">
+        <div class="panel-header">
+          <h1>Fehlerbehebung / FAQ</h1>
+          <p class="lead">Häufige Fragen rund um Verbindung, Speichern und Kompatibilität.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Der Trainer findet Anstoss 2 Gold nicht</legend>
+            <p>Stellen Sie sicher, dass das Spiel läuft und ein Spielstand geladen ist. Der Trainer verbindet sich automatisch, ganz gleich in welcher Reihenfolge Spiel und Trainer gestartet wurden. Hilft das nicht, starten Sie beide Programme einmal neu.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Meine Änderungen erscheinen nicht im Spiel</legend>
+            <p>Speichern Sie nach dem Editieren im Spiel und laden Sie den Spielstand neu. Bei Vereinsdaten hilft zusätzlich <strong>Transfermarkt → Vereine absuchen</strong>.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Eine Spielerumbenennung geht nach dem Neuladen wieder verloren</legend>
+            <p>Der neue Name muss exakt dieselbe Zeichenzahl haben wie der alte, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>. Der Trainer warnt in diesem Fall mit dem Namen des betroffenen Spielers.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Über die Spielersuche gefundene Spieler lassen sich nicht speichern</legend>
+            <p>Nur ganze, über <strong>Vereine absuchen</strong> geladene Vereine sind zuverlässig editierbar. Über die Spielersuche (NORACSA) gefundene Einzelspieler werden zwar angezeigt, ein Speichern kann jedoch zu unvorhersehbarem Verhalten im Spiel führen.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Wo finde ich Logs für die Fehlersuche?</legend>
+            <p>Der Trainer schreibt eine Logdatei nach:</p>
+            <p><code>%LocalAppData%\A2G-Trainer-XP\trainer.log</code></p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Läuft der Trainer auch unter Windows XP?</legend>
+            <p>Ja. Er ist gegen .NET Framework 4.0 gebaut und wurde ab Windows XP SP3 x86 bis Windows 11 x64 getestet. Unter Windows XP muss .NET Framework 4.0 installiert sein; unter Windows 11 ist keine zusätzliche Installation nötig.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Werden Original-CD und GOG-Version unterstützt?</legend>
+            <p>Ja, beide Versionen werden erkannt und unterstützt.</p>
+          </fieldset>
+
+        </div>
+      </section>
+
+      <!-- ===================== CHANGELOG ===================== -->
+      <section class="panel" id="panel-changelog">
+        <div class="panel-header">
+          <h1>Changelog</h1>
+          <p class="lead">Vollständige Versionshistorie, live geladen von den <a href="https://github.com/transfairs/A2G-Trainer/releases" target="_blank" rel="noopener">GitHub Releases</a>.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+          <div id="changelog-list">
+            <p class="changelog-status">Changelog wird geladen&hellip;</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ÜBER ===================== -->
+      <section class="panel" id="panel-ueber">
+        <div class="panel-header">
+          <h1>Über A2G-Trainer-XP</h1>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Projekt</legend>
+            <p>A2G-Trainer-XP ist ein Trainer (Editor) für <em>Anstoss 2 Gold</em>, der direkt im Arbeitsspeicher des laufenden Spiels liest und schreibt. Quellcode und Downloads:
+            <a href="https://github.com/transfairs/a2g-trainer" target="_blank" rel="noopener">github.com/transfairs/a2g-trainer</a></p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Dank an</legend>
+            <p>Die Community von <a href="https://www.anstoss-juenger.de/index.php/topic,6260.0.html" target="_blank" rel="noopener">anstoss-juenger.de</a>, insbesondere <strong>strajk-</strong>, dessen <a href="https://www.anstoss-juenger.de/index.php/topic,4619.0.html" target="_blank" rel="noopener">A2G-RTE-Projekt</a> als Grundlage für einige Codeteile und Ideen diente, sowie <strong>22</strong> für seine Unterstützung bei der Erforschung des Spielspeichers.</p>
+          </fieldset>
+
+          <div class="callout warn">
+            <strong class="label">Haftungsausschluss</strong>
+            Dieses Tool greift direkt auf den Arbeitsspeicher des Spiels zu. Nutzung auf eigene Gefahr. Das Projekt steht in keiner Verbindung zu Ascaron oder den Entwicklern von <em>Anstoss 2 Gold</em>.
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="footer-note">A2G-Trainer-XP &middot; Onlinehilfe</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

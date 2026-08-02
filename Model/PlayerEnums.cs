@@ -3,8 +3,13 @@ using System.ComponentModel;
 
 namespace A2G_Trainer_XP.Model
 {
+    /// <summary>
+    /// Enum groups for player memory addresses, plus the enums modelling every player-facing
+    /// selectable trait (position, skills, character, ...) and their in-game bitmask/byte encodings.
+    /// </summary>
     public static class PlayerEnums
     {
+        /// <summary>Returns an enum value's [Description] text, falling back to its name.</summary>
         public static string GetDescription(Enum value)
         {
             var f = value.GetType().GetField(value.ToString());
@@ -12,6 +17,7 @@ namespace A2G_Trainer_XP.Model
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
 
+        /// <summary>Which roster/lookup context a set of player addresses applies to.</summary>
         public enum AddressType
         {
             OWN,
@@ -22,6 +28,7 @@ namespace A2G_Trainer_XP.Model
             TRAINEE
         }
 
+        /// <summary>Identifies which player field an address entry resolves.</summary>
         public enum AddressKey
         {
             ID,
@@ -63,6 +70,7 @@ namespace A2G_Trainer_XP.Model
             CLUB_COUNTRY
         }
 
+        /// <summary>Player character trait (single selection, bit-packed but mutually exclusive in practice).</summary>
         public enum Character : byte
         {
             Normal         = 0,
@@ -75,6 +83,7 @@ namespace A2G_Trainer_XP.Model
             Musterprofi    = 1 << 6,
             Skandalnudel   = 1 << 7
         }
+        /// <summary>Career milestone bitmask; only Retires is currently interpreted, the rest are unmapped/unknown bits.</summary>
         public enum Career : byte
         {
             None = 0,
@@ -87,6 +96,7 @@ namespace A2G_Trainer_XP.Model
             Unknown6 = 1 << 6,
             Retires  = 1 << 7
         }
+        /// <summary>Contract-status bitmask (loan/buy-option/etc.).</summary>
         public enum Contract : byte
         {
             None             = 0,
@@ -99,6 +109,7 @@ namespace A2G_Trainer_XP.Model
             Seated           = 1 << 6,
             Unset            = 1 << 7
         }
+        /// <summary>Nationality/club country, single-byte encoded (see Settings.playerRecordNationalityOffset for the persistent-record quirk).</summary>
         public enum Country : byte
         {
             Sonstige        =  0,
@@ -188,6 +199,7 @@ namespace A2G_Trainer_XP.Model
             Zaire           = 74,
             Zypern          = 75
         }
+        /// <summary>Hair color (single selection).</summary>
         public enum HairColor : byte
         {
             Hellblond = 0,
@@ -197,6 +209,7 @@ namespace A2G_Trainer_XP.Model
             Schwarz   = 4,
             Glatze    = 5
         }
+        /// <summary>Positive mood-factor bitmask.</summary>
         public enum Happy : byte
         {
             None                 = 0,
@@ -206,6 +219,7 @@ namespace A2G_Trainer_XP.Model
             TollerVertragDoppelt = 1 << 3,
             TollerTrainer        = 1 << 4
         }
+        /// <summary>Health/injury-proneness trait bitmask.</summary>
         public enum Health : byte
         {
             Normal         = 0,
@@ -213,6 +227,7 @@ namespace A2G_Trainer_XP.Model
             Anfaelligkeit = 1 << 1,
             Knieprobleme   = 1 << 2
         }
+        /// <summary>Personality-trait bitmask (single selection in practice, modelled as flags for the underlying byte layout).</summary>
         public enum Personality : ushort
         {
             None                 = 0,
@@ -229,6 +244,7 @@ namespace A2G_Trainer_XP.Model
             AuswaertsSpieler     = 1 << 10,
             Talent               = 1 << 11
         }
+        /// <summary>Playing position (Hauptposition/secondary positions use the same values).</summary>
         public enum Position : byte
         {
             None =  0,
@@ -243,6 +259,11 @@ namespace A2G_Trainer_XP.Model
             OM   =  9,
             S    = 10
         }
+        /// <summary>
+        /// Skill bitmask. Goalkeeper skills (Elfmetertoeter..Ballsicherheit) and outfield skills
+        /// (Kopfball..Beidfuessigkeit) intentionally reuse the same bit positions - only one group
+        /// is meaningful at a time, selected by whether the player's Position is TO (see Player.IsTO).
+        /// </summary>
         public enum Skills : ushort
         {
             None            = 0,
@@ -264,12 +285,14 @@ namespace A2G_Trainer_XP.Model
             Spielmacher     = 1 <<  9,
             Beidfuessigkeit = 1 << 10,
         }
+        /// <summary>Skin color (single selection).</summary>
         public enum SkinColor : byte
         {
             Fair  = 0,
             Dark  = 1,
             Black = 2
         }
+        /// <summary>Negative mood-factor bitmask.</summary>
         public enum Unhappy : ushort
         {
             None                  = 0,

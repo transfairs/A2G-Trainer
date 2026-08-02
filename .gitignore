@@ -9,6 +9,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+docs/*.md
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -361,4 +363,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-docs/*
+
+# Release script output (scripts/New-VersionManifest.ps1, Generate-Changelog.ps1, New-ChangelogHtml.ps1)
+dist/
+
+# reportgenerator HTML/Cobertura coverage report output
+coveragereport/

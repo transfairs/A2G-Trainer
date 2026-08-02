@@ -2603,7 +2603,7 @@ namespace A2G_Trainer_XP.View
             this.PlayerListView.Location = new System.Drawing.Point(15, 40);
             this.PlayerListView.MultiSelect = false;
             this.PlayerListView.Name = "PlayerListView";
-            this.PlayerListView.Size = new System.Drawing.Size(200, 373);
+            this.PlayerListView.Size = new System.Drawing.Size(201, 373);
             this.PlayerListView.TabIndex = 42;
             this.PlayerListView.UseCompatibleStateImageBehavior = false;
             this.PlayerListView.View = System.Windows.Forms.View.Details;
@@ -2635,7 +2635,7 @@ namespace A2G_Trainer_XP.View
             this.CurrentClubLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CurrentClubLabel.Location = new System.Drawing.Point(15, 13);
             this.CurrentClubLabel.Name = "CurrentClubLabel";
-            this.CurrentClubLabel.Size = new System.Drawing.Size(200, 18);
+            this.CurrentClubLabel.Size = new System.Drawing.Size(201, 18);
             this.CurrentClubLabel.TabIndex = 46;
             this.CurrentClubLabel.Text = "Eigener Verein";
             // 

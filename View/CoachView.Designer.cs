@@ -34,8 +34,6 @@ namespace A2G_Trainer_XP.View
             this.PersonalBox = new System.Windows.Forms.GroupBox();
             this.WealthLabel = new System.Windows.Forms.Label();
             this.WealthInput = new System.Windows.Forms.TextBox();
-            this.LevelLabel = new System.Windows.Forms.Label();
-            this.LevelInput = new System.Windows.Forms.TextBox();
             this.Age = new System.Windows.Forms.Label();
             this.AgeInput = new System.Windows.Forms.TextBox();
             this.LastName = new System.Windows.Forms.Label();
@@ -44,6 +42,13 @@ namespace A2G_Trainer_XP.View
             this.FirstNameInput = new System.Windows.Forms.TextBox();
             this.DifficultyLabel = new System.Windows.Forms.Label();
             this.DifficultyInput = new System.Windows.Forms.ComboBox();
+            this.GamesLabel = new System.Windows.Forms.Label();
+            this.GamesInput = new System.Windows.Forms.TextBox();
+            this.WinsLabel = new System.Windows.Forms.Label();
+            this.WinsInput = new System.Windows.Forms.TextBox();
+            this.WinPercentageLabel = new System.Windows.Forms.Label();
+            this.WinPercentageValue = new System.Windows.Forms.Label();
+            this.CompetencyBox = new System.Windows.Forms.GroupBox();
             this.StocksTab = new System.Windows.Forms.TabPage();
             this.LeagueTab = new System.Windows.Forms.TabPage();
             this.LeagueBox = new System.Windows.Forms.GroupBox();
@@ -55,6 +60,7 @@ namespace A2G_Trainer_XP.View
             this.ClubTabControl.SuspendLayout();
             this.GeneralTab.SuspendLayout();
             this.PersonalBox.SuspendLayout();
+            this.CompetencyBox.SuspendLayout();
             this.LeagueTab.SuspendLayout();
             this.LeagueBox.SuspendLayout();
             this.SuspendLayout();
@@ -73,6 +79,7 @@ namespace A2G_Trainer_XP.View
             // GeneralTab
             //
             this.GeneralTab.Controls.Add(this.PersonalBox);
+            this.GeneralTab.Controls.Add(this.CompetencyBox);
             this.GeneralTab.Location = new System.Drawing.Point(4, 22);
             this.GeneralTab.Name = "GeneralTab";
             this.GeneralTab.Padding = new System.Windows.Forms.Padding(3);
@@ -85,8 +92,6 @@ namespace A2G_Trainer_XP.View
             //
             this.PersonalBox.Controls.Add(this.WealthLabel);
             this.PersonalBox.Controls.Add(this.WealthInput);
-            this.PersonalBox.Controls.Add(this.LevelLabel);
-            this.PersonalBox.Controls.Add(this.LevelInput);
             this.PersonalBox.Controls.Add(this.Age);
             this.PersonalBox.Controls.Add(this.AgeInput);
             this.PersonalBox.Controls.Add(this.LastName);
@@ -95,34 +100,23 @@ namespace A2G_Trainer_XP.View
             this.PersonalBox.Controls.Add(this.FirstNameInput);
             this.PersonalBox.Controls.Add(this.DifficultyLabel);
             this.PersonalBox.Controls.Add(this.DifficultyInput);
+            this.PersonalBox.Controls.Add(this.GamesLabel);
+            this.PersonalBox.Controls.Add(this.GamesInput);
+            this.PersonalBox.Controls.Add(this.WinsLabel);
+            this.PersonalBox.Controls.Add(this.WinsInput);
+            this.PersonalBox.Controls.Add(this.WinPercentageLabel);
+            this.PersonalBox.Controls.Add(this.WinPercentageValue);
             this.PersonalBox.Location = new System.Drawing.Point(6, 6);
             this.PersonalBox.Name = "PersonalBox";
-            this.PersonalBox.Size = new System.Drawing.Size(220, 225);
+            this.PersonalBox.Size = new System.Drawing.Size(220, 318);
             this.PersonalBox.TabIndex = 41;
             this.PersonalBox.TabStop = false;
             this.PersonalBox.Text = "Persönliche Daten";
             //
-            // LevelLabel
-            //
-            this.LevelLabel.AutoSize = true;
-            this.LevelLabel.Location = new System.Drawing.Point(7, 134);
-            this.LevelLabel.Name = "LevelLabel";
-            this.LevelLabel.Size = new System.Drawing.Size(60, 13);
-            this.LevelLabel.TabIndex = 47;
-            this.LevelLabel.Text = "Kompetenz";
-            //
-            // LevelInput
-            //
-            this.LevelInput.Location = new System.Drawing.Point(67, 131);
-            this.LevelInput.Name = "LevelInput";
-            this.LevelInput.Size = new System.Drawing.Size(43, 20);
-            this.LevelInput.TabIndex = 3;
-            this.LevelInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            //
             // Age
             //
             this.Age.AutoSize = true;
-            this.Age.Location = new System.Drawing.Point(131, 134);
+            this.Age.Location = new System.Drawing.Point(7, 134);
             this.Age.Name = "Age";
             this.Age.Size = new System.Drawing.Size(28, 13);
             this.Age.TabIndex = 45;
@@ -130,10 +124,10 @@ namespace A2G_Trainer_XP.View
             //
             // AgeInput
             //
-            this.AgeInput.Location = new System.Drawing.Point(167, 131);
+            this.AgeInput.Location = new System.Drawing.Point(90, 131);
             this.AgeInput.Name = "AgeInput";
             this.AgeInput.Size = new System.Drawing.Size(43, 20);
-            this.AgeInput.TabIndex = 4;
+            this.AgeInput.TabIndex = 3;
             this.AgeInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             //
             // LastName
@@ -202,10 +196,60 @@ namespace A2G_Trainer_XP.View
             this.DifficultyInput.Size = new System.Drawing.Size(120, 21);
             this.DifficultyInput.TabIndex = 6;
             //
+            // GamesLabel
+            //
+            this.GamesLabel.AutoSize = true;
+            this.GamesLabel.Location = new System.Drawing.Point(7, 227);
+            this.GamesLabel.Name = "GamesLabel";
+            this.GamesLabel.Size = new System.Drawing.Size(36, 13);
+            this.GamesLabel.TabIndex = 54;
+            this.GamesLabel.Text = "Spiele";
+            //
+            // GamesInput
+            //
+            this.GamesInput.Location = new System.Drawing.Point(90, 224);
+            this.GamesInput.Name = "GamesInput";
+            this.GamesInput.Size = new System.Drawing.Size(43, 20);
+            this.GamesInput.TabIndex = 8;
+            this.GamesInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // WinsLabel
+            //
+            this.WinsLabel.AutoSize = true;
+            this.WinsLabel.Location = new System.Drawing.Point(7, 258);
+            this.WinsLabel.Name = "WinsLabel";
+            this.WinsLabel.Size = new System.Drawing.Size(33, 13);
+            this.WinsLabel.TabIndex = 55;
+            this.WinsLabel.Text = "Siege";
+            //
+            // WinsInput
+            //
+            this.WinsInput.Location = new System.Drawing.Point(90, 255);
+            this.WinsInput.Name = "WinsInput";
+            this.WinsInput.Size = new System.Drawing.Size(43, 20);
+            this.WinsInput.TabIndex = 9;
+            this.WinsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // WinPercentageLabel
+            //
+            this.WinPercentageLabel.AutoSize = true;
+            this.WinPercentageLabel.Location = new System.Drawing.Point(7, 289);
+            this.WinPercentageLabel.Name = "WinPercentageLabel";
+            this.WinPercentageLabel.Size = new System.Drawing.Size(56, 13);
+            this.WinPercentageLabel.TabIndex = 56;
+            this.WinPercentageLabel.Text = "Siegquote";
+            //
+            // WinPercentageValue
+            //
+            this.WinPercentageValue.AutoSize = true;
+            this.WinPercentageValue.Location = new System.Drawing.Point(90, 289);
+            this.WinPercentageValue.Name = "WinPercentageValue";
+            this.WinPercentageValue.Size = new System.Drawing.Size(30, 13);
+            this.WinPercentageValue.TabIndex = 57;
+            this.WinPercentageValue.Text = "0 %";
+            //
             // StocksTab
             //
-            // Stock boxes (up to Coach.MaxStocks) are built at runtime in CoachView.cs, since their
-            // count is a game-data constant, not something the Designer can express statically.
             this.StocksTab.AutoScroll = true;
             this.StocksTab.Location = new System.Drawing.Point(4, 22);
             this.StocksTab.Name = "StocksTab";
@@ -214,6 +258,18 @@ namespace A2G_Trainer_XP.View
             this.StocksTab.TabIndex = 1;
             this.StocksTab.Text = "Aktien";
             this.StocksTab.UseVisualStyleBackColor = true;
+            //
+            // CompetencyBox
+            //
+            // Children (level selector, the six competency fields, and the points-total label)
+            // are built dynamically in CoachView.BuildCompetencyBox, same as StocksTab's contents -
+            // the six-competency table is a game-data constant, not fixed UI.
+            this.CompetencyBox.Location = new System.Drawing.Point(234, 6);
+            this.CompetencyBox.Name = "CompetencyBox";
+            this.CompetencyBox.Size = new System.Drawing.Size(240, 250);
+            this.CompetencyBox.TabIndex = 53;
+            this.CompetencyBox.TabStop = false;
+            this.CompetencyBox.Text = "Kompetenzen";
             //
             // LeagueTab
             //
@@ -257,9 +313,6 @@ namespace A2G_Trainer_XP.View
             //
             // AdditionalCountriesBox
             //
-            // The up to LeagueSettings.MaxAdditionalCountries combos are built at runtime in
-            // CoachView.cs, since their count is a game-data constant, not something the Designer
-            // can express statically (mirrors StocksTab's stock boxes).
             this.AdditionalCountriesBox.Location = new System.Drawing.Point(6, 72);
             this.AdditionalCountriesBox.Name = "AdditionalCountriesBox";
             this.AdditionalCountriesBox.Size = new System.Drawing.Size(220, 160);
@@ -299,6 +352,8 @@ namespace A2G_Trainer_XP.View
             this.GeneralTab.ResumeLayout(false);
             this.PersonalBox.ResumeLayout(false);
             this.PersonalBox.PerformLayout();
+            this.CompetencyBox.ResumeLayout(false);
+            this.CompetencyBox.PerformLayout();
             this.LeagueTab.ResumeLayout(false);
             this.LeagueBox.ResumeLayout(false);
             this.LeagueBox.PerformLayout();
@@ -313,8 +368,6 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Button SaveBtn;
         private System.Windows.Forms.Button ReloadBtn;
         private System.Windows.Forms.GroupBox PersonalBox;
-        private System.Windows.Forms.Label LevelLabel;
-        private System.Windows.Forms.TextBox LevelInput;
         private System.Windows.Forms.Label Age;
         private System.Windows.Forms.TextBox AgeInput;
         private System.Windows.Forms.Label LastName;
@@ -325,6 +378,13 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.TextBox WealthInput;
         private System.Windows.Forms.Label DifficultyLabel;
         private System.Windows.Forms.ComboBox DifficultyInput;
+        private System.Windows.Forms.Label GamesLabel;
+        private System.Windows.Forms.TextBox GamesInput;
+        private System.Windows.Forms.Label WinsLabel;
+        private System.Windows.Forms.TextBox WinsInput;
+        private System.Windows.Forms.Label WinPercentageLabel;
+        private System.Windows.Forms.Label WinPercentageValue;
+        private System.Windows.Forms.GroupBox CompetencyBox;
         private System.Windows.Forms.TabPage StocksTab;
         private System.Windows.Forms.TabPage LeagueTab;
         private System.Windows.Forms.GroupBox LeagueBox;

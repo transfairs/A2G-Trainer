@@ -1,5 +1,6 @@
 ﻿using A2G_Trainer_XP.Model;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,10 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.Controller
 {
+    /// <summary>
+    /// Background poller that finds and attaches to the running game process, detects savegame
+    /// reloads/trainer handoffs, and drives the views' refresh cycle.
+    /// </summary>
     public class ProcessController
     {
         private readonly Trainer trainer;
@@ -27,11 +32,21 @@ namespace A2G_Trainer_XP.Controller
         private byte? lastOwnClubId;
         private PlayerEnums.Country? lastOwnClubCountry;
 
+        /// <summary>Creates a controller that will find/attach to the game process and drive the given trainer window's refreshes.</summary>
         public ProcessController(Trainer trainer)
         {
             this.trainer = trainer;
             this.initialised = false;
         }
+
+        // Extracted so tests can substitute a controlled candidate list - the real one depends on
+        // whatever happens to be running on the machine (including a real Anstoss 2 Gold instance),
+        // which made tests around this non-deterministic.
+        internal virtual IEnumerable<Process> GetGameCandidates() =>
+            Process.GetProcesses()
+                .Where(p =>
+                    p.MainWindowTitle.StartsWith("ANSTOSS 2") &&
+                    !p.MainWindowTitle.Contains("Dateneditor"));
 
         private void FindGame()
         {
@@ -39,10 +54,7 @@ namespace A2G_Trainer_XP.Controller
             if (this.gameProcess != null && !this.gameProcess.HasExited)
                 return;
 
-            var candidates = Process.GetProcesses()
-                .Where(p =>
-                    p.MainWindowTitle.StartsWith("ANSTOSS 2") &&
-                    !p.MainWindowTitle.Contains("Dateneditor"));
+            var candidates = this.GetGameCandidates();
 
             // The game itself can pop up further top-level windows also titled "ANSTOSS 2 ..."
             // (e.g. dialogs), so the title prefix alone can't tell those apart from the real game
@@ -58,6 +70,7 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
+        /// <summary>Attempts to attach to a candidate process and confirms it actually holds readable club data.</summary>
         private bool TryAttach(Process candidate)
         {
             if (!this.trainer.Memory.OpenProcess(candidate.Id))
@@ -82,7 +95,9 @@ namespace A2G_Trainer_XP.Controller
                 return false;
             }
 
-            if (own == null || own.PlayerCount <= 0)
+            // ClubController.GetEntity always constructs a Club, never null - only PlayerCount
+            // distinguishes an unreadable/empty attach attempt.
+            if (own.PlayerCount <= 0)
                 return false;
 
             this.IsGog = isGogCandidate;
@@ -90,6 +105,7 @@ namespace A2G_Trainer_XP.Controller
             return true;
         }
 
+        /// <summary>Polling loop run on the observer thread: finds/tracks the game process and drives view refreshes.</summary>
         internal void Observe()
         {
             try
@@ -122,9 +138,6 @@ namespace A2G_Trainer_XP.Controller
             {
                 this.trainer.Invoke((MethodInvoker)(() =>
                 {
-                    // Once settled, also watch for the user loading a different savegame, or the active
-                    // trainer changing (turn handoff), in the still-running game (no process change, so
-                    // the checks below wouldn't catch it).
                     bool clubChanged = this.initialised && this.DetectOwnClubChange();
 
                     // Also retry (not just on a new PID) while !initialised: right after a fresh game
@@ -206,11 +219,13 @@ namespace A2G_Trainer_XP.Controller
         private bool DetectOwnClubChange()
         {
             bool isValid;
+            // ClubController.GetEntity always constructs a Club, never null - only PlayerCount
+            // distinguishes an unreadable/empty read.
             Club own = null;
             try
             {
                 own = new ClubController(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN).Club;
-                isValid = own != null && own.PlayerCount > 0;
+                isValid = own.PlayerCount > 0;
             }
             catch
             {
@@ -239,6 +254,7 @@ namespace A2G_Trainer_XP.Controller
             return justRecovered || handoffDetected;
         }
 
+        /// <summary>Re-resolves the opponent/dynamic-team roster offsets from the current own club.</summary>
         public void UpdatePlayerOffsets()
         {
             Club own = new ClubController(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN).Club;

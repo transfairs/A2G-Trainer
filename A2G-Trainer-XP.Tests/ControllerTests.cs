@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
 using Xunit;
@@ -8,6 +9,7 @@ namespace A2G_Trainer_XP.Tests
     // process. Club/CoachController guard their memory reads behind "MainModule != null", so
     // construction succeeds and yields default-valued entities - which is enough to verify the
     // offset arithmetic and preset wiring without a live game process.
+    /// <summary>Tests for EntityController's shared address-building and base-address selection.</summary>
     public class ControllerTests
     {
         [Fact]
@@ -87,6 +89,16 @@ namespace A2G_Trainer_XP.Tests
             new PlayerController(memory, emptyClub, isGog: false, PlayerEnums.AddressType.OPPONENT);
 
             Assert.Same(before, AddressPresets.OPPONENT_PLAYERS);
+        }
+
+        [Fact]
+        public void CoachController_GetActiveTrainers_WithoutLiveProcess_FallsBackToFirstnameHeuristic_ReturnsEmptyList()
+        {
+            ProcessMemory memory = new ProcessMemory();
+
+            List<KeyValuePair<int, Coach>> trainers = CoachController.GetActiveTrainers(memory, isGog: false, PlayerEnums.AddressType.OWN);
+
+            Assert.Empty(trainers);
         }
     }
 }

@@ -3,6 +3,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for PlayerEnums' description lookup.</summary>
     public class PlayerEnumsTests
     {
         [Fact]

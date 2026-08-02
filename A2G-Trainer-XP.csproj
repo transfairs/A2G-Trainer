@@ -93,12 +93,14 @@
     <Compile Include="Controller\LeagueController.cs" />
     <Compile Include="Controller\ProcessMemory.cs" />
     <Compile Include="Controller\NamePoolResolver.cs" />
+    <Compile Include="Controller\PlayerRecordResolver.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
     <Compile Include="Model\AddressPresets.cs" />
     <Compile Include="Model\CoachEnums.cs" />
     <Compile Include="Model\Coach.cs" />
+    <Compile Include="Model\CoachCompetencyLevel.cs" />
     <Compile Include="Model\LeagueEnums.cs" />
     <Compile Include="Model\LeagueSettings.cs" />
     <Compile Include="Model\Stock.cs" />

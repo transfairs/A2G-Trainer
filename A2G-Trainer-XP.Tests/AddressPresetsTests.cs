@@ -3,6 +3,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for AddressPresets' preset selection and roster re-basing.</summary>
     public class AddressPresetsTests
     {
         [Fact]
@@ -53,8 +54,14 @@ namespace A2G_Trainer_XP.Tests
         [Fact]
         public void Coach_Difficulty_ResolvesToAddressForTrainerSlotZero()
         {
-            // 34B00 (FIRSTNAME base for trainer slot 0, absolute 857800) + 34 = absolute 857834.
             Assert.Equal("34B34", AddressPresets.COACH[CoachEnums.AddressKey.DIFFICULTY]);
+        }
+
+        [Fact]
+        public void Coach_GamesAndWins_ResolveToAddressForTrainerSlotZero()
+        {
+            Assert.Equal("34BCC", AddressPresets.COACH[CoachEnums.AddressKey.GAMES]);
+            Assert.Equal("34BCE", AddressPresets.COACH[CoachEnums.AddressKey.WINS]);
         }
 
         [Fact]

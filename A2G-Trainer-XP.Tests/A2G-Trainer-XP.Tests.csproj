@@ -7,6 +7,9 @@
     <RootNamespace>A2G_Trainer_XP.Tests</RootNamespace>
     <AssemblyName>A2G-Trainer-XP.Tests</AssemblyName>
     <LangVersion>7.3</LangVersion>
+    <!-- PlayerViewTests constructs the real Trainer/PlayerView WinForms tree (see StaThread.cs
+         for why that needs an STA thread) to exercise DisableEdits/RefreshPlayerListView. -->
+    <UseWindowsForms>true</UseWindowsForms>
     <!--
       ProcessMemory truncates every address to uint32 (it talks to a 32-bit game). The
       self-attach integration tests use the test process's own module base/heap pointers as
@@ -17,6 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="xunit" Version="2.7.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">

@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
@@ -66,9 +68,49 @@ jobs:
           New-Item -ItemType Directory -Force -Path dist | Out-Null
           Copy-Item "bin\x86\Release\A2G-Trainer-XP.exe" "dist\A2G-Trainer-XP-$tag.exe"
           Copy-Item "bin\x86\Release2007CD\A2G-Trainer-XP.exe" "dist\A2G-Trainer-XP-$tag-2007CD.exe"
+          Copy-Item "A2G-Trainer-XP.ct" "dist\A2G-Trainer-XP-$tag.ct"
+
+      - name: Build GOG cheat table
+        shell: pwsh
+        run: ./scripts/Convert-CtToGog.ps1 -InputPath "A2G-Trainer-XP.ct" -OutputPath "dist/A2G-Trainer-XP-${{ github.ref_name }}-GOG.ct"
+
+      - name: Generate changelog
+        shell: pwsh
+        run: ./scripts/Generate-Changelog.ps1 -Tag "${{ github.ref_name }}"
+
+      - name: Render changelog HTML
+        shell: pwsh
+        run: ./scripts/New-ChangelogHtml.ps1
+
+      - name: Build Latest.zip bundle
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $bundleDir = "dist/bundle"
+          New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
+          Copy-Item "dist\A2G-Trainer-XP-$tag.exe" "$bundleDir\A2G-Trainer-XP.exe"
+          Copy-Item "dist\A2G-Trainer-XP-$tag-2007CD.exe" "$bundleDir\A2G-Trainer-XP-2007CD.exe"
+          Copy-Item "dist\A2G-Trainer-XP-$tag.ct" "$bundleDir\A2G-Trainer-XP.ct"
+          Copy-Item "dist\A2G-Trainer-XP-$tag-GOG.ct" "$bundleDir\A2G-Trainer-XP-GOG.ct"
+          Copy-Item "dist\Changelog.html" "$bundleDir\Changelog.html"
+
+          $zipPath = "dist/A2G-Trainer-XP-Latest.zip"
+          Compress-Archive -Path "$bundleDir\*" -DestinationPath $zipPath -Force
+
+          $hash = (Get-FileHash -Algorithm SHA256 -Path $zipPath).Hash.ToLower()
+          "$hash  A2G-Trainer-XP-Latest.zip" | Set-Content "$zipPath.sha256" -Encoding utf8
+
+      - name: Build version manifest
+        shell: pwsh
+        run: ./scripts/New-VersionManifest.ps1 -Tag "${{ github.ref_name }}" -Repository "${{ github.repository }}" -ZipShaPath "dist/A2G-Trainer-XP-Latest.zip.sha256"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.exe
-          generate_release_notes: true
+          files: |
+            dist/*.exe
+            dist/*.ct
+            dist/A2G-Trainer-XP-Latest.zip
+            dist/A2G-Trainer-XP-Latest.zip.sha256
+            dist/version*.json
+          body_path: dist/current-version-notes.md

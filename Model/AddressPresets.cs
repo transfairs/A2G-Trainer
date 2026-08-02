@@ -6,8 +6,14 @@ using System.Text;
 
 namespace A2G_Trainer_XP.Model
 {
+    /// <summary>
+    /// Static table of reverse-engineered hex memory offsets for each entity/context combination
+    /// (e.g. own club vs. opponent club, own players vs. dynamic team). <see cref="From"/> selects
+    /// the right preset for a given <see cref="PlayerEnums.AddressType"/>.
+    /// </summary>
     class AddressPresets
     {
+        /// <summary>Field offsets for the user's own player roster.</summary>
         public static readonly Addresses OWN_PLAYERS = Addresses.Create(
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.ID, "0"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.AGE, "1E"),
@@ -48,6 +54,7 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CAREER, "D7")
         );
 
+        /// <summary>Field offsets for the user's own club/stadium.</summary>
         public static readonly Addresses OWN_CLUB = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.OpponentName, "14E0"),
@@ -111,6 +118,7 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockLSeats, "882")
         );
 
+        /// <summary>Field offsets for the currently loaded opponent club.</summary>
         public static readonly Addresses OPPONENT_CLUB = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "14E0"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "15C6"),
@@ -119,8 +127,10 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "1EF9")
         );
 
+        /// <summary>Field offsets for whichever club is currently shown (club-membership lookups, trainee picker); shares OPPONENT_CLUB's layout.</summary>
         public static Addresses DYNAMIC_CLUB { get { return AddressPresets.OPPONENT_CLUB; } }
 
+        /// <summary>Field offsets for scanning every club in the league (used for club-membership/trainee lookups).</summary>
         public static readonly Addresses ALL_CLUBS = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "DE"),
@@ -132,6 +142,7 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TRAINEE_B, "-10CF6"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TRAINEE_C, "-10CF5")
         );
+        /// <summary>Field offsets for non-playable (e.g. bot-only) clubs.</summary>
         public static readonly Addresses NONPLAYABLE_CLUBS = Addresses.Create(
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.NAME, "0"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.PLAYER_COUNT, "D8"),
@@ -140,6 +151,10 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "-1")
         );
 
+        /// <summary>
+        /// Field offsets for one coach slot. Empty-string entries are not yet mapped in memory
+        /// (see the WriteFields/ReadFields callers for which fields are actually wired up).
+        /// </summary>
         public static readonly Addresses COACH = Addresses.Create(
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRSTNAME, "34B00"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LAST_NAME, "34B0A"),
@@ -163,34 +178,43 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONALTEAM, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONAL_BONUS, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.DIFFICULTY, "34B34"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.GAMES, "34BCC"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.WINS, "34BCE"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_COUNTRY, "34BD8"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_CLUB, "34BDA"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_SHARES, "34BDC"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_PRICE, "34BE0")
         );
+        /// <summary>Field offsets for the savegame-wide league/country settings.</summary>
         public static readonly Addresses LEAGUE_SETTINGS = Addresses.Create(
             new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.MAIN_COUNTRY, "3940"),
             new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.ADDITIONAL_COUNTRY, "3944")
         );
 
+        /// <summary>Player-field offsets for the current opponent roster; set by <see cref="InitOpponent"/>.</summary>
         public static Addresses OPPONENT_PLAYERS { get; private set; }
 
+        /// <summary>Player-field offsets for whichever roster is dynamically selected (e.g. trainees); set by <see cref="InitDynamicTeam"/>.</summary>
         public static Addresses DYNAMIC_PLAYERS { get; private set; }
 
+        /// <summary>Re-bases OWN_PLAYERS' field offsets onto a roster starting at <paramref name="lastPlayer"/>.</summary>
         public static Addresses InitPreset(string lastPlayer)
         {
             return AddressPresets.OWN_PLAYERS.WithOffset(Tools.SumHex(new string[] { Settings.PlayerOffset, lastPlayer }));
         }
 
+        /// <summary>Computes and stores <see cref="OPPONENT_PLAYERS"/> for the given roster start.</summary>
         public static void InitOpponent(string lastPlayer)
         {
             AddressPresets.OPPONENT_PLAYERS = AddressPresets.InitPreset(lastPlayer);
         }
+        /// <summary>Computes and stores <see cref="DYNAMIC_PLAYERS"/> for the given roster start.</summary>
         public static void InitDynamicTeam(string lastPlayer)
         {
             AddressPresets.DYNAMIC_PLAYERS = AddressPresets.InitPreset(lastPlayer);
         }
 
+        /// <summary>Selects the address preset matching the given lookup context (own/opponent/dynamic/etc.) and entity kind.</summary>
         public static Addresses From(PlayerEnums.AddressType type, bool isClub)
         {
             if (isClub)

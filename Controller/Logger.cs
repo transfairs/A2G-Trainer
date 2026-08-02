@@ -11,6 +11,10 @@ namespace A2G_Trainer_XP.Controller
         Error
     }
 
+    /// <summary>
+    /// File-based logger, writing to %LocalAppData%\A2G-Trainer-XP\trainer.log with a single
+    /// backup file for rotation.
+    /// </summary>
     internal static class Logger
     {
         private const long MaxLogFileBytes = 2 * 1024 * 1024;
@@ -47,8 +51,12 @@ namespace A2G_Trainer_XP.Controller
             try
             {
                 string line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{level}] {message}";
+                // ex.ToString() (not the "+ ex" concat form): the compiler emits its own redundant
+                // null-check for a concatenated object operand (concat treats null as ""), which is
+                // unreachable dead code here since ex is already known non-null - an explicit
+                // ToString() call needs no such guard and avoids that untestable branch.
                 if (ex != null)
-                    line += Environment.NewLine + ex;
+                    line += Environment.NewLine + ex.ToString();
 
                 lock (SyncRoot)
                 {

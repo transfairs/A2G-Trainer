@@ -6,9 +6,11 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.View
 {
+    /// <summary>Tab for the user's own club: identity, stadium, and finances.</summary>
     public partial class ClubView : EntityView
     {
         private Club club;
+        /// <summary>Creates the club tab view bound to the given memory accessor and process controller.</summary>
         public ClubView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();

@@ -3,8 +3,12 @@ using System.ComponentModel;
 
 namespace A2G_Trainer_XP.Model
 {
+    /// <summary>
+    /// Enum groups used to look up coach memory addresses and describe coach-facing values.
+    /// </summary>
     public static class CoachEnums
     {
+        /// <summary>Identifies which coach field an address entry resolves.</summary>
         public enum AddressKey
         {
             FIRSTNAME,
@@ -29,14 +33,15 @@ namespace A2G_Trainer_XP.Model
             NATIONALTEAM,
             NATIONAL_BONUS,
             DIFFICULTY,
-            // Relative offsets for stock slot 0 (Aktie 1) - every further slot (up to the
-            // game's max of 6) sits at this offset + slotIndex * 0x10, see CoachController.
+            GAMES,
+            WINS,
             STOCK_COUNTRY,
             STOCK_CLUB,
             STOCK_SHARES,
             STOCK_PRICE
         }
 
+        /// <summary>In-game difficulty levels, ordered from easiest (1) to hardest (5).</summary>
         public enum Difficulty : byte
         {
             [Description("Leicht & Locker")]
@@ -48,6 +53,23 @@ namespace A2G_Trainer_XP.Model
             NurFuerDieBesten = 4,
             [Description("Ultra Violence")]
             UltraViolence   = 5
+        }
+
+        /// <summary>
+        /// The six competencies a trainer level's 6 distributable points are spread across (Robin
+        /// found the memory layout directly: 16 levels x these 6 entries x 2 bytes each, no padding,
+        /// in this exact order). Declaration order here must match the in-memory order.
+        /// </summary>
+        public enum CompetencyKey
+        {
+            Verhandlungsgeschick,
+            [Description("Motivationsfähigkeit")]
+            Motivationsfaehigkeit,
+            Trainingsgestaltung,
+            [Description("Autorität")]
+            Autoritaet,
+            Fremdsprachenkenntnisse,
+            Ausstrahlung
         }
     }
 }

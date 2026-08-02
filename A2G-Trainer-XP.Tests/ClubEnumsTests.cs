@@ -3,6 +3,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for ClubEnums' field-condition mapping and description lookup.</summary>
     public class ClubEnumsTests
     {
         [Theory]

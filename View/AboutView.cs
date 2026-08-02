@@ -8,8 +8,10 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.View
 {
+    /// <summary>About tab: credits and clickable links to the project's home/community threads.</summary>
     public partial class AboutView : UserControl
     {
+        /// <summary>Creates the About view and wires up its clickable links.</summary>
         public AboutView()
         {
             InitializeComponent();
@@ -23,6 +25,7 @@ namespace A2G_Trainer_XP.View
             this.StrajkLinkLabel.Links.Add(48, 2, "https://www.anstoss-juenger.de/index.php/topic,4619.msg434382.html#msg434382");
         }
 
+        /// <summary>Creates the About view and registers it with the given designer container.</summary>
         public AboutView(IContainer container)
         {
             container.Add(this);
@@ -34,9 +37,13 @@ namespace A2G_Trainer_XP.View
             string url = e.Link.LinkData as string;
             if (!string.IsNullOrEmpty(url))
             {
-                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                this.StartProcess(url);
             }
         }
+
+        // Extracted so tests can override the actual OS process launch (which would otherwise pop
+        // open a real browser) while still exercising LinkLabel_LinkClicked's own logic for real.
+        internal virtual void StartProcess(string url) => Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
 
         private void GithubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {

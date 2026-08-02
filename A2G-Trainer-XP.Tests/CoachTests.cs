@@ -5,6 +5,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for the Coach model's field truncation and change-notification behavior.</summary>
     public class CoachTests
     {
         [Fact]
@@ -60,6 +61,53 @@ namespace A2G_Trainer_XP.Tests
 
             Assert.Equal(CoachEnums.Difficulty.UltraViolence, coach.Difficulty);
             Assert.Contains(nameof(Coach.Difficulty), raised);
+        }
+
+        [Fact]
+        public void Games_Set_RaisesPropertyChangedForGamesAndWinPercentage()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            // A value beyond byte range (0-255) to prove Games actually holds a ushort, since the
+            // in-game field is 2 bytes wide - a regression back to byte would silently truncate this.
+            coach.Games = 300;
+
+            Assert.Equal((ushort)300, coach.Games);
+            Assert.Contains(nameof(Coach.Games), raised);
+            Assert.Contains(nameof(Coach.WinPercentage), raised);
+        }
+
+        [Fact]
+        public void Wins_Set_RaisesPropertyChangedForWinsAndWinPercentage()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            // Beyond byte range, same rationale as Games above.
+            coach.Wins = 260;
+
+            Assert.Equal((ushort)260, coach.Wins);
+            Assert.Contains(nameof(Coach.Wins), raised);
+            Assert.Contains(nameof(Coach.WinPercentage), raised);
+        }
+
+        [Fact]
+        public void WinPercentage_WithNoGamesPlayed_IsZero()
+        {
+            Coach coach = new Coach { Wins = 0, Games = 0 };
+
+            Assert.Equal(0d, coach.WinPercentage);
+        }
+
+        [Fact]
+        public void WinPercentage_ComputesShareOfGamesWon()
+        {
+            Coach coach = new Coach { Games = 400, Wins = 100 };
+
+            Assert.Equal(25d, coach.WinPercentage);
         }
     }
 }

@@ -8,9 +8,11 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.View
 {
+    /// <summary>Base class for the tab views (Club/Coach/Player), providing shared field-clearing, input validation, and game-attached checks.</summary>
     public partial class EntityView : UserControl
     {
         #region INotifyPropertyChanged
+        /// <summary>Raised whenever a bound property on this view changes.</summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -19,10 +21,13 @@ namespace A2G_Trainer_XP.View
         internal ProcessMemory Memory { get => this.memory; private set => this.memory = value; }
         private ProcessMemory memory;
 
+        /// <summary>Controller currently backing this view's club data, if any.</summary>
         public ClubController ClubController { get => this.clubController; private set { } }
         protected ClubController clubController;
+        /// <summary>Controller currently backing this view's coach data, if any.</summary>
         public CoachController CoachController { get => this.coachController; private set { } }
         protected CoachController coachController;
+        /// <summary>Controller currently backing this view's player data, if any.</summary>
         public PlayerController PlayerController { get => this.playerController; private set { } }
         protected PlayerController playerController;
         protected ProcessController processController;
@@ -33,6 +38,7 @@ namespace A2G_Trainer_XP.View
             this.processController = processController;
         }
 
+        /// <summary>Recursively blanks every input control under <paramref name="parent"/>, except those in <paramref name="exclude"/>.</summary>
         protected void ClearAllFields(Control parent, ISet<Control> exclude = null)
         {
             foreach (Control ctrl in parent.Controls)
@@ -57,6 +63,7 @@ namespace A2G_Trainer_XP.View
                     ClearAllFields(ctrl, exclude);
             }
         }
+        /// <summary>Whether the game process is currently attached; optionally shows an error dialog if not.</summary>
         protected bool IsGameRunning(bool silent = false)
         {
             if (this.memory.mProc.Process == null)
@@ -108,8 +115,12 @@ namespace A2G_Trainer_XP.View
             string url = e.Link.LinkData as string;
             if (!string.IsNullOrEmpty(url))
             {
-                Process.Start(url);
+                this.StartProcess(url);
             }
         }
+
+        // Extracted so tests can override the actual OS process launch (which would otherwise pop
+        // open a real browser) while still exercising LinkLabel_LinkClicked's own logic for real.
+        internal virtual void StartProcess(string url) => Process.Start(url);
     }
 }

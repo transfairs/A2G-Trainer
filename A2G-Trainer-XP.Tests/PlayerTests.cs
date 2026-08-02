@@ -6,6 +6,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for the Player model's trait-flag helper properties and position/skill setters.</summary>
     public class PlayerTests
     {
         private static List<string> TrackChanges(Player player)

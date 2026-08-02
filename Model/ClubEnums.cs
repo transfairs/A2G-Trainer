@@ -3,8 +3,13 @@ using System.ComponentModel;
 
 namespace A2G_Trainer_XP.Model
 {
+    /// <summary>
+    /// Enum groups used to look up club/stadium memory addresses, plus helpers for mapping
+    /// their raw byte values to display-friendly enums.
+    /// </summary>
     public static class ClubEnums
     {
+        /// <summary>Returns an enum value's [Description] text, falling back to its name.</summary>
         public static string GetDescription(Enum value)
         {
             var f = value.GetType().GetField(value.ToString());
@@ -12,6 +17,10 @@ namespace A2G_Trainer_XP.Model
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
 
+        /// <summary>
+        /// Identifies which club/stadium field an address entry resolves. The BlockX* groups (Weeks/
+        /// Standings/Seats) repeat per stadium block A-L.
+        /// </summary>
         public enum AddressKey
         {
             NAME,
@@ -80,6 +89,7 @@ namespace A2G_Trainer_XP.Model
             Wealth
         }
 
+        /// <summary>Maps the raw field-condition byte (lower is better) to its display bucket.</summary>
         public static FieldCondition MapToCondition(byte value)
         {
             if (value >= 30)
@@ -98,6 +108,7 @@ namespace A2G_Trainer_XP.Model
             return FieldCondition.Clean;
         }
 
+        /// <summary>Stadium scoreboard type.</summary>
         public enum DisplayUnit : byte
         {
             [Description("keine Anzeigetafel")]
@@ -111,6 +122,7 @@ namespace A2G_Trainer_XP.Model
             Videowand = 4
         }
 
+        /// <summary>Pitch condition bucket; values are the upper bound of the raw byte range they cover.</summary>
         public enum FieldCondition : byte
         {
             [Description("Perfekt")]
@@ -124,6 +136,7 @@ namespace A2G_Trainer_XP.Model
             [Description("Spielfeld ???")]
             SpielfeldFraglich = 30, // > 29
         }
+        /// <summary>Bitmask of which stadium blocks (A-L) have a roof.</summary>
         public enum Roof : ushort
         {
             None   = 0,

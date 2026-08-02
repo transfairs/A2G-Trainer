@@ -2,1246 +2,8 @@
 <CheatTable CheatEngineTableVersion="46">
   <CheatEntries>
     <CheatEntry>
-      <ID>55</ID>
-      <Description>"Coach"</Description>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>295</ID>
-          <Description>"Firstname"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>9</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34B00</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>296</ID>
-          <Description>"Lastname"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>15</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34B0A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>261</ID>
-          <Description>"Manager-Level"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34B22</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>57</ID>
-          <Description>"Age"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34B24</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>393</ID>
-          <Description>"Money"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34b90</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>378</ID>
-          <Description>"Aktie 1, Land"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34BD8</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>379</ID>
-          <Description>"Aktie 1, Vereins-ID"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34BDA</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>380</ID>
-          <Description>"Aktie 1, Anzahl Aktien"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34BDC</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>384</ID>
-          <Description>"Aktie 1, Kaufpreis"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00800710</Address>
-          <Offsets>
-            <Offset>34BE0</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>381</ID>
-          <Description>"Aktie 2, Land"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34BE8</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>382</ID>
-          <Description>"Aktie 2, Vereins-ID"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34BEA</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>383</ID>
-          <Description>"Aktie 2, Anzahl"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>34BEC</Offset>
-          </Offsets>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>0</ID>
-      <Description>"Player #1"</Description>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>1</ID>
-          <Description>"     ID in Squad"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>0</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>2</ID>
-          <Description>"     Firstname"</Description>
-          <VariableType>String</VariableType>
-          <Length>9</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>3</ID>
-          <Description>"     Lastname"</Description>
-          <VariableType>String</VariableType>
-          <Length>15</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>4</ID>
-          <Description>"     Skin color"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>1C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>5</ID>
-          <Description>"     Hair color"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>1D</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>6</ID>
-          <Description>"     Age"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>1E</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>7</ID>
-          <Description>"     Level"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>1F</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>8</ID>
-          <Description>"     Position"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>20</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>9</ID>
-          <Description>"     Secondary Position 1"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>21</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>10</ID>
-          <Description>"     Secondary Position 2"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>22</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>11</ID>
-          <Description>"     ClubCountry"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>23</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>358</ID>
-          <Description>"     ClubID"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>24</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>12</ID>
-          <Description>"     Current Form"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>25</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>13</ID>
-          <Description>"     Previous Form"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>26</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>14</ID>
-          <Description>"     Skills"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>28</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>66</ID>
-          <Description>"     Negative Skills"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>15</ID>
-          <Description>"     Personality"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>16</ID>
-          <Description>"     Character"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2E</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>17</ID>
-          <Description>"     Health"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2F</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>18</ID>
-          <Description>"     Condition"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>30</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>19</ID>
-          <Description>"     Freshness"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>31</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>20</ID>
-          <Description>"     Unhappy"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>34</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>22</ID>
-          <Description>"     Happy"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>36</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>23</ID>
-          <Description>"     Nationality"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>38</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>24</ID>
-          <Description>"     Shirt Number"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>3A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>25</ID>
-          <Description>"     Injured Days"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>44</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>64</ID>
-          <Description>"     Injury"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>46</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>27</ID>
-          <Description>"     Vulnerable"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>47</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>28</ID>
-          <Description>"     Red Card (nr banned matches)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>48</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>65</ID>
-          <Description>"     Doping"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>49</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>29</ID>
-          <Description>"     Yellow Cards (Season)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>4A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>67</ID>
-          <Description>"     Red Cards (Season)"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>4B</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>31</ID>
-          <Description>"     Yellow Red Cards (Season)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>4C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>32</ID>
-          <Description>"     Goals"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>56</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>33</ID>
-          <Description>"     Cup goals (national)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>57</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>34</ID>
-          <Description>"     Cup goals (international)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>58</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>35</ID>
-          <Description>"     Goals total (1st League)"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>5A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>36</ID>
-          <Description>"     Assists"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>6B</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>37</ID>
-          <Description>"     Joker Goals"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>6C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>38</ID>
-          <Description>"     Penalties (Season)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>6F</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>39</ID>
-          <Description>"     Penalties"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>70</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>40</ID>
-          <Description>"     Freekicks (Season)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>71</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>41</ID>
-          <Description>"     Freekicks"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>72</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>42</ID>
-          <Description>"     Appearances (Season)"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>77</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>118</ID>
-          <Description>"     Joker Appearances"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>78</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>120</ID>
-          <Description>"     Appearances (1st League)"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>7A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>271</ID>
-          <Description>"     Gehalt"</Description>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>B4</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>270</ID>
-          <Description>"     Auflaufprämie"</Description>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>B6</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>269</ID>
-          <Description>"     Torprämie"</Description>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>B8</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>268</ID>
-          <Description>"     Fixe Ablöse"</Description>
-          <VariableType>2 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>BA</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>265</ID>
-          <Description>"     Ablöse bezahlt"</Description>
-          <VariableType>4 Bytes</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>BC</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>264</ID>
-          <Description>"     Vertragslaufzeit"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>C0</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>266</ID>
-          <Description>"     0: Ausgeliehen, 1: Kaufoption, 2:, 3: In dieser Saison gekommen, 4:Option Spieler, 5: Option Verein, 6: Stammplatz"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>C1</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>267</ID>
-          <Description>"     Jahre im Verein, 0 = Kann nicht wechseln"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>C2</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>272</ID>
-          <Description>"     Bit 7 (=128): Beendet Karriere"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>D7</Offset>
-          </Offsets>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>43</ID>
-      <Description>"Player #2"</Description>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>44</ID>
-          <Description>"     ID in Squad"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>178</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>45</ID>
-          <Description>"     First name"</Description>
-          <VariableType>String</VariableType>
-          <Length>9</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>17A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>46</ID>
-          <Description>"     Surname"</Description>
-          <VariableType>String</VariableType>
-          <Length>15</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>184</Offset>
-          </Offsets>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>47</ID>
-      <Description>"Player #3"</Description>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>48</ID>
-          <Description>"     ID in Squad"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2F0</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>49</ID>
-          <Description>"     First name"</Description>
-          <VariableType>String</VariableType>
-          <Length>9</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2F2</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>50</ID>
-          <Description>"     Surname"</Description>
-          <VariableType>String</VariableType>
-          <Length>15</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>2FC</Offset>
-          </Offsets>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>83</ID>
-      <Description>"    1"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>1</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>69</ID>
-      <Description>"    B"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>B</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>70</ID>
-      <Description>"    1B"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>1B</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>71</ID>
-      <Description>"    27"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>27</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>72</ID>
-      <Description>"    32"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>32</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>73</ID>
-      <Description>"    33"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>33</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>74</ID>
-      <Description>"    37"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>37</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>75</ID>
-      <Description>"    39"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>39</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>76</ID>
-      <Description>"    3B"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>3B</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>77</ID>
-      <Description>"    3C"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>3C</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>78</ID>
-      <Description>"    3D"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>3D</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>79</ID>
-      <Description>"    3E"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>3E</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>80</ID>
-      <Description>"    3F"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>3F</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>81</ID>
-      <Description>"    40"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>40</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>82</ID>
-      <Description>"    41"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>41</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>84</ID>
-      <Description>"    42"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>42</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>85</ID>
-      <Description>"    43"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>43</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>86</ID>
-      <Description>"    4D"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>4D</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>87</ID>
-      <Description>"    4E"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>4E</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>88</ID>
-      <Description>"    4F"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>4F</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>89</ID>
-      <Description>"    50"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>50</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>90</ID>
-      <Description>"    51"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>51</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>91</ID>
-      <Description>"    52"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>52</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>92</ID>
-      <Description>"    53"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>53</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>93</ID>
-      <Description>"    54"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>54</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>94</ID>
-      <Description>"    55"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>55</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>95</ID>
-      <Description>"    59"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>59</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>96</ID>
-      <Description>"    5C"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>5C</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>97</ID>
-      <Description>"    5D"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>5D</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>98</ID>
-      <Description>"    5E"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>5E</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>99</ID>
-      <Description>"    5F"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>5F</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>100</ID>
-      <Description>"    60"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>60</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>101</ID>
-      <Description>"    61"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>61</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>102</ID>
-      <Description>"    62"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>62</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>103</ID>
-      <Description>"    63"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>63</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>104</ID>
-      <Description>"    64"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>64</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>105</ID>
-      <Description>"    65"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>65</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>106</ID>
-      <Description>"    66"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>66</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>107</ID>
-      <Description>"    67"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>67</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>108</ID>
-      <Description>"    68"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>68</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>109</ID>
-      <Description>"    69"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>69</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>110</ID>
-      <Description>"    6A"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>6A</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>112</ID>
-      <Description>"    6D"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>6D</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>113</ID>
-      <Description>"    6E"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>6E</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>114</ID>
-      <Description>"    73"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>73</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>115</ID>
-      <Description>"    74"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>74</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>116</ID>
-      <Description>"    75"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>75</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>117</ID>
-      <Description>"    76"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>76</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>119</ID>
-      <Description>"    79"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00823690</Address>
-      <Offsets>
-        <Offset>79</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
       <ID>302</ID>
-      <Description>"Club"</Description>
+      <Description>"Verein"</Description>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
@@ -1253,49 +15,9 @@
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>0</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>386</ID>
-          <Description>"Respekt"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>8E</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>387</ID>
-          <Description>"Siegeswille"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>9A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>388</ID>
-          <Description>"Stimmung"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>9C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>301</ID>
-          <Description>"PlayerCount"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>E6</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
@@ -1303,7 +25,7 @@
           <Description>"Vereins-ID"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>102</Offset>
           </Offsets>
@@ -1313,9 +35,69 @@
           <Description>"Land"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>103</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>301</ID>
+          <Description>"Anzahl Spieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>E6</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>334</ID>
+          <Description>"Anzahl Amateurspieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>A19</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>386</ID>
+          <Description>"Respekt"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>8E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>387</ID>
+          <Description>"Siegeswille"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>9A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>388</ID>
+          <Description>"Stimmung"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>9C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>385</ID>
+          <Description>"Eingespieltheit"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>94C</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
@@ -1323,7 +105,7 @@
           <Description>"Vereinsvermögen am Anfang der Saison"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>154</Offset>
           </Offsets>
@@ -1333,7 +115,7 @@
           <Description>"Einnahmen Ligaspiele"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>290</Offset>
           </Offsets>
@@ -1343,17 +125,27 @@
           <Description>"Einnahmen Freundschaftsspiele"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>2B8</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>391</ID>
-          <Description>"Sponsor $$$"</Description>
+          <ID>298</ID>
+          <Description>"Einnahmen Werbung"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>470</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>391</ID>
+          <Description>"Sponsor, Geld"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>3C4</Offset>
           </Offsets>
@@ -1363,19 +155,9 @@
           <Description>"Sponsor, Vertragslaufzeit"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>3BD</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>298</ID>
-          <Description>"Einnahmen Werbung"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>00800710</Address>
-          <Offsets>
-            <Offset>470</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
@@ -1383,7 +165,7 @@
           <Description>"Ausgaben Fanartikel"</Description>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
-          <Address>00823690</Address>
+          <Address>anstoss2.exe+423690</Address>
           <Offsets>
             <Offset>73470</Offset>
           </Offsets>
@@ -1393,7 +175,7 @@
           <Description>"Freikarten verteilt"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>814</Offset>
           </Offsets>
@@ -1403,7 +185,7 @@
           <Description>"Auswärtszuschuss"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>816</Offset>
           </Offsets>
@@ -1417,7 +199,7 @@
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>81C</Offset>
           </Offsets>
@@ -1427,107 +209,9 @@
           <Description>"Überdachung"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>890</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>280</ID>
-          <Description>"Block A Stehplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>854</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>281</ID>
-          <Description>"Block A Sitzplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>86C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>282</ID>
-          <Description>"Block A: Bauzeit"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>73878</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>283</ID>
-          <Description>"Block B Stehplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>856</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>284</ID>
-          <Description>"Block B Sitzplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>86E</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>285</ID>
-          <Description>"Block C Sitzplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>870</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>286</ID>
-          <Description>"Block K Logen"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>868</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>287</ID>
-          <Description>"Block L Stehplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>86A</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>288</ID>
-          <Description>"Block L Sitzplätze"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>882</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>289</ID>
-          <Description>"Block L Bauzeit"</Description>
-          <VariableType>Byte</VariableType>
-          <Address>00823690</Address>
-          <Offsets>
-            <Offset>73883</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
@@ -1535,7 +219,7 @@
           <Description>"Anzeigetafel"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>896</Offset>
           </Offsets>
@@ -1545,7 +229,7 @@
           <Description>"Flutlicht"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>897</Offset>
           </Offsets>
@@ -1555,7 +239,7 @@
           <Description>"Rasenheizung"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>898</Offset>
           </Offsets>
@@ -1565,217 +249,1772 @@
           <Description>"Rasenpflege"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>89B</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>385</ID>
-          <Description>"Eingespieltheit"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>94C</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>334</ID>
-          <Description>"Anzahl Amateurspieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>800710</Address>
-          <Offsets>
-            <Offset>A19</Offset>
-          </Offsets>
+          <ID>548</ID>
+          <Description>"Blöcke (Steh-/Sitzplätze/Logen/Bauzeit)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>280</ID>
+              <Description>"Block A Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>854</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>281</ID>
+              <Description>"Block A Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>86C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>282</ID>
+              <Description>"Block A, Bauzeit"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+423690</Address>
+              <Offsets>
+                <Offset>73878</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>600</ID>
+              <Description>"Block A Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>884</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>283</ID>
+              <Description>"Block B Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>856</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>284</ID>
+              <Description>"Block B Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>86E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>601</ID>
+              <Description>"Block B Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>885</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>602</ID>
+              <Description>"Block C Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>858</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>285</ID>
+              <Description>"Block C Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>870</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>603</ID>
+              <Description>"Block C Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>886</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>604</ID>
+              <Description>"Block D Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>85A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>605</ID>
+              <Description>"Block D Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>872</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>606</ID>
+              <Description>"Block D Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>887</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>607</ID>
+              <Description>"Block E Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>85C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>608</ID>
+              <Description>"Block E Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>874</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>609</ID>
+              <Description>"Block E Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>888</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>610</ID>
+              <Description>"Block F Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>85E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>611</ID>
+              <Description>"Block F Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>876</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>612</ID>
+              <Description>"Block F Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>889</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>613</ID>
+              <Description>"Block G Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>860</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>614</ID>
+              <Description>"Block G Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>878</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>615</ID>
+              <Description>"Block G Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>88A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>616</ID>
+              <Description>"Block H Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>862</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>617</ID>
+              <Description>"Block H Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>87A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>618</ID>
+              <Description>"Block H Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>88B</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>619</ID>
+              <Description>"Block I Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>864</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>620</ID>
+              <Description>"Block I Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>87C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>621</ID>
+              <Description>"Block I Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>88C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>622</ID>
+              <Description>"Block J Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>866</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>623</ID>
+              <Description>"Block J Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>87E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>624</ID>
+              <Description>"Block J Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>88D</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>286</ID>
+              <Description>"Block K Logen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>868</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>625</ID>
+              <Description>"Block K Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>880</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>626</ID>
+              <Description>"Block K Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>88E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>287</ID>
+              <Description>"Block L Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>86A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>288</ID>
+              <Description>"Block L Sitzplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>882</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>289</ID>
+              <Description>"Block L, Bauzeit"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+423690</Address>
+              <Offsets>
+                <Offset>73883</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>627</ID>
+              <Description>"Block L Wochen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>88F</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>317</ID>
-      <Description>"Bremen"</Description>
+      <ID>55</ID>
+      <Description>"Trainer"</Description>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
-          <ID>310</ID>
-          <Description>"Erster Verein, Anzahl Spieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00887D86</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>308</ID>
-          <Description>"Erster Verein, Name"</Description>
+          <ID>552</ID>
+          <Description>"Vorname"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>String</VariableType>
-          <Length>19</Length>
+          <Length>9</Length>
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>00887CA8</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B00</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>304</ID>
-          <Description>"Vereinsvermögen Bremen (Anfang der Saison)"</Description>
+          <ID>296</ID>
+          <Description>"Nachname"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B0A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>261</ID>
+          <Description>"Trainer-Level"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B22</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>57</ID>
+          <Description>"Alter"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B24</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>393</ID>
+          <Description>"Geld"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
-          <Address>887E4C</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34b90</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>318</ID>
-          <Description>"Bremen, Stadionname"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>28</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00888194</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>307</ID>
-          <Description>"Stärke, erster Spieler, erster Verein"</Description>
+          <ID>551</ID>
+          <Description>"Schwierigkeitslevel"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>007B4F6B</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B34</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>331</ID>
-          <Description>"Lokalrivale"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00887d94</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>374</ID>
-          <Description>"A-Jugendspieler, Bremen"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00876FB1</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>375</ID>
-          <Description>"B-Jugendspieler, Bremen"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00876FB2</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>376</ID>
-          <Description>"C-Jugendspieler, Bremen"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00876FB3</Address>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>319</ID>
-      <Description>"Bayern"</Description>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>313</ID>
-          <Description>"Zweiter Verein, Anzahl Spieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>008884f6</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>312</ID>
-          <Description>"Zweiter Verein"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>19</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00888418</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>321</ID>
-          <Description>"Vereinsvermögen Bayern"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>8885BC</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>322</ID>
-          <Description>"Stadionname"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>28</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>888904</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>323</ID>
-          <Description>"Block B, Stehplätze"</Description>
+          <ID>554</ID>
+          <Description>"Anzahl Spiele"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
-          <Address>0088893E</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34BCC</Offset>
+          </Offsets>
         </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>320</ID>
-      <Description>"Nürnberg"</Description>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
         <CheatEntry>
-          <ID>337</ID>
-          <Description>"12. Verein"</Description>
+          <ID>553</ID>
+          <Description>"Anzahl Siege"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34BCE</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>295</ID>
+          <Description>"Vorname, Trainer 2"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>String</VariableType>
-          <Length>19</Length>
+          <Length>9</Length>
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>0088D5E8</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>36458</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>346</ID>
-          <Description>"Vereins-ID"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>0088D6DC</Address>
+          <ID>547</ID>
+          <Description>"Aktien"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>378</ID>
+              <Description>"Aktie 1, Land"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BD8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>379</ID>
+              <Description>"Aktie 1, Vereins-ID"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BDA</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>380</ID>
+              <Description>"Aktie 1, Anzahl Aktien"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BDC</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>384</ID>
+              <Description>"Aktie 1, Kaufpreis"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BE0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>381</ID>
+              <Description>"Aktie 2, Land"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BE8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>382</ID>
+              <Description>"Aktie 2, Vereins-ID"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BEA</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>383</ID>
+              <Description>"Aktie 2, Anzahl"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BEC</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>900</ID>
+              <Description>"Aktie 2, Kaufpreis"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>34BF0</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
         <CheatEntry>
-          <ID>360</ID>
-          <Description>"Amateurspieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>0088DBA5</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>314</ID>
-          <Description>"Nürnberg, Anzahl Spieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>0088D6C6</Address>
+          <ID>628</ID>
+          <Description>"Kompetenzen (Beispiel: Level 9)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>629</ID>
+              <Description>"Verhandlungsgeschick"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>36404</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>630</ID>
+              <Description>"Motivationsfähigkeit"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>36406</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>631</ID>
+              <Description>"Trainingsgestaltung"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>36408</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>632</ID>
+              <Description>"Autorität"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3640A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>633</ID>
+              <Description>"Fremdsprachenkenntnisse"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3640C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>634</ID>
+              <Description>"Ausstrahlung"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3640E</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>324</ID>
-      <Description>"Erster Eintrag nach großer Leere"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>007CB5A8</Address>
+      <ID>0</ID>
+      <Description>"Spieler (Kaderplatz 1, vollständiger Feldsatz)"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"    Spieler-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"     Vorname"</Description>
+          <VariableType>String</VariableType>
+          <Length>9</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"     Nachname"</Description>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"     Hautfarbe"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"     Haarfarbe"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1D</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>6</ID>
+          <Description>"     Alter"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>7</ID>
+          <Description>"     Stärke"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"     Position"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>20</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>9</ID>
+          <Description>"     Nebenposition 1"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>21</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"     Nebenposition 2"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>22</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"     Vereinsland"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>23</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>358</ID>
+          <Description>"     Vereins-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>24</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>12</ID>
+          <Description>"     Aktuelle Form"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>25</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>13</ID>
+          <Description>"     Vorherige Form"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>26</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>14</ID>
+          <Description>"     Fähigkeiten"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>28</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>66</ID>
+          <Description>"     Negative Fähigkeiten"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>15</ID>
+          <Description>"     Eigenschaften"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>16</ID>
+          <Description>"     Charakter"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>17</ID>
+          <Description>"     Gesundheitszustand"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"     Kondition"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>30</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>19</ID>
+          <Description>"     Frische"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>31</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>20</ID>
+          <Description>"     Unbehagen"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>34</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>22</ID>
+          <Description>"     Zufriedenheit"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>36</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>23</ID>
+          <Description>"     Nationalität"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>38</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>24</ID>
+          <Description>"     Rückennummer"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>3A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>25</ID>
+          <Description>"     Verletzungstage"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>44</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>64</ID>
+          <Description>"     Verletzung"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>46</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>27</ID>
+          <Description>"     Verletzungsanfällig"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>47</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>28</ID>
+          <Description>"     Gesperrte Spiele (Rote Karte)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>48</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>65</ID>
+          <Description>"     Gedopt"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>49</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>29</ID>
+          <Description>"     Gelbe Karten (Saison)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>4A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>67</ID>
+          <Description>"     Rote Karten (Saison)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>4B</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>31</ID>
+          <Description>"     Gelb-Rote Karten (Saison)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>4C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>32</ID>
+          <Description>"     Tore"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>56</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>33</ID>
+          <Description>"     Pokaltore (national)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>57</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>34</ID>
+          <Description>"     Pokaltore (international)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>58</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>35</ID>
+          <Description>"     Tore gesamt (1. Liga)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>5A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>36</ID>
+          <Description>"     Vorlagen"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>6B</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>37</ID>
+          <Description>"     Jokertore"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>6C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>38</ID>
+          <Description>"     Elfmetertore (Saison)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>6F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>39</ID>
+          <Description>"     Elfmetertore (gesamt)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>70</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>40</ID>
+          <Description>"     Freistoßtore (Saison)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>71</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"     Freistoßtore (gesamt)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>72</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>42</ID>
+          <Description>"     Einsätze (Saison)"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>77</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>118</ID>
+          <Description>"     Jokereinsätze"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>78</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>120</ID>
+          <Description>"     Einsätze (1. Liga)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>7A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>271</ID>
+          <Description>"     Gehalt"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>B4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>270</ID>
+          <Description>"     Auflaufprämie"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>B6</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>269</ID>
+          <Description>"     Torprämie"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>B8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>268</ID>
+          <Description>"     Fixe Ablöse"</Description>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>BA</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>265</ID>
+          <Description>"     Ablöse bezahlt"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>BC</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>264</ID>
+          <Description>"     Vertragslaufzeit"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>C0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>266</ID>
+          <Description>"     0: Ausgeliehen, 1: Kaufoption, 3: In dieser Saison gekommen, 4: Option Spieler, 5: Option Verein, 6: Stammplatz"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>C1</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>267</ID>
+          <Description>"     Jahre im Verein, 0 = kann nicht wechseln"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>C2</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>272</ID>
+          <Description>"     Bit 7 (=128): Beendet Karriere"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>D7</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>325</ID>
-      <Description>"Stadien"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>String</VariableType>
-      <Length>20</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>007D44D0</Address>
+      <ID>43</ID>
+      <Description>"Spieler (Kaderplatz 2, zeigt Abstand zum nächsten Platz: 178)"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>44</ID>
+          <Description>"Spieler-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>178</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>45</ID>
+          <Description>"     Vorname"</Description>
+          <VariableType>String</VariableType>
+          <Length>9</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>17A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>46</ID>
+          <Description>"     Nachname"</Description>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>184</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>47</ID>
+      <Description>"Spieler (Kaderplatz 3)"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>48</ID>
+          <Description>"Spieler-ID"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2F0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>49</ID>
+          <Description>"     Vorname"</Description>
+          <VariableType>String</VariableType>
+          <Length>9</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2F2</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>50</ID>
+          <Description>"     Nachname"</Description>
+          <VariableType>String</VariableType>
+          <Length>15</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>2FC</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>541</ID>
+      <Description>"Spieler - unbekannte Werte"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>83</ID>
+          <Description>"    1"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>69</ID>
+          <Description>"    B"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>B</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>70</ID>
+          <Description>"    1B"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1B</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>71</ID>
+          <Description>"    27"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>27</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>72</ID>
+          <Description>"    32"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>32</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>73</ID>
+          <Description>"    33"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>33</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>74</ID>
+          <Description>"    37"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>37</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>75</ID>
+          <Description>"    39"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>39</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>76</ID>
+          <Description>"    3B"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>3B</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>77</ID>
+          <Description>"    3C"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>3C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>78</ID>
+          <Description>"    3D"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>3D</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>79</ID>
+          <Description>"    3E"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>3E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>80</ID>
+          <Description>"    3F"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>3F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>81</ID>
+          <Description>"    40"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>40</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>82</ID>
+          <Description>"    41"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>41</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>84</ID>
+          <Description>"    42"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>42</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>85</ID>
+          <Description>"    43"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>43</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>86</ID>
+          <Description>"    4D"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>4D</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>87</ID>
+          <Description>"    4E"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>4E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>88</ID>
+          <Description>"    4F"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>4F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>89</ID>
+          <Description>"    50"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>50</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>90</ID>
+          <Description>"    51"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>51</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>91</ID>
+          <Description>"    52"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>52</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>92</ID>
+          <Description>"    53"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>53</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>93</ID>
+          <Description>"    54"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>54</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>94</ID>
+          <Description>"    55"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>55</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>95</ID>
+          <Description>"    59"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>59</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>96</ID>
+          <Description>"    5C"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>5C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>97</ID>
+          <Description>"    5D"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>5D</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>98</ID>
+          <Description>"    5E"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>5E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>99</ID>
+          <Description>"    5F"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>5F</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>100</ID>
+          <Description>"    60"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>60</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>101</ID>
+          <Description>"    61"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>61</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>102</ID>
+          <Description>"    62"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>62</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>103</ID>
+          <Description>"    63"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>63</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>104</ID>
+          <Description>"    64"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>64</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>105</ID>
+          <Description>"    65"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>65</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>106</ID>
+          <Description>"    66"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>66</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>107</ID>
+          <Description>"    67"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>67</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>108</ID>
+          <Description>"    68"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>68</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>109</ID>
+          <Description>"    69"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>69</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>110</ID>
+          <Description>"    6A"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>6A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>112</ID>
+          <Description>"    6D"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>6D</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>113</ID>
+          <Description>"    6E"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>6E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>114</ID>
+          <Description>"    73"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>73</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>115</ID>
+          <Description>"    74"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>74</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>116</ID>
+          <Description>"    75"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>75</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>117</ID>
+          <Description>"    76"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>76</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>119</ID>
+          <Description>"    79"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>79</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
     <CheatEntry>
       <ID>339</ID>
@@ -1787,7 +2026,7 @@
           <Description>"Vereins-ID"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>00800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>15E2</Offset>
           </Offsets>
@@ -1797,7 +2036,7 @@
           <Description>"Land"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>800710</Address>
+          <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>15E3</Offset>
           </Offsets>
@@ -1811,271 +2050,804 @@
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>008241E0</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>14E0</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
           <ID>340</ID>
           <Description>"Anzahl Spieler"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>008242C6</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>15C6</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
           <ID>338</ID>
           <Description>"Amateurspieler"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Byte</VariableType>
-          <Address>00824BF9</Address>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>1EF9</Offset>
+          </Offsets>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>327</ID>
-      <Description>"Dynamischer Kader"</Description>
+      <ID>542</ID>
+      <Description>"Spielstand"</Description>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
-          <ID>326</ID>
-          <Description>"Vorname, dynamischer Spieler"</Description>
+          <ID>500</ID>
+          <Description>"Aktuelles Spieljahr"</Description>
           <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>9</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>007B4F4E</Address>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3962</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>306</ID>
-          <Description>"Nachname, dynamischer Spieler"</Description>
+          <ID>501</ID>
+          <Description>"Anzahl aktiver Mitspieler"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3966</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>402</ID>
+          <Description>"Hauptland"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3940</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>403</ID>
+          <Description>"Bonusland 1"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3944</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>404</ID>
+          <Description>"Bonusland 2"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3946</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>549</ID>
+          <Description>"Bonusland 3"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3948</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>550</ID>
+          <Description>"Bonusland 4"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>394A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>396</ID>
+          <Description>"Schwierigkeit"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B34</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>546</ID>
+      <Description>"Spielernamen"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>417</ID>
+          <Description>"Namensanker - Pointer"</Description>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+7FDD58</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>418</ID>
+          <Description>"Nachname eines Spielers"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>String</VariableType>
           <Length>15</Length>
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>007B4F58</Address>
+          <Address>anstoss2.exe+7FDD58</Address>
+          <Offsets>
+            <Offset>478A</Offset>
+          </Offsets>
         </CheatEntry>
         <CheatEntry>
-          <ID>342</ID>
-          <Description>"First Player, Verein"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>007B4F70</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>330</ID>
-          <Description>"Nachname, dynamischer Spieler, kleinerer Kader"</Description>
+          <ID>420</ID>
+          <Description>"Nachname des Trainers vom ersten Verein"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>String</VariableType>
           <Length>15</Length>
           <Unicode>0</Unicode>
           <CodePage>0</CodePage>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>007B3950</Address>
+          <Address>anstoss2.exe+7FDD58</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>366</ID>
-      <Description>"Andere Länder, andere Sitten"</Description>
+      <ID>543</ID>
+      <Description>"Dauerhafter Spieler-Datensatz"</Description>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
-          <ID>365</ID>
-          <Description>"Lierse SK"</Description>
+          <ID>502</ID>
+          <Description>"Basis der Tabelle. Formel je Spieler: diese Adresse + Spieler-ID*0xC8 - siehe Beispiel-Gruppe unten."</Description>
           <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>19</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00BF3E90</Address>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+516678</Address>
         </CheatEntry>
         <CheatEntry>
-          <ID>361</ID>
-          <Description>"Aarhus GF"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>19</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00BF4AC0</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>363</ID>
-          <Description>"Aarhus, Anzahl Spieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00BF4B98</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>367</ID>
-          <Description>"Aarhus, Land"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>BF4B33</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>362</ID>
-          <Description>"Brondby"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>String</VariableType>
-          <Length>19</Length>
-          <Unicode>0</Unicode>
-          <CodePage>0</CodePage>
-          <ZeroTerminate>1</ZeroTerminate>
-          <Address>00BF4BF8</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>364</ID>
-          <Description>"Brondby, Anzahl Spieler"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>00BF4CD0</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>368</ID>
-          <Description>"Bröndby, Land"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>Byte</VariableType>
-          <Address>BF4C6B</Address>
+          <ID>503</ID>
+          <Description>"Beispiel: Spieler-ID 1338, Basis = 516678 + 1338*C8 = 557BC8. Für einen anderen Spieler: 557BC8 durch (516678 + Spieler-ID*C8) ersetzen."</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>504</ID>
+              <Description>"     Vorname-Index (im Namenspool)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>505</ID>
+              <Description>"     Nachname-Index (im Namenspool)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>2</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>506</ID>
+              <Description>"     Spieler-ID (Selbstreferenz, hier 1338)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>4</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>507</ID>
+              <Description>"     Hautfarbe"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>6</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>508</ID>
+              <Description>"     Haarfarbe"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>7</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>509</ID>
+              <Description>"     Alter, invertiert und jahresrelativ: Byte = (aktuelles Jahr - 1792) - Alter (siehe 'Aktuelles Spieljahr' im Abschnitt Spielstand)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>510</ID>
+              <Description>"     unbekannt"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>9</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>511</ID>
+              <Description>"     Stärke"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>512</ID>
+              <Description>"     Position (Hauptposition)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>B</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>513</ID>
+              <Description>"     Nebenposition 1"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>514</ID>
+              <Description>"     Nebenposition 2"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>D</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>515</ID>
+              <Description>"     Fähigkeiten (Bitmaske)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>516</ID>
+              <Description>"     Negative Fähigkeiten (Bitmaske)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>10</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>517</ID>
+              <Description>"     Eigenschaften (Bitmaske)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>12</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>518</ID>
+              <Description>"     Charakter"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>14</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>519</ID>
+              <Description>"     Gesundheitszustand"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>15</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>522</ID>
+              <Description>"     Unbehagen (Bitmaske)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>18</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>523</ID>
+              <Description>"     Zufriedenheit"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>1A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>525</ID>
+              <Description>"     Form"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>1E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>526</ID>
+              <Description>"     Kondition"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>21</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>527</ID>
+              <Description>"     Frische"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>22</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>528</ID>
+              <Description>"     Nationalität - nur die unteren 7 Bit sind die Land-ID (Wert AND 0x7F)! Bit 7 ist ein unabhängiges, unbekanntes Flag (Beispiel: Land-ID 54 wurde als 0xB6 = 0x36 OR 0x80 beobachtet statt als 0x36)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>25</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>529</ID>
+              <Description>"     ab hier unerforscht, 94 Byte bis vor Gehalt (+0x84) - vermutlich Verletzungstage/Verletzung/Verletzungsanfaellig/gesperrte Spiele/Gedopt/Gelbe Karten, Offsets nicht bestaetigt"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>26</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>530</ID>
+              <Description>"     Gehalt"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>84</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>531</ID>
+              <Description>"     Auflaufprämie"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>86</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>532</ID>
+              <Description>"     ab hier unerforscht, Rest bis Ende des Datensatzes (0xC8 Byte) - vermutlich Torprämie/Ablösesumme/Vertragsdauer/Vertragsdetails/Jahre im Verein/Karriere, Offsets nicht bestätigt"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>88</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>369</ID>
-      <Description>"Jugendspieler"</Description>
-      <VariableType>String</VariableType>
-      <Length>7</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>anstoss2.exe+3B4398</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>371</ID>
-      <Description>"A-Jugendspieler, Holstein Kiel"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>008774F9</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>372</ID>
-      <Description>"B-Jugendspieler, Holstein Kiel"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>008774FA</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>373</ID>
-      <Description>"C-Jugendspieler, Holstein Kiel"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>008774FB</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>394</ID>
-      <Description>"Vorname, Coach 2"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>String</VariableType>
-      <Length>9</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>00859158</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>395</ID>
-      <Description>"No description"</Description>
-      <VariableType>Byte</VariableType>
-      <Address>anstoss2.exe+8AEA00</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>396</ID>
-      <Description>"Schwierigkeit"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00857834</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>398</ID>
-      <Description>"No description"</Description>
-      <VariableType>String</VariableType>
-      <Length>7</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>anstoss2.exe+3B0BC8</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>400</ID>
-      <Description>"No description"</Description>
-      <VariableType>Byte</VariableType>
-      <Address>anstoss2.exe+3A484C</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>401</ID>
-      <Description>"No description"</Description>
-      <VariableType>Byte</VariableType>
-      <Address>anstoss2.exe+3AFD2F</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>402</ID>
-      <Description>"Hauptland"</Description>
-      <VariableType>Byte</VariableType>
-      <Address>anstoss2.exe+426640</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>403</ID>
-      <Description>"Zusatzland"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00826644</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>404</ID>
-      <Description>"Zweites Zusatzland"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>Byte</VariableType>
-      <Address>00826646</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>417</ID>
-      <Description>"Spielernamenanker"</Description>
-      <ShowAsHex>1</ShowAsHex>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>4 Bytes</VariableType>
-      <Address>anstoss2.exe+7FDD58</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>418</ID>
-      <Description>"Nachname eines Spielers"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>String</VariableType>
-      <Length>15</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>anstoss2.exe+7FDD58</Address>
-      <Offsets>
-        <Offset>478A</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>420</ID>
-      <Description>"Nachname des Trainers vom ersten Verein"</Description>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>String</VariableType>
-      <Length>15</Length>
-      <Unicode>0</Unicode>
-      <CodePage>0</CodePage>
-      <ZeroTerminate>1</ZeroTerminate>
-      <Address>anstoss2.exe+7FDD58</Address>
-      <Offsets>
-        <Offset>0</Offset>
-      </Offsets>
+      <ID>545</ID>
+      <Description>"Archiv"</Description>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>317</ID>
+          <Description>"Bremen (Vereinsindex 0 in der Gesamt-Vereinsliste: Basis anstoss2.exe+400710, Offset = 64FA8 + Index*770 + Feld-Offset)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>310</ID>
+              <Description>"Anzahl Spieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>65086</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>308</ID>
+              <Description>"Name"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>19</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>64FA8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>304</ID>
+              <Description>"Vereinsvermögen (Anfang der Saison)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>6514C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>318</ID>
+              <Description>"Stadionname"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>28</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>65494</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>331</ID>
+              <Description>"Lokalrivale"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>65094</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>374</ID>
+              <Description>"A-Jugendspieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>542B1</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>375</ID>
+              <Description>"B-Jugendspieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>542B2</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>376</ID>
+              <Description>"C-Jugendspieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>542B3</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>319</ID>
+          <Description>"Bayern (Vereinsindex 1: Basis anstoss2.exe+400710, Offset = 64FA8 + Index*770 + Feld-Offset)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>313</ID>
+              <Description>"Anzahl Spieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>657F6</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>312</ID>
+              <Description>"Name"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>19</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>65718</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>321</ID>
+              <Description>"Vereinsvermögen"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>658BC</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>322</ID>
+              <Description>"Stadionname"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>28</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>65C04</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>323</ID>
+              <Description>"Block B, Stehplätze"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>65C3E</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>320</ID>
+          <Description>"Nürnberg (Vereinsindex 12: Basis anstoss2.exe+400710, Offset = 64FA8 + Index*770 + Feld-Offset)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>337</ID>
+              <Description>"Name"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>19</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>6A8E8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>346</ID>
+              <Description>"Vereins-ID"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>6A9DC</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>360</ID>
+              <Description>"Amateurspieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>6AEA5</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>314</ID>
+              <Description>"Anzahl Spieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>6A9C6</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>366</ID>
+          <Description>"Andere Länder, andere Sitten (Nicht-Liga-Vereine: Basis anstoss2.exe+400710, Offset = 3D1190 + Index*138 + Feld-Offset. Dänemark=13, Belgien=6 in PlayerEnums.Country)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>361</ID>
+              <Description>"Genk (Index 0)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>19</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D1190</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>363</ID>
+              <Description>"Genk, Anzahl Spieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D1268</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>367</ID>
+              <Description>"Genk, Land"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D1203</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>362</ID>
+              <Description>"Anderlecht (Index 1)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>19</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D12C8</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>364</ID>
+              <Description>"Anderlecht, Anzahl Spieler"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D13A0</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>368</ID>
+              <Description>"Anderlecht, Land"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D133B</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>365</ID>
+              <Description>"Harelbeke (Index 2)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>19</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+400710</Address>
+              <Offsets>
+                <Offset>3D1400</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>327</ID>
+          <Description>"Dynamischer Kader (zeigt welcher Verein im Spiel gerade als Kader aufgerufen ist)"</Description>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>326</ID>
+              <Description>"Vorname"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>9</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+423690</Address>
+              <Offsets>
+                <Offset>2</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>306</ID>
+              <Description>"Nachname"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>15</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>anstoss2.exe+423690</Address>
+              <Offsets>
+                <Offset>C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>342</ID>
+              <Description>"Vereins-ID"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+423690</Address>
+              <Offsets>
+                <Offset>24</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>324</ID>
+          <Description>"Erster Eintrag nach großer Leere"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>1b89c</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>325</ID>
+          <Description>"Stadien"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>String</VariableType>
+          <Length>20</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+423690</Address>
+          <Offsets>
+            <Offset>247C4</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>

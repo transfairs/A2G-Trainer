@@ -9,10 +9,12 @@ using static System.Windows.Forms.ListView;
 
 namespace A2G_Trainer_XP.View
 {
+    /// <summary>Roster tab: lists a club's players and edits the selected player's fields.</summary>
     public partial class PlayerView : EntityView
     {
         private Timer freezeTimer;
 
+        /// <summary>Creates the roster tab view bound to the given memory accessor and process controller.</summary>
         public PlayerView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();
@@ -22,7 +24,12 @@ namespace A2G_Trainer_XP.View
 
         private void InitPlayerListView()
         {
-            this.PlayerListView.Columns.Add("Pos", 35);
+            // Column widths must leave room for the vertical scrollbar (~17px) once a squad has
+            // more players than fit in view - otherwise they no longer fit the shrunk client area
+            // and a spurious horizontal scrollbar appears too, which then eats into the height and
+            // makes the vertical scrolling worse. Keep the sum comfortably under
+            // PlayerListView.Width (see Designer) minus border and scrollbar width.
+            this.PlayerListView.Columns.Add("Pos", 30);
             this.PlayerListView.Columns.Add("Name", 105);
             this.PlayerListView.Columns.Add("Stärke", 45, HorizontalAlignment.Center);
             this.PlayerListView.SelectedIndexChanged += this.PlayerListView_SelectedIndexChanged;
@@ -30,7 +37,15 @@ namespace A2G_Trainer_XP.View
 
         private void DisableEdits(bool enable)
         {
-            this.SaveBtn.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
+            // Used to be disabled for TRAINEE (Jugendspieler) entirely, since every field for them
+            // used to route through a transient, shared display cache the game silently discards
+            // writes to. Most Overview-tab fields (Name/Age/Level/Skin/Hair/Position/Skills/
+            // Personality/Character/Health/Form/Condition/Freshness/Nationality/Unhappy/Happy/
+            // Salary/ShowUpBonus) now also write through a separate, persistent, PlayerId-keyed
+            // path (see PlayerController.Save) that isn't affected by that - so Save is worth
+            // enabling for TRAINEE. The remaining Contract-tab fields beyond Salary/ShowUpBonus are
+            // still forced read-only below (unconfirmed offsets).
+            this.SaveBtn.Enabled = enable;
             foreach (Control tabPage in this.MainTabControl.Controls)
             {
                 if (tabPage is TabPage)
@@ -40,11 +55,38 @@ namespace A2G_Trainer_XP.View
                         if (!(control is VScrollBar || control is HScrollBar))
                             control.Enabled = enable;
                     }
-                    if (new Control[] { this.ConstitutionTab, this.ContractTab, this.OtherTab }.Contains(tabPage))
+                    // ConstitutionTab (Unhappy/Happy confirmed persistent) and ContractTab
+                    // (Salary/ShowUpBonus confirmed persistent) are now worth enabling for TRAINEE
+                    // too - same as Overview/Position/Skills, some fields on them still silently
+                    // no-op, but the confirmed ones now stick. OtherTab has no confirmed persistent
+                    // fields yet, so it stays disabled for TRAINEE.
+                    if (tabPage == this.OtherTab)
                     {
                         tabPage.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
                     }
                 }
+            }
+
+            // Condition/Freshness are confirmed persistent now too (Robin found the real offsets,
+            // +0x21/+0x22 - see Settings.cs/PlayerController.WritePersistentConditionFreshness), so
+            // they no longer need to be forced read-only here. The rest of the Contract tab (beyond
+            // Salary/ShowUpBonus) is still an unconfirmed, reverted guess - stays read-only for
+            // TRAINEE until Robin finds its real offsets the same way.
+            if (this.clubController.Type == PlayerEnums.AddressType.TRAINEE)
+            {
+                this.GoalBonusInput.Enabled = false;
+                this.FixedTransferFeeInput.Enabled = false;
+                this.ContractDurationInput.Enabled = false;
+                this.YearsInClubInput.Enabled = false;
+                this.Leased.Enabled = false;
+                this.LeasedWithOption.Enabled = false;
+                this.UnknownContractCheckbox.Enabled = false;
+                this.JoinedThisSeason.Enabled = false;
+                this.OptionPlayer.Enabled = false;
+                this.OptionClub.Enabled = false;
+                this.SeatedGuarantee.Enabled = false;
+                this.UnsetContractDetail.Enabled = false;
+                this.Retires.Enabled = false;
             }
         }
 
@@ -336,7 +378,11 @@ namespace A2G_Trainer_XP.View
                     ushort pc = this.clubController.Club.PlayerCount;
                     byte apc = this.clubController.Club.AmateurPlayerCount;
                     this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
-                    Player firstPlayer = this.playerController.EntityList.First();
+                    // .FirstOrDefault(), not .First(): EntityList is legitimately empty when no
+                    // savegame is loaded (e.g. clicking a menu item at the main menu) - IsClubMember
+                    // below is already null-safe, so a null firstPlayer just naturally resolves to
+                    // "not a member"/"" instead of throwing.
+                    Player firstPlayer = this.playerController.EntityList.FirstOrDefault();
 
                     if (type == PlayerEnums.AddressType.DYNAMIC)
                     {
@@ -347,7 +393,11 @@ namespace A2G_Trainer_XP.View
                         // the PlayerController above, so those are restored - the already-correct
                         // ClubName is kept rather than blanked.
                         Club dynamic = this.clubController.EntityList.FirstOrDefault(c => c.IsClubMember(firstPlayer));
-                        Logger.Debug($"Dynamic match: firstPlayer ClubId={firstPlayer.ClubId} ClubCountry={firstPlayer.ClubCountry} -> {(dynamic != null ? $"found {dynamic.ClubName} ({dynamic.Id}, {dynamic.Country}), {dynamic.PlayerCount} players" : "NOT found in EntityList (keeping direct-read club)")}");
+                        // firstPlayer can be null (no savegame loaded / empty EntityList, see above) -
+                        // the interpolated string below is evaluated unconditionally regardless of the
+                        // Debug log level, so firstPlayer.ClubId/.ClubCountry must be accessed via ?.
+                        // rather than assuming firstPlayer is non-null.
+                        Logger.Debug($"Dynamic match: firstPlayer ClubId={firstPlayer?.ClubId} ClubCountry={firstPlayer?.ClubCountry} -> {(dynamic != null ? $"found {dynamic.ClubName} ({dynamic.Id}, {dynamic.Country}), {dynamic.PlayerCount} players" : "NOT found in EntityList (keeping direct-read club)")}");
                         if (dynamic == null)
                         {
                             this.clubController.Club.PlayerCount = pc;

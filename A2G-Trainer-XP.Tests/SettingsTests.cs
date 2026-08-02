@@ -4,6 +4,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for Settings' derived address/offset values.</summary>
     public class SettingsTests
     {
         [Fact]
@@ -23,8 +24,6 @@ namespace A2G_Trainer_XP.Tests
         [Fact]
         public void CountrySelectionAddress_SecondEntry_IsBaseAddressPlusGogOffset()
         {
-            // Shares the club pointer (0x400710) - league settings hang off the same struct, not a
-            // separate static pointer.
             Assert.Equal("0x400710", Settings.CountrySelectionAddress[0]);
             Assert.Equal(Tools.SumHex(new[] { "0x400710", "3140" }), Settings.CountrySelectionAddress[1]);
         }

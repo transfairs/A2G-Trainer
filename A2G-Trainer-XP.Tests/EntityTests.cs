@@ -5,6 +5,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for Entity's change-notification base behavior.</summary>
     public class EntityTests
     {
         [Fact]

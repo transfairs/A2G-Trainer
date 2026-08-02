@@ -5,6 +5,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for the LeagueSettings/AdditionalCountry models.</summary>
     public class LeagueSettingsTests
     {
         [Fact]

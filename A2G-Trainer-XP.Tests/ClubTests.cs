@@ -3,6 +3,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for the Club model's roof-bitmask helpers and stadium-block setters.</summary>
     public class ClubTests
     {
         [Fact]

@@ -147,8 +147,6 @@ namespace A2G_Trainer_XP
             //
             // trainerToolStripMenuItem
             //
-            // DropDownItems are populated at runtime (Trainer.RefreshTrainerMenu) - only savegames
-            // with more than one active manager actually have entries here.
             this.trainerToolStripMenuItem.Name = "trainerToolStripMenuItem";
             this.trainerToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.trainerToolStripMenuItem.Text = "Trainer";

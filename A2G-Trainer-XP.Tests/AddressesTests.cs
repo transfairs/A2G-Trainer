@@ -5,6 +5,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for the Addresses map's lookup and offset-shifting behavior.</summary>
     public class AddressesTests
     {
         private enum Key

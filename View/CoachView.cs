@@ -8,6 +8,12 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.View
 {
+    /// <summary>
+    /// Tab for one trainer/manager slot: identity, stock holdings, and the savegame's shared
+    /// league/country configuration. Stock and bonus-country controls are built dynamically
+    /// (see BuildStockBoxes/RebuildBonusCountryControls) since their counts are game-data
+    /// constants rather than fixed UI.
+    /// </summary>
     public partial class CoachView : EntityView
     {
         private const int StockColumns = 2;
@@ -15,10 +21,10 @@ namespace A2G_Trainer_XP.View
         private const int StockBoxHeight = 145;
         private const int StockBoxMargin = 6;
 
-        private const int AdditionalCountryRowHeight = 27;
         // Top offset for the first row inside AdditionalCountriesBox - needs to clear the GroupBox's
         // own title text (6px alone had the first row's controls overlapping the "Bonusländer"
         // header), matching the ~20-24px other GroupBoxes in this view use for their first child.
+        private const int AdditionalCountryRowHeight = 27;
         private const int AdditionalCountryMargin = 20;
 
         // The main country can only ever be one of these three (the game's three playable home
@@ -31,6 +37,28 @@ namespace A2G_Trainer_XP.View
         // Club-IDs are only unique per country, so the club list for a stock has to be
         // re-filtered whenever its own "Land" changes - fetched once per refresh here.
         private BindingList<Club> allClubs;
+
+        // Fixed order the six competency inputs are built/read in - matches the in-memory layout
+        // CoachController reads/writes (see CoachController.CompetencyOrder).
+        private static readonly CoachEnums.CompetencyKey[] CompetencyOrder = (CoachEnums.CompetencyKey[])Enum.GetValues(typeof(CoachEnums.CompetencyKey));
+        // Level selector sits in its own row above the six competency rows - laid out the same way
+        // as PersonalBox/LeagueBox's label-left/input-right rows so the box matches the rest of the app.
+        private const int CompetencyRowHeight = 27;
+        private const int CompetencyFirstRowTop = 20;
+        private const int CompetencyLabelX = 7;
+        private const int CompetencyInputX = 170;
+
+        private readonly TextBox[] competencyInputs = new TextBox[CompetencyOrder.Length];
+        private BindingSource competencyBindingSource;
+        private Label competencyTotalLabel;
+        // Doubles as two things: (1) the bound control for Coach.Level itself (see the
+        // "SelectedValue" binding added in InitClubTabControl - there's no separate Level field in
+        // PersonalBox anymore), and (2) the selector for which of the 16 levels' competency
+        // distribution is shown/edited below (see ShowCompetencyLevel). Changing it therefore both
+        // promotes/demotes the coach AND switches which stored distribution is being edited - the
+        // game keeps all 16 levels' distributions regardless of which one is active (see
+        // Coach.CompetencyLevels), so this always lands on a valid, already-stored 6-point split.
+        private ComboBox competencyLevelInput;
 
         private readonly GroupBox[] stockBoxes = new GroupBox[Coach.MaxStocks];
         private readonly ComboBox[] stockCountryCombos = new ComboBox[Coach.MaxStocks];
@@ -55,10 +83,12 @@ namespace A2G_Trainer_XP.View
 
         private LeagueController leagueController;
 
+        /// <summary>Creates the coach tab view bound to the given memory accessor and process controller, and builds its dynamic stock/competency controls.</summary>
         public CoachView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();
             this.BuildStockBoxes();
+            this.BuildCompetencyBox();
         }
 
         // The game caps stock holdings at Coach.MaxStocks slots - built here in a loop instead of
@@ -132,6 +162,99 @@ namespace A2G_Trainer_XP.View
             }
         }
 
+        // The trainer-competency table is a game-data constant (6 competencies, 16 levels) rather
+        // than fixed UI, so it's built here in a loop, same rationale as BuildStockBoxes above.
+        // Lives in CompetencyBox on the Allgemein tab (label-left/input-right rows, matching
+        // PersonalBox/LeagueBox) and shows one level's 6-point distribution at a time, picked via
+        // competencyLevelInput.
+        private void BuildCompetencyBox()
+        {
+            Label levelLabel = new Label { AutoSize = true, Location = new System.Drawing.Point(CompetencyLabelX, CompetencyFirstRowTop + 3), Text = "Level" };
+            this.competencyLevelInput = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Location = new System.Drawing.Point(CompetencyInputX, CompetencyFirstRowTop),
+                Size = new System.Drawing.Size(50, 21)
+            };
+            // A DataSource of plain bytes (no ValueMember) works fine for manual SelectedItem/
+            // SelectedIndexChanged handling, but a real "SelectedValue" Binding (added in
+            // InitClubTabControl, for Coach.Level) throws InvalidOperationException ("SelectedValue
+            // kann in einem ListControl nicht mit einem leeren ValueMember festgelegt werden") the
+            // moment the control's BindingContext is attached - i.e. as soon as this tab is shown -
+            // which crashed the whole trainer window on tab switch. Wrapping in the same Value/Text
+            // shape (and DisplayMember/ValueMember) as DifficultyInput/MainCountryInput below avoids that.
+            this.competencyLevelInput.DataSource = Enumerable.Range(Coach.MinLevel, Coach.LevelCount).Select(l => new { Value = (byte)l, Text = l.ToString() }).ToList();
+            this.competencyLevelInput.DisplayMember = "Text";
+            this.competencyLevelInput.ValueMember = "Value";
+            this.competencyLevelInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (this.competencyLevelInput.SelectedValue is byte level)
+                    this.ShowCompetencyLevel(level);
+            };
+
+            this.CompetencyBox.Controls.Add(levelLabel);
+            this.CompetencyBox.Controls.Add(this.competencyLevelInput);
+
+            this.competencyBindingSource = new BindingSource();
+
+            for (int i = 0; i < CompetencyOrder.Length; i++)
+            {
+                // Row 0 is the level selector above, so the competency rows start one row further down.
+                int top = CompetencyFirstRowTop + (i + 1) * CompetencyRowHeight;
+
+                Label nameLabel = new Label
+                {
+                    AutoSize = true,
+                    Location = new System.Drawing.Point(CompetencyLabelX, top + 3),
+                    Text = PlayerEnums.GetDescription(CompetencyOrder[i])
+                };
+                TextBox valueInput = new TextBox
+                {
+                    Location = new System.Drawing.Point(CompetencyInputX, top),
+                    Size = new System.Drawing.Size(50, 20),
+                    TextAlign = HorizontalAlignment.Right
+                };
+                valueInput.KeyPress += this.NumericOnly_KeyPress;
+                valueInput.TextChanged += this.UshortMaxNumber_TextChanged;
+                valueInput.DataBindings.Add("Text", this.competencyBindingSource, CompetencyOrder[i].ToString());
+
+                this.CompetencyBox.Controls.Add(nameLabel);
+                this.CompetencyBox.Controls.Add(valueInput);
+                this.competencyInputs[i] = valueInput;
+            }
+
+            this.competencyTotalLabel = new Label
+            {
+                AutoSize = true,
+                Location = new System.Drawing.Point(CompetencyLabelX, CompetencyFirstRowTop + (CompetencyOrder.Length + 1) * CompetencyRowHeight + 10)
+            };
+            Binding totalBinding = new Binding("Text", this.competencyBindingSource, "Total");
+            // The pool to distribute isn't a flat 6 - it's 6 points per level actually reached, i.e.
+            // 6 x the level shown in competencyLevelInput (Level 0 -> 0 Punkte, Level 1 -> 6, ...,
+            // Level 15 -> 90), so this has to be recomputed for whichever level is currently selected
+            // rather than using a single constant.
+            totalBinding.Format += (s, e) =>
+            {
+                int level = this.competencyLevelInput.SelectedValue is byte lvl ? lvl : 0;
+                int expectedTotal = CoachCompetencyLevel.PointsPerLevel * level;
+                e.Value = $"Punkte verteilt: {e.Value}/{expectedTotal}";
+            };
+            this.competencyTotalLabel.DataBindings.Add(totalBinding);
+
+            this.CompetencyBox.Controls.Add(this.competencyTotalLabel);
+        }
+
+        // Points competencyBindingSource (and therefore the six inputs + total label) at one of the
+        // coach's 16 stored levels, without touching Coach.Level itself.
+        private void ShowCompetencyLevel(int level)
+        {
+            if (this.coach == null || level < Coach.MinLevel || level > Coach.MaxLevel)
+                return;
+
+            this.competencyBindingSource.DataSource = this.coach.CompetencyLevels[level];
+            this.competencyBindingSource.ResetBindings(false);
+        }
+
         internal void InitClubTabControl()
         {
             this.bindingSource = new BindingSource
@@ -139,24 +262,41 @@ namespace A2G_Trainer_XP.View
                 DataSource = this.coach
             };
 
-            this.LevelInput.KeyPress += this.NumericOnly_KeyPress;
             this.AgeInput.KeyPress += this.NumericOnly_KeyPress;
             this.WealthInput.KeyPress += this.NumericOnly_KeyPress;
+            this.GamesInput.KeyPress += this.NumericOnly_KeyPress;
+            this.WinsInput.KeyPress += this.NumericOnly_KeyPress;
 
-            this.LevelInput.TextChanged += this.ByteMax255_TextChanged;
             this.AgeInput.TextChanged += this.ByteMax255_TextChanged;
             this.WealthInput.TextChanged += this.IntMaxNumber_TextChanged;
+            this.GamesInput.TextChanged += this.UshortMaxNumber_TextChanged;
+            this.WinsInput.TextChanged += this.UshortMaxNumber_TextChanged;
 
+            // Wired before the Level binding below on purpose: RefreshView (ProcessController) swallows
+            // any exception InitClubTabControl throws and just logs it, which previously left every
+            // binding added AFTER the old LevelInput's setup never wired up at all (Vorname/Nachname/
+            // Alter/Schwierigkeit silently stopped working) if that setup ever threw. Setting these up
+            // first means they still work even if something below them fails.
             this.LastNameInput.DataBindings.Add("Text", this.bindingSource, "Lastname");
             this.FirstNameInput.DataBindings.Add("Text", this.bindingSource, "Firstname");
-            this.LevelInput.DataBindings.Add("Text", this.bindingSource, "Level");
             this.AgeInput.DataBindings.Add("Text", this.bindingSource, "Age");
             this.WealthInput.DataBindings.Add("Text", this.bindingSource, "Wealth");
+            this.GamesInput.DataBindings.Add("Text", this.bindingSource, "Games");
+            this.WinsInput.DataBindings.Add("Text", this.bindingSource, "Wins");
+
+            Binding winPercentageBinding = new Binding("Text", this.bindingSource, "WinPercentage");
+            winPercentageBinding.Format += (s, e) => e.Value = $"{(double)e.Value:0.0} %";
+            this.WinPercentageValue.DataBindings.Add(winPercentageBinding);
 
             this.DifficultyInput.DataSource = Enum.GetValues(typeof(CoachEnums.Difficulty)).Cast<CoachEnums.Difficulty>().Select(d => new { Value = d, Text = PlayerEnums.GetDescription(d) }).ToList();
             this.DifficultyInput.DisplayMember = "Text";
             this.DifficultyInput.ValueMember = "Value";
             this.DifficultyInput.DataBindings.Add("SelectedValue", this.bindingSource, "Difficulty");
+
+            // No separate Level field in PersonalBox anymore - the level selector inside CompetencyBox
+            // (competencyLevelInput, built in BuildCompetencyBox) doubles as the bound control for
+            // Coach.Level, since it already has to show the coach's current level by default anyway.
+            this.competencyLevelInput.DataBindings.Add("SelectedValue", this.bindingSource, "Level");
 
             for (int i = 0; i < Coach.MaxStocks; i++)
             {
@@ -172,8 +312,6 @@ namespace A2G_Trainer_XP.View
                 // club" after every save). Club-IDs repeat per country, so the club combo can't bind
                 // to Stock.ClubId directly either - it has to show only the selected country's clubs,
                 // keyed by Id under the hood.
-                // Stored so PopulateStockCountryCombo can detach it while reassigning DataSource - see
-                // stockCountryChangedHandlers.
                 EventHandler countryChanged = (s, e) =>
                 {
                     if (this.coach != null && countryCombo.SelectedValue is PlayerEnums.Country country)
@@ -428,6 +566,18 @@ namespace A2G_Trainer_XP.View
                     }
 
                     this.UpdateStockSlotAvailability();
+                }
+
+                if (this.competencyLevelInput != null)
+                {
+                    // Reselecting the same numeric level as before a reload wouldn't fire
+                    // SelectedIndexChanged (no visible change), which would leave the competency
+                    // inputs bound to the previous (now stale) Coach object - show the freshly
+                    // loaded coach's data for that level explicitly instead of relying on the event.
+                    // SelectedValue (not SelectedItem) resolves through ValueMember - the list holds
+                    // Value/Text wrapper objects now, not raw bytes (see BuildCompetencyBox).
+                    this.competencyLevelInput.SelectedValue = this.coach.Level;
+                    this.ShowCompetencyLevel(this.coach.Level);
                 }
 
                 if (this.leagueBindingSource != null)

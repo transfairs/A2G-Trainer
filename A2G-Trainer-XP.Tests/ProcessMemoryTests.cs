@@ -6,6 +6,7 @@ using Xunit;
 
 namespace A2G_Trainer_XP.Tests
 {
+    /// <summary>Tests for ProcessMemory's address parsing and null-safe read fallbacks.</summary>
     public class ProcessMemoryTests
     {
         [Theory]
@@ -36,6 +37,44 @@ namespace A2G_Trainer_XP.Tests
             ProcessMemory memory = new ProcessMemory();
 
             Assert.Equal(0, memory.ReadByte("Module+0,0"));
+        }
+
+        [Fact]
+        public void ReadInt32_WellFormedAddress_WithoutOpenProcess_ReturnsZero()
+        {
+            ProcessMemory memory = new ProcessMemory();
+
+            Assert.Equal(0, memory.ReadInt32("Module+0,0"));
+        }
+
+        [Fact]
+        public void ReadUInt16_WellFormedAddress_WithoutOpenProcess_ReturnsZero()
+        {
+            ProcessMemory memory = new ProcessMemory();
+
+            Assert.Equal((ushort)0, memory.ReadUInt16("Module+0,0"));
+        }
+
+        [Theory]
+        [InlineData("NoDelimiters")]
+        [InlineData("Module+OnlyPlus")]
+        [InlineData("Module,OnlyComma")]
+        public void ReadInt32_MalformedAddress_ThrowsFormatException(string address)
+        {
+            ProcessMemory memory = new ProcessMemory();
+
+            Assert.Throws<FormatException>(() => memory.ReadInt32(address));
+        }
+
+        [Theory]
+        [InlineData("NoDelimiters")]
+        [InlineData("Module+OnlyPlus")]
+        [InlineData("Module,OnlyComma")]
+        public void ReadUInt16_MalformedAddress_ThrowsFormatException(string address)
+        {
+            ProcessMemory memory = new ProcessMemory();
+
+            Assert.Throws<FormatException>(() => memory.ReadUInt16(address));
         }
 
         [Fact]

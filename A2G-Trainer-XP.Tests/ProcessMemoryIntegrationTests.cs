@@ -21,6 +21,7 @@ namespace A2G_Trainer_XP.Tests
     // This only works if the test process itself is 32-bit (see the PlatformTarget=x86 note in
     // the .csproj): every address here gets truncated to uint32, so a 64-bit host's module base
     // or heap pointers (which can sit above 4GB) would be silently corrupted by that truncation.
+    /// <summary>Integration tests for ProcessMemory against a real (self-attached) process.</summary>
     public class ProcessMemoryIntegrationTests
     {
         private static (ProcessMemory memory, uint moduleBase) AttachToSelf()
@@ -79,6 +80,52 @@ namespace A2G_Trainer_XP.Tests
                 memory.WriteBytes(BuildAddress(moduleBase, pointerField), BitConverter.GetBytes(0x1A2B3C4D));
 
                 Assert.Equal(0x1A2B3C4D, Marshal.ReadInt32(dataBlock));
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(dataBlock);
+                Marshal.FreeHGlobal(pointerField);
+            }
+        }
+
+        [Fact]
+        public void ReadInt32_ThroughRealPointerIndirection_ReturnsWhatWasActuallyWritten()
+        {
+            (ProcessMemory memory, uint moduleBase) = AttachToSelf();
+
+            IntPtr dataBlock = Marshal.AllocHGlobal(4);
+            IntPtr pointerField = Marshal.AllocHGlobal(4);
+            try
+            {
+                Marshal.WriteInt32(dataBlock, unchecked((int)0x89ABCDEF));
+                Marshal.WriteInt32(pointerField, unchecked((int)(uint)dataBlock.ToInt64()));
+
+                int value = memory.ReadInt32(BuildAddress(moduleBase, pointerField));
+
+                Assert.Equal(unchecked((int)0x89ABCDEF), value);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(dataBlock);
+                Marshal.FreeHGlobal(pointerField);
+            }
+        }
+
+        [Fact]
+        public void ReadUInt16_ThroughRealPointerIndirection_ReturnsWhatWasActuallyWritten()
+        {
+            (ProcessMemory memory, uint moduleBase) = AttachToSelf();
+
+            IntPtr dataBlock = Marshal.AllocHGlobal(2);
+            IntPtr pointerField = Marshal.AllocHGlobal(4);
+            try
+            {
+                Marshal.WriteInt16(dataBlock, unchecked((short)0xBEEF));
+                Marshal.WriteInt32(pointerField, unchecked((int)(uint)dataBlock.ToInt64()));
+
+                ushort value = memory.ReadUInt16(BuildAddress(moduleBase, pointerField));
+
+                Assert.Equal(unchecked((ushort)0xBEEF), value);
             }
             finally
             {

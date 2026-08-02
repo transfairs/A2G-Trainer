@@ -9,14 +9,17 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.View
 {
+    /// <summary>In-app help tab; hosts the (German) RTF help text for each roster context.</summary>
     public partial class HelpView : UserControl
     {
+        /// <summary>Creates the Help view and populates its RTF help texts.</summary>
         public HelpView()
         {
             InitializeComponent();
             this.InitHelpTexts();
         }
 
+        /// <summary>Creates the Help view, registers it with the given designer container, and populates its RTF help texts.</summary>
         public HelpView(IContainer container)
         {
             container.Add(this);
@@ -49,16 +52,25 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 {\fs24\b Werte einfrieren (Team-Tab)}\par
 -------------------------------------------------------------------------------------------------------\par
 {\pard\qj Im Team-Tab lassen sich {\b Kondition} und {\b Frische} nicht nur einmalig setzen, sondern auch dauerhaft {\b einfrieren}: Haken Sie die Checkbox neben dem jeweiligen Wert an und tragen Sie den gewünschten Wert ein. Solange die Checkbox angehakt bleibt, schreibt der Trainer diesen Wert laufend zurück - auch wenn das Spiel ihn von selbst verändert.\par}
+\par
+
+{\fs24\b Spieler dauerhaft umbenennen}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Eine Namensänderung wird nur dann {\b dauerhaft} gespeichert, wenn der neue Name {\b exakt dieselbe Anzahl Zeichen} hat wie der alte. Ein anders langer Name wird bis zum nächsten Tagesabschluss oder Neuladen zwar noch korrekt angezeigt, fällt danach aber wieder auf den alten Namen zurück - in diesem Fall zeigt der Trainer nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log}.\par}
+\par
+
+{\fs24\b Mehrere Trainer, Aktien & Länder (Hot-Seat)}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Enthält der geladene Spielstand mehr als einen menschlichen Manager, erscheint im Menü {\b Trainer} für jeden ein eigener Eintrag. Neben Name, Alter, Vermögen und Schwierigkeitsgrad lassen sich dort auch die {\b Kompetenzpunkte} (Verhandlungsgeschick, Motivationsfähigkeit, Trainingsgestaltung, Autorität, Fremdsprachenkenntnisse, Ausstrahlung) für jedes Trainer-Level einzeln bearbeiten sowie bis zu sechs {\b Aktienpositionen} (Land, Verein, Stückzahl, Kaufpreis). Neue Positionen lassen sich dabei nicht anlegen, nur bereits vorhandene ändern. Auf der Registerkarte {\b Länderauswahl} wird zusätzlich zum Hauptland festgelegt, welche bis zu vier Bonusländer freigeschaltet sind.\par}\par
+
+{\fs18\qc Wechselt im Hot-Seat-Modus der Zug zu einem anderen Manager, erkennt der Trainer das {\b\cf3 automatisch} und aktualisiert die Ansicht von selbst - ganz ohne manuelles Neuverbinden.\par}
+\par
 ";
 
             this.TraineeHelp.Rtf = @"{\rtf1\ansi
 {\colortbl ;\red255\green0\blue0;\red0\green0\blue255;\red0\green128\blue0;}
 {\fonttbl{\f0 Arial;}}
 \fs20\b0\cf0
-{\fs24\b Jugendspieler}\par
--------------------------------------------------------------------------------------------------------\par
-Die {\i Jugendspieler} lassen sich im Trainer anzeigen, jedoch {\b nicht bearbeiten}. Jegliche Änderungen werden vom Spiel ignoriert.\par\par
-
 {\fs24\b !! Keine Vereinsansicht !!}\par
 -------------------------------------------------------------------------------------------------------\par
 Um eine vollständige Liste der {\i Jugendspieler} zu erhalten, navigieren Sie im Spiel auf den {\b Transfermarkt} und klicken dann auf {\b Jugendspieler}.\par
@@ -66,7 +78,7 @@ Anschließend verwenden Sie den Menüpunkt {\b Jugendspieler} hier im Trainer od
 
 {\fs24\b Adressbereich}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qc Die {\i Jugendspieler} teilen sich denselben Adressbereich im Speicher Ihres Rechners wie die {\i Dynamische Mannschaft}. Hat man zuletzt auf einen Verein geklickt, erscheinen diese Spieler eventuell hier.\par}
+{\pard\qj Die {\i Jugendspieler} teilen sich denselben Adressbereich im Speicher Ihres Rechners wie die {\i Dynamische Mannschaft}. Hat man zuletzt auf einen Verein geklickt, erscheinen diese Spieler eventuell hier.\par}
 Da dieser Adressbereich dynamisch gefüllt wird, sollten Sie immer den richtigen Kontext beachten.\par";
 
             this.DynamicHelp.Rtf = @"{\rtf1\ansi

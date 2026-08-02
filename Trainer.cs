@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace A2G_Trainer_XP
 {
+    /// <summary>Main window: hosts the menu and swaps in the active tab (Club/Player/Coach/Help/About).</summary>
     public partial class Trainer : Form
     {
         internal bool ShutDown { get => this.shutDown; private set => this.shutDown = value; }
@@ -60,6 +61,7 @@ namespace A2G_Trainer_XP
 
         }
 
+        /// <summary>Swaps the content panel to the given tab and updates the window title.</summary>
         private void ShowScreen(UserControl userControl, String title = null)
         {
             if (this.current != userControl)
