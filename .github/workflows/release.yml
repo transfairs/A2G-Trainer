@@ -20,6 +20,12 @@ jobs:
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
+        with:
+          # Pinned to VS2022's MSBuild: windows-latest runners now also carry a newer VS whose
+          # MSBuild can't resolve Microsoft.NET.Sdk for this project (its own bundled Sdks folder
+          # is missing Microsoft.NET.Sdk), and setup-msbuild's default "pick latest" selects that
+          # broken one instead of the working VS2022 toolchain every prior release used.
+          vs-version: "[17.0,18.0)"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
