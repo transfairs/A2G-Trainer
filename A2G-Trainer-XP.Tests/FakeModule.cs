@@ -50,6 +50,7 @@ namespace A2G_Trainer_XP.Tests
                 throw new InvalidOperationException("VirtualAlloc failed for FakeModule's module block.");
 
             this.Memory.mProc.ModuleBaseAddress = this.moduleBlock;
+            this.Memory.mProc.ModuleSize = (uint)moduleBlockSize;
             this.ModuleBase = (uint)this.moduleBlock.ToInt64();
 
             this.DisplayCacheBlock = Marshal.AllocHGlobal(DisplayCacheBlockSize);

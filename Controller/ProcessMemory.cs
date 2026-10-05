@@ -14,6 +14,7 @@ namespace A2G_Trainer_XP.Controller
         public ProcessModule MainModule { get; internal set; }
         internal IntPtr Handle { get; set; }
         internal IntPtr ModuleBaseAddress { get; set; }
+        internal uint ModuleSize { get; set; }
     }
 
     /// <summary>
@@ -45,6 +46,14 @@ namespace A2G_Trainer_XP.Controller
         // implements.
         /// <summary>The attached process's main module base address.</summary>
         public uint ModuleBase => (uint)this.mProc.ModuleBaseAddress.ToInt64();
+
+        /// <summary>Size in bytes of the attached process's main module image.</summary>
+        public uint ModuleSize => this.mProc.ModuleSize;
+
+        // Which build's persistent-data anchors apply to the attached process. Defaults to the
+        // trusted original-build layout; ProcessController replaces it on every attach (see PersistentLayout).
+        /// <summary>The persistent-data anchors for the attached game build.</summary>
+        public PersistentLayout Layout { get; set; } = PersistentLayout.Original;
 
         /// <summary>Attaches to the process with the given PID, caching its handle, main module, and base address. Safe to call repeatedly for the same PID.</summary>
         public bool OpenProcess(int pid)
@@ -78,6 +87,7 @@ namespace A2G_Trainer_XP.Controller
             this.mProc.Handle = handle;
             this.mProc.MainModule = process.MainModule;
             this.mProc.ModuleBaseAddress = process.MainModule.BaseAddress;
+            this.mProc.ModuleSize = (uint)process.MainModule.ModuleMemorySize;
             return true;
         }
 
@@ -208,6 +218,14 @@ namespace A2G_Trainer_XP.Controller
                 return 0;
 
             uint pointerValue = BitConverter.ToUInt32(pointerBytes, 0);
+            // A null pointer means this chain is genuinely unresolved (e.g. no savegame loaded
+            // yet) - report that as 0 rather than silently returning offsetB alone. offsetB is
+            // typically well above MinValidAddress by itself (real struct offsets are commonly in
+            // the 0x30000+ range), so without this check ReadBytes/WriteBytes would treat a raw,
+            // unrelated low address as valid and attempt to read/write it instead of skipping.
+            if (pointerValue == 0)
+                return 0;
+
             return pointerValue + offsetB;
         }
 

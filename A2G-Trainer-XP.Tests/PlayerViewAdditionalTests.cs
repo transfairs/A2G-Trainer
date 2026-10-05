@@ -36,7 +36,7 @@ namespace A2G_Trainer_XP.Tests
         private static T GetPrivateField<T>(object target, string fieldName) =>
             (T)target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(target);
 
-        // SaveBtn_Click pops a real modal "Name nicht dauerhaft gespeichert" MessageBox whenever a
+        // SaveBtn_Click pops a real modal "Nicht dauerhaft gespeichert" MessageBox whenever a
         // persistent-name write couldn't be resolved (guaranteed here, since no name-pool pointer is
         // routed). The MessageBox.Show call itself must stay on the view's own STA thread (it - and
         // the controls SaveBtn_Click touches - were created there), so only the dialog-closing poll
@@ -50,7 +50,7 @@ namespace A2G_Trainer_XP.Tests
                 while (!Volatile.Read(ref stopPolling) && dialogHandle == IntPtr.Zero)
                 {
                     Thread.Sleep(50);
-                    dialogHandle = FindWindow(null, "Name nicht dauerhaft gespeichert");
+                    dialogHandle = FindWindow(null, "Nicht dauerhaft gespeichert");
                 }
                 if (dialogHandle != IntPtr.Zero)
                     PostMessage(dialogHandle, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);

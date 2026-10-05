@@ -21,6 +21,8 @@ namespace A2G_Trainer_XP.Controller
     /// offset 0 of the player's normal (display-cache) struct - the same slot PlayerController
     /// already reads as a 1-byte "Id" today; NameRecordId on Player is the same field read wide.</item>
     /// </list>
+    /// Both offsets above are the original build's; the attached build's actual anchors come from
+    /// <see cref="ProcessMemory.Layout"/> (see PersistentLayout/PersistentLayoutCalibrator for GOG).
     /// The pool has no fixed stride - names are variable length, so "the Nth string" only turns into
     /// a byte offset by counting null terminators from the start; there's no arithmetic shortcut.
     /// That also means overwriting one entry with a replacement of a DIFFERENT byte length would shift
@@ -40,11 +42,20 @@ namespace A2G_Trainer_XP.Controller
         private const int MaxScanBufferSize = 0x800000; // 8 MB - comfortably above anything observed
 
         private readonly ProcessMemory memory;
+        private readonly PlayerRecordResolver records;
+        private readonly uint? poolPointerOffset;
 
-        /// <summary>Creates a resolver that reads the persistent name pool through the given process memory accessor.</summary>
-        public NamePoolResolver(ProcessMemory memory)
+        /// <summary>Creates a resolver that reads the persistent name pool through the given process memory accessor and its current <see cref="ProcessMemory.Layout"/>.</summary>
+        public NamePoolResolver(ProcessMemory memory) : this(memory, memory.Layout)
+        {
+        }
+
+        /// <summary>Creates a resolver for an explicit layout (e.g. a calibration candidate) instead of the memory's current one.</summary>
+        public NamePoolResolver(ProcessMemory memory, PersistentLayout layout)
         {
             this.memory = memory;
+            this.records = new PlayerRecordResolver(memory, layout);
+            this.poolPointerOffset = layout.NamePoolPointerOffset;
         }
 
         /// <summary>Resolves the persistent address of the given player's Firstname string, or null if it can't be resolved.</summary>
@@ -55,14 +66,17 @@ namespace A2G_Trainer_XP.Controller
 
         private uint? Resolve(ushort playerId, int indexFieldOffset)
         {
-            uint recordAddress = this.memory.ModuleBase + Settings.PlayerRecordTableOffset + (uint)playerId * Settings.PlayerRecordStride;
+            // Unknown/unconfirmed anchors for this build (see PersistentLayout) - callers fall back
+            // to the display cache, same as for any other unresolvable name.
+            if (!this.records.IsAvailable || !this.poolPointerOffset.HasValue)
+                return null;
 
-            byte[] indexBytes = this.memory.ReadBytesAtAddress(recordAddress + (uint)indexFieldOffset, 2);
+            byte[] indexBytes = this.memory.ReadBytesAtAddress(this.records.GetFieldAddress(playerId, (uint)indexFieldOffset), 2);
             if (indexBytes == null)
                 return null;
             int targetIndex = BitConverter.ToUInt16(indexBytes, 0);
 
-            byte[] poolBaseBytes = this.memory.ReadBytesAtAddress(this.memory.ModuleBase + Settings.NamePoolPointerOffset, 4);
+            byte[] poolBaseBytes = this.memory.ReadBytesAtAddress(this.memory.ModuleBase + this.poolPointerOffset.Value, 4);
             if (poolBaseBytes == null)
                 return null;
             uint poolBase = BitConverter.ToUInt32(poolBaseBytes, 0);

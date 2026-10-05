@@ -48,10 +48,45 @@ namespace A2G_Trainer_XP.Controller
                 this.EntityList.Add(this.GetEntity(offset, this.Type));
             }
 
+            // While the layout is unverified, GetEntity's persistent reads were skipped, so the list
+            // holds pure display-cache values - exactly the reference the calibrator needs. Only the
+            // own roster is trusted for that (Jugendspieler's display cache can be stale, see
+            // HelpView.cs). On success, re-read the persistent values the list is still missing.
+            if (this.Type == PlayerEnums.AddressType.OWN && !this.memory.Layout.IsVerified && this.TryCalibrateLayout())
+            {
+                foreach (Player player in this.EntityList)
+                {
+                    this.ReadPersistentName(player);
+                    this.ReadPersistentFields(player);
+                }
+            }
+
             if (this.Type == PlayerEnums.AddressType.OWN || this.Type == PlayerEnums.AddressType.OPPONENT)
             {
                 this.InitOffsets(offset);
             }
+        }
+
+        // Runs PersistentLayoutCalibrator against the (display-cache-only) own roster and installs
+        // the result on success. A failed attempt is remembered by roster fingerprint, so the full
+        // module scan isn't repeated on every refresh until the roster actually changes (e.g. after
+        // a savegame load or Tagesabschluss).
+        private bool TryCalibrateLayout()
+        {
+            PersistentLayout current = this.memory.Layout;
+            string signature = string.Join(",", this.EntityList.Select(p => $"{p.NameRecordId}:{p.Level}:{(byte)p.Position}"));
+            if (signature == current.FailedCalibrationSignature)
+                return false;
+
+            PersistentLayout calibrated = new PersistentLayoutCalibrator(this.memory).Calibrate(this.EntityList.ToList());
+            if (calibrated == null)
+            {
+                current.FailedCalibrationSignature = signature;
+                return false;
+            }
+
+            this.memory.Layout = calibrated;
+            return true;
         }
 
         // Returns one human-readable warning per Firstname/Lastname that couldn't be permanently
@@ -65,6 +100,12 @@ namespace A2G_Trainer_XP.Controller
             {
                 warnings.AddRange(this.Save(p));
             }
+
+            // Jugendspieler have no display-cache fallback at all (see Save), so without a usable
+            // record table nothing was saved - say so once instead of failing silently.
+            if (this.Type == PlayerEnums.AddressType.TRAINEE && !new PlayerRecordResolver(this.memory).IsAvailable)
+                warnings.Add("Für diese Spielversion sind die dauerhaften Spielerdaten noch nicht ermittelt - Änderungen an Jugendspielern wurden NICHT gespeichert.");
+
             return warnings;
         }
 
@@ -213,6 +254,11 @@ namespace A2G_Trainer_XP.Controller
         private void ReadPersistentFields(Player player)
         {
             PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
+            // Record table not known/confirmed for this build (see PersistentLayout) - the display
+            // cache values already read in GetEntity are the best there is.
+            if (!recordResolver.IsAvailable)
+                return;
+
             uint baseAddress = recordResolver.GetFieldAddress(player.NameRecordId, 0);
             int? ageEncodingConstant = this.GetAgeEncodingConstant();
 
@@ -278,6 +324,13 @@ namespace A2G_Trainer_XP.Controller
             Encoding encoding = Encoding.GetEncoding("iso-8859-1");
             NamePoolResolver namePool = new NamePoolResolver(this.memory);
             List<string> warnings = new List<string>();
+
+            // No name pool known/confirmed for this build at all (see PersistentLayout): that's a
+            // property of the build, not of this player, so don't raise the per-name warning below
+            // for every single player on every save - names then only go to the display cache, as
+            // they did before the pool was found. SaveEntityList reports the build-level gap once.
+            if (!this.memory.Layout.NamePoolPointerOffset.HasValue || !this.memory.Layout.PlayerRecordTableOffset.HasValue)
+                return warnings;
 
             string firstnameWarning = this.TryWritePersistentName(namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, "Vorname", player);
             if (firstnameWarning != null) warnings.Add(firstnameWarning);
@@ -363,7 +416,7 @@ namespace A2G_Trainer_XP.Controller
             int? encodingConstant = this.GetAgeEncodingConstant();
             if (!encodingConstant.HasValue)
             {
-                Logger.Warn($"Skipping persistent Age write for player NameRecordId={player.NameRecordId} (Id={player.Id}): couldn't read the savegame's current year at 0x{Settings.AgeReferenceYearOffset:X}.");
+                Logger.Warn($"Skipping persistent Age write for player NameRecordId={player.NameRecordId} (Id={player.Id}): couldn't read the savegame's current year (layout: {this.memory.Layout}).");
                 return;
             }
 
@@ -377,10 +430,15 @@ namespace A2G_Trainer_XP.Controller
         // Age isn't stored directly in the per-player record - it's encoded relative to the
         // savegame's own in-game year, read live from anstoss2.exe+426662 (a flat, per-savegame
         // value - stable across restarts/reinstalls, but genuinely different between savegames, so
-        // this must never be hardcoded). Returns null if that year can't be read right now.
+        // this must never be hardcoded). Returns null if that year can't be read right now, or its
+        // offset isn't known/confirmed for the attached build (see PersistentLayout).
         private int? GetAgeEncodingConstant()
         {
-            byte[] yearBytes = this.memory.ReadBytesAtAddress(this.memory.ModuleBase + Settings.AgeReferenceYearOffset, 2);
+            uint? yearOffset = this.memory.Layout.AgeReferenceYearOffset;
+            if (!yearOffset.HasValue)
+                return null;
+
+            byte[] yearBytes = this.memory.ReadBytesAtAddress(this.memory.ModuleBase + yearOffset.Value, 2);
             if (yearBytes == null)
                 return null;
 
@@ -529,21 +587,30 @@ namespace A2G_Trainer_XP.Controller
         /// <summary>Writes a player's persistent fields (name/level/age/etc.) and, outside TRAINEE context, its full display-cache fields too. Returns any name-save warnings to surface to the user.</summary>
         public List<string> Save(Player player)
         {
-            List<string> nameWarnings = this.WritePersistentName(player);
-            this.WritePersistentAge(player);
-            this.WritePersistentLevel(player);
-            this.WritePersistentPosition(player);
-            this.WritePersistentSkills(player);
-            this.WritePersistentPersonality(player);
-            this.WritePersistentAppearance(player);
-            this.WritePersistentMood(player);
-            this.WritePersistentForm(player);
-            this.WritePersistentConditionFreshness(player);
-            this.WritePersistentNationality(player);
-            this.WritePersistentSalary(player);
+            List<string> nameWarnings = new List<string>();
+
+            // Never write through record-table anchors that aren't known/confirmed for the attached
+            // build (see PersistentLayout) - a wrong guess would land in unrelated game memory.
+            if (new PlayerRecordResolver(this.memory).IsAvailable)
+            {
+                nameWarnings = this.WritePersistentName(player);
+                this.WritePersistentAge(player);
+                this.WritePersistentLevel(player);
+                this.WritePersistentPosition(player);
+                this.WritePersistentSkills(player);
+                this.WritePersistentPersonality(player);
+                this.WritePersistentAppearance(player);
+                this.WritePersistentMood(player);
+                this.WritePersistentForm(player);
+                this.WritePersistentConditionFreshness(player);
+                this.WritePersistentNationality(player);
+                this.WritePersistentSalary(player);
+            }
 
             if (this.Type != PlayerEnums.AddressType.TRAINEE)
             {
+                nameWarnings.AddRange(this.GetDisplayCacheOnlyRenameWarnings(player));
+
                 #region Overview
                 this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
                 this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
@@ -614,6 +681,28 @@ namespace A2G_Trainer_XP.Controller
             }
 
             return nameWarnings;
+        }
+
+        // Without a name pool for this build (see PersistentLayout), WritePersistentName skips every
+        // player silently - but an actual rename then only reaches the display cache and is lost on
+        // the next load, which the user must hear about. Only warns for names that really changed
+        // (compared against what the display cache still holds), so an untouched roster saves quietly.
+        private List<string> GetDisplayCacheOnlyRenameWarnings(Player player)
+        {
+            List<string> warnings = new List<string>();
+            if (this.memory.Layout.NamePoolPointerOffset.HasValue && this.memory.Layout.PlayerRecordTableOffset.HasValue)
+                return warnings;
+
+            Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+            string playerLabel = $"{player.Firstname} {player.Lastname}".Trim();
+            string currentFirstname = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: encoding);
+            string currentLastname = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: encoding);
+
+            if (player.Firstname != null && player.Firstname != currentFirstname)
+                warnings.Add($"{playerLabel}: Vorname - für diese Spielversion nur bis zum nächsten Laden gespeichert.");
+            if (player.Lastname != null && player.Lastname != currentLastname)
+                warnings.Add($"{playerLabel}: Nachname - für diese Spielversion nur bis zum nächsten Laden gespeichert.");
+            return warnings;
         }
 
         /// <summary>Writes only the given fields via the transient display-cache addresses (no persistent-record writes).</summary>

@@ -132,17 +132,22 @@ namespace A2G_Trainer_XP.Controller
         // Settings.ActiveTrainerCountOffset) - holding a live byte with the exact number of active
         // human trainers/"Mitspieler" in the current savegame. Authoritative when readable and
         // plausible (0..MaxTrainers); returns null (falling back to the Firstname heuristic above)
-        // otherwise, e.g. when no savegame is loaded yet.
+        // otherwise, e.g. when no savegame is loaded yet or the offset isn't known/confirmed for the
+        // attached build (see PersistentLayout).
         private static int? GetActiveTrainerCount(ProcessMemory memory)
         {
-            byte[] bytes = memory.ReadBytesAtAddress(memory.ModuleBase + Settings.ActiveTrainerCountOffset, 1);
+            uint? offset = memory.Layout.ActiveTrainerCountOffset;
+            if (!offset.HasValue)
+                return null;
+
+            byte[] bytes = memory.ReadBytesAtAddress(memory.ModuleBase + offset.Value, 1);
             if (bytes == null)
                 return null;
 
             int count = bytes[0];
             if (count > Coach.MaxTrainers)
             {
-                Logger.Warn($"GetActiveTrainerCount: implausibler Wert {count} bei 0x{Settings.ActiveTrainerCountOffset:X} - falle auf Firstname-Heuristik zurück.");
+                Logger.Warn($"GetActiveTrainerCount: implausibler Wert {count} bei 0x{offset.Value:X} - falle auf Firstname-Heuristik zurück.");
                 return null;
             }
             return count;

@@ -46,5 +46,22 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal("Robin", trainers[0].Value.Firstname);
             }
         }
+
+        [Fact]
+        public void GetActiveTrainers_WithUnverifiedLayout_IgnoresLiveCountAndUsesFirstnameHeuristic()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.ClubAddress[0]);
+                // A plausible count at the original offset must not be trusted for an unverified build.
+                fake.WriteModuleBytes(Settings.ActiveTrainerCountOffset, new byte[] { 2 });
+                WriteCoachFirstname(fake, trainerSlot: 0, "Robin");
+                fake.Memory.Layout = new PersistentLayout(null, null, null, Settings.ActiveTrainerCountOffset, isVerified: false);
+
+                List<KeyValuePair<int, Coach>> trainers = CoachController.GetActiveTrainers(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN);
+
+                Assert.Equal(new[] { 0 }, trainers.Select(kv => kv.Key));
+            }
+        }
     }
 }

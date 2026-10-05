@@ -101,6 +101,7 @@ namespace A2G_Trainer_XP.Controller
                 return false;
 
             this.IsGog = isGogCandidate;
+            this.trainer.Memory.Layout = PersistentLayout.For(isGogCandidate);
             Logger.Debug($"Attached to process {candidate.Id} ({candidate.MainModule.ModuleName}), IsGog={isGogCandidate}");
             return true;
         }

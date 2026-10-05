@@ -94,6 +94,8 @@
     <Compile Include="Controller\ProcessMemory.cs" />
     <Compile Include="Controller\NamePoolResolver.cs" />
     <Compile Include="Controller\PlayerRecordResolver.cs" />
+    <Compile Include="Controller\PersistentLayout.cs" />
+    <Compile Include="Controller\PersistentLayoutCalibrator.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />

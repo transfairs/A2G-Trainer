@@ -6,8 +6,8 @@ namespace A2G_Trainer_XP.Controller
 {
     /// <summary>
     /// Base class for controllers that read/write a specific entity type (player, club, coach, ...)
-    /// from process memory. Handles the Steam/GOG base-address split (via <see cref="settings"/>,
-    /// a 2-element [steam, gog] array set by subclasses) and building CE-style module-relative
+    /// from process memory. Handles the original/GOG base-address split (via <see cref="settings"/>,
+    /// a 2-element [original, gog] array set by subclasses) and building CE-style module-relative
     /// address strings for field reads/writes.
     /// </summary>
     public abstract class EntityController<E> : INotifyPropertyChanged where E : Entity
@@ -36,7 +36,7 @@ namespace A2G_Trainer_XP.Controller
             this.EntityList = new BindingList<E>();
         }
 
-        /// <summary>Selects the base address (Steam or GOG build) for the given lookup context.</summary>
+        /// <summary>Selects the base address (original or GOG build) for the given lookup context.</summary>
         public void UpdateBaseAddress(PlayerEnums.AddressType type)
         {
             this.Type = type;

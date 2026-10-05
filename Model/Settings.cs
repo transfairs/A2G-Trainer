@@ -7,7 +7,7 @@ namespace A2G_Trainer_XP.Controller
     /// <summary>
     /// Reverse-engineered, module-relative memory addresses/offsets the rest of the app
     /// reads and writes savegame data through. Each PlayerAddress/ClubAddress/... array holds
-    /// both the Steam and GOG build's address for the same field (GOG is offset by gogOffset).
+    /// both the original and the GOG build's address for the same field (GOG is offset by gogOffset).
     /// </summary>
     static class Settings
     {
@@ -146,6 +146,9 @@ namespace A2G_Trainer_XP.Controller
         internal static uint PlayerRecordConditionOffset    { get => playerRecordConditionOffset; }
         internal static uint PlayerRecordFreshnessOffset    { get => playerRecordFreshnessOffset; }
         internal static uint PlayerRecordNationalityOffset  { get => playerRecordNationalityOffset; }
+
+        // gogOffset as a number, for the persistent anchors above (see PersistentLayout.CreateGogGuess).
+        internal static uint   GogOffset         { get => Convert.ToUInt32(gogOffset, 16); }
 
         internal static bool   IsDebug           { get => debug; }
 

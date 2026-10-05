@@ -503,7 +503,7 @@ namespace A2G_Trainer_XP.View
                     string text = string.Join(Environment.NewLine + Environment.NewLine, shown)
                         + (hidden > 0 ? $"{Environment.NewLine}{Environment.NewLine}... und {hidden} weitere" : "");
 
-                    MessageBox.Show(this, text, "Name nicht dauerhaft gespeichert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(this, text, "Nicht dauerhaft gespeichert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
                 HashSet<Control> frozenControls = new HashSet<Control>();

@@ -70,6 +70,7 @@ namespace A2G_Trainer_XP.Tests
 
                 Assert.True(attached);
                 Assert.False(controller.IsGog);
+                Assert.Same(PersistentLayout.Original, trainer.Memory.Layout);
             }
         });
 
