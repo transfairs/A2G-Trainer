@@ -329,7 +329,8 @@ namespace A2G_Trainer_XP.Controller
             // property of the build, not of this player, so don't raise the per-name warning below
             // for every single player on every save - names then only go to the display cache, as
             // they did before the pool was found. SaveEntityList reports the build-level gap once.
-            if (!this.memory.Layout.NamePoolPointerOffset.HasValue || !this.memory.Layout.PlayerRecordTableOffset.HasValue)
+            // (Save only calls this with a usable record table, so the pool pointer is all that's left to check.)
+            if (!this.memory.Layout.NamePoolPointerOffset.HasValue)
                 return warnings;
 
             string firstnameWarning = this.TryWritePersistentName(namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, "Vorname", player);

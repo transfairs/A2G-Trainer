@@ -59,6 +59,11 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 {\pard\qj Eine Namensänderung wird nur dann {\b dauerhaft} gespeichert, wenn der neue Name {\b exakt dieselbe Anzahl Zeichen} hat wie der alte. Ein anders langer Name wird bis zum nächsten Tagesabschluss oder Neuladen zwar noch korrekt angezeigt, fällt danach aber wieder auf den alten Namen zurück - in diesem Fall zeigt der Trainer nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log}.\par}
 \par
 
+{\fs24\b GOG-Version und 2007er-CD}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Bei der {\b GOG-Version} (und der 2007er-CD) sucht der Trainer beim ersten Laden des eigenen Teams selbst, wo die dauerhaft gespeicherten Spielerdaten liegen. Findet er sie nicht, liest und speichert er die Werte wie früher nur über den Anzeigespeicher. {\i Jugendspieler} lassen sich dann nicht dauerhaft ändern, und Namensänderungen gelten nur bis zum nächsten Laden. Das Ergebnis steht in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log} - bei Problemen bitte mitschicken.\par}
+\par
+
 {\fs24\b Mehrere Trainer, Aktien & Länder (Hot-Seat)}\par
 -------------------------------------------------------------------------------------------------------\par
 {\pard\qj Enthält der geladene Spielstand mehr als einen menschlichen Manager, erscheint im Menü {\b Trainer} für jeden ein eigener Eintrag. Neben Name, Alter, Vermögen und Schwierigkeitsgrad lassen sich dort auch die {\b Kompetenzpunkte} (Verhandlungsgeschick, Motivationsfähigkeit, Trainingsgestaltung, Autorität, Fremdsprachenkenntnisse, Ausstrahlung) für jedes Trainer-Level einzeln bearbeiten sowie bis zu sechs {\b Aktienpositionen} (Land, Verein, Stückzahl, Kaufpreis). Neue Positionen lassen sich dabei nicht anlegen, nur bereits vorhandene ändern. Auf der Registerkarte {\b Länderauswahl} wird zusätzlich zum Hauptland festgelegt, welche bis zu vier Bonusländer freigeschaltet sind.\par}\par

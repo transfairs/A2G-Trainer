@@ -345,17 +345,7 @@ namespace A2G_Trainer_XP.Controller
             return prefix.Count > 0 ? prefix.ToArray() : null;
         }
 
-        private string ModuleName()
-        {
-            try
-            {
-                return this.memory.mProc.MainModule?.ModuleName ?? "unbekanntes Modul";
-            }
-            catch (InvalidOperationException)
-            {
-                return "unbekanntes Modul";
-            }
-        }
+        private string ModuleName() => this.memory.mProc.MainModule?.ModuleName ?? "unbekanntes Modul";
 
         private static bool IsEnough(int matches, int total) =>
             matches >= MinSamples && matches >= Math.Ceiling(total * MinMatchRatio);

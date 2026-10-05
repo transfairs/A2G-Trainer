@@ -71,6 +71,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - To assign a **negative number of seats** to a stadium block, enter any value **greater than 32,767**.  
 - After editing a stadium block, **Block A is automatically set to one week construction time** to ensure all changes are persisted.  
 - A player rename only survives a save/reload if the new name has the **exact same number of characters** as the old one. A different length still shows correctly until the next Tagesabschluss/load, but isn't saved permanently: you'll get a warning naming the player if that happens. Details land in `%LocalAppData%\A2G-Trainer-XP\trainer.log`.  
+- On the **GOG version** (and the 2007 CD release), the trainer checks where the permanently saved player data lives the first time it loads your own team. If it can't find it, it falls back to the in-memory display values as before: Jugendspieler then can't be changed permanently, and renames only last until the next load. The result is logged to `%LocalAppData%\A2G-Trainer-XP\trainer.log`; please attach it when reporting a problem.  
 
 ## 🔧 Build Instructions
 1. Open the solution in **Visual Studio 2019**  

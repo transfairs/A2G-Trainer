@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using A2G_Trainer_XP.Controller;
@@ -272,6 +273,181 @@ namespace A2G_Trainer_XP.Tests
             }
         }
 
+        [Fact]
+        public void Calibrate_WithZeroModuleSize_CannotScanAndReturnsNull()
+        {
+            using (FakeModule fake = new FakeModule(ModuleSize))
+            {
+                fake.Memory.mProc.ModuleSize = 0;
+
+                Assert.Null(new PersistentLayoutCalibrator(fake.Memory).Calibrate(NewRoster()));
+            }
+        }
+
+        [Fact]
+        public void Calibrate_WithoutMainModule_StillCalibrates()
+        {
+            using (FakeModule fake = new FakeModule(ModuleSize))
+            {
+                List<Player> roster = NewRoster();
+                WriteRecords(fake, GogTable, roster);
+                fake.Memory.mProc.MainModule = null;
+
+                Assert.Equal(GogTable, new PersistentLayoutCalibrator(fake.Memory).Calibrate(roster).PlayerRecordTableOffset);
+            }
+        }
+
+        [Fact]
+        public void Calibrate_WithTheWholeModuleUnreadable_ReturnsNull()
+        {
+            const int smallModule = 0x100000;
+            using (FakeModule fake = new FakeModule(smallModule))
+            {
+                fake.MakeModuleRegionUnreadable(0, smallModule);
+
+                Assert.Null(new PersistentLayoutCalibrator(fake.Memory).Calibrate(NewRoster()));
+            }
+        }
+
+        [Fact]
+        public void Calibrate_WithoutKnownAges_LeavesTheYearUnknown()
+        {
+            using (FakeModule fake = new FakeModule(ModuleSize))
+            {
+                List<Player> roster = NewRoster();
+                roster.ForEach(p => p.Age = 0);
+                WriteRecords(fake, GogTable, roster);
+                WriteYear(fake, GogYear);
+
+                Assert.Null(new PersistentLayoutCalibrator(fake.Memory).Calibrate(roster).AgeReferenceYearOffset);
+            }
+        }
+
+        [Fact]
+        public void Calibrate_WithUnreadableYearCandidate_LeavesTheYearUnknown()
+        {
+            using (FakeModule fake = new FakeModule(ModuleSize))
+            {
+                List<Player> roster = NewRoster();
+                WriteRecords(fake, GogTable, roster);
+                // The candidate itself and its whole search window, so the window read fails too.
+                fake.MakeModuleRegionUnreadable(GogYear - PersistentLayoutCalibrator.SearchWindow, (int)(2 * PersistentLayoutCalibrator.SearchWindow));
+
+                Assert.Null(new PersistentLayoutCalibrator(fake.Memory).Calibrate(roster).AgeReferenceYearOffset);
+            }
+        }
+
+        // Module ends shortly past the GOG year: that window gets clamped to the module end, the
+        // name-pool windows lie wholly past it, and the table's own shift puts one year candidate
+        // below SearchWindow (window clamped at 0). The only year hit has no plausible trainer count.
+        [Fact]
+        public void Calibrate_InASmallModule_ClampsWindowsAndAcceptsAYearWithoutTrainerCount()
+        {
+            const int smallModule = 0x430000;
+            const uint table = 0x100000;
+            uint year = GogYear - 0x20;
+            using (FakeModule fake = new FakeModule(smallModule))
+            {
+                List<Player> roster = NewRoster();
+                WriteRecords(fake, table, roster);
+                fake.WriteModuleBytes(year, BitConverter.GetBytes(CurrentYear));
+
+                PersistentLayout layout = new PersistentLayoutCalibrator(fake.Memory).Calibrate(roster);
+
+                Assert.Equal(table, layout.PlayerRecordTableOffset);
+                Assert.Equal(year, layout.AgeReferenceYearOffset);
+                Assert.Null(layout.ActiveTrainerCountOffset);
+                Assert.Null(layout.NamePoolPointerOffset);
+            }
+        }
+
+        #region Name-pool decoys
+
+        private const uint MEM_COMMIT = 0x1000;
+        private const uint MEM_RESERVE = 0x2000;
+        private const uint MEM_RELEASE = 0x8000;
+        private const uint PAGE_READWRITE = 0x04;
+        private const uint PAGE_NOACCESS = 0x01;
+        private const int Page = 0x1000;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool VirtualFree(IntPtr lpAddress, UIntPtr dwSize, uint dwFreeType);
+
+        // One readable page holding `content` (at `offsetInPage`), followed by a guaranteed-unreadable page.
+        private static IntPtr GuardedPage(List<IntPtr> allocations, byte[] content, int offsetInPage = 0)
+        {
+            IntPtr block = VirtualAlloc(IntPtr.Zero, (UIntPtr)(2 * Page), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+            Assert.NotEqual(IntPtr.Zero, block);
+            allocations.Add(block);
+            Marshal.Copy(content, 0, block + offsetInPage, content.Length);
+            Assert.True(VirtualProtect(block + Page, (UIntPtr)Page, PAGE_NOACCESS, out _));
+            return block + offsetInPage;
+        }
+
+        private static byte[] Filled(int length, byte value, int nulCount = 0)
+        {
+            byte[] bytes = Enumerable.Repeat(value, length).ToArray();
+            for (int i = 1; i <= nulCount; i++)
+                bytes[i] = 0;
+            return bytes;
+        }
+
+        // Pointer slots nearest the predicted offset are tried first, so every kind of non-pool
+        // gets rejected before the real pool (inside the readable module, so one 2MB read covers
+        // it) is found. The roster is passed reversed so the first name sample's index is > 0.
+        [Fact]
+        public void Calibrate_WithDecoyPointersAroundThePool_RejectsEachAndFindsTheRealOne()
+        {
+            const uint poolInModule = 0x600000;
+            List<IntPtr> allocations = new List<IntPtr>();
+            using (FakeModule fake = new FakeModule(ModuleSize))
+            {
+                try
+                {
+                    List<Player> roster = NewRoster();
+                    WriteRecords(fake, GogTable, roster);
+                    fake.WriteModuleBytes(poolInModule, Enumerable.Range(0, roster.Count).SelectMany(i => Latin1.GetBytes($"Vorname{i}\0Nachname{i}\0")).ToArray());
+
+                    IntPtr unreadable = VirtualAlloc(IntPtr.Zero, (UIntPtr)Page, MEM_COMMIT | MEM_RESERVE, PAGE_NOACCESS);
+                    allocations.Add(unreadable);
+                    IntPtr[] decoys =
+                    {
+                        GuardedPage(allocations, Latin1.GetBytes("1abc\0")),                  // not a letter
+                        unreadable,                                                           // unreadable
+                        GuardedPage(allocations, Latin1.GetBytes("falsch\0falsch\0\0\0\0\0\0\0\0\0\0\0")), // lowercase, wrong names
+                        GuardedPage(allocations, Latin1.GetBytes("Ärger\0Ärger\0\0\0\0\0\0\0\0\0\0\0")),    // Latin-1 letter, wrong names
+                        GuardedPage(allocations, Latin1.GetBytes("X"), offsetInPage: Page - 1), // first page read crosses into the guard
+                        GuardedPage(allocations, Filled(Page, (byte)'A')),                    // no terminators at all
+                        GuardedPage(allocations, Filled(Page, (byte)'A', nulCount: 8)),       // index reachable, string unterminated
+                    };
+                    for (int i = 0; i < decoys.Length; i++)
+                    {
+                        // Alternating +/- around the prediction, nearest first: 0, +4, -4, +8, -8, ...
+                        int distance = (i + 1) / 2 * 4 * (i % 2 == 1 ? 1 : -1);
+                        fake.WriteModuleBytes((uint)(GogPool + distance), BitConverter.GetBytes((uint)decoys[i].ToInt64()));
+                    }
+                    fake.WriteModuleBytes(GogPool + 0x100, BitConverter.GetBytes(fake.ModuleBase + poolInModule));
+
+                    roster.Reverse();
+                    PersistentLayout layout = new PersistentLayoutCalibrator(fake.Memory).Calibrate(roster);
+
+                    Assert.Equal(GogPool + 0x100, layout.NamePoolPointerOffset);
+                }
+                finally
+                {
+                    allocations.ForEach(a => VirtualFree(a, UIntPtr.Zero, MEM_RELEASE));
+                }
+            }
+        }
+
+        #endregion
+
         #region PlayerController hook
 
         private static Addresses Own => AddressPresets.OWN_PLAYERS;
@@ -379,6 +555,46 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal(2, warnings.Count);
                 Assert.Contains(warnings, w => w.StartsWith("Neu Nachname1: Vorname"));
                 Assert.Contains(warnings, w => w.StartsWith("Vorname2 Anders: Nachname"));
+            }
+        }
+
+        [Fact]
+        public void Save_WithoutNamePool_IgnoresNullNames()
+        {
+            List<Player> roster = NewRoster();
+            using (FakeModule fake = NewGogFake(roster))
+            {
+                PlayerController controller = new PlayerController(fake.Memory, RosterClub(roster.Count), isGog: true, PlayerEnums.AddressType.OWN);
+                Player player = controller.EntityList[0];
+
+                // Only the rename-warning check runs here; the display-cache name write itself
+                // doesn't accept null, so call the check directly.
+                player.Firstname = null;
+                player.Lastname = null;
+                MethodInfo check = typeof(PlayerController).GetMethod("GetDisplayCacheOnlyRenameWarnings", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                Assert.Empty((List<string>)check.Invoke(controller, new object[] { player }));
+            }
+        }
+
+        [Fact]
+        public void RefreshPlayerList_WithVerifiedLayoutButNoYear_KeepsTheDisplayCacheAge()
+        {
+            List<Player> roster = NewRoster();
+            using (FakeModule fake = NewGogFake(roster))
+            {
+                WriteRecords(fake, GogTable, roster);
+                fake.Memory.Layout = new PersistentLayout(GogTable, null, null, null, isVerified: true);
+
+                PlayerController controller = new PlayerController(fake.Memory, RosterClub(roster.Count), isGog: true, PlayerEnums.AddressType.OWN);
+
+                Assert.Equal(roster.Select(p => p.Age), controller.EntityList.Select(p => p.Age));
+                Assert.Equal(roster.Select(p => p.Level), controller.EntityList.Select(p => p.Level));
+
+                // No name pool: saving writes the record fields but skips the persistent names quietly.
+                controller.EntityList[0].Level = 77;
+                Assert.Empty(controller.SaveEntityList());
+                Assert.Equal((byte)77, fake.ReadModuleBytes(GogTable + (uint)roster[0].NameRecordId * Settings.PlayerRecordStride + Settings.PlayerRecordLevelOffset, 1)[0]);
             }
         }
 
