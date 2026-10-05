@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ namespace A2G_Trainer_XP.View
         public AboutView()
         {
             InitializeComponent();
+            this.SetVersionLabel();
 
             this.GithubLinkLabel.Links.Clear();
             this.GithubLinkLabel.Links.Add(8, 41, "https://github.com/transfairs/a2g-trainer");
@@ -31,7 +33,26 @@ namespace A2G_Trainer_XP.View
             container.Add(this);
 
             InitializeComponent();
+            this.SetVersionLabel();
         }
+
+        // Reads the version the release pipeline stamped into Properties/VersionInfo.cs
+        // (AssemblyInformationalVersion, e.g. "0.7.0-alpha") instead of relying on a hardcoded
+        // label, so the About screen can't go stale relative to the actual build/tag. Local/Debug
+        // builds without a tag fall back to VersionInfo.cs's own default ("0.0.0-dev"). VersionInfo.cs
+        // always declares this attribute, so it is never actually missing at runtime.
+        // Uses the non-generic Assembly.GetCustomAttributes(Type, bool) overload - this project
+        // targets .NET Framework 4.0, which predates the generic GetCustomAttribute<T>()
+        // extension method (introduced in 4.5).
+        private void SetVersionLabel()
+        {
+            AssemblyInformationalVersionAttribute versionAttribute = (AssemblyInformationalVersionAttribute)Assembly
+                .GetExecutingAssembly()
+                .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)[0];
+
+            this.VersionLabel.Text = $"v{versionAttribute.InformationalVersion}";
+        }
+
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string url = e.Link.LinkData as string;

@@ -34,6 +34,34 @@ namespace A2G_Trainer_XP.Tests
             }
         });
 
+        // The label must reflect the assembly's AssemblyInformationalVersion (the value the
+        // release pipeline stamps into Properties/VersionInfo.cs from the git tag) rather than a
+        // hardcoded string, for both constructors that call SetVersionLabel().
+        [Fact]
+        public void DefaultConstructor_SetsVersionLabelFromAssemblyInformationalVersion() => StaThread.Run(() =>
+        {
+            string expectedVersion = typeof(AboutView).Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+            using (AboutView view = new AboutView())
+            {
+                Assert.Equal($"v{expectedVersion}", view.Controls.Find("VersionLabel", true).Single().Text);
+            }
+        });
+
+        [Fact]
+        public void ContainerConstructor_SetsVersionLabelFromAssemblyInformationalVersion() => StaThread.Run(() =>
+        {
+            string expectedVersion = typeof(AboutView).Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+            using (Container container = new Container())
+            using (AboutView view = new AboutView(container))
+            {
+                Assert.Equal($"v{expectedVersion}", view.Controls.Find("VersionLabel", true).Single().Text);
+            }
+        });
+
         private static readonly LinkLabelLinkClickedEventArgs NonStringLinkArgs =
             new LinkLabelLinkClickedEventArgs(new LinkLabel.Link { LinkData = 123 });
 

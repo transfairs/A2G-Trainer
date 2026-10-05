@@ -1,6 +1,6 @@
 ---
 name: pre-release-check
-description: Runs the full pre-release readiness pass for A2G-Trainer-XP, closing test-coverage gaps to 100% (including designer-generated code), filling missing public-member doc comments, syncing the Cheat Engine table / Readme / in-app help / online help with the current code, and verifying build + changelog scripts. Never commits, stages, pushes, or tags; all changes are left in the working tree for manual review. Use before cutting a new release (before creating/pushing a `vX.Y.Z` tag).
+description: Runs the full pre-release readiness pass for A2G-Trainer-XP, closing test-coverage gaps to 100% (including designer-generated code), filling missing public-member doc comments, syncing the Cheat Engine table / Readme / in-app help / online help with the current code, and verifying build + changelog scripts (including that the app's About-screen version label still reads from the assembly version rather than a hardcoded string). Never commits, stages, pushes, or tags; all changes are left in the working tree for manual review. Use before cutting a new release (before creating/pushing a `vX.Y.Z` tag).
 ---
 
 # Pre-Release Check
@@ -140,6 +140,13 @@ failure here, only report it)
   `-OutputDir`, then `scripts/New-ChangelogHtml.ps1` against that scratch output, and confirm both
   complete without error. This only catches format regressions in the scripts; it doesn't
   represent the real release's changelog content.
+- **2.5 About-screen version label isn't hardcoded**: `View/AboutView.cs`'s `SetVersionLabel()`
+  must read `VersionLabel.Text` from the assembly's `AssemblyInformationalVersionAttribute`
+  (which the release pipeline stamps from the git tag into `Properties/VersionInfo.cs`), not a
+  literal string — this is what keeps the "Über" screen (Hilfe menu) from going stale without any
+  manual/skill step. Grep `AboutView.Designer.cs` for a `VersionLabel.Text = "..."` literal; if one
+  has been reintroduced, that's a regression, restore the reflection-based read instead of just
+  updating the literal's value.
 
 ---
 
@@ -155,7 +162,10 @@ failure here, only report it)
   the last tag (`View/*.cs`, `.Designer.cs`). Flag which screenshots are plausibly stale; don't
   regenerate images yourself.
 - **3.4 Version suggestion**: based on the commits since the last tag (features vs. fixes vs.
-  breaking changes), propose the next `vX.Y.Z` per semver and explain why.
+  breaking changes), propose the next `vX.Y.Z` per semver and explain why. No app-side follow-up
+  needed for this one — the About screen's version label reads the assembly's
+  `AssemblyInformationalVersion` at runtime (see 2.5), which the release pipeline already derives
+  from whatever tag is actually pushed.
 - **3.5 Tracked files that should be ignored**: any files found in 1.7 that are currently tracked
   but match a `.gitignore` pattern (existing or newly added). Report them; leave them tracked.
 

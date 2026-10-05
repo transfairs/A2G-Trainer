@@ -132,7 +132,8 @@ namespace A2G_Trainer_XP.View
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(66, 13);
             this.VersionLabel.TabIndex = 1;
-            this.VersionLabel.Text = "v0.6.0-alpha";
+            // Text is set at runtime in AboutView.SetVersionLabel() from the assembly's
+            // AssemblyInformationalVersion, so no version string is hardcoded here.
             // 
             // AboutTitleLabel
             // 
