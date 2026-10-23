@@ -51,7 +51,7 @@
       <section class="panel" id="panel-start">
         <div class="panel-header">
           <h1>Willkommen zu A2G-Trainer-XP</h1>
-          <p class="lead">Ein Trainer (Editor) für <strong>Anstoss 2 Gold</strong>, kompatibel mit der Original-CD und der GOG-Version, lauffähig von Windows&nbsp;XP bis Windows&nbsp;11.</p>
+          <p class="lead">Ein Trainer (Editor) für <strong>Anstoss 2 Gold</strong>, kompatibel mit der Original-CD, der GOG-Version und der 2007er-CD, lauffähig von Windows&nbsp;XP bis Windows&nbsp;11.</p>
         </div>
         <div class="subpanel active" data-sub="only">
 
@@ -62,7 +62,7 @@
                 <h3>Neueste Version herunterladen</h3>
                 <span class="version-pill" id="download-version">Version wird geladen&hellip;</span>
               </div>
-              <p>Enthält beide <code>.exe</code>-Varianten (Original &amp; GOG), die Cheat-Engine-Tabellen und das Änderungsprotokoll. Der Link zeigt immer auf den aktuellsten Release.</p>
+              <p>Enthält den Trainer (eine <code>.exe</code> für Original, GOG und 2007er-CD), die Cheat-Engine-Tabellen und das Änderungsprotokoll. Der Link zeigt immer auf den aktuellsten Release.</p>
             </div>
             <a class="btn-download-lg" href="https://github.com/transfairs/A2G-Trainer/releases/latest/download/A2G-Trainer-XP-Latest.zip">Download</a>
           </div>
@@ -320,8 +320,8 @@
             <legend>Verletzungen</legend>
             <dl class="field-list">
               <dt>Fällt aus</dt><dd>Anzahl Tage, die der Spieler ausfällt.</dd>
-              <dt>Angeschlagen</dt><dd>Kontrollkästchen.</dd>
-              <dt>Gedopt</dt><dd>Kontrollkästchen.</dd>
+              <dt>Angeschlagen</dt><dd>Kontrollkästchen. Das Spiel führt dazu eine Restdauer; ein bereits angeschlagener Spieler behält sie, neu angehakt bekommt er die übliche Dauer des Spiels (7).</dd>
+              <dt>Gedopt</dt><dd>Kontrollkästchen. Setzt bzw. entfernt nur das Doping selbst; weitere Doping-Kennzeichen des Spiels bleiben unverändert.</dd>
             </dl>
           </fieldset>
           <fieldset class="groupbox">
@@ -392,13 +392,17 @@
               <span class="chip">Eigenschaften / Charakter / Gesundheitszustand</span><span class="chip">Hautfarbe / Haarfarbe</span>
               <span class="chip">Form</span><span class="chip">Kondition / Frische</span><span class="chip">Nationalität</span>
               <span class="chip">Unbehagen / Zufriedenheit</span><span class="chip">Gehalt / Auflaufprämie</span>
+              <span class="chip">Torprämie / Fixe Ablöse</span><span class="chip">Vertragslaufzeit / Jahre im Verein</span>
+              <span class="chip">Vertragsdetails</span><span class="chip">Karriere</span>
+              <span class="chip">Verletzung / Verletzungstage</span><span class="chip">Verletzungsanfällig</span>
+              <span class="chip">Gesperrte Spiele</span><span class="chip">Gedopt</span><span class="chip">Gelbe Karten</span>
             </p>
-            <p>Ein Namenswechsel wird dabei genau wie beim Kader nur bei gleicher Zeichenzahl dauerhaft übernommen, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>.</p>
+            <p>Für Namenswechsel gelten dieselben Regeln wie beim Kader, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>.</p>
           </fieldset>
 
           <div class="callout warn">
             <strong class="label">Was weiterhin ignoriert wird</strong>
-            Die übrigen Vertragsfelder (Torprämie, Ablösesumme, Vertragslaufzeit, Vertragsdetails, Jahre im Verein, Karriere) sowie die Registerkarte „Team“ werden bei Jugendspielern weiterhin ignoriert.
+            Die Registerkarte „Team“ wird bei Jugendspielern weiterhin ignoriert.
           </div>
 
           <fieldset class="groupbox">
@@ -418,6 +422,7 @@
         </div>
         <div class="subtabs">
           <button data-sub="allgemein" class="active">Allgemein</button>
+          <button data-sub="trainervertrag">Vertrag</button>
           <button data-sub="aktien">Aktien</button>
           <button data-sub="liga">Länderauswahl</button>
           <button data-sub="hotseat">Mehrspieler / Hot-Seat</button>
@@ -447,6 +452,59 @@
           <img class="screenshot" src="img/CoachView.png" alt="Trainer-Ansicht, Registerkarte Allgemein mit Kompetenzen" style="max-width:420px">
         </div>
 
+        <div class="subpanel" data-sub="trainervertrag">
+          <fieldset class="groupbox">
+            <legend>Bezüge</legend>
+            <dl class="field-list">
+              <dt>Grundgehalt (pro Jahr)</dt><dd>Jahresgehalt; das Spiel zahlt jeden Monat ein Zwölftel aus.</dd>
+              <dt>Punktprämie</dt><dd>Prämie pro Punkt in der Liga.</dd>
+              <dt>Pokalrundenprämie</dt><dd>Prämie für jede gewonnene Pokalrunde.</dd>
+              <dt>Titel-/Aufstiegsprämie</dt><dd>Prämie für Meisterschaft, Aufstieg oder Pokalsieg.</dd>
+              <dt>Saisonziel</dt><dd>Mit dem Vorstand vereinbartes Ziel, von „Meisterschaft“ bis „zu Ende bringen“ (Begriffe des Spiels). Der Trainer setzt es beim Verein, wo das Spiel es anzeigt (Karriere) und der Vorstand den Manager daran misst, und im Vertrag, nach dem sich die Prämie richtet. Bei Vereinen außerhalb der Ligen der fünf großen Länder ändert sich nur der Vertrag.</dd>
+              <dt>Prämie für das Saisonziel</dt><dd>Wird am Saisonende gezahlt, wenn das Saisonziel erreicht ist.</dd>
+            </dl>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Laufzeit und Extras</legend>
+            <dl class="field-list">
+              <dt>Restlaufzeit (in Jahren)</dt><dd>Bei weniger als zwei Jahren darf der Manager auch ohne Freigabe mit anderen Vereinen verhandeln.</dd>
+              <dt>Fahrzeug / Wohnung</dt><dd>Die Extras des Vertrags, von „Bahncard“ bis „RR mit Chauffeur“ bzw. von „kostenlose Untermiete“ bis „Palast“. Jede Wohnung senkt die monatlichen Lebenshaltungskosten auf 80 %, jedes Fahrzeug außer der Bahncard um weitere 20 Prozentpunkte.</dd>
+              <dt>Verlängerungsoption für den Verein</dt><dd>Im letzten Vertragsjahr kann der Verein den Vertrag damit um ein Jahr verlängern. Die Option ist danach verbraucht.</dd>
+            </dl>
+          </fieldset>
+
+          <div class="callout">
+            <strong class="label">Neu verhandelt</strong>
+            Grundgehalt und Punktprämie gelten für die ganze Laufzeit; bei Auf- oder Abstieg ändert das Spiel sie um 20 %. Die übrigen Prämien und das Saisonziel handelt der Vorstand jede Saison neu aus, die Werte gelten also bis dahin.
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>Verein und Freigabe</legend>
+            <dl class="field-list">
+              <dt>Aktueller Verein</dt><dd>Verein, den der Manager gerade trainiert (nur Anzeige), oder „vereinslos“.</dd>
+              <dt>Land (n. Saison)</dt><dd>Land des Vereins, den der Manager nächste Saison trainieren wird. „Kein Wechsel“, wenn er bleibt.</dd>
+              <dt>Verein (n. Saison)</dt><dd>Verein innerhalb des obigen Landes (durchsuchbare Auswahlliste). Angeboten werden nur Vereine, die das Spiel beim Saisonwechsel auch akzeptiert: im Hauptland jede Liga, in einem Zusatzland nur die 1. Liga.</dd>
+              <dt>Freigabeklausel</dt><dd>Der aktuelle Vertrag enthält eine Freigabeklausel: Der Manager darf trotz laufendem Vertrag mit anderen Vereinen verhandeln.</dd>
+              <dt>bekanntgegeben</dt><dd>Die Klausel wurde öffentlich gemacht (im Spiel: „Freigabeklausel bekanntgeben“). Andere Vereine bieten dann deutlich häufiger einen Job an – laut Spielcode etwa zehnmal so oft. Setzt automatisch auch die Freigabeklausel.</dd>
+              <dt>Freigabe durch Vorstand</dt><dd>Der Vorstand hat den Manager freigegeben (im Spiel: „Vorstand um Freigabe bitten“). Wirkt beim Verhandeln wie eine Freigabeklausel. Ein neuer Vertrag löscht die Freigabe.</dd>
+            </dl>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Jobangebot anfordern</legend>
+            <p>Land und Verein wählen und auf <span class="btn-tag">Beim nächsten Tagesabschluss anbieten</span> klicken: Beim nächsten Tagesabschluss erhält der Manager im Spiel ein ganz normales Jobangebot dieses Vereins. Er kann es mit „Sofort“ oder „Saisonende“ annehmen oder ablehnen – den Wechsel führt dann das Spiel selbst durch, genau wie bei einem Angebot, das es von sich aus macht.</p>
+            <p>Voraussetzungen, damit das Spiel das Angebot anzeigt: Der Manager hat gerade einen Verein, und für die nächste Saison ist kein Wechsel eingetragen („Kein Wechsel“). Angeboten werden nur Vereine aus dem Hauptland (jede Liga) und den Zusatzländern (1. Liga). In der Original- und der GOG-Version; bei anderen Versionen (z. B. der 2007er-CD), sobald der Trainer beim Verbinden ihre Adressen bestätigen konnte.</p>
+            <p>Annehmen kann der Manager ein Angebot nur, wenn er eine Freigabeklausel hat, der Vorstand ihn freigegeben hat oder sein Vertrag ausläuft. Trifft nichts davon zu, setzt der Trainer beim Anfordern automatisch die Freigabeklausel. Ob und warum etwas nicht geklappt hat, steht direkt unter dem Knopf.</p>
+            <p>Technisch leitet der Trainer dafür im laufenden Spiel einen einzigen Programmaufruf über ein kleines Zusatzprogramm um; an den Spieldateien ändert sich nichts. Nach einem Neustart des Spiels ist die Umleitung wieder weg und wird beim nächsten Anfordern neu gesetzt. Speichern Sie vor dem ersten Ausprobieren.</p>
+          </fieldset>
+
+          <div class="callout">
+            <strong class="label">Vereinswechsel</strong>
+            Der Wechsel findet erst beim <strong>Saisonwechsel</strong> statt, nicht sofort. Dann übernimmt der Manager den eingetragenen Verein mit den Vertragsbedingungen für die nächste Saison. Hat er noch keine ausgehandelt, übernimmt der Trainer beim Speichern die Bedingungen des aktuellen Vertrags. Wird der Verein in keiner passenden Liga gefunden, verwirft das Spiel den Wechsel stillschweigend.
+          </div>
+        </div>
+
         <div class="subpanel" data-sub="aktien">
           <fieldset class="groupbox">
             <legend>Bis zu sechs Aktienpositionen</legend>
@@ -460,20 +518,29 @@
           </fieldset>
           <div class="callout warn">
             <strong class="label">Neue Positionen lassen sich nicht anlegen</strong>
-            Das Spiel unterstützt das Anlegen oder Löschen einer Aktienposition nicht über einen Speicher-Edit. Nur bereits vorhandene Positionen lassen sich verändern. Ein Feld ohne gehaltene Stückzahl wird deshalb im Trainer deaktiviert angezeigt.
+            Das Spiel unterstützt das Anlegen oder Löschen einer Aktienposition nicht über einen Speicher-Edit. Nur bereits vorhandene Positionen lassen sich verändern. Ein Feld ohne gehaltene Stückzahl wird deshalb im Trainer deaktiviert angezeigt, Land und Verein stehen dann auf „–“.
           </div>
         </div>
 
         <div class="subpanel" data-sub="liga">
           <fieldset class="groupbox">
             <legend>Hauptland</legend>
-            <p>Das Hauptland der Karriere ist eines der drei spielbaren Heimatligen: <span class="chip">Deutschland</span><span class="chip">England</span><span class="chip">Frankreich</span></p>
+            <p>Das Hauptland der Karriere wird nur angezeigt. Das Spiel lädt dessen Ligen beim Start der Karriere, ein Wechsel mitten im Spiel ist deshalb nicht möglich.</p>
           </fieldset>
           <fieldset class="groupbox">
             <legend>Bonusländer</legend>
-            <p>Zusätzlich lassen sich im Spiel bis zu <strong>vier weitere Länder</strong> für die Karriere auswählen, aus denen dann ebenfalls Vereine an der Börse handelbar sind: <span class="chip">Deutschland</span><span class="chip">England</span><span class="chip">Frankreich</span><span class="chip">Italien</span><span class="chip">Spanien</span></p>
-            <p>Ein Bonusland-Feld lässt sich nur dann bearbeiten, wenn der jeweilige Slot im geladenen Spielstand bereits aktiv ist. Das Spiel unterstützt kein nachträgliches Hinzufügen oder Entfernen eines Slots, nur das Austauschen des dort hinterlegten Landes.</p>
+            <p>Neben dem Hauptland kann eine Karriere bis zu <strong>vier Bonusländer</strong> haben. Ihre Ligen werden mitgespielt, und ihre Vereine sind an der Börse, für Jobangebote und für den Wechsel zur nächsten Saison wählbar: <span class="chip">Deutschland</span><span class="chip">England</span><span class="chip">Frankreich</span><span class="chip">Italien</span><span class="chip">Spanien</span></p>
+            <p>Für jedes Land außer dem Hauptland gibt es ein Häkchen <strong>aktiv</strong>. „Speichern“ übernimmt die Auswahl.</p>
+            <ul>
+              <li><strong>Abschalten</strong> geht, solange kein menschlicher Trainer dort einen Verein hat oder zur nächsten Saison dorthin wechselt. Die Ligen des Landes bleiben dann stehen, bis es wieder aktiv ist.</li>
+              <li><strong>Zuschalten</strong> geht nur für ein Land, dessen Vereine noch im Speicher sind, also eines, das beim Karrierestart gewählt und später abgeschaltet wurde. Ein Land, das nie gewählt war, hat keine Vereine und bleibt gesperrt. In der Original- und der GOG-Version; bei anderen Versionen (z. B. der 2007er-CD), sobald der Trainer beim Verbinden ihre Adressen bestätigen konnte.</li>
+              <li>Warum ein Häkchen gesperrt ist, steht daneben. Konnte eine Änderung beim Speichern nicht übernommen werden, steht dort „Nicht übernommen“ mit dem Grund.</li>
+            </ul>
           </fieldset>
+          <div class="callout warn">
+            <strong class="label">Nach Speichern und Laden prüfen</strong>
+            Ob das Spiel die Ligen eines abgeschalteten Landes mit in den Spielstand schreibt, ist noch nicht bestätigt. Sind sie nach dem Laden weg, lässt der Trainer das Land nicht mehr zuschalten.
+          </div>
         </div>
 
         <div class="subpanel" data-sub="hotseat">
@@ -504,12 +571,17 @@
 
           <div class="callout tip">
             <strong class="label">Spieler dauerhaft umbenennen</strong>
-            Eine Namensänderung übersteht einen Speichervorgang und Neuladen nur dann dauerhaft, wenn der neue Name <strong>exakt dieselbe Anzahl Zeichen</strong> hat wie der alte. Ein Name mit abweichender Länge wird bis zum nächsten Tagesabschluss oder Neuladen zwar korrekt angezeigt, ist danach aber nicht mehr gespeichert. In diesem Fall zeigt der Trainer eine Warnung mit dem Namen des betroffenen Spielers an; Details landen zusätzlich in der Logdatei (siehe <a href="#faq" data-jump="faq">Fehlerbehebung</a>).
+            Das Spiel speichert jeden Vor- und Nachnamen nur einmal, alle Spieler mit demselben Namen teilen sich diesen Eintrag. In der <strong>Original- und der GOG-Version</strong> übersteht jede Namensänderung einen Speichervorgang und Neuladen dauerhaft, in beliebiger Länge bis zu 9 Zeichen (Vorname) bzw. 15 Zeichen (Nachname): Kommt der neue Name im Spielstand schon vor, verwendet der Trainer diesen Eintrag, sonst fügt er ihn neu hinzu - genau so, wie das Spiel selbst neue Namen anlegt. Andere Spieler mit dem alten Namen behalten ihn in jedem Fall. In Versionen, deren Adressen der Trainer nicht bestätigen kann (z. B. die <strong>2007er-CD</strong>, solange der Trainer ihre Adressen nicht bestätigen konnte), gilt weiterhin: dauerhaft nur, wenn der neue Name <strong>im Spielstand schon vorkommt</strong> oder der alte Name <strong>nur diesem einen Spieler</strong> gehört und der neue <strong>exakt gleich viele Zeichen</strong> hat. Kann ein Name nicht dauerhaft gespeichert werden, wird er bis zum nächsten Tagesabschluss oder Neuladen zwar angezeigt, und der Trainer zeigt eine Warnung mit dem Namen des betroffenen Spielers an; Details landen zusätzlich in der Logdatei (siehe <a href="#faq" data-jump="faq">Fehlerbehebung</a>).
           </div>
 
           <div class="callout tip">
             <strong class="label">Kondition &amp; Frische einfrieren</strong>
             Im Team-Tab eines Spielers lassen sich Kondition und Frische per Kontrollkästchen dauerhaft einfrieren, sodass der Trainer sie laufend zurückschreibt, selbst wenn das Spiel sie verändert. Details siehe <a href="#spieler" data-jump="spieler:team">Spieler → Team</a>.
+          </div>
+
+          <div class="callout tip">
+            <strong class="label">Fenster vergrößern</strong>
+            Das Trainer-Fenster lässt sich an den Rändern größer ziehen oder maximieren. Der gesamte Inhalt wächst mit: Felder, Listen, Schrift und Hilfetexte. Kleiner als die ursprüngliche Größe geht es nicht.
           </div>
 
           <div class="callout tip">
@@ -540,7 +612,7 @@
 
           <fieldset class="groupbox">
             <legend>Eine Spielerumbenennung geht nach dem Neuladen wieder verloren</legend>
-            <p>Der neue Name muss exakt dieselbe Zeichenzahl haben wie der alte, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>. Der Trainer warnt in diesem Fall mit dem Namen des betroffenen Spielers.</p>
+            <p>In der Original- und der GOG-Version sollte das nicht mehr vorkommen - erscheint trotzdem eine Warnung, ist der Namensbestand des Spielstands voll (ca. 30.000 Namen). In anderen Versionen (z. B. der 2007er-CD, solange der Trainer ihre Adressen nicht bestätigen kann) muss der neue Name im Spielstand schon vorkommen (bei irgendeinem Spieler) oder - wenn der alte Name nur diesem Spieler gehört - exakt gleich viele Zeichen haben, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>. Der Trainer warnt in diesem Fall mit dem Namen des betroffenen Spielers.</p>
           </fieldset>
 
           <fieldset class="groupbox">
@@ -560,8 +632,8 @@
           </fieldset>
 
           <fieldset class="groupbox">
-            <legend>Werden Original-CD und GOG-Version unterstützt?</legend>
-            <p>Ja, beide Versionen werden erkannt und unterstützt.</p>
+            <legend>Werden Original-CD, GOG-Version und 2007er-CD unterstützt?</legend>
+            <p>Ja, alle drei Versionen werden erkannt und unterstützt, mit derselben <code>A2G-Trainer-XP.exe</code>. Eine eigene Trainer-Datei für die 2007er-CD gibt es nicht mehr.</p>
             <p>Bei der GOG-Version (und der 2007er-CD) sucht der Trainer beim ersten Laden des eigenen Teams selbst, wo die dauerhaft gespeicherten Spielerdaten liegen. Findet er sie nicht, liest und speichert er die Werte wie früher nur über den Anzeigespeicher. Jugendspieler lassen sich dann nicht dauerhaft ändern, und Namensänderungen gelten nur bis zum nächsten Laden. Das Ergebnis steht in der Log-Datei <code>%LocalAppData%\A2G-Trainer-XP\trainer.log</code>. Bei Problemen bitte mitschicken.</p>
           </fieldset>
 

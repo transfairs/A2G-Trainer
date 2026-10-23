@@ -56,7 +56,17 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 
 {\fs24\b Spieler dauerhaft umbenennen}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Eine Namensänderung wird nur dann {\b dauerhaft} gespeichert, wenn der neue Name {\b exakt dieselbe Anzahl Zeichen} hat wie der alte. Ein anders langer Name wird bis zum nächsten Tagesabschluss oder Neuladen zwar noch korrekt angezeigt, fällt danach aber wieder auf den alten Namen zurück - in diesem Fall zeigt der Trainer nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log}.\par}
+{\pard\qj Das Spiel speichert jeden Vor- und Nachnamen nur einmal, alle Spieler mit demselben Namen teilen sich diesen Eintrag. In der {\b Original- und der GOG-Version} wird jede Namensänderung {\b dauerhaft} gespeichert, in beliebiger Länge bis zu 9 Zeichen (Vorname) bzw. 15 Zeichen (Nachname): Kommt der neue Name im Spielstand schon vor, verwendet der Trainer diesen Eintrag, sonst fügt er ihn neu hinzu - so wie das Spiel selbst neue Namen anlegt. Andere Spieler mit dem alten Namen behalten ihn in jedem Fall. In Versionen, deren Adressen der Trainer nicht bestätigen kann (z. B. die {\b 2007er-CD}, solange der Trainer ihre Adressen nicht bestätigen konnte), gilt weiterhin: dauerhaft nur, wenn der neue Name {\b im Spielstand schon vorkommt} oder der alte Name {\b nur diesem einen Spieler} gehört und der neue {\b exakt gleich viele Zeichen} hat. Kann ein Name nicht dauerhaft gespeichert werden, wird er bis zum nächsten Tagesabschluss oder Neuladen zwar noch angezeigt, und der Trainer zeigt nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log}.\par}
+\par
+
+{\fs24\b Verletzungen, Sperren & Vertrag}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Vertragslaufzeit, {\b Verletzungstage} und Verletzungsart, {\b verletzungsanfällig}, gesperrte Spiele, {\b gedopt} und gelbe Karten schreibt der Trainer in den gespeicherten Spielerdatensatz - sie bleiben also auch nach Tagesabschluss und Neuladen erhalten, auch bei Jugendspielern. Neu angehakt ist ein Spieler so lange verletzungsanfällig, wie das Spiel es üblicherweise festlegt.\par}
+\par
+
+{\fs24\b Fenster vergrößern}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Das Fenster lässt sich größer ziehen oder maximieren; alle Felder, Listen, Schriften und diese Hilfe wachsen mit. Kleiner als die Startgröße wird es nicht.\par}
 \par
 
 {\fs24\b GOG-Version und 2007er-CD}\par
@@ -66,7 +76,11 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 
 {\fs24\b Mehrere Trainer, Aktien & Länder (Hot-Seat)}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Enthält der geladene Spielstand mehr als einen menschlichen Manager, erscheint im Menü {\b Trainer} für jeden ein eigener Eintrag. Neben Name, Alter, Vermögen und Schwierigkeitsgrad lassen sich dort auch die {\b Kompetenzpunkte} (Verhandlungsgeschick, Motivationsfähigkeit, Trainingsgestaltung, Autorität, Fremdsprachenkenntnisse, Ausstrahlung) für jedes Trainer-Level einzeln bearbeiten sowie bis zu sechs {\b Aktienpositionen} (Land, Verein, Stückzahl, Kaufpreis). Neue Positionen lassen sich dabei nicht anlegen, nur bereits vorhandene ändern. Auf der Registerkarte {\b Länderauswahl} wird zusätzlich zum Hauptland festgelegt, welche bis zu vier Bonusländer freigeschaltet sind.\par}\par
+{\pard\qj Enthält der geladene Spielstand mehr als einen menschlichen Manager, erscheint im Menü {\b Trainer} für jeden ein eigener Eintrag. Neben Name, Alter, Vermögen und Schwierigkeitsgrad lassen sich dort auch die {\b Kompetenzpunkte} (Verhandlungsgeschick, Motivationsfähigkeit, Trainingsgestaltung, Autorität, Fremdsprachenkenntnisse, Ausstrahlung) für jedes Trainer-Level einzeln bearbeiten, sowie bis zu sechs {\b Aktienpositionen} (Land, Verein, Stückzahl, Kaufpreis). Neue Positionen lassen sich dabei nicht anlegen, nur bereits vorhandene ändern.\par}\par
+
+{\pard\qj Die Registerkarte {\b Vertrag} zeigt alle Bedingungen des aktuellen Vertrags: Grundgehalt, Prämien, {\b Saisonziel}, Restlaufzeit, Verlängerungsoption und Extras (Fahrzeug, Wohnung). Dort stehen auch Land und Verein für die {\b nächste Saison} - angeboten werden nur Vereine, die das Spiel beim Saisonwechsel annimmt (im Hauptland jede Liga, in einem Bonusland nur die 1. Liga) -, die {\b Freigabeklausel} und {\b Jobangebot anfordern}: Der gewählte Verein macht beim nächsten {\b Tagesabschluss} ein normales Jobangebot, das Sie im Spiel annehmen. Vorher unbedingt speichern.\par}\par
+
+{\pard\qj Auf der Registerkarte {\b Länderauswahl} schalten Sie die bis zu vier {\b Bonusländer} neben dem Hauptland an und ab. Abschalten geht nicht, solange ein menschlicher Trainer dort arbeitet oder zur nächsten Saison dorthin wechselt; zuschalten nur ein Land, dessen Vereine noch im Speicher sind (beim Karrierestart gewählt). Der Grund für ein gesperrtes Häkchen steht daneben.\par}\par
 
 {\fs18\qc Wechselt im Hot-Seat-Modus der Zug zu einem anderen Manager, erkennt der Trainer das {\b\cf3 automatisch} und aktualisiert die Ansicht von selbst - ganz ohne manuelles Neuverbinden.\par}
 \par

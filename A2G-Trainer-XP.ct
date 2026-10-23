@@ -735,6 +735,156 @@
           </Offsets>
         </CheatEntry>
         <CheatEntry>
+          <ID>901</ID>
+          <Description>"Land, nächste Saison"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B3C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>902</ID>
+          <Description>"Verein, nächste Saison"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B3E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>903</ID>
+          <Description>"Freigabeklausel (Bit 0 = vorhanden, Bit 7 = bekanntgegeben -> ca. 10x so viele Jobangebote; 129 = beides)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B64</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>904</ID>
+          <Description>"Land, aktueller Verein (nur lesen)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B1C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>905</ID>
+          <Description>"Verein, aktueller Verein (nur lesen)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B1E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>932</ID>
+          <Description>"Freigabe durch Vorstand (1 = ja, nur lesen)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B65</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>933</ID>
+          <Description>"Vertrag: Grundgehalt pro Jahr"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B48</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>934</ID>
+          <Description>"Vertrag: Punktprämie (pro Ligapunkt)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B4C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>935</ID>
+          <Description>"Vertrag: Pokalrundenprämie (pro gewonnener Runde)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B50</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>936</ID>
+          <Description>"Vertrag: Titel-/Aufstiegsprämie"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B54</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>937</ID>
+          <Description>"Vertrag: Prämie für das Saisonziel"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B58</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>938</ID>
+          <Description>"Vertrag: Saisonziel (Kopie für die Prämie; 0 = Meisterschaft ... 10 = Klassenerhalt, 11 = zu Ende bringen)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B5C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>939</ID>
+          <Description>"Vertrag: Restlaufzeit in Jahren (unter 2 = läuft aus, nur lesen)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B5E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>940</ID>
+          <Description>"Vertrag: Verlängerungsoption des Vereins (0 = keine)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B60</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>941</ID>
+          <Description>"Vertrag: Extras (Bitmaske; gerade Bits = Fahrzeug, ungerade = Wohnung)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>34B62</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
           <ID>295</ID>
           <Description>"Vorname, Trainer 2"</Description>
           <ShowAsSigned>0</ShowAsSigned>
@@ -2103,6 +2253,46 @@
           </Offsets>
         </CheatEntry>
         <CheatEntry>
+          <ID>906</ID>
+          <Description>"Startjahr des Spielstands"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3976</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>907</ID>
+          <Description>"Heute: Tage seit 1.1. des Startjahrs (Basis für Verletzungsende)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3978</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>908</ID>
+          <Description>"Globaler Zähler (Basis für Verletzungsbeginn und Verletzungsanfällig)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>396C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>926</ID>
+          <Description>"Bonusländer: Anzahl (nur zusammen mit Liste und Liga-System ändern)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>393E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
           <ID>402</ID>
           <Description>"Hauptland"</Description>
           <VariableType>Byte</VariableType>
@@ -2149,6 +2339,56 @@
           <Address>anstoss2.exe+400710</Address>
           <Offsets>
             <Offset>394A</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>927</ID>
+          <Description>"Hauptland: Liga-System"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3942</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>928</ID>
+          <Description>"Bonusland 1: Liga-System (gehört zu Bonusland 1)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>394C</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>929</ID>
+          <Description>"Bonusland 2: Liga-System (gehört zu Bonusland 2)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>394E</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>930</ID>
+          <Description>"Bonusland 3: Liga-System (gehört zu Bonusland 3)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3950</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>931</ID>
+          <Description>"Bonusland 4: Liga-System (gehört zu Bonusland 4)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3952</Offset>
           </Offsets>
         </CheatEntry>
         <CheatEntry>
@@ -2273,20 +2513,11 @@
             </CheatEntry>
             <CheatEntry>
               <ID>509</ID>
-              <Description>"     Alter, invertiert und jahresrelativ: Byte = (aktuelles Jahr - 1792) - Alter (siehe 'Aktuelles Spieljahr' im Abschnitt Spielstand)"</Description>
-              <VariableType>Byte</VariableType>
+              <Description>"     Geburtsjahr (Alter = 'Aktuelles Spieljahr' im Abschnitt Spielstand - Geburtsjahr)"</Description>
+              <VariableType>2 Bytes</VariableType>
               <Address>anstoss2.exe+557BC8</Address>
               <Offsets>
                 <Offset>8</Offset>
-              </Offsets>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>510</ID>
-              <Description>"     unbekannt"</Description>
-              <VariableType>Byte</VariableType>
-              <Address>anstoss2.exe+557BC8</Address>
-              <Offsets>
-                <Offset>9</Offset>
               </Offsets>
             </CheatEntry>
             <CheatEntry>
@@ -2430,13 +2661,103 @@
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>529</ID>
-              <Description>"     ab hier unerforscht, 94 Byte bis vor Gehalt (+0x84) - vermutlich Verletzungstage/Verletzung/Verletzungsanfaellig/gesperrte Spiele/Gedopt/Gelbe Karten, Offsets nicht bestaetigt"</Description>
+              <ID>910</ID>
+              <Description>"     Vereinsland"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>anstoss2.exe+557BC8</Address>
               <Offsets>
-                <Offset>26</Offset>
+                <Offset>1C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>911</ID>
+              <Description>"     Verein"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>1D</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>912</ID>
+              <Description>"     Verletzung seit: Stand des globalen Zählers (Abschnitt Spielstand) bei Verletzungsbeginn, 0 = nicht verletzt"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>2A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>913</ID>
+              <Description>"     Verletzung bis: Jahr"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>2C</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>914</ID>
+              <Description>"     Verletzung bis: Tag im Jahr (Verletzungstage = (Jahr - Startjahr) * 365 + Tag - Heute)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>2E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>915</ID>
+              <Description>"     Verletzungsart"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>916</ID>
+              <Description>"     Verletzungsanfällig bis: Stand des globalen Zählers, 0 = nicht anfällig"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>32</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>917</ID>
+              <Description>"     Gesperrte Spiele"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>34</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>918</ID>
+              <Description>"     Doping (Bit 0-3 = Doping, zählt herunter; Bit 4-7 = weitere Kennzeichen)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>35</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>919</ID>
+              <Description>"     Gelbe Karten"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>36</Offset>
               </Offsets>
             </CheatEntry>
             <CheatEntry>
@@ -2460,13 +2781,63 @@
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>532</ID>
-              <Description>"     ab hier unerforscht, Rest bis Ende des Datensatzes (0xC8 Byte) - vermutlich Torprämie/Ablösesumme/Vertragsdauer/Vertragsdetails/Jahre im Verein/Karriere, Offsets nicht bestätigt"</Description>
+              <ID>920</ID>
+              <Description>"     Torprämie"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>88</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>921</ID>
+              <Description>"     Fixe Ablöse"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>8A</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>922</ID>
+              <Description>"     Vertragsende als Jahr (Laufzeit = Jahr - aktuelles Spieljahr)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>90</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>923</ID>
+              <Description>"     Vereinseintritt als Jahr (Jahre im Verein = aktuelles Spieljahr - Jahr)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>92</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>924</ID>
+              <Description>"     Vertragsdetails (Bitmaske)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>anstoss2.exe+557BC8</Address>
               <Offsets>
-                <Offset>88</Offset>
+                <Offset>94</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>925</ID>
+              <Description>"     Karriere (Bitmaske)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>AC</Offset>
               </Offsets>
             </CheatEntry>
           </CheatEntries>

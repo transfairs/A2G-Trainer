@@ -4,7 +4,7 @@
 
 # A2G-Trainer
 
-A trainer for **Anstoss 2 Gold**, tested and compatible with both the original CD release and the GOG version.
+A trainer for **Anstoss 2 Gold**, tested and compatible with the original CD release, the GOG version and the 2007 CD release. A single exe covers all three: the trainer recognises which one is running.
 Built specifically to run even on legacy systems. Tested working from **Windows XP SP3 x86** onwards, including all Windows OS versions until **Windows 11 x64**.
 
 ![C#](https://img.shields.io/badge/language-C%23-239120?logo=c-sharp&logoColor=white) ![.NET Framework](https://img.shields.io/badge/.NET-4.0-blueviolet) [![Latest release](https://img.shields.io/github/v/release/transfairs/A2G-Trainer?label=release&color=orange)](https://github.com/transfairs/A2G-Trainer/releases/latest)
@@ -36,14 +36,18 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - ✅ Edit player attributes, positions and skills
 - ✅ Supports multiplexed bitfields (skills etc.)
 - ✅ **Edit your youth players (Jugendspieler)**
-- ✅ **Player renames persist permanently** (same length as the old name. See Tips below)
+- ✅ **Player renames persist permanently**, in any length up to 9 (first name) / 15 (last name) characters (see Tips below)
+- ✅ **Contract, injury and suspension values persist** in the savegame: contract term, injury days and type, injury-prone, banned matches, doping, yellow cards
 - ✅ Runs on **Windows XP** (built against `.NET Framework 4.0`)
+- ✅ **Resizable window**: drag it larger or maximize it, and all content (fields, lists, fonts, help) grows with it
 - ✅ **Club editing** (name, finances, stadium details)  
 - ✅ **Stadium editor** with up to 2 × 32,767 seats per block  
 - ✅ **Freeze condition & freshness** in the Team tab so they stay fixed while you play  
 - ✅ **Multi-trainer (hot-seat) support**
 - ✅ **Coach editing** (level, age, difficulty, and stocks)
-- ✅ **Main country** plus up to 4 additional countries for a career  
+- ✅ **Coach contract**: salary and bonuses, season goal, extras, release clause, and a club for next season that the game's season change actually accepts
+- ✅ **Request a job offer** from any club of the main or a bonus country; the game makes it at the next Tagesabschluss
+- ✅ **Switch bonus countries on and off** during a career (up to 4 besides the main country)  
 - ✅ **Automatic reconnect & turn-handoff detection:** It detects a game restart, a different savegame being loaded, or a hot-seat turn passing
 - ✅ **Help section** integrated into the UI, also available as the [online Projektseite](https://transfairs.github.io/A2G-Trainer/)  
 - ✅ Clean WinForms UI with tabbed views and menu navigation
@@ -70,13 +74,13 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 ## 💡 Tips & Hints
 - To assign a **negative number of seats** to a stadium block, enter any value **greater than 32,767**.  
 - After editing a stadium block, **Block A is automatically set to one week construction time** to ensure all changes are persisted.  
-- A player rename only survives a save/reload if the new name has the **exact same number of characters** as the old one. A different length still shows correctly until the next Tagesabschluss/load, but isn't saved permanently: you'll get a warning naming the player if that happens. Details land in `%LocalAppData%\A2G-Trainer-XP\trainer.log`.  
+- A player rename survives a save/reload in any length up to 9/15 characters: a name the savegame already has is reused, a new one is added the way the game adds names, and other players with the old name keep it. Only on a version whose addresses the trainer can't confirm does the old rule apply (the new name must already exist in the savegame, or have **exactly as many characters** as the old one); otherwise the name only lasts until the next Tagesabschluss/load and you get a warning naming the player. Details land in `%LocalAppData%\A2G-Trainer-XP\trainer.log`.  
 - On the **GOG version** (and the 2007 CD release), the trainer checks where the permanently saved player data lives the first time it loads your own team. If it can't find it, it falls back to the in-memory display values as before: Jugendspieler then can't be changed permanently, and renames only last until the next load. The result is logged to `%LocalAppData%\A2G-Trainer-XP\trainer.log`; please attach it when reporting a problem.  
 
 ## 🔧 Build Instructions
 1. Open the solution in **Visual Studio 2019**  
 2. Ensure the target framework is **.NET Framework 4.0**  
-3. Build the project (`Release|x86` recommended for XP). There's also a `Release2007CD|x86` configuration for the original 2007 CD release, which uses GOG-style memory addressing despite not running via `run.exe`.  
+3. Build the project (`Release|x86` recommended for XP). There's no separate configuration per game release: the trainer identifies the game build itself (from the main module's PE header, see `Controller/GameBuild.cs`), so the one build handles the original, GOG and 2007 CD releases.  
 4. Optional: run the test suite (see **Testing** below) to verify core logic before building a release  
 5. Building from the CLI instead of Visual Studio? See the note under **Testing**. A plain `dotnet build` fails on this project, use `msbuild` as shown there.  
 
