@@ -373,3 +373,6 @@ coveragereport/
 # Reverse-engineering material for anstoss2.exe (Ghidra project, full decompile, memory snapshots,
 # helper scripts) - local only: derived from the game's code and far too large for the repo.
 re/
+
+# Claude Code configuration and skills (e.g. the pre-release check) - local only.
+.claude/
