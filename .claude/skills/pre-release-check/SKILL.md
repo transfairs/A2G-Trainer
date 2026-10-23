@@ -130,8 +130,8 @@ failure here, only report it)
 
 - **2.1 Full test suite green**: already run in 1.1's loop; if any test other than a coverage gap
   is failing, stop and report it (don't attempt a fix beyond what 1.1 covers).
-- **2.2 Both build configs**: `msbuild A2G-Trainer-XP.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86`
-  and the same with `/p:Configuration=Release2007CD`. Both must succeed.
+- **2.2 Release build**: `msbuild A2G-Trainer-XP.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86`
+  must succeed. It's the only release configuration: the same exe serves original, GOG and 2007 CD.
 - **2.3 `scripts/Convert-CtToGog.ps1`**: dry run against the current `.ct`
   (`./scripts/Convert-CtToGog.ps1 -InputPath "A2G-Trainer-XP.ct" -OutputPath "<scratch>/dry-run-GOG.ct"`,
   writing to a scratch path, not `dist/`) and confirm it completes without error.
