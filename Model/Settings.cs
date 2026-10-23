@@ -77,7 +77,6 @@ namespace A2G_Trainer_XP.Controller
         // years 1792-2047.
         private const uint playerRecordAgeOffset    = 0x8;
         private const uint ageReferenceYearOffset   = 0x426662;
-        private const int  ageReferenceYearEpoch    = 1792;
 
         // Right next to the reference year above (4 bytes further into the same small "savegame
         // meta" struct): anstoss2.exe+426666 holds the number of active human trainers/"Mitspieler"
@@ -271,7 +270,6 @@ namespace A2G_Trainer_XP.Controller
         internal static uint PlayerRecordLevelOffset      { get => playerRecordLevelOffset; }
         internal static uint PlayerRecordAgeOffset        { get => playerRecordAgeOffset; }
         internal static uint AgeReferenceYearOffset       { get => ageReferenceYearOffset; }
-        internal static int  AgeReferenceYearEpoch        { get => ageReferenceYearEpoch; }
         internal static uint ActiveTrainerCountOffset     { get => activeTrainerCountOffset; }
         internal static uint CoachSlotTableOffset         { get => coachSlotTableOffset; }
         internal static uint CoachSlotStride              { get => coachSlotStride; }

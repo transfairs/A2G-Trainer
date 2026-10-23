@@ -41,7 +41,7 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
-        public void DisableEdits_ForTrainee_EnablesSaveButton_ButKeepsUnconfirmedContractFieldsDisabled()
+        public void DisableEdits_ForTrainee_EnablesEverythingButTheStatisticsTab()
         {
             StaThread.Run(() =>
             {
@@ -53,9 +53,10 @@ namespace A2G_Trainer_XP.Tests
 
                     Assert.True(Find(trainer.PlayerView, "SaveBtn").Enabled);
                     Assert.False(Find(trainer.PlayerView, "OtherTab").Enabled);
-                    Assert.False(Find(trainer.PlayerView, "GoalBonusInput").Enabled);
-                    Assert.False(Find(trainer.PlayerView, "ContractDurationInput").Enabled);
-                    Assert.False(Find(trainer.PlayerView, "Retires").Enabled);
+                    // Contract fields are written to the persistent record now, so they work for trainees.
+                    Assert.True(Find(trainer.PlayerView, "GoalBonusInput").Enabled);
+                    Assert.True(Find(trainer.PlayerView, "ContractDurationInput").Enabled);
+                    Assert.True(Find(trainer.PlayerView, "Retires").Enabled);
                     Assert.True(Find(trainer.PlayerView, "LevelInput").Enabled);
                 }
             });

@@ -160,9 +160,11 @@ namespace A2G_Trainer_XP.Controller
             player.Happy                = (PlayerEnums.Happy)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAPPY]));
             player.InjuredDays          = this.memory.ReadUInt16(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURED_DAYS]));
             player.Injury               = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURY]));
-            player.Vulnerable           = this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE])) != 0;
+            player.VulnerableTicks      = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE]));
+            player.Vulnerable           = player.VulnerableTicks != 0;
             player.RedCardBannedMatches = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES]));
-            player.Doped                = this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED])) != 0;
+            player.DopingState          = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED]));
+            player.Doped                = IsDoped(player.DopingState);
             player.YellowCardsSeason    = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YELLOW_CARDS]));
             #endregion
 
@@ -260,7 +262,7 @@ namespace A2G_Trainer_XP.Controller
                 return;
 
             uint baseAddress = recordResolver.GetFieldAddress(player.NameRecordId, 0);
-            int? ageEncodingConstant = this.GetAgeEncodingConstant();
+            int? currentYear = this.GetCurrentYear();
 
             const int mainChunkLength = 0x26;
             byte[] chunk = this.memory.ReadBytesAtAddress(baseAddress, mainChunkLength);
@@ -268,8 +270,8 @@ namespace A2G_Trainer_XP.Controller
             {
                 player.SkinColor = (PlayerEnums.SkinColor)chunk[Settings.PlayerRecordSkinColorOffset];
                 player.HairColor = (PlayerEnums.HairColor)chunk[Settings.PlayerRecordSkinColorOffset + 1];
-                if (ageEncodingConstant.HasValue)
-                    player.Age = (byte)(ageEncodingConstant.Value - chunk[Settings.PlayerRecordAgeOffset]);
+                if (currentYear.HasValue)
+                    player.Age = (byte)(currentYear.Value - BitConverter.ToUInt16(chunk, (int)Settings.PlayerRecordAgeOffset));
                 player.Level = chunk[Settings.PlayerRecordLevelOffset];
                 player.Position = (PlayerEnums.Position)chunk[Settings.PlayerRecordPositionOffset];
                 player.SecondaryPositions = new List<PlayerEnums.Position>
@@ -301,24 +303,89 @@ namespace A2G_Trainer_XP.Controller
                 Logger.Warn($"ReadPersistentFields: couldn't read record for NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{baseAddress:X} - keeping display-cache values.");
             }
 
-            byte[] contractChunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordSalaryOffset, 4);
+            byte[] contractChunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordSalaryOffset, 8);
             if (contractChunk != null)
             {
                 player.Salary = BitConverter.ToUInt16(contractChunk, 0);
                 player.ShowUpBonus = BitConverter.ToUInt16(contractChunk, 2);
+                player.GoalsBonus = BitConverter.ToUInt16(contractChunk, (int)(Settings.PlayerRecordGoalsBonusOffset - Settings.PlayerRecordSalaryOffset));
+                player.TransferFee = BitConverter.ToUInt16(contractChunk, (int)(Settings.PlayerRecordTransferFeeOffset - Settings.PlayerRecordSalaryOffset));
             }
+
+            // End year/join year/details are contiguous; the two years only turn into the displayed
+            // values with the savegame's current year, exactly as the game's own unpacking does it.
+            byte[] termChunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordContractEndYearOffset, 5);
+            if (termChunk != null)
+            {
+                if (currentYear.HasValue)
+                {
+                    int endYear = BitConverter.ToUInt16(termChunk, 0);
+                    int joinYear = BitConverter.ToUInt16(termChunk, 2);
+                    player.ContractDuration = (byte)Math.Max(0, endYear - currentYear.Value);
+                    player.YearsInClub = (byte)(currentYear.Value - joinYear);
+                }
+                player.ContractDetails = (PlayerEnums.Contract)termChunk[Settings.PlayerRecordContractDetailsOffset - Settings.PlayerRecordContractEndYearOffset];
+            }
+
+            byte[] careerByte = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordCareerOffset, 1);
+            if (careerByte != null)
+                player.Career = (PlayerEnums.Career)careerByte[0];
+
+            this.ReadPersistentConstitution(player, baseAddress);
         }
 
-        // Writes Firstname/Lastname to the permanent name pool in addition to the display cache
-        // below, so a rename actually survives a save/reload instead of being reset to the old value
-        // (see NamePoolResolver's header comment for why the display cache alone isn't enough).
+        // Constitution block, +0x2A through YellowCardsSeason (+0x36). Injury type, suspension,
+        // doping and yellow cards are plain bytes; InjuredDays and Vulnerable only turn into the
+        // displayed values with the savegame's calendar (see GameCalendar), so they keep their
+        // display-cache values where that isn't available.
+        private const int ConstitutionChunkLength = 0xD;
+
+        private void ReadPersistentConstitution(Player player, uint baseAddress)
+        {
+            byte[] chunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordInjuryStartOffset, ConstitutionChunkLength);
+            if (chunk == null)
+                return;
+
+            int At(uint recordOffset) => (int)(recordOffset - Settings.PlayerRecordInjuryStartOffset);
+            player.Injury = chunk[At(Settings.PlayerRecordInjuryOffset)];
+            player.RedCardBannedMatches = chunk[At(Settings.PlayerRecordBannedOffset)];
+            player.DopingState = chunk[At(Settings.PlayerRecordBannedOffset + 1)];
+            player.Doped = IsDoped(player.DopingState);
+            player.YellowCardsSeason = chunk[At(Settings.PlayerRecordBannedOffset + 2)];
+
+            GameCalendar calendar = GameCalendar.Read(this.memory);
+            if (calendar == null)
+                return;
+
+            player.InjuredDays = calendar.InjuredDaysFromEndDate(
+                BitConverter.ToInt16(chunk, At(Settings.PlayerRecordInjuryEndYearOffset)),
+                BitConverter.ToInt16(chunk, At(Settings.PlayerRecordInjuryEndYearOffset + 2)));
+            player.VulnerableTicks = calendar.VulnerableTicksFromEndValue(BitConverter.ToUInt16(chunk, At(Settings.PlayerRecordVulnerableOffset)));
+            player.Vulnerable = player.VulnerableTicks != 0;
+        }
+
+        // Doping is active while the low nibble counts down; the upper bits are unrelated markers.
+        private static bool IsDoped(byte dopingState) => (dopingState & 0x0F) != 0;
+
+        // Makes a Firstname/Lastname change permanent in addition to the display cache write below,
+        // so a rename actually survives a save/reload instead of being reset to the old value (see
+        // NamePoolResolver's header comment for why the display cache alone isn't enough).
         //
-        // The pool is tightly packed with no padding between variable-length strings, so a
-        // replacement with a DIFFERENT byte length than the current value would shift every later
-        // name in the pool. We only write when the length matches exactly; otherwise we log and skip
-        // the persistent write (still returning a warning the caller can show the user) - the display
-        // cache write below still makes the change visible in-game until the next load, matching
-        // docs/manual-rename-workaround.md.
+        // The pool is deduplicated - all players named "Jakob" share ONE pool entry - so blindly
+        // overwriting an entry's bytes turned every Jakob in the game into a Josef. In order:
+        //   1. If the pool already holds the new name, only this player's index is repointed at it
+        //      (affects nobody else, works for any length).
+        //   2. Otherwise the entry is overwritten in place, but only if the new name has the same
+        //      byte length (a different one would shift every later name in the tightly packed
+        //      pool) AND no other player references the entry (NamePoolResolver.CountReferences).
+        //      That covers fixing up a unique surname like AuLecht -> Aulecht.
+        //   Original build: instead of 2., a name that isn't in the pool yet is appended to it the way
+        //   the game itself adds names (NamePoolResolver.AppendName) and the player repointed at it -
+        //   any length, nobody else affected. (An earlier prototype that moved the pool crashed the
+        //   game because the game's own pointer table wasn't updated - see
+        //   docs/manual-rename-workaround.md; appending leaves every existing entry where it is.)
+        //   3. Anything else can't be made permanent; we log and return a warning the caller can show
+        //      the user, and the display cache write below still shows the change until the next load.
         private List<string> WritePersistentName(Player player)
         {
             Encoding encoding = Encoding.GetEncoding("iso-8859-1");
@@ -333,20 +400,21 @@ namespace A2G_Trainer_XP.Controller
             if (!this.memory.Layout.NamePoolPointerOffset.HasValue)
                 return warnings;
 
-            string firstnameWarning = this.TryWritePersistentName(namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, "Vorname", player);
+            string firstnameWarning = this.TryWritePersistentName(namePool, namePool.ResolveFirstnameAddress(player.NameRecordId), player.Firstname, encoding, isLastname: false, player);
             if (firstnameWarning != null) warnings.Add(firstnameWarning);
 
-            string lastnameWarning = this.TryWritePersistentName(namePool.ResolveLastnameAddress(player.NameRecordId), player.Lastname, encoding, "Nachname", player);
+            string lastnameWarning = this.TryWritePersistentName(namePool, namePool.ResolveLastnameAddress(player.NameRecordId), player.Lastname, encoding, isLastname: true, player);
             if (lastnameWarning != null) warnings.Add(lastnameWarning);
 
             return warnings;
         }
 
-        // Returns null on success, or a user-facing (German) warning describing why the permanent
-        // write was skipped. Every skip is still logged via Logger.Warn for troubleshooting - the
-        // returned string is a friendlier, player-identified version for the UI.
-        private string TryWritePersistentName(uint? address, string newValue, Encoding encoding, string fieldLabel, Player player)
+        // Returns null on success (or when nothing changed), or a user-facing (German) warning
+        // describing why the permanent write was skipped. Every skip is still logged via Logger.Warn
+        // for troubleshooting - the returned string is a friendlier, player-identified version for the UI.
+        private string TryWritePersistentName(NamePoolResolver namePool, uint? address, string newValue, Encoding encoding, bool isLastname, Player player)
         {
+            string fieldLabel = isLastname ? "Nachname" : "Vorname";
             if (newValue == null)
                 return null;
 
@@ -376,18 +444,52 @@ namespace A2G_Trainer_XP.Controller
                 return $"{playerLabel}: {fieldLabel} - Stringende nicht gefunden.";
             }
 
+            if (currentString == newValue)
+                return null;
+
+            ushort? newIndex = namePool.FindIndexOf(newValue, encoding);
+            if (!newIndex.HasValue && namePool.CanAppend)
+            {
+                // Not in the pool yet: add it the way the game adds names, then repoint below. Any
+                // length (within the 9/15 the model already enforces), and nobody else is touched.
+                newIndex = namePool.AppendName(newValue, encoding);
+                if (!newIndex.HasValue)
+                {
+                    Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}): \"{newValue}\" couldn't be added to the name pool.");
+                    return $"{playerLabel}: {fieldLabel} \"{newValue}\" konnte nicht in den Namensbestand des Spielstands aufgenommen werden, nur bis zum nächsten Laden gespeichert.";
+                }
+            }
+            if (newIndex.HasValue)
+            {
+                if (isLastname)
+                    namePool.RepointLastname(player.NameRecordId, newIndex.Value);
+                else
+                    namePool.RepointFirstname(player.NameRecordId, newIndex.Value);
+                Logger.Debug($"Repointed persistent {fieldLabel} for player NameRecordId={player.NameRecordId} (Id={player.Id}) from \"{currentString}\" to pool index {newIndex.Value} (\"{newValue}\").");
+                return null;
+            }
+
             byte[] newBytes = encoding.GetBytes(newValue);
             if (currentLength != newBytes.Length)
             {
-                Logger.Warn($"Skipping persistent {fieldLabel} write for player {player.NameRecordId}: length changed ({currentLength} -> {newBytes.Length} bytes) - would shift every later name in the pool. Use a same-length replacement for now.");
-                return $"{playerLabel}: {fieldLabel}, Länge falsch (vorher: {currentLength}, nachher: {newBytes.Length}), nicht übernommen.";
+                Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}): \"{newValue}\" isn't in the name pool, and its length differs from \"{currentString}\" ({currentLength} -> {newBytes.Length} bytes) - would shift every later name in the pool.");
+                return $"{playerLabel}: {fieldLabel} \"{newValue}\" kommt im Spielstand nicht vor und ist nicht genauso lang wie \"{currentString}\", nur bis zum nächsten Laden gespeichert.";
             }
 
+            ushort? currentIndex = isLastname ? namePool.ReadLastnameIndex(player.NameRecordId) : namePool.ReadFirstnameIndex(player.NameRecordId);
+            int? sharers = currentIndex.HasValue ? namePool.CountReferences(currentIndex.Value) : null;
+            if (sharers != 1)
+            {
+                Logger.Warn($"Skipping persistent {fieldLabel} write for player NameRecordId={player.NameRecordId} (Id={player.Id}): pool entry {currentIndex} (\"{currentString}\") has {(sharers.HasValue ? sharers.ToString() : "an unknown number of")} references - overwriting it would rename every player sharing it.");
+                return $"{playerLabel}: {fieldLabel} \"{newValue}\" kommt im Spielstand nicht vor, und \"{currentString}\" wird {(sharers.HasValue ? $"von {sharers} Spielern" : "möglicherweise von weiteren Spielern")} geteilt, nur bis zum nächsten Laden gespeichert.";
+            }
+
+            // Same length and this player is the entry's only user: overwriting it in place renames
+            // nobody else and shifts nothing.
             byte[] toWrite = new byte[newBytes.Length + 1];
             Array.Copy(newBytes, toWrite, newBytes.Length);
-            toWrite[newBytes.Length] = 0;
             this.memory.WriteBytesAtAddress(address.Value, toWrite);
-            Logger.Debug($"Wrote persistent {fieldLabel} for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address.Value:X}.");
+            Logger.Debug($"Overwrote unshared persistent {fieldLabel} for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address.Value:X}: \"{currentString}\" -> \"{newValue}\".");
             return null;
         }
 
@@ -407,15 +509,13 @@ namespace A2G_Trainer_XP.Controller
             Logger.Debug($"Wrote persistent Level for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Level}.");
         }
 
-        // Same rationale as WritePersistentLevel above, for Age. Unlike Level, the byte here isn't
-        // the age itself - it counts DOWN as age goes up, relative to the CURRENT SAVEGAME's
-        // in-game year (see GetAgeEncodingConstant/Settings.AgeReferenceYearOffset for why this
-        // isn't a fixed constant). Skipped entirely if that year can't be read, rather than writing
-        // using a guessed/stale constant.
+        // Same rationale as WritePersistentLevel above, for Age. The record holds the birth year
+        // (UInt16), not the age, so this needs the CURRENT SAVEGAME's in-game year (see
+        // GetCurrentYear) - skipped entirely if that can't be read, rather than guessing one.
         private void WritePersistentAge(Player player)
         {
-            int? encodingConstant = this.GetAgeEncodingConstant();
-            if (!encodingConstant.HasValue)
+            int? currentYear = this.GetCurrentYear();
+            if (!currentYear.HasValue)
             {
                 Logger.Warn($"Skipping persistent Age write for player NameRecordId={player.NameRecordId} (Id={player.Id}): couldn't read the savegame's current year (layout: {this.memory.Layout}).");
                 return;
@@ -423,17 +523,17 @@ namespace A2G_Trainer_XP.Controller
 
             PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
             uint address = recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordAgeOffset);
-            byte encodedAge = (byte)(encodingConstant.Value - player.Age);
-            this.memory.WriteBytesAtAddress(address, new byte[] { encodedAge });
-            Logger.Debug($"Wrote persistent Age for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Age} (encoded 0x{encodedAge:X2}, constant={encodingConstant.Value}).");
+            ushort birthYear = (ushort)(currentYear.Value - player.Age);
+            this.memory.WriteBytesAtAddress(address, BitConverter.GetBytes(birthYear));
+            Logger.Debug($"Wrote persistent Age for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Age} (birth year {birthYear}).");
         }
 
-        // Age isn't stored directly in the per-player record - it's encoded relative to the
-        // savegame's own in-game year, read live from anstoss2.exe+426662 (a flat, per-savegame
-        // value - stable across restarts/reinstalls, but genuinely different between savegames, so
-        // this must never be hardcoded). Returns null if that year can't be read right now, or its
-        // offset isn't known/confirmed for the attached build (see PersistentLayout).
-        private int? GetAgeEncodingConstant()
+        // The savegame's current in-game year, read live from anstoss2.exe+426662 (per savegame -
+        // stable across restarts, but different between savegames, so never hardcoded). Several
+        // record fields are stored as absolute years relative to it (birth year, contract end year,
+        // club join year). Returns null if it can't be read right now, or its offset isn't
+        // known/confirmed for the attached build (see PersistentLayout).
+        private int? GetCurrentYear()
         {
             uint? yearOffset = this.memory.Layout.AgeReferenceYearOffset;
             if (!yearOffset.HasValue)
@@ -443,8 +543,7 @@ namespace A2G_Trainer_XP.Controller
             if (yearBytes == null)
                 return null;
 
-            int currentYear = BitConverter.ToUInt16(yearBytes, 0);
-            return currentYear - Settings.AgeReferenceYearEpoch;
+            return BitConverter.ToUInt16(yearBytes, 0);
         }
 
         // Same rationale as WritePersistentLevel above, for Position. The main position and both
@@ -558,21 +657,101 @@ namespace A2G_Trainer_XP.Controller
             Logger.Debug($"Wrote persistent Nationality for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Nationality} (byte 0x{newByte:X2}, preserved high bit={(preservedHighBit != 0)}).");
         }
 
-        // Same rationale as WritePersistentLevel above, for Salary/ShowUpBonus - contiguous UInt16
-        // pair, written in one call.
-        //
-        // The remaining Contract-tab fields (GoalsBonus/TransferFee/ContractDuration/
-        // ContractDetails/YearsInClub/Career, +0x88 onward) were tried here too - Robin confirmed
-        // only Salary/ShowUpBonus actually work, the rest reverted back out (see Settings.cs/docs).
+        // Same rationale as WritePersistentLevel above, for Salary/ShowUpBonus/GoalsBonus/
+        // TransferFee - four contiguous UInt16s, written in one call.
         private void WritePersistentSalary(Player player)
         {
             PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
             uint address = recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordSalaryOffset);
-            byte[] toWrite = new byte[4];
+            byte[] toWrite = new byte[8];
             Array.Copy(BitConverter.GetBytes(player.Salary), 0, toWrite, 0, 2);
             Array.Copy(BitConverter.GetBytes(player.ShowUpBonus), 0, toWrite, 2, 2);
+            Array.Copy(BitConverter.GetBytes(player.GoalsBonus), 0, toWrite, Settings.PlayerRecordGoalsBonusOffset - Settings.PlayerRecordSalaryOffset, 2);
+            Array.Copy(BitConverter.GetBytes(player.TransferFee), 0, toWrite, Settings.PlayerRecordTransferFeeOffset - Settings.PlayerRecordSalaryOffset, 2);
             this.memory.WriteBytesAtAddress(address, toWrite);
-            Logger.Debug($"Wrote persistent Salary/ShowUpBonus for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Salary}/{player.ShowUpBonus}.");
+            Logger.Debug($"Wrote persistent Salary/ShowUpBonus/GoalsBonus/TransferFee for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Salary}/{player.ShowUpBonus}/{player.GoalsBonus}/{player.TransferFee}.");
+        }
+
+        // Constitution: injury type, red-card suspension, doping and yellow cards as plain bytes,
+        // plus the two calendar-based fields, packed exactly as the game does it (FUN_00583120):
+        // no injury days left -> start, end date and the "cleared" flag at +0xAD all go to 0;
+        // otherwise the end date comes from the game's calendar table, and a NEW injury (start still
+        // 0) gets today's counter as its start, like the game's own injury setter (FUN_006337e0).
+        // Vulnerable is written as the counter value it ends at. The two calendar fields are skipped
+        // if the calendar isn't available, rather than written with a guessed date.
+        private void WritePersistentConstitution(Player player)
+        {
+            PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
+            uint Address(uint recordOffset) => recordResolver.GetFieldAddress(player.NameRecordId, recordOffset);
+
+            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordInjuryOffset), new byte[] { player.Injury });
+            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordBannedOffset), new byte[] { player.RedCardBannedMatches, player.DopingStateToWrite, player.YellowCardsSeason });
+
+            GameCalendar calendar = GameCalendar.Read(this.memory);
+            if (calendar == null)
+            {
+                Logger.Warn($"Skipping persistent InjuredDays/Vulnerable write for player NameRecordId={player.NameRecordId} (Id={player.Id}): savegame calendar not available (layout: {this.memory.Layout}).");
+                return;
+            }
+
+            if (player.InjuredDays < 1)
+            {
+                this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordInjuryStartOffset), new byte[6]);
+                this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordInjuryClearedFlagOffset), new byte[] { 0 });
+            }
+            else
+            {
+                Tuple<short, short> endDate = calendar.EndDateForInjuredDays(player.InjuredDays);
+                byte[] startBytes = this.memory.ReadBytesAtAddress(Address(Settings.PlayerRecordInjuryStartOffset), 2);
+                if (endDate == null || startBytes == null)
+                {
+                    Logger.Warn($"Skipping persistent InjuredDays write for player NameRecordId={player.NameRecordId} (Id={player.Id}): {player.InjuredDays} days lie outside the game's calendar.");
+                }
+                else
+                {
+                    ushort start = BitConverter.ToUInt16(startBytes, 0);
+                    if (start == 0)
+                        start = (ushort)calendar.GlobalCounter;
+
+                    byte[] injury = new byte[6];
+                    Array.Copy(BitConverter.GetBytes(start), 0, injury, 0, 2);
+                    Array.Copy(BitConverter.GetBytes(endDate.Item1), 0, injury, 2, 2);
+                    Array.Copy(BitConverter.GetBytes(endDate.Item2), 0, injury, 4, 2);
+                    this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordInjuryStartOffset), injury);
+                }
+            }
+
+            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordVulnerableOffset), BitConverter.GetBytes(calendar.VulnerableEndValueForTicks(player.VulnerableTicksToWrite)));
+            Logger.Debug($"Wrote persistent constitution for player NameRecordId={player.NameRecordId} (Id={player.Id}): Injury={player.Injury}, Days={player.InjuredDays}, Vulnerable={player.VulnerableTicksToWrite}, Banned={player.RedCardBannedMatches}, Doping=0x{player.DopingStateToWrite:X2}, Yellow={player.YellowCardsSeason}.");
+        }
+
+        // ContractDuration/YearsInClub/ContractDetails and Career. The record stores the contract's
+        // end year and the club join year rather than the displayed counts (see Settings.cs), so
+        // both are converted with the savegame's current year - the same way the game packs them.
+        // Like Age, the two years are skipped entirely if that year can't be read; ContractDetails
+        // and Career don't depend on it.
+        private void WritePersistentContractTerms(Player player)
+        {
+            PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
+            uint termsAddress = recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordContractEndYearOffset);
+            uint detailsAddress = recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordContractDetailsOffset);
+
+            int? currentYear = this.GetCurrentYear();
+            if (currentYear.HasValue)
+            {
+                byte[] years = new byte[4];
+                Array.Copy(BitConverter.GetBytes((ushort)(currentYear.Value + player.ContractDuration)), 0, years, 0, 2);
+                Array.Copy(BitConverter.GetBytes((ushort)(currentYear.Value - player.YearsInClub)), 0, years, 2, 2);
+                this.memory.WriteBytesAtAddress(termsAddress, years);
+            }
+            else
+            {
+                Logger.Warn($"Skipping persistent ContractDuration/YearsInClub write for player NameRecordId={player.NameRecordId} (Id={player.Id}): couldn't read the savegame's current year (layout: {this.memory.Layout}).");
+            }
+
+            this.memory.WriteBytesAtAddress(detailsAddress, new byte[] { (byte)player.ContractDetails });
+            this.memory.WriteBytesAtAddress(recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordCareerOffset), new byte[] { (byte)player.Career });
+            Logger.Debug($"Wrote persistent contract terms for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{termsAddress:X}: Duration={player.ContractDuration}, YearsInClub={player.YearsInClub}, Details={player.ContractDetails}, Career={player.Career}.");
         }
 
         // Returns one warning per Firstname/Lastname that couldn't be permanently saved (see
@@ -606,6 +785,8 @@ namespace A2G_Trainer_XP.Controller
                 this.WritePersistentConditionFreshness(player);
                 this.WritePersistentNationality(player);
                 this.WritePersistentSalary(player);
+                this.WritePersistentContractTerms(player);
+                this.WritePersistentConstitution(player);
             }
 
             if (this.Type != PlayerEnums.AddressType.TRAINEE)
@@ -656,10 +837,10 @@ namespace A2G_Trainer_XP.Controller
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAPPY]), BitConverter.GetBytes((byte)player.Happy));
 
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURED_DAYS]), BitConverter.GetBytes(player.InjuredDays));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE]), BitConverter.GetBytes(player.Vulnerable));
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE]), new byte[] { player.VulnerableTicksToWrite });
 
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES]), new byte[] { (byte)player.RedCardBannedMatches });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED]), BitConverter.GetBytes(player.Doped));
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED]), new byte[] { player.DopingStateToWrite });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YELLOW_CARDS]), new byte[] { (byte)player.YellowCardsSeason });
                 #endregion
 

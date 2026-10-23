@@ -379,6 +379,28 @@ namespace A2G_Trainer_XP.Model
         /// <summary>Number of yellow cards the player has received this season.</summary>
         public byte YellowCardsSeason { get => this.yellowCardsSeason; set { this.yellowCardsSeason = value; this.OnPropertyChanged(nameof(this.YellowCardsSeason)); } }
         private byte yellowCardsSeason = 0;
+
+        // The game stores both "Vulnerable" and "Doped" as more than a yes/no (original build,
+        // FUN_00582a60 & co.). The UI keeps its checkboxes; these hold the raw value read from the
+        // game so a save can keep what the checkbox alone doesn't express.
+
+        /// <summary>The game's usual vulnerability duration (counter ticks) when it makes a player vulnerable.</summary>
+        public const byte DefaultVulnerableTicks = 7;
+        /// <summary>Remaining vulnerability as the game counts it (0 = not vulnerable), as last read from memory.</summary>
+        public byte VulnerableTicks { get; set; }
+        /// <summary>The value to write for <see cref="Vulnerable"/>: the remaining duration if still vulnerable, the game's usual duration if just switched on, 0 if off.</summary>
+        public byte VulnerableTicksToWrite => !this.Vulnerable ? (byte)0 : this.VulnerableTicks != 0 ? this.VulnerableTicks : DefaultVulnerableTicks;
+
+        // Doping byte: bits 0-3 are the doping itself (the game sets 0x0C and lets it count down),
+        // bits 4-7 are separate markers that are left untouched.
+        private const byte DopingBits = 0x0F;
+        private const byte DopingSetValue = 0x0C;
+        /// <summary>The raw doping byte as last read from memory.</summary>
+        public byte DopingState { get; set; }
+        /// <summary>The doping byte to write for <see cref="Doped"/>, keeping the unrelated marker bits and a still-running doping countdown.</summary>
+        public byte DopingStateToWrite => !this.Doped
+            ? (byte)(this.DopingState & ~DopingBits)
+            : (this.DopingState & DopingBits) != 0 ? this.DopingState : (byte)(this.DopingState | DopingSetValue);
         #endregion
 
         #region Contract

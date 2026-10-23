@@ -39,12 +39,10 @@ namespace A2G_Trainer_XP.View
         {
             // Used to be disabled for TRAINEE (Jugendspieler) entirely, since every field for them
             // used to route through a transient, shared display cache the game silently discards
-            // writes to. Most Overview-tab fields (Name/Age/Level/Skin/Hair/Position/Skills/
-            // Personality/Character/Health/Form/Condition/Freshness/Nationality/Unhappy/Happy/
-            // Salary/ShowUpBonus) now also write through a separate, persistent, PlayerId-keyed
-            // path (see PlayerController.Save) that isn't affected by that - so Save is worth
-            // enabling for TRAINEE. The remaining Contract-tab fields beyond Salary/ShowUpBonus are
-            // still forced read-only below (unconfirmed offsets).
+            // writes to. Every field on the Overview/Position/Skills/Character/Constitution/Contract
+            // tabs now also writes through the separate, persistent, PlayerId-keyed record (see
+            // PlayerController.Save), whose complete layout is known from the game's own code - so
+            // all of those are editable for TRAINEE too.
             this.SaveBtn.Enabled = enable;
             foreach (Control tabPage in this.MainTabControl.Controls)
             {
@@ -55,38 +53,13 @@ namespace A2G_Trainer_XP.View
                         if (!(control is VScrollBar || control is HScrollBar))
                             control.Enabled = enable;
                     }
-                    // ConstitutionTab (Unhappy/Happy confirmed persistent) and ContractTab
-                    // (Salary/ShowUpBonus confirmed persistent) are now worth enabling for TRAINEE
-                    // too - same as Overview/Position/Skills, some fields on them still silently
-                    // no-op, but the confirmed ones now stick. OtherTab has no confirmed persistent
-                    // fields yet, so it stays disabled for TRAINEE.
+                    // OtherTab (statistics) isn't part of what the persistent write path covers, so
+                    // it stays disabled for TRAINEE.
                     if (tabPage == this.OtherTab)
                     {
                         tabPage.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
                     }
                 }
-            }
-
-            // Condition/Freshness are confirmed persistent now too (Robin found the real offsets,
-            // +0x21/+0x22 - see Settings.cs/PlayerController.WritePersistentConditionFreshness), so
-            // they no longer need to be forced read-only here. The rest of the Contract tab (beyond
-            // Salary/ShowUpBonus) is still an unconfirmed, reverted guess - stays read-only for
-            // TRAINEE until Robin finds its real offsets the same way.
-            if (this.clubController.Type == PlayerEnums.AddressType.TRAINEE)
-            {
-                this.GoalBonusInput.Enabled = false;
-                this.FixedTransferFeeInput.Enabled = false;
-                this.ContractDurationInput.Enabled = false;
-                this.YearsInClubInput.Enabled = false;
-                this.Leased.Enabled = false;
-                this.LeasedWithOption.Enabled = false;
-                this.UnknownContractCheckbox.Enabled = false;
-                this.JoinedThisSeason.Enabled = false;
-                this.OptionPlayer.Enabled = false;
-                this.OptionClub.Enabled = false;
-                this.SeatedGuarantee.Enabled = false;
-                this.UnsetContractDetail.Enabled = false;
-                this.Retires.Enabled = false;
             }
         }
 

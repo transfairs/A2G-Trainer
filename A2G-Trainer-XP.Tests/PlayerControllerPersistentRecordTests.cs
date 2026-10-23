@@ -11,7 +11,6 @@ namespace A2G_Trainer_XP.Tests
     public class PlayerControllerPersistentRecordTests
     {
         private const ushort CurrentYear = 2001;
-        private const int EncodingConstant = CurrentYear - 1792;
 
         private static Addresses Own => AddressPresets.OWN_PLAYERS;
 
@@ -50,7 +49,7 @@ namespace A2G_Trainer_XP.Tests
 
             uint b = Settings.PlayerRecordTableOffset;
             fake.WriteModuleBytes(b + Settings.PlayerRecordSkinColorOffset, new byte[] { (byte)PlayerEnums.SkinColor.Dark, (byte)PlayerEnums.HairColor.Rot });
-            fake.WriteModuleBytes(b + Settings.PlayerRecordAgeOffset, new byte[] { (byte)(EncodingConstant - age) });
+            fake.WriteModuleBytes(b + Settings.PlayerRecordAgeOffset, BitConverter.GetBytes((ushort)(CurrentYear - age)));
             fake.WriteModuleBytes(b + Settings.PlayerRecordLevelOffset, new byte[] { level });
             fake.WriteModuleBytes(b + Settings.PlayerRecordPositionOffset, new byte[] { (byte)PlayerEnums.Position.MD, (byte)PlayerEnums.Position.LV, (byte)PlayerEnums.Position.RV });
             fake.WriteModuleBytes(b + Settings.PlayerRecordSkillsOffset, Concat(BitConverter.GetBytes((ushort)0x0311), BitConverter.GetBytes((ushort)0x0522)));
@@ -59,7 +58,10 @@ namespace A2G_Trainer_XP.Tests
             fake.WriteModuleBytes(b + Settings.PlayerRecordFormOffset, new byte[] { 20 });
             fake.WriteModuleBytes(b + Settings.PlayerRecordConditionOffset, new byte[] { 81, 85 });
             fake.WriteModuleBytes(b + Settings.PlayerRecordNationalityOffset, new byte[] { (byte)PlayerEnums.Country.Deutschland });
-            fake.WriteModuleBytes(b + Settings.PlayerRecordSalaryOffset, Concat(BitConverter.GetBytes((ushort)1234), BitConverter.GetBytes((ushort)56)));
+            fake.WriteModuleBytes(b + Settings.PlayerRecordSalaryOffset, Concat(BitConverter.GetBytes((ushort)1234), BitConverter.GetBytes((ushort)56), BitConverter.GetBytes((ushort)78), BitConverter.GetBytes((ushort)910)));
+            // Contract ends 2004 and the player joined in 1997: 3 years left, 4 years in the club.
+            fake.WriteModuleBytes(b + Settings.PlayerRecordContractEndYearOffset, Concat(BitConverter.GetBytes((ushort)2004), BitConverter.GetBytes((ushort)1997), new byte[] { (byte)PlayerEnums.Contract.OptionClub }));
+            fake.WriteModuleBytes(b + Settings.PlayerRecordCareerOffset, new byte[] { (byte)PlayerEnums.Career.Retires });
         }
 
         private static byte[] Concat(params byte[][] parts) => parts.SelectMany(p => p).ToArray();
@@ -95,14 +97,40 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal(PlayerEnums.Country.Deutschland, player.Nationality);
                 Assert.Equal((ushort)1234, player.Salary);
                 Assert.Equal((ushort)56, player.ShowUpBonus);
+                Assert.Equal((ushort)78, player.GoalsBonus);
+                Assert.Equal((ushort)910, player.TransferFee);
+                Assert.Equal((byte)3, player.ContractDuration);
+                Assert.Equal((byte)4, player.YearsInClub);
+                Assert.Equal(PlayerEnums.Contract.OptionClub, player.ContractDetails);
+                Assert.Equal(PlayerEnums.Career.Retires, player.Career);
+            }
+        }
+
+        [Fact]
+        public void ReadPersistentFields_WithExpiredContract_ClampsDurationAtZeroLikeTheGame()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.PlayerAddress[0]);
+                SeedDisplayCache(fake);
+                WritePersistentRecord(fake);
+                fake.WriteModuleBytes(Settings.PlayerRecordTableOffset + Settings.PlayerRecordContractEndYearOffset, BitConverter.GetBytes((ushort)(CurrentYear - 2)));
+
+                PlayerController controller = new PlayerController(fake.Memory, NewSinglePlayerClub(), isGog: false, PlayerEnums.AddressType.OWN);
+
+                Assert.Equal((byte)0, controller.EntityList.Single().ContractDuration);
             }
         }
 
         [Fact]
         public void ReadPersistentFields_WhenRecordUnreadable_KeepsDisplayCacheValues()
         {
-            using (FakeModule fake = new FakeModule(moduleBlockSize: 0x430000))
+            // The record is made unreadable explicitly. Shrinking the module block so the record lies
+            // past its end used to be flaky: whatever Windows happened to map right after the block
+            // (another test's allocation) was then read as the record.
+            using (FakeModule fake = new FakeModule())
             {
+                fake.MakeModuleRegionUnreadable(Settings.PlayerRecordTableOffset, (int)Settings.PlayerRecordStride);
                 fake.RoutePointerSlot(Settings.PlayerAddress[0]);
                 SeedDisplayCache(fake);
 
@@ -181,12 +209,23 @@ namespace A2G_Trainer_XP.Tests
                 player.Nationality = PlayerEnums.Country.Italien;
                 player.Salary = 4321;
                 player.ShowUpBonus = 654;
+                player.GoalsBonus = 987;
+                player.TransferFee = 1500;
+                player.ContractDuration = 2;
+                player.YearsInClub = 6;
+                player.ContractDetails = PlayerEnums.Contract.Leased | PlayerEnums.Contract.BuyOption;
+                player.Career = PlayerEnums.Career.Retires;
 
                 controller.Save(player);
 
                 uint b = Settings.PlayerRecordTableOffset;
+                Assert.Equal(Concat(BitConverter.GetBytes((ushort)987), BitConverter.GetBytes((ushort)1500)), fake.ReadModuleBytes(b + Settings.PlayerRecordGoalsBonusOffset, 4));
+                // Stored as end year / join year, relative to the savegame's current year (2001).
+                Assert.Equal(Concat(BitConverter.GetBytes((ushort)2003), BitConverter.GetBytes((ushort)1995), new byte[] { (byte)(PlayerEnums.Contract.Leased | PlayerEnums.Contract.BuyOption) }), fake.ReadModuleBytes(b + Settings.PlayerRecordContractEndYearOffset, 5));
+                Assert.Equal((byte)PlayerEnums.Career.Retires, fake.ReadModuleBytes(b + Settings.PlayerRecordCareerOffset, 1)[0]);
                 Assert.Equal(new byte[] { (byte)PlayerEnums.SkinColor.Dark, (byte)PlayerEnums.HairColor.Braun }, fake.ReadModuleBytes(b + Settings.PlayerRecordSkinColorOffset, 2));
-                Assert.Equal((byte)(EncodingConstant - 31), fake.ReadModuleBytes(b + Settings.PlayerRecordAgeOffset, 1)[0]);
+                // Stored as the birth year (UInt16): 2001 - 31.
+                Assert.Equal(BitConverter.GetBytes((ushort)1970), fake.ReadModuleBytes(b + Settings.PlayerRecordAgeOffset, 2));
                 Assert.Equal((byte)77, fake.ReadModuleBytes(b + Settings.PlayerRecordLevelOffset, 1)[0]);
                 Assert.Equal(new byte[] { (byte)PlayerEnums.Position.DM, (byte)PlayerEnums.Position.RM, (byte)PlayerEnums.Position.LM }, fake.ReadModuleBytes(b + Settings.PlayerRecordPositionOffset, 3));
                 Assert.Equal(Concat(BitConverter.GetBytes((ushort)0x0155), BitConverter.GetBytes((ushort)0x0266)), fake.ReadModuleBytes(b + Settings.PlayerRecordSkillsOffset, 4));
@@ -212,16 +251,21 @@ namespace A2G_Trainer_XP.Tests
                 fake.MakeModuleRegionUnreadable(Settings.AgeReferenceYearOffset, 2);
 
                 uint b = Settings.PlayerRecordTableOffset;
-                fake.WriteModuleBytes(b + Settings.PlayerRecordAgeOffset, new byte[] { 0xAB });
+                fake.WriteModuleBytes(b + Settings.PlayerRecordAgeOffset, new byte[] { 0xAB, 0xCD });
+                fake.WriteModuleBytes(b + Settings.PlayerRecordContractEndYearOffset, new byte[] { 0x11, 0x22, 0x33, 0x44 });
 
                 PlayerController controller = new PlayerController(fake.Memory, NewSinglePlayerClub(), isGog: false, PlayerEnums.AddressType.OWN);
                 Player player = controller.EntityList.Single();
                 player.Level = 55;
+                player.ContractDetails = PlayerEnums.Contract.Seated;
 
                 controller.Save(player);
 
-                Assert.Equal((byte)0xAB, fake.ReadModuleBytes(b + Settings.PlayerRecordAgeOffset, 1)[0]);
+                Assert.Equal(new byte[] { 0xAB, 0xCD }, fake.ReadModuleBytes(b + Settings.PlayerRecordAgeOffset, 2));
                 Assert.Equal((byte)55, fake.ReadModuleBytes(b + Settings.PlayerRecordLevelOffset, 1)[0]);
+                // Both years need the current year to encode, so they stay untouched; the details byte doesn't.
+                Assert.Equal(new byte[] { 0x11, 0x22, 0x33, 0x44 }, fake.ReadModuleBytes(b + Settings.PlayerRecordContractEndYearOffset, 4));
+                Assert.Equal((byte)PlayerEnums.Contract.Seated, fake.ReadModuleBytes(b + Settings.PlayerRecordContractDetailsOffset, 1)[0]);
             }
         }
 
