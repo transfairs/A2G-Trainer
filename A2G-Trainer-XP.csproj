@@ -143,6 +143,7 @@
     <Compile Include="View\HelpView.Designer.cs">
       <DependentUpon>HelpView.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\ViewScaler.cs" />
     <Compile Include="View\PlayerView.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using A2G_Trainer_XP.Controller;
@@ -84,6 +85,37 @@ namespace A2G_Trainer_XP.Tests
 
                 Assert.Null(thrown);
                 Assert.EndsWith("Zweiter Aufruf", trainer.Text);
+            }
+        });
+
+        [Fact]
+        public void Window_IsResizable() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            {
+                Assert.Equal(FormBorderStyle.Sizable, trainer.FormBorderStyle);
+            }
+        });
+
+        [Fact]
+        public void EnableScaling_PinsTheMinimumSizeAndZoomsEveryViewWithTheWindow() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            {
+                MethodInfo enableScaling = typeof(Trainer).GetMethod("EnableScaling", BindingFlags.NonPublic | BindingFlags.Instance);
+                MethodInfo showScreen = typeof(Trainer).GetMethod("ShowScreen", BindingFlags.NonPublic | BindingFlags.Instance);
+                Panel content = (Panel)typeof(Trainer).GetField("ContentPanel", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer);
+                Size designSize = trainer.Size;
+
+                enableScaling.Invoke(trainer, null);
+                trainer.Size = new Size(designSize.Width * 2, designSize.Height * 2);
+
+                Assert.Equal(designSize, trainer.MinimumSize);
+                Assert.Equal(content.ClientSize, trainer.PlayerView.Size);
+
+                showScreen.Invoke(trainer, new object[] { trainer.HelpView, "Hilfe" });
+
+                Assert.Equal(content.ClientSize, trainer.HelpView.Size);
             }
         });
 

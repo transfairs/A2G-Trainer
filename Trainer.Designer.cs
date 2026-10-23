@@ -190,7 +190,7 @@ namespace A2G_Trainer_XP
             this.ClientSize = new System.Drawing.Size(630, 447);
             this.Controls.Add(this.ContentPanel);
             this.Controls.Add(this.menuStrip);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Trainer";

@@ -185,7 +185,7 @@ namespace A2G_Trainer_XP.View
             this.Logo.Location = new System.Drawing.Point(421, 51);
             this.Logo.Name = "Logo";
             this.Logo.Size = new System.Drawing.Size(200, 200);
-            this.Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.Logo.TabIndex = 43;
             this.Logo.TabStop = false;
             // 
