@@ -109,6 +109,7 @@ namespace A2G_Trainer_XP.Tests
                 // Deliberately doesn't route the club pointer, so TryAttach fails for this
                 // candidate - the foreach loop then has to run its enumerator to exhaustion
                 // (rather than exiting empty or via an early return) to reach the closing brace.
+                fake.WritePeHeader();
                 TestableProcessController controller = new TestableProcessController(trainer) { GameCandidates = new[] { Process.GetCurrentProcess() } };
 
                 InvokePrivate(controller, "FindGame");
@@ -123,6 +124,7 @@ namespace A2G_Trainer_XP.Tests
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
+                fake.WritePeHeader();
                 fake.RoutePointerSlot(Settings.ClubAddress[0]);
                 fake.WriteDisplayCacheBytes(AddressPresets.OWN_CLUB[ClubEnums.AddressKey.PLAYER_COUNT], new byte[] { 1 });
                 Process self = Process.GetCurrentProcess();
@@ -182,6 +184,8 @@ namespace A2G_Trainer_XP.Tests
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
+                // Identified as the original build, so TryAttach gets as far as the construction.
+                fake.WritePeHeader();
                 ProcessController controller = new ProcessController(trainer);
                 string original = Settings.ClubAddress[0];
                 Settings.ClubAddress[0] = "ZZZZ";

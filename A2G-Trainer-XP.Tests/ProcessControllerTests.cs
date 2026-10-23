@@ -49,6 +49,7 @@ namespace A2G_Trainer_XP.Tests
             // shift what's actually mapped at that offset in the test host process).
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
+                fake.WritePeHeader();
                 ProcessController controller = new ProcessController(trainer);
 
                 bool attached = (bool)InvokePrivate(controller, "TryAttach", Process.GetCurrentProcess());
@@ -63,6 +64,7 @@ namespace A2G_Trainer_XP.Tests
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
+                fake.WritePeHeader();
                 WriteMinimalValidClub(fake, id: 7, country: PlayerEnums.Country.Deutschland);
                 ProcessController controller = new ProcessController(trainer);
 
@@ -71,6 +73,118 @@ namespace A2G_Trainer_XP.Tests
                 Assert.True(attached);
                 Assert.False(controller.IsGog);
                 Assert.Same(PersistentLayout.Original, trainer.Memory.Layout);
+            }
+        });
+
+        [Fact]
+        public void TryAttach_WhenModuleIsNoAnstossBuild_ReturnsFalseEvenWithReadableClubData() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                // Unknown PE values and no signature string - e.g. the Dateneditor.
+                fake.WritePeHeader(timeDateStamp: 0x35FFC53C, sizeOfImage: 0x10000);
+                WriteMinimalValidClub(fake, id: 7, country: PlayerEnums.Country.Deutschland);
+                ProcessController controller = new ProcessController(trainer);
+
+                bool attached = (bool)InvokePrivate(controller, "TryAttach", Process.GetCurrentProcess());
+
+                Assert.False(attached);
+            }
+        });
+
+        [Fact]
+        public void TryAttach_WhenBuildIsUnsupported_ReturnsFalseEvenWithReadableClubData() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                fake.WritePeHeader(GameBuild.Verlaengerung.TimeDateStamp, GameBuild.Verlaengerung.SizeOfImage);
+                WriteMinimalValidClub(fake, id: 7, country: PlayerEnums.Country.Deutschland);
+                ProcessController controller = new ProcessController(trainer);
+
+                bool attached = (bool)InvokePrivate(controller, "TryAttach", Process.GetCurrentProcess());
+
+                Assert.False(attached);
+            }
+        });
+
+        [Fact]
+        public void TryAttach_WhenBuildIsGog_AttachesWithGogAddressing() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                fake.WritePeHeader(GameBuild.Gog.TimeDateStamp, GameBuild.Gog.SizeOfImage);
+                fake.RoutePointerSlot(Settings.ClubAddress[1]);
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_CLUB[ClubEnums.AddressKey.PLAYER_COUNT], BitConverter.GetBytes((ushort)15));
+                ProcessController controller = new ProcessController(trainer);
+
+                bool attached = (bool)InvokePrivate(controller, "TryAttach", Process.GetCurrentProcess());
+
+                Assert.True(attached);
+                Assert.True(controller.IsGog);
+                Assert.NotSame(PersistentLayout.Original, trainer.Memory.Layout);
+            }
+        });
+
+        [Fact]
+        public void TryAttach_WhenUnknownBuildHasGogClubData_AttachesWithGogAddressing() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                fake.WritePeHeader(timeDateStamp: 0x12345678, sizeOfImage: 0x10000);
+                fake.WriteModuleBytes(0x2000, GameBuildDetector.Signature);
+                fake.RoutePointerSlot(Settings.ClubAddress[1]);
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_CLUB[ClubEnums.AddressKey.PLAYER_COUNT], BitConverter.GetBytes((ushort)15));
+                ProcessController controller = new ProcessController(trainer);
+
+                bool attached = (bool)InvokePrivate(controller, "TryAttach", Process.GetCurrentProcess());
+
+                Assert.True(attached);
+                Assert.True(controller.IsGog);
+                Assert.NotSame(PersistentLayout.Original, trainer.Memory.Layout);
+            }
+        });
+
+        [Fact]
+        public void TryAttach_WhenUnknownBuildHasOnlyOriginalClubData_FallsBackToOriginalAddressing() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                fake.WritePeHeader(timeDateStamp: 0x12345678, sizeOfImage: 0x10000);
+                fake.WriteModuleBytes(0x2000, GameBuildDetector.Signature);
+                WriteMinimalValidClub(fake, id: 7, country: PlayerEnums.Country.Deutschland);
+                ProcessController controller = new ProcessController(trainer);
+
+                bool attached = (bool)InvokePrivate(controller, "TryAttach", Process.GetCurrentProcess());
+
+                Assert.True(attached);
+                Assert.False(controller.IsGog);
+                Assert.Same(PersistentLayout.Original, trainer.Memory.Layout);
+            }
+        });
+
+        [Fact]
+        public void TryAttach_IdentifiesTheBuildOncePerProcess() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                fake.WritePeHeader();
+                ProcessController controller = new ProcessController(trainer);
+                Process self = Process.GetCurrentProcess();
+
+                // No club loaded yet (menu) - not attachable, but the build is already identified.
+                Assert.False((bool)InvokePrivate(controller, "TryAttach", self));
+                Assert.Same(GameBuild.Original, GetPrivateField<GameBuild>(controller, "identifiedBuild"));
+
+                // A header change after identification isn't re-read for the same process.
+                fake.WritePeHeader(timeDateStamp: 0x35FFC53C, sizeOfImage: 0x10000);
+                WriteMinimalValidClub(fake, id: 7, country: PlayerEnums.Country.Deutschland);
+                Assert.True((bool)InvokePrivate(controller, "TryAttach", self));
             }
         });
 

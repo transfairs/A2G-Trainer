@@ -16,8 +16,8 @@ namespace A2G_Trainer_XP.Controller
     /// <item>Record table: the module offset where, for every own player, the record at
     /// +PlayerId*stride holds that player's Level/Position. The guessed and the original offset are
     /// tried first; otherwise the whole module image is scanned. Exactly one hit is required.</item>
-    /// <item>Savegame year: a UInt16 that decodes every own player's record Age byte back to the
-    /// display-cache Age (see Settings.AgeReferenceYearEpoch). Tried at the original offset shifted by
+    /// <item>Savegame year: a UInt16 that, minus every own player's record birth year, gives back
+    /// the display-cache Age (see Settings.PlayerRecordAgeOffset). Tried at the original offset shifted by
     /// the record table's own shift and by Settings.GogOffset, then searched in a window around both.</item>
     /// <item>Active trainer count: the byte at the same distance from the year as in the original build, if plausible.</item>
     /// <item>Name pool pointer: a pointer through which the record's name indices resolve to the
@@ -38,7 +38,7 @@ namespace A2G_Trainer_XP.Controller
         private const int MaxNameSamples = 3;
         private const uint MinValidPointer = 0x10000;
 
-        // Covers every record field the checks below look at (Age +0x8, Level +0xA, Position +0xB).
+        // Covers every record field the checks below look at (birth year +0x8, Level +0xA, Position +0xB).
         private static readonly int RecordProbeLength = (int)Math.Max(Settings.PlayerRecordLevelOffset, Math.Max(Settings.PlayerRecordPositionOffset, Settings.PlayerRecordAgeOffset)) + 1;
 
         private readonly ProcessMemory memory;
@@ -143,22 +143,22 @@ namespace A2G_Trainer_XP.Controller
 
         private uint? FindAgeReferenceYear(uint tableOffset, uint tableShift, List<Player> samples)
         {
-            // The record's age byte per player, read once - only the year candidate varies below.
-            Dictionary<Player, byte> ageBytes = new Dictionary<Player, byte>();
+            // The record's birth year per player, read once - only the year candidate varies below.
+            Dictionary<Player, ushort> birthYears = new Dictionary<Player, ushort>();
             foreach (Player p in samples.Where(p => p.Age > 0))
             {
-                byte[] b = this.memory.ReadBytesAtAddress(this.RecordAddress(tableOffset, p) + Settings.PlayerRecordAgeOffset, 1);
+                byte[] b = this.memory.ReadBytesAtAddress(this.RecordAddress(tableOffset, p) + Settings.PlayerRecordAgeOffset, 2);
                 if (b != null)
-                    ageBytes[p] = b[0];
+                    birthYears[p] = BitConverter.ToUInt16(b, 0);
             }
-            if (ageBytes.Count < MinSamples)
+            if (birthYears.Count < MinSamples)
                 return null;
 
             uint[] centers = Distinct(unchecked(Settings.AgeReferenceYearOffset + tableShift), Settings.AgeReferenceYearOffset + Settings.GogOffset).ToArray();
             foreach (uint candidate in centers)
             {
                 byte[] value = this.memory.ReadBytesAtAddress(this.memory.ModuleBase + candidate, 2);
-                if (value != null && YearMatches(BitConverter.ToUInt16(value, 0), ageBytes))
+                if (value != null && YearMatches(BitConverter.ToUInt16(value, 0), birthYears))
                     return candidate;
             }
 
@@ -167,7 +167,7 @@ namespace A2G_Trainer_XP.Controller
             // closest to where a shifted original offset predicted it.
             List<uint> hits = new List<uint>();
             foreach (uint center in centers)
-                hits.AddRange(this.ScanWindow(center, 2, (window, i) => YearMatches(BitConverter.ToUInt16(window, i), ageBytes)));
+                hits.AddRange(this.ScanWindow(center, 2, (window, i) => YearMatches(BitConverter.ToUInt16(window, i), birthYears)));
 
             return hits
                 .Distinct()
@@ -177,14 +177,13 @@ namespace A2G_Trainer_XP.Controller
                 .FirstOrDefault();
         }
 
-        private static bool YearMatches(int year, Dictionary<Player, byte> ageBytes)
+        private static bool YearMatches(int year, Dictionary<Player, ushort> birthYears)
         {
             if (year < MinPlausibleYear || year > MaxPlausibleYear)
                 return false;
 
-            int constant = year - Settings.AgeReferenceYearEpoch;
-            int matches = ageBytes.Count(kv => (byte)(constant - kv.Value) == kv.Key.Age);
-            return IsEnough(matches, ageBytes.Count);
+            int matches = birthYears.Count(kv => year - kv.Value == kv.Key.Age);
+            return IsEnough(matches, birthYears.Count);
         }
 
         private uint? CheckActiveTrainerCount(uint yearOffset)

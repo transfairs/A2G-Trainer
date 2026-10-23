@@ -49,7 +49,7 @@ namespace A2G_Trainer_XP.Tests
                 uint record = tableOffset + (uint)p.NameRecordId * Settings.PlayerRecordStride;
                 fake.WriteModuleBytes(record, BitConverter.GetBytes((ushort)(2 * i)));
                 fake.WriteModuleBytes(record + 2, BitConverter.GetBytes((ushort)(2 * i + 1)));
-                fake.WriteModuleBytes(record + Settings.PlayerRecordAgeOffset, new[] { (byte)(CurrentYear - Settings.AgeReferenceYearEpoch - p.Age) });
+                fake.WriteModuleBytes(record + Settings.PlayerRecordAgeOffset, BitConverter.GetBytes((ushort)(CurrentYear - p.Age)));
                 fake.WriteModuleBytes(record + Settings.PlayerRecordLevelOffset, new[] { p.Level, (byte)p.Position });
                 i++;
             }

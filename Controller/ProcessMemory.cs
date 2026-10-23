@@ -41,6 +41,49 @@ namespace A2G_Trainer_XP.Controller
         [DllImport("kernel32.dll")]
         private static extern bool WriteProcessMemory(IntPtr hProcess, UIntPtr lpBaseAddress, byte[] lpBuffer, UIntPtr nSize, IntPtr lpNumberOfBytesWritten);
 
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool VirtualProtectEx(IntPtr hProcess, UIntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool FlushInstructionCache(IntPtr hProcess, UIntPtr lpBaseAddress, UIntPtr dwSize);
+
+        private const uint MemCommitReserve = 0x3000;
+        private const uint PageExecuteReadWrite = 0x40;
+
+        /// <summary>
+        /// Allocates <paramref name="size"/> bytes of executable, writable memory inside the attached
+        /// process and returns its address, or null if that fails (or the address doesn't fit the
+        /// 32-bit game). Used only for the small code stub JobOfferInjector places there; the memory
+        /// lives as long as the game process and is never freed.
+        /// </summary>
+        public uint? AllocateExecutable(int size)
+        {
+            IntPtr address = VirtualAllocEx(this.mProc.Handle, IntPtr.Zero, (UIntPtr)size, MemCommitReserve, PageExecuteReadWrite);
+            long value = address.ToInt64();
+            return value == 0 || value > uint.MaxValue ? (uint?)null : (uint)value;
+        }
+
+        /// <summary>
+        /// Writes <paramref name="data"/> over existing code of the attached process: lifts the
+        /// page protection for the write, restores it and flushes the instruction cache. Returns
+        /// whether the bytes were written.
+        /// </summary>
+        public bool WriteCode(uint address, byte[] data)
+        {
+            if (address < MinValidAddress)
+                return false;
+
+            if (!VirtualProtectEx(this.mProc.Handle, (UIntPtr)address, (UIntPtr)data.Length, PageExecuteReadWrite, out uint oldProtect))
+                return false;
+            bool written = WriteProcessMemory(this.mProc.Handle, (UIntPtr)address, data, (UIntPtr)data.Length, IntPtr.Zero);
+            VirtualProtectEx(this.mProc.Handle, (UIntPtr)address, (UIntPtr)data.Length, oldProtect, out _);
+            FlushInstructionCache(this.mProc.Handle, (UIntPtr)address, (UIntPtr)data.Length);
+            return written;
+        }
+
         // Module base as a plain uint, for callers that need to build an address at runtime (e.g.
         // NamePoolResolver) instead of through the "Module+hexA,hexB" dialect ResolveAddress below
         // implements.
@@ -54,6 +97,10 @@ namespace A2G_Trainer_XP.Controller
         // trusted original-build layout; ProcessController replaces it on every attach (see PersistentLayout).
         /// <summary>The persistent-data anchors for the attached game build.</summary>
         public PersistentLayout Layout { get; set; } = PersistentLayout.Original;
+
+        // Set by ProcessController on attach; null until then (and in tests), see FixedAddresses.For.
+        /// <summary>The identified build of the attached process, or null if not (yet) known.</summary>
+        internal GameBuild Build { get; set; }
 
         /// <summary>Attaches to the process with the given PID, caching its handle, main module, and base address. Safe to call repeatedly for the same PID.</summary>
         public bool OpenProcess(int pid)

@@ -22,7 +22,8 @@ namespace A2G_Trainer_XP.Controller
             Settings.NamePoolPointerOffset,
             Settings.AgeReferenceYearOffset,
             Settings.ActiveTrainerCountOffset,
-            isVerified: true);
+            isVerified: true,
+            hasOriginalBuildAnchors: true);
 
         /// <summary>A fresh, unverified guess for the GOG build: the original anchors shifted by <see cref="Settings.GogOffset"/>.</summary>
         public static PersistentLayout CreateGogGuess() => new PersistentLayout(
@@ -41,17 +42,30 @@ namespace A2G_Trainer_XP.Controller
         private readonly uint? activeTrainerCountOffset;
 
         /// <summary>Creates a layout; null anchors are unknown for this build and never used.</summary>
-        public PersistentLayout(uint? playerRecordTableOffset, uint? namePoolPointerOffset, uint? ageReferenceYearOffset, uint? activeTrainerCountOffset, bool isVerified)
+        public PersistentLayout(uint? playerRecordTableOffset, uint? namePoolPointerOffset, uint? ageReferenceYearOffset, uint? activeTrainerCountOffset, bool isVerified, bool hasOriginalBuildAnchors = false)
         {
             this.playerRecordTableOffset = playerRecordTableOffset;
             this.namePoolPointerOffset = namePoolPointerOffset;
             this.ageReferenceYearOffset = ageReferenceYearOffset;
             this.activeTrainerCountOffset = activeTrainerCountOffset;
             this.IsVerified = isVerified;
+            this.hasOriginalBuildAnchors = hasOriginalBuildAnchors;
         }
+
+        private readonly bool hasOriginalBuildAnchors;
 
         /// <summary>True once the anchors are confirmed for the attached build (always for the original build).</summary>
         public bool IsVerified { get; }
+
+        /// <summary>
+        /// True when the fixed addresses found by statically analysing the original build apply to
+        /// the attached build: the Mitspieler working copies/records (Settings.CoachSlotTableOffset
+        /// etc.), the calendar values injuries are stored against (Settings.StartYearOffset etc.)
+        /// and the name pool's table/count/end pointer (Settings.NamePoolTableOffset etc.).
+        /// The calibrator doesn't locate these, so every other build keeps addressing trainers through
+        /// the club pointer and leaves the injury fields in the record alone.
+        /// </summary>
+        public bool HasOriginalBuildAnchors => this.IsVerified && this.hasOriginalBuildAnchors;
 
         /// <summary>Module-relative start of the per-player record table, or null if not (yet) usable.</summary>
         public uint? PlayerRecordTableOffset => this.IsVerified ? this.playerRecordTableOffset : null;

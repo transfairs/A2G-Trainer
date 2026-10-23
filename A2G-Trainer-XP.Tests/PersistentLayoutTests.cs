@@ -33,6 +33,16 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
+        public void HasOriginalBuildAnchors_OnlyForTheVerifiedOriginalLayout()
+        {
+            Assert.True(PersistentLayout.Original.HasOriginalBuildAnchors);
+            Assert.False(PersistentLayout.CreateGogGuess().HasOriginalBuildAnchors);
+            // A calibrated (verified) layout for another build never locates the trainer anchors.
+            Assert.False(new PersistentLayout(0x10, null, null, null, isVerified: true).HasOriginalBuildAnchors);
+            Assert.False(new PersistentLayout(0x10, null, null, null, isVerified: false, hasOriginalBuildAnchors: true).HasOriginalBuildAnchors);
+        }
+
+        [Fact]
         public void For_PicksOriginalOrAFreshGogGuess()
         {
             Assert.Same(PersistentLayout.Original, PersistentLayout.For(isGog: false));

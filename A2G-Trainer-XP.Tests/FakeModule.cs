@@ -76,6 +76,26 @@ namespace A2G_Trainer_XP.Tests
 
         public void WriteModuleBytes(uint offset, byte[] data) => Marshal.Copy(data, 0, this.moduleBlock + (int)offset, data.Length);
 
+        /// <summary>
+        /// Writes a minimal PE32 header (MZ stub + IMAGE_NT_HEADERS up to SizeOfImage) at the module
+        /// base, so GameBuildDetector identifies the fake module as the given build. Defaults to the
+        /// original build; <paramref name="sizeOfImage"/> must not exceed the module block for
+        /// unknown builds, whose signature scan reads that far.
+        /// </summary>
+        public void WritePeHeader(uint? timeDateStamp = null, uint? sizeOfImage = null, uint ntOffset = 0x80, ushort magic = 0x10B)
+        {
+            byte[] header = new byte[ntOffset + 0x58];
+            header[0] = (byte)'M';
+            header[1] = (byte)'Z';
+            BitConverter.GetBytes(ntOffset).CopyTo(header, 0x3C);
+            header[ntOffset] = (byte)'P';
+            header[ntOffset + 1] = (byte)'E';
+            BitConverter.GetBytes(timeDateStamp ?? GameBuild.Original.TimeDateStamp.Value).CopyTo(header, (int)ntOffset + 0x08);
+            BitConverter.GetBytes(magic).CopyTo(header, (int)ntOffset + 0x18);
+            BitConverter.GetBytes(sizeOfImage ?? GameBuild.Original.SizeOfImage.Value).CopyTo(header, (int)ntOffset + 0x50);
+            this.WriteModuleBytes(0, header);
+        }
+
         public byte[] ReadModuleBytes(uint offset, int length)
         {
             byte[] buffer = new byte[length];

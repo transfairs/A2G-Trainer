@@ -26,6 +26,25 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
+        public void WriteCode_BelowMinValidAddress_ReturnsFalse()
+        {
+            ProcessMemory memory = new ProcessMemory();
+
+            Assert.False(memory.WriteCode(0, new byte[] { 0x90 }));
+        }
+
+        // FakeModule allocates only the requested size, and allocations start on 64 KB boundaries, so
+        // the rest of that 64 KB stays free - no page whose protection could be changed.
+        [Fact]
+        public void WriteCode_OnUncommittedMemory_ReturnsFalse()
+        {
+            using (FakeModule fake = new FakeModule(moduleBlockSize: 0x1000))
+            {
+                Assert.False(fake.Memory.WriteCode(fake.ModuleBase + 0x2000, new byte[] { 0x90 }));
+            }
+        }
+
+        [Fact]
         public void ReadBytesAtAddress_BelowMinValidAddress_ReturnsNull()
         {
             ProcessMemory memory = new ProcessMemory();

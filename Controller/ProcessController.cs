@@ -21,6 +21,10 @@ namespace A2G_Trainer_XP.Controller
         internal bool IsGog { get => this.gog; private set => this.gog = value; }
         private bool gog;
 
+        // Last process GameBuildDetector ran on, and its result (see IdentifyBuild).
+        private int identifiedPid;
+        private GameBuild identifiedBuild;
+
         // Loading a savegame in an already-running game briefly makes the own club unreadable/empty
         // while the game swaps its data in memory - watch for that dip to detect a reload happened,
         // even when it's the same club/country as before (so Id/Country alone can't tell them apart).
@@ -56,10 +60,11 @@ namespace A2G_Trainer_XP.Controller
 
             var candidates = this.GetGameCandidates();
 
-            // The game itself can pop up further top-level windows also titled "ANSTOSS 2 ..."
-            // (e.g. dialogs), so the title prefix alone can't tell those apart from the real game
-            // process - confirm a candidate actually holds readable club data before latching onto
-            // it, instead of trusting whichever one happens to be first.
+            // The title is only a cheap pre-filter: the game pops up further windows titled
+            // "ANSTOSS 2 ..." (e.g. dialogs), and other programs (e.g. verl.exe from the same
+            // install) title theirs that way too, so TryAttach identifies the
+            // actual build and confirms readable club data before latching onto a candidate,
+            // instead of trusting whichever one happens to be first.
             foreach (Process candidate in candidates)
             {
                 if (TryAttach(candidate))
@@ -70,25 +75,61 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
-        /// <summary>Attempts to attach to a candidate process and confirms it actually holds readable club data.</summary>
+        /// <summary>
+        /// Attempts to attach to a candidate process: identifies its game build from the mapped main
+        /// module (see GameBuild), then confirms it actually holds readable club data under that
+        /// build's addressing.
+        /// </summary>
         private bool TryAttach(Process candidate)
         {
             if (!this.trainer.Memory.OpenProcess(candidate.Id))
                 return false;
 
-#if FORCE_GOG_ADDRESSING
-            // 2007er-CD-Release: nutzt dieselben Speicheradressen wie GOG, läuft aber
-            // nicht über run.exe, daher greift die Namenserkennung unten nicht - Build
-            // erzwingt die GOG-Adressierung unabhängig vom erkannten Prozessnamen.
-            bool isGogCandidate = true;
-#else
-            bool isGogCandidate = candidate.MainModule.ModuleName.Equals("run.exe");
-#endif
+            GameBuild build = this.IdentifyBuild(candidate.Id);
+            if (build == null || !build.IsSupported)
+                return false;
 
+            foreach (bool isGogCandidate in build.CandidateAddressings)
+            {
+                if (!this.HasReadableOwnClub(isGogCandidate))
+                    continue;
+
+                this.IsGog = isGogCandidate;
+                this.trainer.Memory.Layout = PersistentLayout.For(isGogCandidate);
+                this.trainer.Memory.Build = build;
+                Logger.Debug($"Attached to process {candidate.Id} ({candidate.MainModule.ModuleName}), build: {build.Name}, IsGog={isGogCandidate}");
+                return true;
+            }
+            return false;
+        }
+
+        // A candidate stays unattachable for many ticks while the game sits in its menus (no club
+        // loaded yet), so the identification - a full image scan for unknown builds - and its log
+        // line are done once per process rather than every tick.
+        private GameBuild IdentifyBuild(int pid)
+        {
+            if (this.identifiedPid == pid)
+                return this.identifiedBuild;
+
+            GameBuild build = GameBuildDetector.Identify(this.trainer.Memory);
+            this.identifiedPid = pid;
+            this.identifiedBuild = build;
+
+            if (build == null)
+                Logger.Debug($"Process {pid} has a matching window title but is no Anstoss 2 build, ignored");
+            else if (!build.IsSupported)
+                Logger.Warn($"Process {pid} runs {build.Name}, which the trainer doesn't support");
+            else if (!build.IsKnown)
+                Logger.Warn($"Process {pid} runs an {build.Name} - trying GOG, then original addressing");
+            return build;
+        }
+
+        private bool HasReadableOwnClub(bool isGog)
+        {
             Club own;
             try
             {
-                own = new ClubController(this.trainer.Memory, isGogCandidate, PlayerEnums.AddressType.OWN).Club;
+                own = new ClubController(this.trainer.Memory, isGog, PlayerEnums.AddressType.OWN).Club;
             }
             catch
             {
@@ -97,13 +138,7 @@ namespace A2G_Trainer_XP.Controller
 
             // ClubController.GetEntity always constructs a Club, never null - only PlayerCount
             // distinguishes an unreadable/empty attach attempt.
-            if (own.PlayerCount <= 0)
-                return false;
-
-            this.IsGog = isGogCandidate;
-            this.trainer.Memory.Layout = PersistentLayout.For(isGogCandidate);
-            Logger.Debug($"Attached to process {candidate.Id} ({candidate.MainModule.ModuleName}), IsGog={isGogCandidate}");
-            return true;
+            return own.PlayerCount > 0;
         }
 
         /// <summary>Polling loop run on the observer thread: finds/tracks the game process and drives view refreshes.</summary>
