@@ -64,6 +64,23 @@ namespace A2G_Trainer_XP.Tests
             Assert.Equal("34BCE", AddressPresets.COACH[CoachEnums.AddressKey.WINS]);
         }
 
+        // Robin found these live via Cheat Engine against Trainer slot 0: 0085783C/0085783E/00857864.
+        // Same session/struct instance as the FIRSTNAME reference (0x857800 -> pointer value
+        // 0x822D00, confirmed by 0x857800 - 0x822D00 == the already-live FIRSTNAME offset 34B00), so
+        // subtracting that same 0x822D00 from each gives the offsets asserted here.
+        [Fact]
+        public void Coach_NextSeasonCountryAndClub_ResolveToAddressForTrainerSlotZero()
+        {
+            Assert.Equal("34B3C", AddressPresets.COACH[CoachEnums.AddressKey.COUNTRY_NEXT_SEASON]);
+            Assert.Equal("34B3E", AddressPresets.COACH[CoachEnums.AddressKey.CLUB_NEXT_SEASON]);
+        }
+
+        [Fact]
+        public void Coach_ReleaseClause_ResolvesToAddressForTrainerSlotZero()
+        {
+            Assert.Equal("34B64", AddressPresets.COACH[CoachEnums.AddressKey.RELEASE_CLAUSE]);
+        }
+
         [Fact]
         public void LeagueSettings_MainCountry_IsAtBaseAddress()
         {
@@ -74,6 +91,14 @@ namespace A2G_Trainer_XP.Tests
         public void LeagueSettings_AdditionalCountry_IsFourBytesPastMainCountry()
         {
             Assert.Equal("3944", AddressPresets.LEAGUE_SETTINGS[LeagueEnums.AddressKey.ADDITIONAL_COUNTRY]);
+        }
+
+        // 0x82663E (count) and 0x82664C (league system per bonus country) on the original build.
+        [Fact]
+        public void LeagueSettings_CountAndLeagueSystems_FrameTheCountryList()
+        {
+            Assert.Equal("393E", AddressPresets.LEAGUE_SETTINGS[LeagueEnums.AddressKey.BONUS_COUNTRY_COUNT]);
+            Assert.Equal("394C", AddressPresets.LEAGUE_SETTINGS[LeagueEnums.AddressKey.BONUS_LEAGUE_SYSTEM]);
         }
 
         [Fact]

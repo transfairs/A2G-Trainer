@@ -26,11 +26,7 @@ namespace A2G_Trainer_XP.View
         // header), matching the ~20-24px other GroupBoxes in this view use for their first child.
         private const int AdditionalCountryRowHeight = 27;
         private const int AdditionalCountryMargin = 20;
-
-        // The main country can only ever be one of these three (the game's three playable home
-        // leagues); additional countries add clubs from any of these five to the stock market.
-        private static readonly PlayerEnums.Country[] MainCountryChoices = { PlayerEnums.Country.Deutschland, PlayerEnums.Country.England, PlayerEnums.Country.Frankreich };
-        private static readonly PlayerEnums.Country[] AdditionalCountryChoices = { PlayerEnums.Country.Deutschland, PlayerEnums.Country.England, PlayerEnums.Country.Frankreich, PlayerEnums.Country.Italien, PlayerEnums.Country.Spanien };
+        private const int BonusReasonX = 130;
 
         private Coach coach;
         private LeagueSettings league;
@@ -74,11 +70,16 @@ namespace A2G_Trainer_XP.View
         // value before the real selection gets applied.
         private readonly EventHandler[] stockCountryChangedHandlers = new EventHandler[Coach.MaxStocks];
 
-        // One combo per currently-active bonus-country slot, indexed by slot - built dynamically in
-        // RebuildBonusCountryControls, since the game doesn't support turning a slot on or off via a
-        // memory edit, only changing which country an already-active slot holds. A null entry means
-        // that slot isn't in use in the current savegame, so no control exists for it.
-        private readonly ComboBox[] bonusCountryCombos = new ComboBox[LeagueSettings.MaxAdditionalCountries];
+        // Same detach/reattach rationale as stockCountryChangedHandlers above, for the single
+        // "Nächste Saison" country combo (see PopulateNextSeasonCountryCombo).
+        private EventHandler nextSeasonCountryChangedHandler;
+
+        // One "aktiv" checkbox per league country other than the main country, in
+        // LeagueSettings.BonusCountries order - rebuilt in RebuildBonusCountryControls on every refresh.
+        private readonly List<CheckBox> bonusCountryChecks = new List<CheckBox>();
+        // Countries whose change the last save had to skip (see LeagueController.Save), marked next
+        // to their checkbox until the next save.
+        private List<PlayerEnums.Country> skippedBonusCountries = new List<PlayerEnums.Country>();
         private BindingSource leagueBindingSource;
 
         private LeagueController leagueController;
@@ -298,6 +299,56 @@ namespace A2G_Trainer_XP.View
             // Coach.Level, since it already has to show the coach's current level by default anyway.
             this.competencyLevelInput.DataBindings.Add("SelectedValue", this.bindingSource, "Level");
 
+            // "Nächste Saison" country/club (Coach.CountryNextSeason/ClubIdNextSeason). Choices here
+            // are restricted to the main + bonus countries, same as the stock country combos below -
+            // a manager can only take over a club from one of those, not literally any country in the
+            // game. That restriction means this combo's DataSource has to be rebuilt on every refresh
+            // (bonus countries can change), so - same reason as the stock country combo - this can't
+            // be a plain DataBindings "SelectedValue" binding: the binding's own re-push races with
+            // the DataSource rebuild and can silently leave the combo on the new list's default (first)
+            // item while the model still holds the old value. Written directly in the handler instead,
+            // see PopulateNextSeasonCountryCombo for the same detach/reattach dance PopulateStock-
+            // CountryCombo uses to guard against the DataSource-reassignment's own transient firing.
+            EventHandler nextSeasonCountryChanged = (s, e) =>
+            {
+                if (this.coach != null && this.NextSeasonCountryInput.SelectedValue is PlayerEnums.Country country)
+                {
+                    this.coach.CountryNextSeason = country;
+                    if (country == NoNextSeasonCountry)
+                        this.PopulateNoNextSeasonClubCombo();
+                    else
+                        this.PopulateNextSeasonClubCombo(country);
+                }
+            };
+            this.nextSeasonCountryChangedHandler = nextSeasonCountryChanged;
+            this.NextSeasonCountryInput.SelectedIndexChanged += nextSeasonCountryChanged;
+
+            this.NextSeasonClubInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (this.coach != null && this.NextSeasonClubInput.SelectedItem is Club club)
+                    this.coach.ClubIdNextSeason = club.Id;
+            };
+            this.PopulateNextSeasonCountryCombo(this.coach?.CountryNextSeason ?? PlayerEnums.Country.Sonstige);
+
+            // Freigabeklausel and its announcement are two bits of one byte (see Coach.HasReleaseClause/
+            // IsReleaseClausePublished), each bound to its own checkbox. Both properties raise change
+            // notifications for each other, so ticking "bekanntgegeben" also ticks the clause and
+            // unticking the clause also unticks the announcement. OnPropertyChanged pushes the click
+            // into the model right away, so the other box follows immediately, not on focus loss.
+            this.ReleaseClauseInput.DataBindings.Add("Checked", this.bindingSource, nameof(Coach.HasReleaseClause), false, DataSourceUpdateMode.OnPropertyChanged);
+            this.ReleaseClausePublishedInput.DataBindings.Add("Checked", this.bindingSource, nameof(Coach.IsReleaseClausePublished), false, DataSourceUpdateMode.OnPropertyChanged);
+            this.BoardReleaseInput.DataBindings.Add("Checked", this.bindingSource, nameof(Coach.HasBoardRelease), false, DataSourceUpdateMode.OnPropertyChanged);
+
+            this.InitContractTab();
+
+            this.UpdateCurrentClubDisplay();
+
+            // "Jobangebot anfordern": its own country/club choice, independent of the next-season
+            // fields (a pending next-season change would even keep the game from presenting it).
+            this.JobOfferCountryInput.SelectedIndexChanged += (s, e) => this.PopulateJobOfferClubCombo();
+            this.JobOfferButton.Click += (s, e) => this.RequestJobOffer();
+            this.PopulateJobOfferCountryCombo();
+
             for (int i = 0; i < Coach.MaxStocks; i++)
             {
                 int slot = i;
@@ -352,20 +403,60 @@ namespace A2G_Trainer_XP.View
 
             this.leagueBindingSource = new BindingSource { DataSource = this.league };
 
-            this.MainCountryInput.DataSource = MainCountryChoices.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
+            // Shown only: the game loads the main country's leagues into its league system at the
+            // start of a new game, so changing it mid-game isn't supported (see LeagueController).
+            this.MainCountryInput.DataSource = LeagueSettings.LeagueCountries.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
             this.MainCountryInput.DisplayMember = "Text";
             this.MainCountryInput.ValueMember = "Value";
-            this.MainCountryInput.DataBindings.Add("SelectedValue", this.leagueBindingSource, "MainCountry");
-            this.MainCountryInput.SelectedIndexChanged += (s, e) =>
-            {
-                this.RebuildBonusCountryControls();
-                this.RefreshStockCountryOptions();
-            };
+            this.MainCountryInput.DataBindings.Add("SelectedValue", this.leagueBindingSource, "MainCountry", false, DataSourceUpdateMode.Never);
+            this.MainCountryInput.Enabled = false;
 
             // RefreshValues only rebuilds the bonus-country controls once leagueBindingSource exists
             // (set a few lines up) - this call covers the very first display, which would otherwise
             // stay empty until the next background reconnect refresh.
             this.RebuildBonusCountryControls();
+        }
+
+        // "Vertrag" tab: the current contract's terms (see Coach.Salary .. Coach.Housing). The amounts
+        // are Int32 in the game, the years left a UInt16.
+        private void InitContractTab()
+        {
+            foreach (TextBox amountInput in new[] { this.SalaryInput, this.PointBonusInput, this.CupRoundBonusInput, this.TitleBonusInput, this.SeasonGoalBonusInput })
+            {
+                amountInput.KeyPress += this.NumericOnly_KeyPress;
+                amountInput.TextChanged += this.IntMaxNumber_TextChanged;
+            }
+            this.ContractYearsInput.KeyPress += this.NumericOnly_KeyPress;
+            this.ContractYearsInput.TextChanged += this.UshortMaxNumber_TextChanged;
+
+            this.SalaryInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.Salary));
+            this.PointBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.PointBonus));
+            this.CupRoundBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.CupRoundBonus));
+            this.TitleBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.TitleBonus));
+            this.SeasonGoalBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.SeasonGoalBonus));
+            this.ContractYearsInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.ContractYearsLeft));
+
+            BindEnumCombo<CoachEnums.SeasonGoal>(this.SeasonGoalInput, nameof(Coach.SeasonGoal));
+            BindEnumCombo<CoachEnums.VehiclePerk>(this.VehiclePerkInput, nameof(Coach.Vehicle));
+            BindEnumCombo<CoachEnums.HousingPerk>(this.HousingPerkInput, nameof(Coach.Housing));
+
+            this.ExtensionOptionInput.DataBindings.Add("Checked", this.bindingSource, nameof(Coach.HasExtensionOption), false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        private void BindEnumCombo<T>(ComboBox combo, string property) where T : Enum
+        {
+            combo.DataSource = Enum.GetValues(typeof(T)).Cast<T>().Select(v => new { Value = v, Text = PlayerEnums.GetDescription(v) }).ToList();
+            combo.DisplayMember = "Text";
+            combo.ValueMember = "Value";
+            Binding binding = new Binding("SelectedValue", this.bindingSource, property, false, DataSourceUpdateMode.OnPropertyChanged);
+            // RefreshValues blanks every combo first (ClearAllFields, SelectedIndex -1); that empty
+            // selection must not reach the enum property, which throws on null.
+            binding.Parse += (s, e) =>
+            {
+                if (!(e.Value is T) && this.bindingSource.Current != null)
+                    e.Value = TypeDescriptor.GetProperties(this.bindingSource.Current)[property].GetValue(this.bindingSource.Current);
+            };
+            combo.DataBindings.Add(binding);
         }
 
         private void PopulateStockClubCombo(ComboBox clubCombo, PlayerEnums.Country country, byte selectedClubId)
@@ -384,7 +475,7 @@ namespace A2G_Trainer_XP.View
                 return new List<PlayerEnums.Country>();
 
             return new[] { this.league.MainCountry }
-                .Concat(this.league.AdditionalCountries.Where(c => c.Country.HasValue).Select(c => c.Country.Value))
+                .Concat(this.league.ActiveBonusCountries)
                 .Distinct()
                 .ToList();
         }
@@ -392,6 +483,16 @@ namespace A2G_Trainer_XP.View
         private void PopulateStockCountryCombo(int slot, PlayerEnums.Country selectedCountry)
         {
             ComboBox countryCombo = this.stockCountryCombos[slot];
+            // A slot without shares holds no position; whatever its country/club fields contain is
+            // leftover data (country 0's club entries are unused slots with garbage names), so it
+            // shows a placeholder instead and never writes the model.
+            if (this.coach != null && this.coach.Stocks[slot].Shares == 0)
+            {
+                ShowPlaceholder(countryCombo);
+                ShowPlaceholder(this.stockClubCombos[slot]);
+                return;
+            }
+
             List<PlayerEnums.Country> countries = this.GetAvailableStockCountries();
             // Keep an already-stored stock country selectable even if it's no longer part of the
             // active bonus countries (e.g. the league selection changed after the stock was bought) -
@@ -420,8 +521,170 @@ namespace A2G_Trainer_XP.View
             }
         }
 
-        // Keeps the Aktien tab's country choices in sync as soon as the League tab's selection
-        // changes, without requiring a save/reload round-trip first.
+        // Single "–" entry with no Country/Club behind it, so the combos' change handlers (which only
+        // act on a Country value or a Club item) ignore it.
+        private static void ShowPlaceholder(ComboBox combo)
+        {
+            combo.DataSource = null;
+            combo.Items.Clear();
+            combo.Items.Add(EmptyStockText);
+            combo.SelectedIndex = 0;
+        }
+
+        internal const string EmptyStockText = "–";
+
+        // A trainer with no club lined up for next season has country 0 / club 0 there (confirmed
+        // live: both read 0 for a trainer staying put). Country 0 is "Sonstige" elsewhere, but here it
+        // means "no change" - and the club scan's entries with country 0 are unused slots with
+        // garbage names, so they must not be offered as choices for it.
+        private const PlayerEnums.Country NoNextSeasonCountry = PlayerEnums.Country.Sonstige;
+
+        // Read-only: the club this trainer coaches right now, looked up by country + ID in the full
+        // club scan. Country 0 means the trainer is currently without a club.
+        private void UpdateCurrentClubDisplay()
+        {
+            if (this.coach == null)
+            {
+                this.CurrentClubValue.Text = "-";
+                return;
+            }
+
+            if (this.coach.CurrentCountry == PlayerEnums.Country.Sonstige)
+            {
+                this.CurrentClubValue.Text = "vereinslos";
+                return;
+            }
+
+            Club club = this.allClubs?.FirstOrDefault(c => c.Country == this.coach.CurrentCountry && c.Id == this.coach.CurrentClubId);
+            string country = PlayerEnums.GetDescription(this.coach.CurrentCountry);
+            this.CurrentClubValue.Text = club != null ? $"{club.ClubName} ({country})" : $"Verein {this.coach.CurrentClubId} ({country})";
+        }
+
+        // "Jobangebot anfordern" (see JobOfferInjector): countries are the main + bonus countries
+        // (the only ones the game makes offers from), keeping the previous choice across refreshes.
+        // The whole box is disabled where the injector isn't supported (other builds).
+        private void PopulateJobOfferCountryCombo()
+        {
+            PlayerEnums.Country? previous = this.JobOfferCountryInput.SelectedValue as PlayerEnums.Country?;
+            List<PlayerEnums.Country> countries = this.GetAvailableStockCountries();
+
+            this.JobOfferCountryInput.DataSource = countries.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
+            this.JobOfferCountryInput.DisplayMember = "Text";
+            this.JobOfferCountryInput.ValueMember = "Value";
+            if (previous.HasValue && countries.Contains(previous.Value))
+                this.JobOfferCountryInput.SelectedValue = previous.Value;
+
+            this.JobOfferBox.Enabled = this.coach != null && new JobOfferInjector(this.Memory).IsSupported;
+            this.PopulateJobOfferClubCombo();
+        }
+
+        // Same club eligibility as for next season (a club in that country's leagues, only the top
+        // league for a bonus country), minus the trainer's own current club.
+        private void PopulateJobOfferClubCombo()
+        {
+            PlayerEnums.Country? country = this.JobOfferCountryInput.SelectedValue as PlayerEnums.Country?;
+            List<Club> clubs = !country.HasValue || this.allClubs == null ? new List<Club>() : this.allClubs
+                .Where(c => c.Country == country.Value)
+                .Where(c => this.coach == null || !(c.Country == this.coach.CurrentCountry && c.Id == this.coach.CurrentClubId))
+                .Where(c => CoachController.IsEligibleNextSeasonClub(this.Memory, country.Value, c.Id) != false)
+                .OrderBy(c => c.ClubName)
+                .ToList();
+
+            this.JobOfferClubInput.DataSource = clubs;
+            this.JobOfferClubInput.DisplayMember = "ClubName";
+            this.JobOfferClubInput.ValueMember = "Id";
+        }
+
+        // No dialog: the outcome goes to the status line inside the box. If the offer could only be
+        // seen but not accepted (no clause, no board release, contract not running out), the release
+        // clause is set and written right away so the player can actually take the offer.
+        private void RequestJobOffer()
+        {
+            if (this.coach == null || !(this.JobOfferCountryInput.SelectedValue is PlayerEnums.Country country) || !(this.JobOfferClubInput.SelectedItem is Club club))
+                return;
+
+            JobOfferInjector.RequestResult result = new JobOfferInjector(this.Memory).Request(this.coach, this.trainerIndex, country, club.Id);
+            bool clauseSet = result == JobOfferInjector.RequestResult.Requested && this.coachController != null && this.coachController.EnsureCanNegotiateOffers();
+            this.JobOfferStatus.Text = JobOfferMessage(result, club.ClubName, clauseSet);
+        }
+
+        internal static string JobOfferMessage(JobOfferInjector.RequestResult result, string clubName, bool clauseSet = false)
+        {
+            switch (result)
+            {
+                case JobOfferInjector.RequestResult.Requested:
+                    return $"{clubName} bietet beim nächsten Tagesabschluss einen Job an."
+                        + (clauseSet ? " Freigabeklausel wurde dafür gesetzt." : "");
+                case JobOfferInjector.RequestResult.NotEmployed:
+                    return "Trainer ist vereinslos – das Spiel zeigt Angebote nur Trainern mit Verein.";
+                case JobOfferInjector.RequestResult.ChangePending:
+                    return "Wechsel zur nächsten Saison ist eingetragen – vorher „Kein Wechsel“ einstellen und speichern.";
+                case JobOfferInjector.RequestResult.SameClub:
+                    return "Das ist der aktuelle Verein des Trainers.";
+                case JobOfferInjector.RequestResult.NotSupported:
+                    return "Für diese Spielversion nicht verfügbar.";
+                default:
+                    return "Konnte im Spiel nicht vorbereitet werden, Details in der Logdatei.";
+            }
+        }
+
+        // Clubs offered for next season: everything the game's season change would actually accept
+        // (see CoachController.IsEligibleNextSeasonClub) - for a bonus country that's only its top
+        // league. Falls back to the unfiltered list where that can't be checked (unconfirmed build).
+        private void PopulateNextSeasonClubCombo(PlayerEnums.Country country)
+        {
+            this.PopulateStockClubCombo(this.NextSeasonClubInput, country, this.coach.ClubIdNextSeason);
+            if (!(this.NextSeasonClubInput.DataSource is List<Club> clubs))
+                return;
+
+            List<Club> eligible = clubs.Where(c => CoachController.IsEligibleNextSeasonClub(this.Memory, country, c.Id) != false).ToList();
+            if (eligible.Count == clubs.Count)
+                return;
+
+            this.NextSeasonClubInput.DataSource = eligible;
+            this.NextSeasonClubInput.DisplayMember = "ClubName";
+            this.NextSeasonClubInput.ValueMember = "Id";
+            this.NextSeasonClubInput.SelectedValue = this.coach.ClubIdNextSeason;
+        }
+
+        private void PopulateNoNextSeasonClubCombo()
+        {
+            this.NextSeasonClubInput.DataSource = new List<Club> { new Club { Id = 0, ClubName = "–" } };
+            this.NextSeasonClubInput.DisplayMember = "ClubName";
+            this.NextSeasonClubInput.ValueMember = "Id";
+            this.NextSeasonClubInput.SelectedValue = (byte)0;
+        }
+
+        // Same restricted-list/detach-reattach pattern as PopulateStockCountryCombo above, for the
+        // single "Nächste Saison" country combo instead of one-per-stock-slot. "Kein Wechsel"
+        // (NoNextSeasonCountry) always comes first, so a pending change can also be withdrawn.
+        private void PopulateNextSeasonCountryCombo(PlayerEnums.Country selectedCountry)
+        {
+            List<PlayerEnums.Country> countries = new[] { NoNextSeasonCountry }.Concat(this.GetAvailableStockCountries()).Distinct().ToList();
+            // Keep an already-stored value selectable even if it's no longer part of the active bonus
+            // countries (e.g. the league selection changed afterwards) - dropping it silently would
+            // corrupt CountryNextSeason on the next save.
+            if (!countries.Contains(selectedCountry))
+                countries.Add(selectedCountry);
+
+            EventHandler handler = this.nextSeasonCountryChangedHandler;
+            if (handler != null)
+                this.NextSeasonCountryInput.SelectedIndexChanged -= handler;
+
+            this.NextSeasonCountryInput.DataSource = countries.Select(c => new { Value = c, Text = c == NoNextSeasonCountry ? "Kein Wechsel" : PlayerEnums.GetDescription(c) }).ToList();
+            this.NextSeasonCountryInput.DisplayMember = "Text";
+            this.NextSeasonCountryInput.ValueMember = "Value";
+            this.NextSeasonCountryInput.SelectedValue = selectedCountry;
+
+            if (handler != null)
+            {
+                this.NextSeasonCountryInput.SelectedIndexChanged += handler;
+                handler(this.NextSeasonCountryInput, EventArgs.Empty);
+            }
+        }
+
+        // Keeps the Aktien tab's (and the "Nächste Saison" combo's) country choices in sync as soon
+        // as the League tab's selection changes, without requiring a save/reload round-trip first.
         private void RefreshStockCountryOptions()
         {
             if (this.coach == null)
@@ -429,86 +692,65 @@ namespace A2G_Trainer_XP.View
 
             for (int i = 0; i < Coach.MaxStocks; i++)
                 this.PopulateStockCountryCombo(i, this.coach.Stocks[i].Country);
+
+            this.PopulateNextSeasonCountryCombo(this.coach.CountryNextSeason);
         }
 
-        // The game doesn't support adding or removing bonus-country slots via a memory edit - only
-        // swapping which country an already-active slot holds. So this builds exactly as many combos
-        // as there are active slots in the current savegame (an inactive slot gets no control at all),
-        // each restricted to countries not already used by the main country or another active slot.
+        // One "aktiv" checkbox per league country other than the main country. A country that can't
+        // be switched right now (see BonusCountry.ToggleBlockedReason) keeps its checkbox disabled
+        // with the reason next to it.
         private void RebuildBonusCountryControls()
         {
             this.AdditionalCountriesBox.Controls.Clear();
-            Array.Clear(this.bonusCountryCombos, 0, this.bonusCountryCombos.Length);
+            this.bonusCountryChecks.Clear();
 
             if (this.league == null)
                 return;
 
             int row = 0;
-            for (int slot = 0; slot < LeagueSettings.MaxAdditionalCountries; slot++)
+            foreach (BonusCountry entry in this.league.BonusCountries)
             {
-                if (!this.league.AdditionalCountries[slot].Country.HasValue)
-                    continue;
+                BonusCountry captured = entry;
+                int top = AdditionalCountryMargin + row * AdditionalCountryRowHeight;
 
-                int capturedSlot = slot;
-
-                Label label = new Label
+                CheckBox check = new CheckBox
                 {
                     AutoSize = true,
-                    Location = new System.Drawing.Point(7, AdditionalCountryMargin + row * AdditionalCountryRowHeight + 3),
-                    Text = $"Bonusland {row + 1}"
+                    Location = new System.Drawing.Point(7, top),
+                    Text = PlayerEnums.GetDescription(entry.Country),
+                    Checked = entry.IsActive,
+                    Enabled = entry.CanToggle
                 };
-                ComboBox combo = new ComboBox
+                check.CheckedChanged += (s, e) =>
                 {
-                    DropDownStyle = ComboBoxStyle.DropDownList,
-                    Location = new System.Drawing.Point(90, AdditionalCountryMargin + row * AdditionalCountryRowHeight),
-                    Size = new System.Drawing.Size(120, 21)
-                };
-
-                // Handler is wired only after the initial value below is set - assigning DataSource
-                // fires SelectedIndexChanged immediately for whatever ends up first in the list, and
-                // since this is a fresh combo built from scratch each time, there's no existing
-                // selection worth reacting to yet (unlike the stock country combo, which is reused
-                // across refreshes and needs its cascade to fire on every population).
-                combo.DataSource = this.GetSwappableBonusCountries(capturedSlot).Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
-                combo.DisplayMember = "Text";
-                combo.ValueMember = "Value";
-                combo.SelectedValue = this.league.AdditionalCountries[capturedSlot].Country.Value;
-
-                combo.SelectedIndexChanged += (s, e) =>
-                {
-                    if (combo.SelectedValue is PlayerEnums.Country country)
-                        this.league.AdditionalCountries[capturedSlot].Country = country;
+                    captured.IsActive = check.Checked;
                     this.RefreshStockCountryOptions();
                 };
+                this.AdditionalCountriesBox.Controls.Add(check);
+                this.bonusCountryChecks.Add(check);
 
-                this.AdditionalCountriesBox.Controls.Add(label);
-                this.AdditionalCountriesBox.Controls.Add(combo);
-                this.bonusCountryCombos[slot] = combo;
-                row++;
-            }
-
-            if (row == 0)
-            {
-                this.AdditionalCountriesBox.Controls.Add(new Label
+                string note = BonusCountryNote(entry, this.skippedBonusCountries.Contains(entry.Country));
+                if (note != null)
                 {
-                    AutoSize = true,
-                    Location = new System.Drawing.Point(7, AdditionalCountryMargin),
-                    Text = "Keine Bonusländer in diesem Spielstand."
-                });
+                    this.AdditionalCountriesBox.Controls.Add(new Label
+                    {
+                        AutoSize = true,
+                        Location = new System.Drawing.Point(BonusReasonX, top + 4),
+                        ForeColor = System.Drawing.SystemColors.GrayText,
+                        Text = note
+                    });
+                }
+                row++;
             }
         }
 
-        // Candidates for a bonus-country slot: every tradeable country except the main country and
-        // whichever other active slots already hold - the slot's own current country stays included
-        // so it remains selectable (i.e. "no change").
-        private List<PlayerEnums.Country> GetSwappableBonusCountries(int slot)
+        // Text next to a country's checkbox: why it can't be switched, prefixed with "Nicht
+        // übernommen" when the last save had to skip its change. Null when there's nothing to say.
+        internal static string BonusCountryNote(BonusCountry entry, bool skipped)
         {
-            HashSet<PlayerEnums.Country> usedElsewhere = new HashSet<PlayerEnums.Country>(
-                this.league.AdditionalCountries
-                    .Where((c, index) => index != slot && c.Country.HasValue)
-                    .Select(c => c.Country.Value));
-
-            return AdditionalCountryChoices.Where(c => c != this.league.MainCountry && !usedElsewhere.Contains(c)).ToList();
+            if (!skipped)
+                return entry.ToggleBlockedReason;
+            return entry.ToggleBlockedReason == null ? "Nicht übernommen." : $"Nicht übernommen: {entry.ToggleBlockedReason}";
         }
 
         // The game doesn't support creating a new stock position (or removing one) via a memory edit,
@@ -552,6 +794,14 @@ namespace A2G_Trainer_XP.View
                 {
                     this.bindingSource.DataSource = this.coach;
                     this.bindingSource.ResetBindings(false);
+
+                    // Not covered by ResetBindings above - CountryNextSeason/ClubIdNextSeason aren't
+                    // plain DataBindings-bound scalars (same reason as the stock country/club combos
+                    // below), so they need their own explicit repopulation. Repopulating the country
+                    // combo cascades into the club combo too, same as PopulateStockCountryCombo below.
+                    this.PopulateNextSeasonCountryCombo(this.coach.CountryNextSeason);
+                    this.UpdateCurrentClubDisplay();
+                    this.PopulateJobOfferCountryCombo();
 
                     for (int i = 0; i < Coach.MaxStocks; i++)
                     {
@@ -599,7 +849,9 @@ namespace A2G_Trainer_XP.View
             if (this.IsGameRunning())
             {
                 this.coachController.Save();
-                this.leagueController.Save();
+                // After the coach, so a next-season change saved just now already blocks switching
+                // off that country.
+                this.skippedBonusCountries = this.leagueController.Save();
                 // Re-reads from memory instead of redisplaying the pre-save "coach" object (which is
                 // what ReloadBtn_Click already does) - reusing the pre-save object left the stock
                 // country/club combos showing the wrong (first-in-list) club after every save, even

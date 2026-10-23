@@ -8,8 +8,10 @@ namespace A2G_Trainer_XP.Model
         /// <summary>Identifies which league-settings field an address entry resolves.</summary>
         public enum AddressKey
         {
+            BONUS_COUNTRY_COUNT,
             MAIN_COUNTRY,
-            ADDITIONAL_COUNTRY
+            ADDITIONAL_COUNTRY,
+            BONUS_LEAGUE_SYSTEM
         }
     }
 }

@@ -49,6 +49,45 @@ namespace A2G_Trainer_XP.View
             this.WinPercentageLabel = new System.Windows.Forms.Label();
             this.WinPercentageValue = new System.Windows.Forms.Label();
             this.CompetencyBox = new System.Windows.Forms.GroupBox();
+            this.ContractBox = new System.Windows.Forms.GroupBox();
+            this.NextSeasonCountryLabel = new System.Windows.Forms.Label();
+            this.NextSeasonCountryInput = new System.Windows.Forms.ComboBox();
+            this.NextSeasonClubLabel = new System.Windows.Forms.Label();
+            this.NextSeasonClubInput = new System.Windows.Forms.ComboBox();
+            this.CurrentClubLabel = new System.Windows.Forms.Label();
+            this.CurrentClubValue = new System.Windows.Forms.Label();
+            this.ReleaseClauseInput = new System.Windows.Forms.CheckBox();
+            this.ReleaseClausePublishedInput = new System.Windows.Forms.CheckBox();
+            this.BoardReleaseInput = new System.Windows.Forms.CheckBox();
+            this.JobOfferBox = new System.Windows.Forms.GroupBox();
+            this.JobOfferCountryLabel = new System.Windows.Forms.Label();
+            this.JobOfferCountryInput = new System.Windows.Forms.ComboBox();
+            this.JobOfferClubLabel = new System.Windows.Forms.Label();
+            this.JobOfferClubInput = new System.Windows.Forms.ComboBox();
+            this.JobOfferButton = new System.Windows.Forms.Button();
+            this.JobOfferStatus = new System.Windows.Forms.Label();
+            this.ContractTab = new System.Windows.Forms.TabPage();
+            this.PayBox = new System.Windows.Forms.GroupBox();
+            this.SalaryLabel = new System.Windows.Forms.Label();
+            this.SalaryInput = new System.Windows.Forms.TextBox();
+            this.PointBonusLabel = new System.Windows.Forms.Label();
+            this.PointBonusInput = new System.Windows.Forms.TextBox();
+            this.CupRoundBonusLabel = new System.Windows.Forms.Label();
+            this.CupRoundBonusInput = new System.Windows.Forms.TextBox();
+            this.TitleBonusLabel = new System.Windows.Forms.Label();
+            this.TitleBonusInput = new System.Windows.Forms.TextBox();
+            this.SeasonGoalLabel = new System.Windows.Forms.Label();
+            this.SeasonGoalInput = new System.Windows.Forms.ComboBox();
+            this.SeasonGoalBonusLabel = new System.Windows.Forms.Label();
+            this.SeasonGoalBonusInput = new System.Windows.Forms.TextBox();
+            this.TermsBox = new System.Windows.Forms.GroupBox();
+            this.ContractYearsLabel = new System.Windows.Forms.Label();
+            this.ContractYearsInput = new System.Windows.Forms.TextBox();
+            this.VehiclePerkLabel = new System.Windows.Forms.Label();
+            this.VehiclePerkInput = new System.Windows.Forms.ComboBox();
+            this.HousingPerkLabel = new System.Windows.Forms.Label();
+            this.HousingPerkInput = new System.Windows.Forms.ComboBox();
+            this.ExtensionOptionInput = new System.Windows.Forms.CheckBox();
             this.StocksTab = new System.Windows.Forms.TabPage();
             this.LeagueTab = new System.Windows.Forms.TabPage();
             this.LeagueBox = new System.Windows.Forms.GroupBox();
@@ -61,6 +100,11 @@ namespace A2G_Trainer_XP.View
             this.GeneralTab.SuspendLayout();
             this.PersonalBox.SuspendLayout();
             this.CompetencyBox.SuspendLayout();
+            this.ContractBox.SuspendLayout();
+            this.JobOfferBox.SuspendLayout();
+            this.ContractTab.SuspendLayout();
+            this.PayBox.SuspendLayout();
+            this.TermsBox.SuspendLayout();
             this.LeagueTab.SuspendLayout();
             this.LeagueBox.SuspendLayout();
             this.SuspendLayout();
@@ -68,6 +112,7 @@ namespace A2G_Trainer_XP.View
             // ClubTabControl
             //
             this.ClubTabControl.Controls.Add(this.GeneralTab);
+            this.ClubTabControl.Controls.Add(this.ContractTab);
             this.ClubTabControl.Controls.Add(this.StocksTab);
             this.ClubTabControl.Controls.Add(this.LeagueTab);
             this.ClubTabControl.Location = new System.Drawing.Point(20, 13);
@@ -78,6 +123,7 @@ namespace A2G_Trainer_XP.View
             //
             // GeneralTab
             //
+            this.GeneralTab.AutoScroll = true;
             this.GeneralTab.Controls.Add(this.PersonalBox);
             this.GeneralTab.Controls.Add(this.CompetencyBox);
             this.GeneralTab.Location = new System.Drawing.Point(4, 22);
@@ -248,6 +294,221 @@ namespace A2G_Trainer_XP.View
             this.WinPercentageValue.TabIndex = 57;
             this.WinPercentageValue.Text = "0 %";
             //
+            // ContractTab
+            //
+            this.ContractTab.AutoScroll = true;
+            this.ContractTab.Controls.Add(this.PayBox);
+            this.ContractTab.Controls.Add(this.TermsBox);
+            this.ContractTab.Controls.Add(this.ContractBox);
+            this.ContractTab.Controls.Add(this.JobOfferBox);
+            this.ContractTab.Location = new System.Drawing.Point(4, 22);
+            this.ContractTab.Name = "ContractTab";
+            this.ContractTab.Padding = new System.Windows.Forms.Padding(3);
+            this.ContractTab.Size = new System.Drawing.Size(586, 346);
+            this.ContractTab.TabIndex = 3;
+            this.ContractTab.Text = "Vertrag";
+            this.ContractTab.UseVisualStyleBackColor = true;
+            //
+            // PayBox
+            //
+            this.PayBox.Controls.Add(this.SalaryLabel);
+            this.PayBox.Controls.Add(this.SalaryInput);
+            this.PayBox.Controls.Add(this.PointBonusLabel);
+            this.PayBox.Controls.Add(this.PointBonusInput);
+            this.PayBox.Controls.Add(this.CupRoundBonusLabel);
+            this.PayBox.Controls.Add(this.CupRoundBonusInput);
+            this.PayBox.Controls.Add(this.TitleBonusLabel);
+            this.PayBox.Controls.Add(this.TitleBonusInput);
+            this.PayBox.Controls.Add(this.SeasonGoalLabel);
+            this.PayBox.Controls.Add(this.SeasonGoalInput);
+            this.PayBox.Controls.Add(this.SeasonGoalBonusLabel);
+            this.PayBox.Controls.Add(this.SeasonGoalBonusInput);
+            this.PayBox.Location = new System.Drawing.Point(6, 6);
+            this.PayBox.Name = "PayBox";
+            this.PayBox.Size = new System.Drawing.Size(272, 190);
+            this.PayBox.TabIndex = 70;
+            this.PayBox.TabStop = false;
+            this.PayBox.Text = "Bezüge";
+            //
+            // SalaryLabel
+            //
+            this.SalaryLabel.AutoSize = true;
+            this.SalaryLabel.Location = new System.Drawing.Point(7, 23);
+            this.SalaryLabel.Name = "SalaryLabel";
+            this.SalaryLabel.Size = new System.Drawing.Size(118, 13);
+            this.SalaryLabel.TabIndex = 71;
+            this.SalaryLabel.Text = "Grundgehalt (pro Jahr)";
+            //
+            // SalaryInput
+            //
+            this.SalaryInput.Location = new System.Drawing.Point(150, 20);
+            this.SalaryInput.Name = "SalaryInput";
+            this.SalaryInput.Size = new System.Drawing.Size(112, 20);
+            this.SalaryInput.TabIndex = 20;
+            this.SalaryInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // PointBonusLabel
+            //
+            this.PointBonusLabel.AutoSize = true;
+            this.PointBonusLabel.Location = new System.Drawing.Point(7, 50);
+            this.PointBonusLabel.Name = "PointBonusLabel";
+            this.PointBonusLabel.Size = new System.Drawing.Size(66, 13);
+            this.PointBonusLabel.TabIndex = 72;
+            this.PointBonusLabel.Text = "Punktprämie";
+            //
+            // PointBonusInput
+            //
+            this.PointBonusInput.Location = new System.Drawing.Point(150, 47);
+            this.PointBonusInput.Name = "PointBonusInput";
+            this.PointBonusInput.Size = new System.Drawing.Size(112, 20);
+            this.PointBonusInput.TabIndex = 21;
+            this.PointBonusInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // CupRoundBonusLabel
+            //
+            this.CupRoundBonusLabel.AutoSize = true;
+            this.CupRoundBonusLabel.Location = new System.Drawing.Point(7, 77);
+            this.CupRoundBonusLabel.Name = "CupRoundBonusLabel";
+            this.CupRoundBonusLabel.Size = new System.Drawing.Size(97, 13);
+            this.CupRoundBonusLabel.TabIndex = 73;
+            this.CupRoundBonusLabel.Text = "Pokalrundenprämie";
+            //
+            // CupRoundBonusInput
+            //
+            this.CupRoundBonusInput.Location = new System.Drawing.Point(150, 74);
+            this.CupRoundBonusInput.Name = "CupRoundBonusInput";
+            this.CupRoundBonusInput.Size = new System.Drawing.Size(112, 20);
+            this.CupRoundBonusInput.TabIndex = 22;
+            this.CupRoundBonusInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // TitleBonusLabel
+            //
+            this.TitleBonusLabel.AutoSize = true;
+            this.TitleBonusLabel.Location = new System.Drawing.Point(7, 104);
+            this.TitleBonusLabel.Name = "TitleBonusLabel";
+            this.TitleBonusLabel.Size = new System.Drawing.Size(117, 13);
+            this.TitleBonusLabel.TabIndex = 74;
+            this.TitleBonusLabel.Text = "Titel-/Aufstiegsprämie";
+            //
+            // TitleBonusInput
+            //
+            this.TitleBonusInput.Location = new System.Drawing.Point(150, 101);
+            this.TitleBonusInput.Name = "TitleBonusInput";
+            this.TitleBonusInput.Size = new System.Drawing.Size(112, 20);
+            this.TitleBonusInput.TabIndex = 23;
+            this.TitleBonusInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // SeasonGoalLabel
+            //
+            this.SeasonGoalLabel.AutoSize = true;
+            this.SeasonGoalLabel.Location = new System.Drawing.Point(7, 131);
+            this.SeasonGoalLabel.Name = "SeasonGoalLabel";
+            this.SeasonGoalLabel.Size = new System.Drawing.Size(61, 13);
+            this.SeasonGoalLabel.TabIndex = 75;
+            this.SeasonGoalLabel.Text = "Saisonziel";
+            //
+            // SeasonGoalInput
+            //
+            this.SeasonGoalInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SeasonGoalInput.Location = new System.Drawing.Point(150, 128);
+            this.SeasonGoalInput.Name = "SeasonGoalInput";
+            this.SeasonGoalInput.Size = new System.Drawing.Size(112, 21);
+            this.SeasonGoalInput.TabIndex = 24;
+            //
+            // SeasonGoalBonusLabel
+            //
+            this.SeasonGoalBonusLabel.AutoSize = true;
+            this.SeasonGoalBonusLabel.Location = new System.Drawing.Point(7, 158);
+            this.SeasonGoalBonusLabel.Name = "SeasonGoalBonusLabel";
+            this.SeasonGoalBonusLabel.Size = new System.Drawing.Size(132, 13);
+            this.SeasonGoalBonusLabel.TabIndex = 76;
+            this.SeasonGoalBonusLabel.Text = "Prämie für das Saisonziel";
+            //
+            // SeasonGoalBonusInput
+            //
+            this.SeasonGoalBonusInput.Location = new System.Drawing.Point(150, 155);
+            this.SeasonGoalBonusInput.Name = "SeasonGoalBonusInput";
+            this.SeasonGoalBonusInput.Size = new System.Drawing.Size(112, 20);
+            this.SeasonGoalBonusInput.TabIndex = 25;
+            this.SeasonGoalBonusInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // TermsBox
+            //
+            this.TermsBox.Controls.Add(this.ContractYearsLabel);
+            this.TermsBox.Controls.Add(this.ContractYearsInput);
+            this.TermsBox.Controls.Add(this.VehiclePerkLabel);
+            this.TermsBox.Controls.Add(this.VehiclePerkInput);
+            this.TermsBox.Controls.Add(this.HousingPerkLabel);
+            this.TermsBox.Controls.Add(this.HousingPerkInput);
+            this.TermsBox.Controls.Add(this.ExtensionOptionInput);
+            this.TermsBox.Location = new System.Drawing.Point(284, 6);
+            this.TermsBox.Name = "TermsBox";
+            this.TermsBox.Size = new System.Drawing.Size(272, 190);
+            this.TermsBox.TabIndex = 77;
+            this.TermsBox.TabStop = false;
+            this.TermsBox.Text = "Laufzeit und Extras";
+            //
+            // ContractYearsLabel
+            //
+            this.ContractYearsLabel.AutoSize = true;
+            this.ContractYearsLabel.Location = new System.Drawing.Point(7, 23);
+            this.ContractYearsLabel.Name = "ContractYearsLabel";
+            this.ContractYearsLabel.Size = new System.Drawing.Size(117, 13);
+            this.ContractYearsLabel.TabIndex = 78;
+            this.ContractYearsLabel.Text = "Restlaufzeit (in Jahren)";
+            //
+            // ContractYearsInput
+            //
+            this.ContractYearsInput.Location = new System.Drawing.Point(150, 20);
+            this.ContractYearsInput.Name = "ContractYearsInput";
+            this.ContractYearsInput.Size = new System.Drawing.Size(43, 20);
+            this.ContractYearsInput.TabIndex = 26;
+            this.ContractYearsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // VehiclePerkLabel
+            //
+            this.VehiclePerkLabel.AutoSize = true;
+            this.VehiclePerkLabel.Location = new System.Drawing.Point(7, 50);
+            this.VehiclePerkLabel.Name = "VehiclePerkLabel";
+            this.VehiclePerkLabel.Size = new System.Drawing.Size(51, 13);
+            this.VehiclePerkLabel.TabIndex = 79;
+            this.VehiclePerkLabel.Text = "Fahrzeug";
+            //
+            // VehiclePerkInput
+            //
+            this.VehiclePerkInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.VehiclePerkInput.Location = new System.Drawing.Point(110, 47);
+            this.VehiclePerkInput.Name = "VehiclePerkInput";
+            this.VehiclePerkInput.Size = new System.Drawing.Size(152, 21);
+            this.VehiclePerkInput.TabIndex = 27;
+            //
+            // HousingPerkLabel
+            //
+            this.HousingPerkLabel.AutoSize = true;
+            this.HousingPerkLabel.Location = new System.Drawing.Point(7, 77);
+            this.HousingPerkLabel.Name = "HousingPerkLabel";
+            this.HousingPerkLabel.Size = new System.Drawing.Size(52, 13);
+            this.HousingPerkLabel.TabIndex = 80;
+            this.HousingPerkLabel.Text = "Wohnung";
+            //
+            // HousingPerkInput
+            //
+            this.HousingPerkInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.HousingPerkInput.Location = new System.Drawing.Point(110, 74);
+            this.HousingPerkInput.Name = "HousingPerkInput";
+            this.HousingPerkInput.Size = new System.Drawing.Size(152, 21);
+            this.HousingPerkInput.TabIndex = 28;
+            //
+            // ExtensionOptionInput
+            //
+            this.ExtensionOptionInput.AutoSize = true;
+            this.ExtensionOptionInput.Location = new System.Drawing.Point(10, 104);
+            this.ExtensionOptionInput.Name = "ExtensionOptionInput";
+            this.ExtensionOptionInput.Size = new System.Drawing.Size(212, 17);
+            this.ExtensionOptionInput.TabIndex = 29;
+            this.ExtensionOptionInput.Text = "Verlängerungsoption für den Verein";
+            this.ExtensionOptionInput.UseVisualStyleBackColor = true;
+            //
             // StocksTab
             //
             this.StocksTab.AutoScroll = true;
@@ -271,6 +532,176 @@ namespace A2G_Trainer_XP.View
             this.CompetencyBox.TabStop = false;
             this.CompetencyBox.Text = "Kompetenzen";
             //
+            // ContractBox
+            //
+            this.ContractBox.Controls.Add(this.CurrentClubLabel);
+            this.ContractBox.Controls.Add(this.CurrentClubValue);
+            this.ContractBox.Controls.Add(this.NextSeasonCountryLabel);
+            this.ContractBox.Controls.Add(this.NextSeasonCountryInput);
+            this.ContractBox.Controls.Add(this.NextSeasonClubLabel);
+            this.ContractBox.Controls.Add(this.NextSeasonClubInput);
+            this.ContractBox.Controls.Add(this.ReleaseClauseInput);
+            this.ContractBox.Controls.Add(this.ReleaseClausePublishedInput);
+            this.ContractBox.Controls.Add(this.BoardReleaseInput);
+            this.ContractBox.Location = new System.Drawing.Point(6, 202);
+            this.ContractBox.Name = "ContractBox";
+            this.ContractBox.Size = new System.Drawing.Size(272, 155);
+            this.ContractBox.TabIndex = 58;
+            this.ContractBox.TabStop = false;
+            this.ContractBox.Text = "Verein und Freigabe";
+            //
+            // CurrentClubLabel
+            //
+            this.CurrentClubLabel.AutoSize = true;
+            this.CurrentClubLabel.Location = new System.Drawing.Point(7, 23);
+            this.CurrentClubLabel.Name = "CurrentClubLabel";
+            this.CurrentClubLabel.Size = new System.Drawing.Size(88, 13);
+            this.CurrentClubLabel.TabIndex = 62;
+            this.CurrentClubLabel.Text = "Aktueller Verein";
+            //
+            // CurrentClubValue
+            //
+            this.CurrentClubValue.AutoEllipsis = true;
+            this.CurrentClubValue.Location = new System.Drawing.Point(115, 23);
+            this.CurrentClubValue.Name = "CurrentClubValue";
+            this.CurrentClubValue.Size = new System.Drawing.Size(150, 13);
+            this.CurrentClubValue.TabIndex = 63;
+            this.CurrentClubValue.Text = "-";
+            //
+            // NextSeasonCountryLabel
+            //
+            this.NextSeasonCountryLabel.AutoSize = true;
+            this.NextSeasonCountryLabel.Location = new System.Drawing.Point(7, 50);
+            this.NextSeasonCountryLabel.Name = "NextSeasonCountryLabel";
+            this.NextSeasonCountryLabel.Size = new System.Drawing.Size(97, 13);
+            this.NextSeasonCountryLabel.TabIndex = 59;
+            this.NextSeasonCountryLabel.Text = "Land (n. Saison)";
+            //
+            // NextSeasonCountryInput
+            //
+            this.NextSeasonCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.NextSeasonCountryInput.Location = new System.Drawing.Point(115, 47);
+            this.NextSeasonCountryInput.Name = "NextSeasonCountryInput";
+            this.NextSeasonCountryInput.Size = new System.Drawing.Size(150, 21);
+            this.NextSeasonCountryInput.TabIndex = 10;
+            //
+            // NextSeasonClubLabel
+            //
+            this.NextSeasonClubLabel.AutoSize = true;
+            this.NextSeasonClubLabel.Location = new System.Drawing.Point(7, 77);
+            this.NextSeasonClubLabel.Name = "NextSeasonClubLabel";
+            this.NextSeasonClubLabel.Size = new System.Drawing.Size(102, 13);
+            this.NextSeasonClubLabel.TabIndex = 60;
+            this.NextSeasonClubLabel.Text = "Verein (n. Saison)";
+            //
+            // NextSeasonClubInput
+            //
+            this.NextSeasonClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.NextSeasonClubInput.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.NextSeasonClubInput.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.NextSeasonClubInput.Location = new System.Drawing.Point(115, 74);
+            this.NextSeasonClubInput.Name = "NextSeasonClubInput";
+            this.NextSeasonClubInput.Size = new System.Drawing.Size(150, 21);
+            this.NextSeasonClubInput.TabIndex = 11;
+            //
+            // ReleaseClauseInput
+            //
+            this.ReleaseClauseInput.AutoSize = true;
+            this.ReleaseClauseInput.Location = new System.Drawing.Point(10, 105);
+            this.ReleaseClauseInput.Name = "ReleaseClauseInput";
+            this.ReleaseClauseInput.Size = new System.Drawing.Size(101, 17);
+            this.ReleaseClauseInput.TabIndex = 12;
+            this.ReleaseClauseInput.Text = "Freigabeklausel";
+            this.ReleaseClauseInput.UseVisualStyleBackColor = true;
+            //
+            // ReleaseClausePublishedInput
+            //
+            this.ReleaseClausePublishedInput.AutoSize = true;
+            this.ReleaseClausePublishedInput.Location = new System.Drawing.Point(118, 105);
+            this.ReleaseClausePublishedInput.Name = "ReleaseClausePublishedInput";
+            this.ReleaseClausePublishedInput.Size = new System.Drawing.Size(99, 17);
+            this.ReleaseClausePublishedInput.TabIndex = 13;
+            this.ReleaseClausePublishedInput.Text = "bekanntgegeben";
+            this.ReleaseClausePublishedInput.UseVisualStyleBackColor = true;
+            //
+            // BoardReleaseInput
+            //
+            this.BoardReleaseInput.AutoSize = true;
+            this.BoardReleaseInput.Location = new System.Drawing.Point(10, 128);
+            this.BoardReleaseInput.Name = "BoardReleaseInput";
+            this.BoardReleaseInput.Size = new System.Drawing.Size(141, 17);
+            this.BoardReleaseInput.TabIndex = 17;
+            this.BoardReleaseInput.Text = "Freigabe durch Vorstand";
+            this.BoardReleaseInput.UseVisualStyleBackColor = true;
+            //
+            // JobOfferBox
+            //
+            this.JobOfferBox.Controls.Add(this.JobOfferCountryLabel);
+            this.JobOfferBox.Controls.Add(this.JobOfferCountryInput);
+            this.JobOfferBox.Controls.Add(this.JobOfferClubLabel);
+            this.JobOfferBox.Controls.Add(this.JobOfferClubInput);
+            this.JobOfferBox.Controls.Add(this.JobOfferButton);
+            this.JobOfferBox.Controls.Add(this.JobOfferStatus);
+            this.JobOfferBox.Location = new System.Drawing.Point(284, 202);
+            this.JobOfferBox.Name = "JobOfferBox";
+            this.JobOfferBox.Size = new System.Drawing.Size(272, 155);
+            this.JobOfferBox.TabIndex = 64;
+            this.JobOfferBox.TabStop = false;
+            this.JobOfferBox.Text = "Jobangebot anfordern";
+            //
+            // JobOfferCountryLabel
+            //
+            this.JobOfferCountryLabel.AutoSize = true;
+            this.JobOfferCountryLabel.Location = new System.Drawing.Point(7, 23);
+            this.JobOfferCountryLabel.Name = "JobOfferCountryLabel";
+            this.JobOfferCountryLabel.Size = new System.Drawing.Size(31, 13);
+            this.JobOfferCountryLabel.TabIndex = 65;
+            this.JobOfferCountryLabel.Text = "Land";
+            //
+            // JobOfferCountryInput
+            //
+            this.JobOfferCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.JobOfferCountryInput.Location = new System.Drawing.Point(115, 20);
+            this.JobOfferCountryInput.Name = "JobOfferCountryInput";
+            this.JobOfferCountryInput.Size = new System.Drawing.Size(150, 21);
+            this.JobOfferCountryInput.TabIndex = 14;
+            //
+            // JobOfferClubLabel
+            //
+            this.JobOfferClubLabel.AutoSize = true;
+            this.JobOfferClubLabel.Location = new System.Drawing.Point(7, 50);
+            this.JobOfferClubLabel.Name = "JobOfferClubLabel";
+            this.JobOfferClubLabel.Size = new System.Drawing.Size(39, 13);
+            this.JobOfferClubLabel.TabIndex = 66;
+            this.JobOfferClubLabel.Text = "Verein";
+            //
+            // JobOfferClubInput
+            //
+            this.JobOfferClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.JobOfferClubInput.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.JobOfferClubInput.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.JobOfferClubInput.Location = new System.Drawing.Point(115, 47);
+            this.JobOfferClubInput.Name = "JobOfferClubInput";
+            this.JobOfferClubInput.Size = new System.Drawing.Size(150, 21);
+            this.JobOfferClubInput.TabIndex = 15;
+            //
+            // JobOfferButton
+            //
+            this.JobOfferButton.Location = new System.Drawing.Point(7, 75);
+            this.JobOfferButton.Name = "JobOfferButton";
+            this.JobOfferButton.Size = new System.Drawing.Size(258, 23);
+            this.JobOfferButton.TabIndex = 16;
+            this.JobOfferButton.Text = "Beim nächsten Tagesabschluss anbieten";
+            this.JobOfferButton.UseVisualStyleBackColor = true;
+            //
+            // JobOfferStatus
+            //
+            this.JobOfferStatus.Location = new System.Drawing.Point(7, 102);
+            this.JobOfferStatus.Name = "JobOfferStatus";
+            this.JobOfferStatus.Size = new System.Drawing.Size(258, 47);
+            this.JobOfferStatus.TabIndex = 67;
+            this.JobOfferStatus.Text = "";
+            //
             // LeagueTab
             //
             this.LeagueTab.Controls.Add(this.LeagueBox);
@@ -289,7 +720,7 @@ namespace A2G_Trainer_XP.View
             this.LeagueBox.Controls.Add(this.MainCountryInput);
             this.LeagueBox.Location = new System.Drawing.Point(6, 6);
             this.LeagueBox.Name = "LeagueBox";
-            this.LeagueBox.Size = new System.Drawing.Size(220, 60);
+            this.LeagueBox.Size = new System.Drawing.Size(574, 52);
             this.LeagueBox.TabIndex = 50;
             this.LeagueBox.TabStop = false;
             this.LeagueBox.Text = "Hauptland";
@@ -313,9 +744,9 @@ namespace A2G_Trainer_XP.View
             //
             // AdditionalCountriesBox
             //
-            this.AdditionalCountriesBox.Location = new System.Drawing.Point(6, 72);
+            this.AdditionalCountriesBox.Location = new System.Drawing.Point(6, 64);
             this.AdditionalCountriesBox.Name = "AdditionalCountriesBox";
-            this.AdditionalCountriesBox.Size = new System.Drawing.Size(220, 160);
+            this.AdditionalCountriesBox.Size = new System.Drawing.Size(574, 136);
             this.AdditionalCountriesBox.TabIndex = 52;
             this.AdditionalCountriesBox.TabStop = false;
             this.AdditionalCountriesBox.Text = "Bonusländer";
@@ -354,6 +785,15 @@ namespace A2G_Trainer_XP.View
             this.PersonalBox.PerformLayout();
             this.CompetencyBox.ResumeLayout(false);
             this.CompetencyBox.PerformLayout();
+            this.ContractBox.ResumeLayout(false);
+            this.ContractBox.PerformLayout();
+            this.JobOfferBox.ResumeLayout(false);
+            this.JobOfferBox.PerformLayout();
+            this.ContractTab.ResumeLayout(false);
+            this.PayBox.ResumeLayout(false);
+            this.PayBox.PerformLayout();
+            this.TermsBox.ResumeLayout(false);
+            this.TermsBox.PerformLayout();
             this.LeagueTab.ResumeLayout(false);
             this.LeagueBox.ResumeLayout(false);
             this.LeagueBox.PerformLayout();
@@ -385,6 +825,45 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Label WinPercentageLabel;
         private System.Windows.Forms.Label WinPercentageValue;
         private System.Windows.Forms.GroupBox CompetencyBox;
+        private System.Windows.Forms.GroupBox ContractBox;
+        private System.Windows.Forms.Label NextSeasonCountryLabel;
+        private System.Windows.Forms.ComboBox NextSeasonCountryInput;
+        private System.Windows.Forms.Label NextSeasonClubLabel;
+        private System.Windows.Forms.ComboBox NextSeasonClubInput;
+        private System.Windows.Forms.Label CurrentClubLabel;
+        private System.Windows.Forms.Label CurrentClubValue;
+        private System.Windows.Forms.CheckBox ReleaseClauseInput;
+        private System.Windows.Forms.CheckBox ReleaseClausePublishedInput;
+        private System.Windows.Forms.CheckBox BoardReleaseInput;
+        private System.Windows.Forms.GroupBox JobOfferBox;
+        private System.Windows.Forms.Label JobOfferCountryLabel;
+        private System.Windows.Forms.ComboBox JobOfferCountryInput;
+        private System.Windows.Forms.Label JobOfferClubLabel;
+        private System.Windows.Forms.ComboBox JobOfferClubInput;
+        private System.Windows.Forms.Button JobOfferButton;
+        private System.Windows.Forms.Label JobOfferStatus;
+        private System.Windows.Forms.TabPage ContractTab;
+        private System.Windows.Forms.GroupBox PayBox;
+        private System.Windows.Forms.Label SalaryLabel;
+        private System.Windows.Forms.TextBox SalaryInput;
+        private System.Windows.Forms.Label PointBonusLabel;
+        private System.Windows.Forms.TextBox PointBonusInput;
+        private System.Windows.Forms.Label CupRoundBonusLabel;
+        private System.Windows.Forms.TextBox CupRoundBonusInput;
+        private System.Windows.Forms.Label TitleBonusLabel;
+        private System.Windows.Forms.TextBox TitleBonusInput;
+        private System.Windows.Forms.Label SeasonGoalLabel;
+        private System.Windows.Forms.ComboBox SeasonGoalInput;
+        private System.Windows.Forms.Label SeasonGoalBonusLabel;
+        private System.Windows.Forms.TextBox SeasonGoalBonusInput;
+        private System.Windows.Forms.GroupBox TermsBox;
+        private System.Windows.Forms.Label ContractYearsLabel;
+        private System.Windows.Forms.TextBox ContractYearsInput;
+        private System.Windows.Forms.Label VehiclePerkLabel;
+        private System.Windows.Forms.ComboBox VehiclePerkInput;
+        private System.Windows.Forms.Label HousingPerkLabel;
+        private System.Windows.Forms.ComboBox HousingPerkInput;
+        private System.Windows.Forms.CheckBox ExtensionOptionInput;
         private System.Windows.Forms.TabPage StocksTab;
         private System.Windows.Forms.TabPage LeagueTab;
         private System.Windows.Forms.GroupBox LeagueBox;

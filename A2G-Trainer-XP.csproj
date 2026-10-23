@@ -84,6 +84,7 @@
     <Compile Include="Controller\FixedAddresses.cs" />
     <Compile Include="Controller\GameBuild.cs" />
     <Compile Include="Controller\GameCalendar.cs" />
+    <Compile Include="Controller\JobOfferInjector.cs" />
     <Compile Include="Controller\LeagueController.cs" />
     <Compile Include="Controller\ProcessMemory.cs" />
     <Compile Include="Controller\NamePoolResolver.cs" />

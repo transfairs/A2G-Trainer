@@ -10,11 +10,16 @@ namespace A2G_Trainer_XP.Tests
     /// <summary>Tests for CoachController.GetActiveTrainers' live-count/Firstname-heuristic fallback.</summary>
     public class CoachControllerLiveCountTests
     {
+        // Writes the name to both places a trainer can be read from - the fixed working copy
+        // (original build) and the club-pointer target (builds without coach anchors) - so each
+        // test exercises only the count logic, not the addressing.
         private static void WriteCoachFirstname(FakeModule fake, int trainerSlot, string name)
         {
             const int trainerSlotStride = 0x1958;
+            byte[] bytes = Encoding.GetEncoding("iso-8859-1").GetBytes(name);
             uint fieldOffset = 0x34B00 + (uint)(trainerSlot * trainerSlotStride);
-            fake.WriteDisplayCacheBytes(fieldOffset.ToString("X"), Encoding.GetEncoding("iso-8859-1").GetBytes(name));
+            fake.WriteDisplayCacheBytes(fieldOffset.ToString("X"), bytes);
+            CoachMemory.WriteWorkingCopy(fake, AddressPresets.COACH[CoachEnums.AddressKey.FIRSTNAME], bytes, trainerSlot);
         }
 
         [Fact]

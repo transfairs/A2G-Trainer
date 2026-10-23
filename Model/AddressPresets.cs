@@ -160,19 +160,46 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LAST_NAME, "34B0A"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LEVEL, "34B22"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.AGE, "34B24"),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY_NEXT_SEASON, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB_NEXT_SEASON, ""),
+            // COUNTRY/CLUB: the club this trainer coaches right now (UInt16 each in the game, values
+            // fit a byte). Found via the original build's GetMitspieler and confirmed live: Trainer
+            // slot 0 read 14/55, exactly the club in team slot 0. Read-only in the Trainer - the game
+            // keeps further state for the current club that a plain write wouldn't update.
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY, "34B1C"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB, "34B1E"),
+            // COUNTRY_NEXT_SEASON/CLUB_NEXT_SEASON/RELEASE_CLAUSE: Robin found these live via Cheat
+            // Engine against Trainer slot 0 (0085783C/0085783E/00857864). Same session, same struct
+            // instance as the FIRSTNAME reference below (0x857800 -> pointer value 0x822D00), so the
+            // offset from that pointer is address-0x822D00: 34B3C/34B3E/34B64 respectively.
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY_NEXT_SEASON, "34B3C"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB_NEXT_SEASON, "34B3E"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.RELEASE_CLAUSE, "34B64"),
+            // BOARD_RELEASE: the board has released the trainer ("Vorstand um Freigabe bitten"
+            // granted) - with it, like with a release clause, the game lets him negotiate with other
+            // clubs (FUN_004a0be0). Read-only in the Trainer.
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.BOARD_RELEASE, "34B65"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.OPTION_TO_LEAVE, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.WEALTH, "34B90"),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.SALARY, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.POINT_BONUS, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TROPHY_ROUND, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TITLE, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.ACHIEVED_BONUS, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CONTRACT_DURATION, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.EXTEND_OPTION, ""),
+            // The current contract (working copy +0x48..+0x67), as FUN_00629be0 fills it from a signed
+            // offer: five Int32 amounts, then season goal, years left, extension option and extras
+            // (UInt16 each), then the release clause byte. SALARY is per year (the monthly accounts
+            // pay a twelfth); SALARY and POINT_BONUS move by 20% on promotion/relegation
+            // (FUN_0059f140). POINT_BONUS is paid per league point (FUN_005fedd0), PER_TROPHY_ROUND
+            // per cup round won (FUN_005dadb0), PER_TITLE for the title or promotion (FUN_005722c0)
+            // and ACHIEVED_BONUS when the season goal is reached (FUN_00572cf0).
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.SALARY, "34B48"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.POINT_BONUS, "34B4C"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TROPHY_ROUND, "34B50"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PER_TITLE, "34B54"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.ACHIEVED_BONUS, "34B58"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.SEASON_GOAL, "34B5C"),
+            // CONTRACT_DURATION: years left on the current contract (UInt16). Below 2 the contract
+            // counts as running out and the game allows negotiating without a release clause
+            // (FUN_004a0be0). Read-only in the Trainer.
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CONTRACT_DURATION, "34B5E"),
+            // EXTEND_OPTION: the club's option to extend by a year. With one year left, FUN_0062ac60 lets
+            // the club draw it (FUN_00555b40: years left + 1, option cleared). PERKS: see CoachEnums.VehiclePerk.
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.EXTEND_OPTION, "34B60"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PERKS, "34B62"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRUST, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES, ""),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONALTEAM, ""),
@@ -185,10 +212,17 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_SHARES, "34BDC"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.STOCK_PRICE, "34BE0")
         );
-        /// <summary>Field offsets for the savegame-wide league/country settings.</summary>
+        /// <summary>
+        /// Field offsets for the savegame-wide league/country settings (0x82663E.. on the original
+        /// build, set up by the game's new-game code FUN_006441e0): Int16 bonus-country count, Int16
+        /// main country (+ its league system at 3942), Int16[4] bonus countries (FFFF = unused) and
+        /// the parallel Int16[4] league system of each bonus country (0 = unused).
+        /// </summary>
         public static readonly Addresses LEAGUE_SETTINGS = Addresses.Create(
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.BONUS_COUNTRY_COUNT, "393E"),
             new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.MAIN_COUNTRY, "3940"),
-            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.ADDITIONAL_COUNTRY, "3944")
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.ADDITIONAL_COUNTRY, "3944"),
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.BONUS_LEAGUE_SYSTEM, "394C")
         );
 
         /// <summary>Player-field offsets for the current opponent roster; set by <see cref="InitOpponent"/>.</summary>

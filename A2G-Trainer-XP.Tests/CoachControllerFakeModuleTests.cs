@@ -16,39 +16,46 @@ namespace A2G_Trainer_XP.Tests
     public class CoachControllerFakeModuleTests
     {
         [Fact]
-        public void GetEntity_ReadsIdentityStocksWealthDifficultyGamesWinsAndCompetenciesFromMemory()
+        public void GetEntity_ReadsIdentityStocksWealthDifficultyGamesWinsNextSeasonReleaseClauseAndCompetenciesFromMemory()
         {
             using (FakeModule fake = new FakeModule())
             {
-                fake.RoutePointerSlot(Settings.ClubAddress[0]);
+                // The club pointer is deliberately left null (the game clears it whenever team slot 0
+                // is freed): on the original build, trainers are read from their fixed working copy.
                 Addresses coachAddresses = AddressPresets.COACH;
                 Encoding latin1 = Encoding.GetEncoding("iso-8859-1");
 
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.FIRSTNAME], latin1.GetBytes("Helmut\0"));
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.LAST_NAME], latin1.GetBytes("Schoen\0"));
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.LEVEL], new byte[] { 11 });
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.AGE], new byte[] { 55 });
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.DIFFICULTY], new byte[] { (byte)CoachEnums.Difficulty.NurFuerDieBesten });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.FIRSTNAME], latin1.GetBytes("Helmut\0"));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.LAST_NAME], latin1.GetBytes("Schoen\0"));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.LEVEL], new byte[] { 11 });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.AGE], new byte[] { 55 });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.DIFFICULTY], new byte[] { (byte)CoachEnums.Difficulty.NurFuerDieBesten });
                 // Beyond byte range (0-255): both fields are 2 bytes wide in memory, so this also
                 // catches a regression back to a single-byte read.
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.GAMES], BitConverter.GetBytes((ushort)355));
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.WINS], BitConverter.GetBytes((ushort)333));
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.WEALTH], BitConverter.GetBytes(987654));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.GAMES], BitConverter.GetBytes((ushort)355));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.WINS], BitConverter.GetBytes((ushort)333));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.WEALTH], BitConverter.GetBytes(987654));
 
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.STOCK_COUNTRY], new byte[] { (byte)PlayerEnums.Country.Frankreich });
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.STOCK_CLUB], new byte[] { 3 });
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.STOCK_SHARES], BitConverter.GetBytes((ushort)12));
-                fake.WriteDisplayCacheBytes(coachAddresses[CoachEnums.AddressKey.STOCK_PRICE], BitConverter.GetBytes((ushort)34));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.COUNTRY_NEXT_SEASON], new byte[] { (byte)PlayerEnums.Country.Spanien });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.CLUB_NEXT_SEASON], new byte[] { 21 });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.RELEASE_CLAUSE], new byte[] { 0x81 });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.COUNTRY], new byte[] { (byte)PlayerEnums.Country.Deutschland });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.CLUB], new byte[] { 55 });
+
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.STOCK_COUNTRY], new byte[] { (byte)PlayerEnums.Country.Frankreich });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.STOCK_CLUB], new byte[] { 3 });
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.STOCK_SHARES], BitConverter.GetBytes((ushort)12));
+                CoachMemory.WriteWorkingCopy(fake, coachAddresses[CoachEnums.AddressKey.STOCK_PRICE], BitConverter.GetBytes((ushort)34));
 
                 const int stockSlotStride = 0x10;
                 string lastStockCountryOffset = Tools.SumHex(new[] { coachAddresses[CoachEnums.AddressKey.STOCK_COUNTRY], (5 * stockSlotStride).ToString("X") });
                 string lastStockClubOffset = Tools.SumHex(new[] { coachAddresses[CoachEnums.AddressKey.STOCK_CLUB], (5 * stockSlotStride).ToString("X") });
                 string lastStockSharesOffset = Tools.SumHex(new[] { coachAddresses[CoachEnums.AddressKey.STOCK_SHARES], (5 * stockSlotStride).ToString("X") });
                 string lastStockPriceOffset = Tools.SumHex(new[] { coachAddresses[CoachEnums.AddressKey.STOCK_PRICE], (5 * stockSlotStride).ToString("X") });
-                fake.WriteDisplayCacheBytes(lastStockCountryOffset, new byte[] { (byte)PlayerEnums.Country.Italien });
-                fake.WriteDisplayCacheBytes(lastStockClubOffset, new byte[] { 9 });
-                fake.WriteDisplayCacheBytes(lastStockSharesOffset, BitConverter.GetBytes((ushort)56));
-                fake.WriteDisplayCacheBytes(lastStockPriceOffset, BitConverter.GetBytes((ushort)78));
+                CoachMemory.WriteWorkingCopy(fake, lastStockCountryOffset, new byte[] { (byte)PlayerEnums.Country.Italien });
+                CoachMemory.WriteWorkingCopy(fake, lastStockClubOffset, new byte[] { 9 });
+                CoachMemory.WriteWorkingCopy(fake, lastStockSharesOffset, BitConverter.GetBytes((ushort)56));
+                CoachMemory.WriteWorkingCopy(fake, lastStockPriceOffset, BitConverter.GetBytes((ushort)78));
 
                 // Level 0: all six competencies, distinct values, to catch both a field never being
                 // read (stuck at the CoachCompetencyLevel default of 1) and two competencies being
@@ -59,12 +66,12 @@ namespace A2G_Trainer_XP.Tests
                 for (int competencyIndex = 0; competencyIndex < competencyCount; competencyIndex++)
                 {
                     string offset = (competencyTableOffset + competencyIndex * competencyEntryStride).ToString("X");
-                    fake.WriteDisplayCacheBytes(offset, BitConverter.GetBytes((ushort)(2 + competencyIndex)));
+                    CoachMemory.WriteWorkingCopy(fake, offset, BitConverter.GetBytes((ushort)(2 + competencyIndex)));
                 }
                 // Level 15 (Coach.MaxLevel): a single field, to verify the per-level stride
                 // separately from the per-competency stride exercised above.
                 string level15Offset = (competencyTableOffset + Coach.MaxLevel * competencyCount * competencyEntryStride).ToString("X");
-                fake.WriteDisplayCacheBytes(level15Offset, BitConverter.GetBytes((ushort)44));
+                CoachMemory.WriteWorkingCopy(fake, level15Offset, BitConverter.GetBytes((ushort)44));
 
                 CoachController controller = new CoachController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN, trainerIndex: 0);
                 Coach coach = controller.Coach;
@@ -77,6 +84,13 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal((ushort)355, coach.Games);
                 Assert.Equal((ushort)333, coach.Wins);
                 Assert.Equal(987654, coach.Wealth);
+
+                Assert.Equal(PlayerEnums.Country.Spanien, coach.CountryNextSeason);
+                Assert.Equal((byte)21, coach.ClubIdNextSeason);
+                Assert.True(coach.HasReleaseClause);
+                Assert.True(coach.IsReleaseClausePublished);
+                Assert.Equal(PlayerEnums.Country.Deutschland, coach.CurrentCountry);
+                Assert.Equal((byte)55, coach.CurrentClubId);
 
                 Assert.Equal(PlayerEnums.Country.Frankreich, coach.Stocks[0].Country);
                 Assert.Equal((byte)3, coach.Stocks[0].ClubId);
@@ -97,6 +111,41 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal((ushort)7, level0.Ausstrahlung);
 
                 Assert.Equal((ushort)44, coach.CompetencyLevels[Coach.MaxLevel].Verhandlungsgeschick);
+            }
+        }
+
+        [Fact]
+        public void GetEntity_ForSecondSlot_ReadsTheNextMitspielerWorkingCopy()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                Encoding latin1 = Encoding.GetEncoding("iso-8859-1");
+                CoachMemory.WriteWorkingCopy(fake, AddressPresets.COACH[CoachEnums.AddressKey.FIRSTNAME], latin1.GetBytes("Erster\0"), trainerSlot: 0);
+                CoachMemory.WriteWorkingCopy(fake, AddressPresets.COACH[CoachEnums.AddressKey.FIRSTNAME], latin1.GetBytes("Zweiter\0"), trainerSlot: 1);
+
+                Coach coach = new CoachController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN, trainerIndex: 1).Coach;
+
+                Assert.Equal("Zweiter", coach.Firstname);
+            }
+        }
+
+        [Fact]
+        public void GetEntity_WithoutCoachAnchors_ReadsThroughTheClubPointer()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.ClubAddress[0]);
+                fake.Memory.Layout = new PersistentLayout(null, null, null, null, isVerified: true);
+                Encoding latin1 = Encoding.GetEncoding("iso-8859-1");
+                fake.WriteDisplayCacheBytes(AddressPresets.COACH[CoachEnums.AddressKey.FIRSTNAME], latin1.GetBytes("Zeiger\0"));
+                fake.WriteDisplayCacheBytes(AddressPresets.COACH[CoachEnums.AddressKey.WEALTH], BitConverter.GetBytes(4711));
+                // A value at the fixed working copy must be ignored when the build's anchors aren't known.
+                CoachMemory.WriteWorkingCopy(fake, AddressPresets.COACH[CoachEnums.AddressKey.FIRSTNAME], latin1.GetBytes("Fest\0"));
+
+                Coach coach = new CoachController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN).Coach;
+
+                Assert.Equal("Zeiger", coach.Firstname);
+                Assert.Equal(4711, coach.Wealth);
             }
         }
     }

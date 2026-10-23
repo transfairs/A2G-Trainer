@@ -109,5 +109,116 @@ namespace A2G_Trainer_XP.Tests
 
             Assert.Equal(25d, coach.WinPercentage);
         }
+
+        [Fact]
+        public void CountryNextSeason_Set_RaisesPropertyChanged()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            coach.CountryNextSeason = PlayerEnums.Country.Italien;
+
+            Assert.Equal(PlayerEnums.Country.Italien, coach.CountryNextSeason);
+            Assert.Contains(nameof(Coach.CountryNextSeason), raised);
+        }
+
+        [Fact]
+        public void ClubIdNextSeason_Set_RaisesPropertyChanged()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            coach.ClubIdNextSeason = 42;
+
+            Assert.Equal((byte)42, coach.ClubIdNextSeason);
+            Assert.Contains(nameof(Coach.ClubIdNextSeason), raised);
+        }
+
+        [Fact]
+        public void ReleaseClause_Set_RaisesPropertyChangedForTheByteAndBothFlags()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            coach.ReleaseClause = 0x81;
+
+            Assert.True(coach.HasReleaseClause);
+            Assert.True(coach.IsReleaseClausePublished);
+            Assert.Contains(nameof(Coach.ReleaseClause), raised);
+            Assert.Contains(nameof(Coach.HasReleaseClause), raised);
+            Assert.Contains(nameof(Coach.IsReleaseClausePublished), raised);
+        }
+
+        [Fact]
+        public void IsReleaseClausePublished_SetTrue_AlsoSetsTheClause()
+        {
+            Coach coach = new Coach();
+
+            coach.IsReleaseClausePublished = true;
+
+            Assert.Equal((byte)0x81, coach.ReleaseClause);
+        }
+
+        [Fact]
+        public void IsReleaseClausePublished_SetFalse_KeepsTheClause()
+        {
+            Coach coach = new Coach { ReleaseClause = 0x81 };
+
+            coach.IsReleaseClausePublished = false;
+
+            Assert.Equal((byte)0x01, coach.ReleaseClause);
+        }
+
+        [Fact]
+        public void HasReleaseClause_SetFalse_AlsoWithdrawsTheAnnouncement_ButKeepsUnrelatedBits()
+        {
+            Coach coach = new Coach { ReleaseClause = 0x85 };
+
+            coach.HasReleaseClause = false;
+
+            Assert.Equal((byte)0x04, coach.ReleaseClause);
+            Assert.False(coach.IsReleaseClausePublished);
+        }
+
+        [Fact]
+        public void HasReleaseClause_SetTrue_DoesNotPublish()
+        {
+            Coach coach = new Coach();
+
+            coach.HasReleaseClause = true;
+
+            Assert.Equal((byte)0x01, coach.ReleaseClause);
+        }
+
+        [Theory]
+        [InlineData((byte)0x00, false, (ushort)3, false)]  // long contract, nothing else: offer can't be accepted
+        [InlineData((byte)0x01, false, (ushort)3, true)]   // release clause
+        [InlineData((byte)0x00, true, (ushort)3, true)]    // board release
+        [InlineData((byte)0x00, false, (ushort)1, true)]   // contract running out
+        public void CanNegotiateOffers_FollowsTheGamesCheck(byte clause, bool boardRelease, ushort yearsLeft, bool expected)
+        {
+            Coach coach = new Coach { ReleaseClause = clause, HasBoardRelease = boardRelease, ContractYearsLeft = yearsLeft };
+
+            Assert.Equal(expected, coach.CanNegotiateOffers);
+        }
+
+        [Fact]
+        public void CurrentCountryAndClubId_Set_RaisePropertyChanged()
+        {
+            Coach coach = new Coach();
+            List<string> raised = new List<string>();
+            ((INotifyPropertyChanged)coach).PropertyChanged += (s, e) => raised.Add(e.PropertyName);
+
+            coach.CurrentCountry = PlayerEnums.Country.Deutschland;
+            coach.CurrentClubId = 55;
+
+            Assert.Equal(PlayerEnums.Country.Deutschland, coach.CurrentCountry);
+            Assert.Equal((byte)55, coach.CurrentClubId);
+            Assert.Contains(nameof(Coach.CurrentCountry), raised);
+            Assert.Contains(nameof(Coach.CurrentClubId), raised);
+        }
     }
 }

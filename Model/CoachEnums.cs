@@ -19,6 +19,8 @@ namespace A2G_Trainer_XP.Model
             CLUB,
             COUNTRY_NEXT_SEASON,
             CLUB_NEXT_SEASON,
+            RELEASE_CLAUSE,
+            BOARD_RELEASE,
             OPTION_TO_LEAVE,
             WEALTH,
             SALARY,
@@ -26,8 +28,10 @@ namespace A2G_Trainer_XP.Model
             PER_TROPHY_ROUND,
             PER_TITLE,
             ACHIEVED_BONUS,
+            SEASON_GOAL,
             CONTRACT_DURATION,
             EXTEND_OPTION,
+            PERKS,
             TRUST,
             NERVES,
             NATIONALTEAM,
@@ -53,6 +57,70 @@ namespace A2G_Trainer_XP.Model
             NurFuerDieBesten = 4,
             [Description("Ultra Violence")]
             UltraViolence   = 5
+        }
+
+        /// <summary>
+        /// Season goal agreed in the contract (UInt16 at +0x5C), in the order of the game's own text
+        /// table (RESDLL.dll, "Meisterschaft" .. "zu Ende bringen"): 0 is the most ambitious. The
+        /// board's offer picks it from the club's strength via the table at anstoss2.exe+2C9778 -
+        /// top-league clubs never get "Aufstieg", lower-league favourites always do.
+        /// </summary>
+        public enum SeasonGoal : ushort
+        {
+            Meisterschaft = 0,
+            [Description("Erste Drei")]
+            ErsteDrei = 1,
+            Aufstieg = 2,
+            [Description("UEFA-Pokalplatz")]
+            UefaPokalplatz = 3,
+            [Description("oben mitspielen")]
+            ObenMitspielen = 4,
+            [Description("einstelliger Platz")]
+            EinstelligerPlatz = 5,
+            [Description("gute Show")]
+            GuteShow = 6,
+            [Description("guter Fußball")]
+            GuterFussball = 7,
+            Mittelfeldplatz = 8,
+            [Description("ehrliche Arbeit")]
+            EhrlicheArbeit = 9,
+            Klassenerhalt = 10,
+            [Description("zu Ende bringen")]
+            ZuEndeBringen = 11
+        }
+
+        /// <summary>
+        /// Contract extras ("Extras", UInt16 bitmask at +0x62): the game's 12 extras alternate between
+        /// a means of transport (even bits) and a home (odd bits), cheapest first. The monthly
+        /// accounts (FUN_00642e20) cut the coach's living costs to 80% for any home and by another
+        /// 20 points for any vehicle except the Bahncard. Values are bit numbers; -1 means none.
+        /// </summary>
+        public enum VehiclePerk
+        {
+            Keines = -1,
+            Bahncard = 0,
+            Dienstente = 2,
+            Mittelklassewagen = 4,
+            Sportwagen = 6,
+            Luxusschlitten = 8,
+            [Description("RR mit Chauffeur")]
+            RrMitChauffeur = 10
+        }
+
+        /// <summary>The home half of the contract extras (odd bits of +0x62) - see <see cref="VehiclePerk"/>.</summary>
+        public enum HousingPerk
+        {
+            Keine = -1,
+            [Description("kostenlose Untermiete")]
+            KostenloseUntermiete = 1,
+            [Description("2-Zimmer Wohnung")]
+            ZweiZimmerWohnung = 3,
+            [Description("4-Zimmer Wohnung")]
+            VierZimmerWohnung = 5,
+            [Description("eigener Bungalow")]
+            EigenerBungalow = 7,
+            Luxusvilla = 9,
+            Palast = 11
         }
 
         /// <summary>
