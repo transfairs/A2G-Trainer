@@ -20,6 +20,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Shared/ (Anstoss-Trainer-Shared) holds part of the code, the manifest and the changelog scripts.
+          submodules: true
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
@@ -83,11 +85,11 @@ jobs:
 
       - name: Generate changelog
         shell: pwsh
-        run: ./scripts/Generate-Changelog.ps1 -Tag "${{ github.ref_name }}"
+        run: ./Shared/scripts/Generate-Changelog.ps1 -Tag "${{ github.ref_name }}"
 
       - name: Render changelog HTML
         shell: pwsh
-        run: ./scripts/New-ChangelogHtml.ps1
+        run: ./Shared/scripts/New-ChangelogHtml.ps1
 
       - name: Build Latest.zip bundle
         shell: pwsh

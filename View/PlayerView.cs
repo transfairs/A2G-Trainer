@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.View
 {

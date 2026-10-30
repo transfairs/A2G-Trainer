@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -11,7 +11,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest>Shared\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -86,12 +86,12 @@
     <Compile Include="Controller\GameCalendar.cs" />
     <Compile Include="Controller\JobOfferInjector.cs" />
     <Compile Include="Controller\LeagueController.cs" />
-    <Compile Include="Controller\ProcessMemory.cs" />
+    <Compile Include="Controller\ProcessMemory.A2.cs" />
     <Compile Include="Controller\NamePoolResolver.cs" />
     <Compile Include="Controller\PlayerRecordResolver.cs" />
     <Compile Include="Controller\PersistentLayout.cs" />
     <Compile Include="Controller\PersistentLayoutCalibrator.cs" />
-    <Compile Include="Controller\Logger.cs" />
+    <Compile Include="Controller\Logger.A2.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
     <Compile Include="Model\AddressPresets.cs" />
@@ -145,7 +145,6 @@
     <Compile Include="View\HelpView.Designer.cs">
       <DependentUpon>HelpView.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\ViewScaler.cs" />
     <Compile Include="View\PlayerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -175,7 +174,6 @@
     <EmbeddedResource Include="View\PlayerView.resx">
       <DependentUpon>PlayerView.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -199,5 +197,6 @@
     <Content Include="Trainer-Logo.ico" />
   </ItemGroup>
   <ItemGroup />
+  <Import Project="Shared\AnstossTrainer.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,3 +1,4 @@
+using AnstossTrainer.Shared.Tests;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +8,7 @@ using A2G_Trainer_XP;
 using A2G_Trainer_XP.Model;
 using A2G_Trainer_XP.View;
 using Xunit;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.Tests
 {
@@ -17,7 +19,7 @@ namespace A2G_Trainer_XP.Tests
 
         private static MethodInfo DisableEditsMethod => typeof(PlayerView).GetMethod("DisableEdits", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static Controller.ProcessMemory AttachTrainer(Trainer trainer)
+        private static ProcessMemory AttachTrainer(Trainer trainer)
         {
             trainer.Memory.OpenProcess(Process.GetCurrentProcess().Id);
             return trainer.Memory;

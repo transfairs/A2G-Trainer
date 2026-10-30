@@ -1,7 +1,9 @@
+using AnstossTrainer.Shared.Tests;
 using System.Drawing;
 using System.Windows.Forms;
 using A2G_Trainer_XP.View;
 using Xunit;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.Tests
 {

@@ -1,3 +1,4 @@
+using AnstossTrainer.Shared.Tests;
 using System.ComponentModel;
 using System.Linq;
 using A2G_Trainer_XP.View;

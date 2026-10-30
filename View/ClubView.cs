@@ -3,6 +3,7 @@ using A2G_Trainer_XP.Model;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.View
 {

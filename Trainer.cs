@@ -1,25 +1,22 @@
 ﻿using A2G_Trainer_XP.Controller;
 using A2G_Trainer_XP.Model;
 using A2G_Trainer_XP.View;
+using AnstossTrainer.Shared;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace A2G_Trainer_XP
 {
     /// <summary>Main window: hosts the menu and swaps in the active tab (Club/Player/Coach/Help/About).</summary>
-    public partial class Trainer : Form
+    public partial class Trainer : TrainerShell
     {
-        internal bool ShutDown { get => this.shutDown; private set => this.shutDown = value; }
-        private bool shutDown;
         internal Game Anstoss { get => this.anstoss; private set => this.anstoss = value; }
         private Game anstoss;
 
         internal ProcessMemory Memory { get => this.memory; private set => this.memory = value; }
         private ProcessMemory memory;
 
-        private UserControl current;
         internal ClubView ClubView { get => this.clubView; private set => this.clubView = value; }
         private ClubView clubView;
         internal PlayerView PlayerView { get => this.playerView; private set => this.playerView = value; }
@@ -33,22 +30,12 @@ namespace A2G_Trainer_XP
 
         protected readonly ProcessController processController;
 
-        private readonly string windowTitle;
-
-        // One scaler per view, created the first time that view is shown after the window has
-        // loaded - by then it has its final unscaled (but DPI-adjusted) layout to measure from.
-        private readonly Dictionary<UserControl, ViewScaler> scalers = new Dictionary<UserControl, ViewScaler>();
-        private bool layoutReady;
-
         public Trainer()
         {
             InitializeComponent();
 
             this.memory = new ProcessMemory();
             this.Anstoss = new Game();
-
-            this.ShutDown = false;
-            this.FormClosing += (s, e) => this.ShutDown = true;
 
             this.processController = new ProcessController(this);
             this.PlayerView = new PlayerView(this.memory, this.processController);
@@ -58,59 +45,9 @@ namespace A2G_Trainer_XP
             this.AboutView = new AboutView();
             this.HelpView = new HelpView();
 
-            this.Load += (s, e) => { new Thread(this.processController.Observe).Start(); };
-
-            this.Load += (s, e) => this.EnableScaling();
-            this.ContentPanel.Resize += (s, e) => this.ScaleCurrentScreen();
-            this.Disposed += (s, e) =>
-            {
-                foreach (ViewScaler scaler in this.scalers.Values)
-                    scaler.Dispose();
-                this.scalers.Clear();
-            };
-
-            this.windowTitle = this.Text;
+            this.InitShell(this.ContentPanel, this.processController.Observe);
 
             this.ShowScreen(this.playerView);
-
-        }
-
-        /// <summary>Makes the window resizable from its designed size upwards, which stays the default and the minimum.</summary>
-        private void EnableScaling()
-        {
-            this.MinimumSize = this.Size;
-            this.layoutReady = true;
-            this.ScaleCurrentScreen();
-        }
-
-        /// <summary>Zooms the active view to fill the content panel.</summary>
-        private void ScaleCurrentScreen()
-        {
-            if (!this.layoutReady)
-                return;
-
-            if (!this.scalers.TryGetValue(this.current, out ViewScaler scaler))
-            {
-                this.current.PerformLayout();
-                scaler = new ViewScaler(this.current);
-                this.scalers[this.current] = scaler;
-            }
-            scaler.ScaleTo(this.ContentPanel.ClientSize);
-        }
-
-        /// <summary>Swaps the content panel to the given tab and updates the window title.</summary>
-        private void ShowScreen(UserControl userControl, String title = null)
-        {
-            if (this.current != userControl)
-            {
-                this.ContentPanel.SuspendLayout();
-                this.ContentPanel.Controls.Clear();
-                this.ContentPanel.Controls.Add(userControl);
-                this.current = userControl;
-                this.ContentPanel.ResumeLayout();
-                this.ScaleCurrentScreen();
-            }
-            this.Text = this.windowTitle + (title != null ? " :: " + title : "");
         }
 
         private void OwnClubToolStripMenuItem_Click(object sender, EventArgs e)

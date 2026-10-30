@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.Controller
 {

@@ -1,21 +1,21 @@
 ﻿using A2G_Trainer_XP.Model;
+using AnstossTrainer.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace A2G_Trainer_XP.Controller
 {
     /// <summary>
-    /// Background poller that finds and attaches to the running game process, detects savegame
-    /// reloads/trainer handoffs, and drives the views' refresh cycle.
+    /// Anstoss 2 Gold's game observer (polling loop in the shared GameObserver): attaches to the
+    /// running game process, detects savegame reloads/trainer handoffs, and drives the views'
+    /// refresh cycle.
     /// </summary>
-    public class ProcessController
+    public class ProcessController : GameObserver
     {
         private readonly Trainer trainer;
-        private Process gameProcess;
         private bool initialised;
         private bool viewsWired;
         internal bool IsGog { get => this.gog; private set => this.gog = value; }
@@ -43,44 +43,27 @@ namespace A2G_Trainer_XP.Controller
             this.initialised = false;
         }
 
+        protected override bool ShutDownRequested => this.trainer.ShutDown;
+
         // Extracted so tests can substitute a controlled candidate list - the real one depends on
         // whatever happens to be running on the machine (including a real Anstoss 2 Gold instance),
         // which made tests around this non-deterministic.
-        internal virtual IEnumerable<Process> GetGameCandidates() =>
+        // The title is only a cheap pre-filter: the game pops up further windows titled
+        // "ANSTOSS 2 ..." (e.g. dialogs), and other programs (e.g. verl.exe from the same
+        // install) title theirs that way too, so TryAttach identifies the actual build and
+        // confirms readable club data.
+        internal override IEnumerable<Process> GetGameCandidates() =>
             Process.GetProcesses()
                 .Where(p =>
                     p.MainWindowTitle.StartsWith("ANSTOSS 2") &&
                     !p.MainWindowTitle.Contains("Dateneditor"));
-
-        private void FindGame()
-        {
-            // Already tracking a live game process - no need to rescan every process on the system.
-            if (this.gameProcess != null && !this.gameProcess.HasExited)
-                return;
-
-            var candidates = this.GetGameCandidates();
-
-            // The title is only a cheap pre-filter: the game pops up further windows titled
-            // "ANSTOSS 2 ..." (e.g. dialogs), and other programs (e.g. verl.exe from the same
-            // install) title theirs that way too, so TryAttach identifies the
-            // actual build and confirms readable club data before latching onto a candidate,
-            // instead of trusting whichever one happens to be first.
-            foreach (Process candidate in candidates)
-            {
-                if (TryAttach(candidate))
-                {
-                    this.gameProcess = candidate;
-                    return;
-                }
-            }
-        }
 
         /// <summary>
         /// Attempts to attach to a candidate process: identifies its game build from the mapped main
         /// module (see GameBuild), then confirms it actually holds readable club data under that
         /// build's addressing.
         /// </summary>
-        private bool TryAttach(Process candidate)
+        protected override bool TryAttach(Process candidate)
         {
             if (!this.trainer.Memory.OpenProcess(candidate.Id))
                 return false;
@@ -141,34 +124,7 @@ namespace A2G_Trainer_XP.Controller
             return own.PlayerCount > 0;
         }
 
-        /// <summary>Polling loop run on the observer thread: finds/tracks the game process and drives view refreshes.</summary>
-        internal void Observe()
-        {
-            try
-            {
-                while (!this.trainer.ShutDown)
-                {
-                    this.FindGame();
-
-                    if (this.gameProcess != null)
-                    {
-                        this.UpdateGameProcess();
-                    }
-                    else
-                    {
-                        this.ClearGameProcess();
-                    }
-
-                    Thread.Sleep(1000);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Exception in Observe()", ex);
-            }
-        }
-
-        private void UpdateGameProcess()
+        protected override void UpdateGameProcess()
         {
             if (this.trainer.IsHandleCreated)
             {
@@ -234,20 +190,6 @@ namespace A2G_Trainer_XP.Controller
             }
         }
 
-        // Isolates one view's refresh/init from the others - see the call sites in
-        // UpdateGameProcess for why that isolation matters.
-        private void RefreshView(string viewName, Action action)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn($"{viewName} konnte nicht aktualisiert werden", ex);
-            }
-        }
-
         // Returns true on the tick where either (a) the own club goes from unreadable/empty back to
         // valid again - i.e. a savegame load (same club or not) just finished - or (b) two consecutive
         // valid reads show a different club Id/Country - i.e. a turn handoff to another trainer just
@@ -297,7 +239,7 @@ namespace A2G_Trainer_XP.Controller
             new PlayerController(this.trainer.Memory, own, this.IsGog, PlayerEnums.AddressType.OWN);
         }
 
-        private void ClearGameProcess()
+        protected override void ClearGameProcess()
         {
             this.initialised = false;
 

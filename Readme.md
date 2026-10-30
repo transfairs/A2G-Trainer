@@ -84,6 +84,14 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 4. Optional: run the test suite (see **Testing** below) to verify core logic before building a release  
 5. Building from the CLI instead of Visual Studio? See the note under **Testing**. A plain `dotnet build` fails on this project, use `msbuild` as shown there.  
 
+## 🧱 Project layout
+This trainer shares its foundation with the [A3-Trainer](https://github.com/transfairs/A3-Trainer) for *Anstoss 3* instead of keeping two copies of it:
+
+- **`Shared/`** is a git submodule pointing at [Anstoss-Trainer-Shared](https://github.com/transfairs/Anstoss-Trainer-Shared). It holds a Visual Studio *shared project* (`AnstossTrainer.Shared.projitems`: process memory access, logger, main-window base `TrainerShell`, view base `TrainerView`, game observer loop `GameObserver`, view scaler) whose code is compiled into each trainer, so every trainer stays a single exe. It also holds the app manifest, the STA test helper, the online help's stylesheet and script (copied next to `help/` on deploy) and the changelog scripts used by the release workflow.
+- Clone with submodules: `git clone --recursive https://github.com/transfairs/A2G-Trainer.git` (or run `git submodule update --init` in an existing clone).
+- Game-specific additions to shared classes live in the trainer as `partial` parts, e.g. `Controller/ProcessMemory.A2.cs` (build and persistent layout) and `Controller/Logger.A2.cs` (log folder, debug switch).
+- **Shared changes arrive automatically:** the Shared repository's CI builds and tests both trainers with every change. After a green push to its master, [`shared-update.yml`](.github/workflows/shared-update.yml) moves `Shared/` to the new commit, runs this trainer's tests and commits the update to master (or opens a pull request if the tests fail). It also runs daily and can be started by hand.
+
 ## 🧪 Testing
 The **A2G-Trainer-XP.Tests** project (xUnit) covers the memory-reading/writing logic and, for the WinForms views, the actual controls. None of it needs the game running.
 

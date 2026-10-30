@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - "help/**"
+      - "Shared"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -27,6 +28,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # The page's own files plus the stylesheet and script shared by all trainers' help pages.
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r help/. _site/
+          cp Shared/help/style.css Shared/help/script.js _site/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -34,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: help
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment

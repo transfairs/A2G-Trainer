@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.Controller
 {

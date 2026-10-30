@@ -1,6 +1,7 @@
 ﻿using A2G_Trainer_XP.Model;
 using System;
 using System.ComponentModel;
+using AnstossTrainer.Shared;
 
 namespace A2G_Trainer_XP.Controller
 {

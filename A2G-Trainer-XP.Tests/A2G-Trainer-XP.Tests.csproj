@@ -36,4 +36,9 @@
     <ProjectReference Include="..\A2G-Trainer-XP.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- STA helper from the Shared submodule, linked instead of copied. -->
+    <Compile Include="..\Shared\TestSupport\StaThread.cs" Link="StaThread.cs" />
+  </ItemGroup>
+
 </Project>
