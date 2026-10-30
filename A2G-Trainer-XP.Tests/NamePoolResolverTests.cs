@@ -175,6 +175,24 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
+        public void AppendName_WithTheBookkeepingUnreadable_ReturnsNull()
+        {
+            using (FakeModule fake = new FakeModule(moduleBlockSize: (int)LargeModuleBlockSize))
+            {
+                uint poolAddress = (uint)fake.DisplayCacheBlock.ToInt64();
+                fake.WriteModuleBytes(Settings.NamePoolPointerOffset, BitConverter.GetBytes(poolAddress));
+                fake.WriteModuleBytes(Settings.NamePoolEndPointerOffset, BitConverter.GetBytes(poolAddress));
+                NamePoolResolver resolver = new NamePoolResolver(fake.Memory);
+                Assert.True(resolver.CanAppend);
+
+                // Pool pointer, end pointer and count share a page.
+                fake.MakeModuleRegionUnreadable(Settings.NamePoolEndPointerOffset, 4);
+
+                Assert.Null(resolver.AppendName("Jonas", Latin1));
+            }
+        }
+
+        [Fact]
         public void Resolve_WithTheGamesTable_UnreadableOrInvalidEntry_ReturnsNull()
         {
             using (FakeModule fake = new FakeModule(moduleBlockSize: (int)LargeModuleBlockSize))

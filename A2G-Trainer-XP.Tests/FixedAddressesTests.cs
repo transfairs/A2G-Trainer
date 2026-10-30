@@ -129,6 +129,37 @@ namespace A2G_Trainer_XP.Tests
         }
 
         // An anchor the calibrator couldn't confirm doesn't veto the shift the others agree on.
+        // With the static tables 0x600 further on, a page boundary falls between the league bases and
+        // country table (page 0x2C1000) and the club counts and league ranges (page 0x2C2000); with
+        // 0x700 it falls between the league bases and everything else.
+        private const uint SplitBeforeCounts = 0x600;
+        private const uint SplitAfterBases = 0x700;
+
+        // GOG's runtime data with the static tables at the given shift, found (and cached for this
+        // layout) while everything is still readable.
+        private static void MakeGogWithStaticShift(FakeModule fake, uint staticShift)
+        {
+            MakeGog(fake, withStaticTables: false);
+            PlantStaticTables(fake, staticShift);
+            Assert.Equal(staticShift, FixedAddresses.For(fake.Memory).StaticShift);
+        }
+
+        [Fact]
+        public void For_WithTheLeagueRangesUnreadable_IsNull()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake, withStaticTables: false);
+                PlantStaticTables(fake, SplitBeforeCounts);
+                // The search reads its window in chunks that needn't start on a page; ending the
+                // image at the page boundary keeps the league bases' chunk readable.
+                fake.Memory.mProc.ModuleSize = 0x2C2000;
+                fake.MakeModuleRegionUnreadable(Settings.LeagueRangeTableOffset + SplitBeforeCounts, 1);
+
+                Assert.Null(FixedAddresses.For(fake.Memory));
+            }
+        }
+
         [Fact]
         public void For_WithOnlyThePlayerRecordAnchorCalibrated_UsesItsShift()
         {
@@ -507,6 +538,48 @@ namespace A2G_Trainer_XP.Tests
                 Coach coach = new CoachController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN, trainerIndex: 0).Coach;
 
                 Assert.Equal(CoachEnums.SeasonGoal.Klassenerhalt, coach.SeasonGoal);
+            }
+        }
+
+        [Theory]
+        [InlineData(SplitBeforeCounts, 0x2C1BE8u)]   // club counts unreadable, country table readable
+        [InlineData(SplitAfterBases, 0x2C17F0u)]     // league bases unreadable, counts readable
+        public void SeasonGoal_WithAnUnreadableLeagueTable_IsReadFromTheContract(uint staticShift, uint unreadableTable)
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGogWithStaticShift(fake, staticShift);
+                SeedClub(fake, Settings.GogOffset, staticShift, recordGoal: 3, cachedCopyOffset: null);
+                fake.WriteModuleBytes(GogWorkingCopy(0x5C), BitConverter.GetBytes((ushort)CoachEnums.SeasonGoal.Klassenerhalt));
+                fake.MakeModuleRegionUnreadable(unreadableTable + staticShift, 1);
+
+                Coach coach = new CoachController(fake.Memory, isGog: true, PlayerEnums.AddressType.OWN, trainerIndex: 0).Coach;
+
+                Assert.Equal(CoachEnums.SeasonGoal.Klassenerhalt, coach.SeasonGoal);
+            }
+        }
+
+        [Fact]
+        public void IsEligibleNextSeasonClub_WithUnreadableLeagueRanges_IsUnknown()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGogWithStaticShift(fake, SplitBeforeCounts);
+                fake.WriteModuleBytes(Settings.LeagueSystemByCountryOffset + SplitBeforeCounts + (uint)PlayerEnums.Country.England, new byte[] { 1 });
+                fake.MakeModuleRegionUnreadable(Settings.LeagueRangeTableOffset + SplitBeforeCounts, 1);
+
+                Assert.Null(CoachController.IsEligibleNextSeasonClub(fake.Memory, PlayerEnums.Country.England, 52));
+            }
+        }
+
+        [Fact]
+        public void LookupLeagueSystem_WithAnUnreadableCountryTable_IsUnknown()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.MakeModuleRegionUnreadable(Settings.LeagueSystemByCountryOffset, 1);
+
+                Assert.Null(LeagueController.LookupLeagueSystem(fake.Memory, PlayerEnums.Country.England));
             }
         }
 

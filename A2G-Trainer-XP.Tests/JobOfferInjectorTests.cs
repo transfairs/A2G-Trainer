@@ -154,6 +154,76 @@ namespace A2G_Trainer_XP.Tests
             }
         }
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr OpenProcess(uint access, bool inherit, int pid);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool CloseHandle(IntPtr handle);
+
+        private const uint ProcessVmOperation = 0x0008;
+        private const uint ProcessVmRead = 0x0010;
+        private const uint ProcessQueryInformation = 0x0400;
+
+        // Runs the request through a handle to this process with only the given rights, as with a
+        // game process the trainer may read but not fully modify.
+        private static JobOfferInjector.RequestResult RequestWithHandleRights(FakeModule fake, uint access)
+        {
+            IntPtr full = fake.Memory.mProc.Handle;
+            IntPtr limited = OpenProcess(access, false, System.Diagnostics.Process.GetCurrentProcess().Id);
+            Assert.NotEqual(IntPtr.Zero, limited);
+            try
+            {
+                fake.Memory.mProc.Handle = limited;
+                return new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 0, PlayerEnums.Country.England, 7);
+            }
+            finally
+            {
+                fake.Memory.mProc.Handle = full;
+                CloseHandle(limited);
+            }
+        }
+
+        [Fact]
+        public void Request_WhenNoStubMemoryCanBeAllocated_FailsAndLeavesTheCallAlone()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                WriteOriginalCall(fake);
+
+                Assert.Equal(JobOfferInjector.RequestResult.HookFailed, RequestWithHandleRights(fake, ProcessVmRead | ProcessQueryInformation));
+                Assert.Equal(PresentFunction(fake), CallTarget(fake));
+            }
+        }
+
+        [Fact]
+        public void Request_WhenTheCallSiteCantBeWritten_FailsAndLeavesTheCallAlone()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                WriteOriginalCall(fake);
+
+                Assert.Equal(JobOfferInjector.RequestResult.HookFailed, RequestWithHandleRights(fake, ProcessVmOperation | ProcessVmRead | ProcessQueryInformation));
+                Assert.Equal(PresentFunction(fake), CallTarget(fake));
+            }
+        }
+
+        // A stub whose signature ends exactly at a page boundary, with the flag on the next,
+        // unreadable page.
+        [Fact]
+        public void IsRequestPending_WithAnUnreadableFlag_IsFalse()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                const uint stubOffset = 0x10000 - 8;
+                fake.WriteModuleBytes(stubOffset, JobOfferInjector.Signature);
+                int rel = unchecked((int)(fake.ModuleBase + stubOffset + JobOfferInjector.CodeOffset - (CallSite(fake) + 5)));
+                fake.WriteModuleBytes(Settings.JobOfferPresentCallSiteOffset, new byte[] { 0xE8 }.Concat(BitConverter.GetBytes(rel)).ToArray());
+                fake.MakeModuleRegionUnreadable(0x10000, 1);
+
+                Assert.False(new JobOfferInjector(fake.Memory).IsRequestPending());
+            }
+        }
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void StubEntry();
 

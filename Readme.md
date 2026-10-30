@@ -10,7 +10,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 ![C#](https://img.shields.io/badge/language-C%23-239120?logo=c-sharp&logoColor=white) ![.NET Framework](https://img.shields.io/badge/.NET-4.0-blueviolet) [![Latest release](https://img.shields.io/github/v/release/transfairs/A2G-Trainer?label=release&color=orange)](https://github.com/transfairs/A2G-Trainer/releases/latest)
 
 [![⬇️ Download latest release](https://img.shields.io/badge/⬇️_Download-latest_release-2ea44f?style=for-the-badge)](https://github.com/transfairs/A2G-Trainer/releases/latest/download/A2G-Trainer-XP-Latest.zip)
-[![📖 Projektseite / Online-Hilfe](https://img.shields.io/badge/📖_Projektseite-Online--Hilfe-1565C0?style=for-the-badge)](https://transfairs.github.io/A2G-Trainer/)
+[![📖 Project page / online help](https://img.shields.io/badge/📖_Project_page-Online_help-1565C0?style=for-the-badge)](https://transfairs.github.io/A2G-Trainer/)
 
 </div>
 
@@ -85,7 +85,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 5. Building from the CLI instead of Visual Studio? See the note under **Testing**. A plain `dotnet build` fails on this project, use `msbuild` as shown there.  
 
 ## 🧱 Project layout
-This trainer shares its foundation with the [A3-Trainer](https://github.com/transfairs/A3-Trainer) for *Anstoss 3* instead of keeping two copies of it:
+This trainer shares its foundation with the [A3-Trainer](https://github.com/transfairs/A3-Trainer) for *Anstoss 3*:
 
 - **`Shared/`** is a git submodule pointing at [Anstoss-Trainer-Shared](https://github.com/transfairs/Anstoss-Trainer-Shared). It holds a Visual Studio *shared project* (`AnstossTrainer.Shared.projitems`: process memory access, logger, main-window base `TrainerShell`, view base `TrainerView`, game observer loop `GameObserver`, view scaler) whose code is compiled into each trainer, so every trainer stays a single exe. It also holds the app manifest, the STA test helper, the online help's stylesheet and script (copied next to `help/` on deploy) and the changelog scripts used by the release workflow.
 - Clone with submodules: `git clone --recursive https://github.com/transfairs/A2G-Trainer.git` (or run `git submodule update --init` in an existing clone).

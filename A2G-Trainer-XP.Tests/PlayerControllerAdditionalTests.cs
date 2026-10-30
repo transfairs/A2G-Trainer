@@ -394,6 +394,27 @@ namespace A2G_Trainer_XP.Tests
             });
         }
 
+        // The pool address was resolved, but the player's record can't be read any more when the
+        // pool index is checked (e.g. the game freed it in between): the sharer count is unknown.
+        [Fact]
+        public void TryWritePersistentName_WhenTheRecordBecomesUnreadable_RefusesTheInPlaceWrite()
+        {
+            WithSharedPool((fake, controller, pool) =>
+            {
+                Player player = controller.EntityList.Single();
+                NamePoolResolver namePool = new NamePoolResolver(fake.Memory);
+                uint? address = namePool.ResolveLastnameAddress(player.NameRecordId);
+                Assert.True(address.HasValue);
+                fake.MakeModuleRegionUnreadable(Settings.PlayerRecordTableOffset, 1);
+                byte[] poolBefore = ReadBytes(pool, 64);
+
+                string result = (string)InvokePrivate(controller, "TryWritePersistentName", namePool, address, "Maier", Encoding.GetEncoding("iso-8859-1"), true, player);
+
+                Assert.Contains("möglicherweise von weiteren Spielern", result);
+                Assert.Equal(poolBefore, ReadBytes(pool, 64));
+            });
+        }
+
         [Fact]
         public void TryWritePersistentName_WhenNameIsUnchanged_ReturnsNullWithoutRepointing()
         {
