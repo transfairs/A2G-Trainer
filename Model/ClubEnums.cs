@@ -71,6 +71,7 @@ namespace A2G_Trainer_XP.Model
             BlockJSeats,
             BlockKSeats,
             BlockLSeats,
+            Capacity,
             OpponentName,
             ID,
             COUNTRY,

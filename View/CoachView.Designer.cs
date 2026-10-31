@@ -49,6 +49,8 @@ namespace A2G_Trainer_XP.View
             this.WinPercentageLabel = new System.Windows.Forms.Label();
             this.WinPercentageValue = new System.Windows.Forms.Label();
             this.CompetencyBox = new System.Windows.Forms.GroupBox();
+            this.ImageBox = new System.Windows.Forms.GroupBox();
+            this.ImageInput = new System.Windows.Forms.ComboBox();
             this.ContractBox = new System.Windows.Forms.GroupBox();
             this.NextSeasonCountryLabel = new System.Windows.Forms.Label();
             this.NextSeasonCountryInput = new System.Windows.Forms.ComboBox();
@@ -100,6 +102,7 @@ namespace A2G_Trainer_XP.View
             this.GeneralTab.SuspendLayout();
             this.PersonalBox.SuspendLayout();
             this.CompetencyBox.SuspendLayout();
+            this.ImageBox.SuspendLayout();
             this.ContractBox.SuspendLayout();
             this.JobOfferBox.SuspendLayout();
             this.ContractTab.SuspendLayout();
@@ -126,6 +129,7 @@ namespace A2G_Trainer_XP.View
             this.GeneralTab.AutoScroll = true;
             this.GeneralTab.Controls.Add(this.PersonalBox);
             this.GeneralTab.Controls.Add(this.CompetencyBox);
+            this.GeneralTab.Controls.Add(this.ImageBox);
             this.GeneralTab.Location = new System.Drawing.Point(4, 22);
             this.GeneralTab.Name = "GeneralTab";
             this.GeneralTab.Padding = new System.Windows.Forms.Padding(3);
@@ -532,6 +536,24 @@ namespace A2G_Trainer_XP.View
             this.CompetencyBox.TabStop = false;
             this.CompetencyBox.Text = "Kompetenzen";
             //
+            // ImageBox
+            //
+            this.ImageBox.Controls.Add(this.ImageInput);
+            this.ImageBox.Location = new System.Drawing.Point(234, 262);
+            this.ImageBox.Name = "ImageBox";
+            this.ImageBox.Size = new System.Drawing.Size(240, 52);
+            this.ImageBox.TabIndex = 58;
+            this.ImageBox.TabStop = false;
+            this.ImageBox.Text = "Image";
+            //
+            // ImageInput
+            //
+            this.ImageInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ImageInput.Location = new System.Drawing.Point(10, 20);
+            this.ImageInput.Name = "ImageInput";
+            this.ImageInput.Size = new System.Drawing.Size(220, 21);
+            this.ImageInput.TabIndex = 0;
+            //
             // ContractBox
             //
             this.ContractBox.Controls.Add(this.CurrentClubLabel);
@@ -785,6 +807,7 @@ namespace A2G_Trainer_XP.View
             this.PersonalBox.PerformLayout();
             this.CompetencyBox.ResumeLayout(false);
             this.CompetencyBox.PerformLayout();
+            this.ImageBox.ResumeLayout(false);
             this.ContractBox.ResumeLayout(false);
             this.ContractBox.PerformLayout();
             this.JobOfferBox.ResumeLayout(false);
@@ -825,6 +848,8 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Label WinPercentageLabel;
         private System.Windows.Forms.Label WinPercentageValue;
         private System.Windows.Forms.GroupBox CompetencyBox;
+        private System.Windows.Forms.GroupBox ImageBox;
+        private System.Windows.Forms.ComboBox ImageInput;
         private System.Windows.Forms.GroupBox ContractBox;
         private System.Windows.Forms.Label NextSeasonCountryLabel;
         private System.Windows.Forms.ComboBox NextSeasonCountryInput;

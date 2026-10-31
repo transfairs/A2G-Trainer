@@ -300,6 +300,10 @@ namespace A2G_Trainer_XP.View
             // Coach.Level, since it already has to show the coach's current level by default anyway.
             this.competencyLevelInput.DataBindings.Add("SelectedValue", this.bindingSource, "Level");
 
+            // Only builds with known fixed addresses have the image (see CoachController.ImageAddress).
+            BindEnumCombo<CoachEnums.ManagerImage>(this.ImageInput, nameof(Coach.Image));
+            this.ImageBox.Enabled = this.coach?.HasImage ?? false;
+
             // "Nächste Saison" country/club (Coach.CountryNextSeason/ClubIdNextSeason). Choices here
             // are restricted to the main + bonus countries, same as the stock country combos below -
             // a manager can only take over a club from one of those, not literally any country in the
@@ -817,6 +821,7 @@ namespace A2G_Trainer_XP.View
                     }
 
                     this.UpdateStockSlotAvailability();
+                    this.ImageBox.Enabled = this.coach.HasImage;
                 }
 
                 if (this.competencyLevelInput != null)

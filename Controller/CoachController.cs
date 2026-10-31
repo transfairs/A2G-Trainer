@@ -112,6 +112,10 @@ namespace A2G_Trainer_XP.Controller
                     }
                 }
 
+                byte[] image = this.HasFixedAddresses ? this.memory.ReadBytesAtAddress(this.ImageAddress, 2) : null;
+                coach.HasImage = image != null;
+                coach.Image = (CoachEnums.ManagerImage)ReadUInt16(image);
+
                 coach.Initilisation = false;
             }
             return coach;
@@ -157,6 +161,11 @@ namespace A2G_Trainer_XP.Controller
 
             return this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.MitspielerId * Settings.CoachRecordStride + slotOffset;
         }
+
+        // The image has no working copy - the game reads and assigns it only in the per-ID block
+        // (see Settings.CoachImageRecordOffset).
+        private uint ImageAddress =>
+            this.Fixed.Runtime(this.memory, Settings.CoachImageRecordOffset) + this.MitspielerId * Settings.CoachCompetencyRecordStride;
 
         // Builds without known fixed addresses (see FixedAddresses) keep going through the club
         // pointer, exactly as before.
@@ -450,6 +459,9 @@ namespace A2G_Trainer_XP.Controller
                     this.WriteField(this.Coach, GetCompetencyOffset(level, i), BitConverter.GetBytes(value));
                 }
             }
+
+            if (this.HasFixedAddresses && this.Coach.HasImage)
+                this.memory.WriteBytesAtAddress(this.ImageAddress, BitConverter.GetBytes((ushort)this.Coach.Image));
         }
     }
 }

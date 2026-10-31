@@ -52,36 +52,53 @@ namespace A2G_Trainer_XP.Tests
             Assert.True(club.IsBlockCRoof);
         }
 
+        // Stadium edits used to put block A under construction for a week (so the game's weekly run
+        // recounted the capacity); the Trainer now recounts the capacity itself on save.
         [Fact]
-        public void Roof_ChangedAfterInitialisation_ForcesBlockAWeeksToAtLeastOne()
+        public void StadiumChanges_AfterInitialisation_LeaveTheConstructionWeeksAlone()
         {
             Club club = new Club { Initilisation = false };
 
-            Assert.Equal(0, club.BlockAWeeks);
-
             club.Roof = ClubEnums.Roof.BlockA;
-
-            Assert.True(club.BlockAWeeks >= 1);
-        }
-
-        [Fact]
-        public void Roof_ChangedDuringInitialisation_DoesNotForceBlockAWeeks()
-        {
-            Club club = new Club(); // Initilisation defaults to true
-
-            club.Roof = ClubEnums.Roof.BlockA;
-
-            Assert.Equal(0, club.BlockAWeeks);
-        }
-
-        [Fact]
-        public void BlockAStandings_ChangedAfterInitialisation_ForcesBlockAWeeksToAtLeastOne()
-        {
-            Club club = new Club { Initilisation = false };
-
+            club.IsBlockCRoof = true;
             club.BlockAStandings = 100;
+            club.BlockFSeats = 200;
 
-            Assert.True(club.BlockAWeeks >= 1);
+            Assert.Equal(0, club.BlockAWeeks);
+            Assert.Equal(0, club.BlockFWeeks);
+        }
+
+        [Fact]
+        public void OpenCapacity_CountsStandingAndSeatsOfBlocksNotUnderConstruction()
+        {
+            Club club = new Club
+            {
+                BlockAStandings = 1000, BlockASeats = 500,
+                BlockBStandings = 2000, BlockBSeats = 700, BlockBWeeks = 3,
+                BlockLStandings = 10, BlockLSeats = 20,
+            };
+
+            Assert.Equal(1530, club.OpenCapacity());
+
+            club.BlockBWeeks = 0;
+            Assert.Equal(4230, club.OpenCapacity());
+
+            // The game counts the places as Int16 - the "negative places" trick.
+            club.BlockLSeats = 65516;
+            Assert.Equal(4190, club.OpenCapacity());
+        }
+
+        [Fact]
+        public void FieldCondition_RaisesItsOwnPropertyChanged()
+        {
+            Club club = new Club();
+            var changed = new System.Collections.Generic.List<string>();
+            club.PropertyChanged += (s, e) => changed.Add(e.PropertyName);
+
+            club.FieldCondition = ClubEnums.FieldCondition.Holprig;
+
+            Assert.Contains(nameof(Club.FieldCondition), changed);
+            Assert.DoesNotContain(nameof(Club.DisplayUnit), changed);
         }
     }
 }

@@ -82,36 +82,6 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
-        public void Roof_SetAfterInitilisation_BumpsBlockAWeeksToAtLeastOne()
-        {
-            Club club = new Club { Initilisation = false, BlockAWeeks = 0 };
-
-            club.Roof = ClubEnums.Roof.BlockC;
-
-            Assert.Equal((byte)1, club.BlockAWeeks);
-        }
-
-        [Fact]
-        public void Roof_SetAfterInitilisation_LeavesAnAlreadyPositiveBlockAWeeksUnchanged()
-        {
-            Club club = new Club { Initilisation = false, BlockAWeeks = 5 };
-
-            club.Roof = ClubEnums.Roof.BlockC;
-
-            Assert.Equal((byte)5, club.BlockAWeeks);
-        }
-
-        [Fact]
-        public void Roof_SetDuringInitilisation_DoesNotTouchBlockAWeeks()
-        {
-            Club club = new Club { Initilisation = true, BlockAWeeks = 0 };
-
-            club.Roof = ClubEnums.Roof.BlockC;
-
-            Assert.Equal((byte)0, club.BlockAWeeks);
-        }
-
-        [Fact]
         public void StadiumName_LongerThanTwentyEight_IsTruncated()
         {
             Club club = new Club();

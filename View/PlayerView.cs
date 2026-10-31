@@ -14,6 +14,14 @@ namespace A2G_Trainer_XP.View
     public partial class PlayerView : EntityView
     {
         private Timer freezeTimer;
+        // Every club in the savegame, for the "Stammverein" choice (see ShowHomeClub).
+        private List<Club> allClubs;
+        private bool homeClubHandlersAttached;
+        private bool populatingHomeClub;
+        private bool transferHandlersAttached;
+        // Country the club list of the "Wechsel" tab was last filled for.
+        private PlayerEnums.Country transferClubCountry;
+        private bool populatingTransferCountries;
 
         /// <summary>Creates the roster tab view bound to the given memory accessor and process controller.</summary>
         public PlayerView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
@@ -98,9 +106,12 @@ namespace A2G_Trainer_XP.View
                 this.ShowUpBonusInput.KeyPress += this.NumericOnly_KeyPress;
                 this.GoalBonusInput.KeyPress += this.NumericOnly_KeyPress;
                 this.FixedTransferFeeInput.KeyPress += this.NumericOnly_KeyPress;
+                this.BuyPriceInput.KeyPress += this.NumericOnly_KeyPress;
                 this.ContractDurationInput.KeyPress += this.NumericOnly_KeyPress;
                 this.YearsInClubInput.KeyPress += this.NumericOnly_KeyPress;
                 this.Retires.KeyPress += this.NumericOnly_KeyPress;
+                foreach (TextBox statisticInput in this.StatisticInputs)
+                    statisticInput.KeyPress += this.NumericOnly_KeyPress;
 
                 this.LevelInput.TextChanged += this.ByteMax255_TextChanged;
                 this.AgeInput.TextChanged += this.ByteMax255_TextChanged;
@@ -118,9 +129,12 @@ namespace A2G_Trainer_XP.View
                 this.ShowUpBonusInput.TextChanged += this.UshortMaxNumber_TextChanged;
                 this.GoalBonusInput.TextChanged += this.UshortMaxNumber_TextChanged;
                 this.FixedTransferFeeInput.TextChanged += this.UshortMaxNumber_TextChanged;
+                this.BuyPriceInput.TextChanged += this.IntMaxNumber_TextChanged;
                 this.ContractDurationInput.TextChanged += this.ByteMax255_TextChanged;
                 this.YearsInClubInput.TextChanged += this.ByteMax255_TextChanged;
                 this.Retires.TextChanged += this.ByteMax255_TextChanged;
+                foreach (TextBox statisticInput in this.StatisticInputs)
+                    statisticInput.TextChanged += this.ByteMax255_TextChanged;
 
                 this.LastNameInput.DataBindings.Add("Text", this.bindingSource, "Lastname");
                 this.FirstNameInput.DataBindings.Add("Text", this.bindingSource, "Firstname");
@@ -294,19 +308,288 @@ namespace A2G_Trainer_XP.View
                 this.ShowUpBonusInput.DataBindings.Add("Text", this.bindingSource, "ShowUpBonus");
                 this.GoalBonusInput.DataBindings.Add("Text", this.bindingSource, "GoalsBonus");
                 this.FixedTransferFeeInput.DataBindings.Add("Text", this.bindingSource, "TransferFee");
+                this.BuyPriceInput.DataBindings.Add("Text", this.bindingSource, "BuyPrice");
                 this.ContractDurationInput.DataBindings.Add("Text", this.bindingSource, "ContractDuration");
                 this.Leased.DataBindings.Add("Checked", this.bindingSource, "IsLeased");
                 this.LeasedWithOption.DataBindings.Add("Checked", this.bindingSource, "HasBuyOption");
-                this.UnknownContractCheckbox.DataBindings.Add("Checked", this.bindingSource, "IsUnknownContractDetail");
+                this.BuyOptionOnHold.DataBindings.Add("Checked", this.bindingSource, "IsBuyOptionOnHold");
                 this.JoinedThisSeason.DataBindings.Add("Checked", this.bindingSource, "IsJoinedThisSeason");
                 this.OptionPlayer.DataBindings.Add("Checked", this.bindingSource, "HasOptionPlayer");
                 this.OptionClub.DataBindings.Add("Checked", this.bindingSource, "HasOptionClub");
                 this.SeatedGuarantee.DataBindings.Add("Checked", this.bindingSource, "IsSeatedGuarantee");
-                this.UnsetContractDetail.DataBindings.Add("Checked", this.bindingSource, "IsUnsetContractDetail");
                 this.YearsInClubInput.DataBindings.Add("Text", this.bindingSource, "YearsInClub");
                 this.Retires.DataBindings.Add("Checked", this.bindingSource, "IsRetires");
+
+                this.RedCardsSeasonInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.RedCardsSeason));
+                this.YellowRedCardsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.YellowRedCardsSeason));
+                this.GoalsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.Goals));
+                this.OwnGoalsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.OwnGoals));
+                this.AssistsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.Assists));
+                this.JokerGoalsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.JokerGoals));
+                this.AppearancesInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.Appearances));
+                this.SubbedInInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.SubbedIn));
+                this.SubbedOutInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.SubbedOut));
+                this.UpgradeGoalsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.UpgradeGoals));
+
+                this.AttachHomeClubHandlers();
+                this.ShowHomeClub(this.bindingSource.Current as Player);
+                this.AttachTransferHandlers();
+                this.ShowTransfer();
             }
         }
+
+        #region Wechsel
+        // "Wechsel" tab (TransferInjector): the target club is chosen from the club scan like the
+        // "Stammverein"; the move itself happens at the next daily processing.
+        private void AttachTransferHandlers()
+        {
+            if (this.transferHandlersAttached)
+                return;
+            this.transferHandlersAttached = true;
+
+            this.TransferKindInput.DisplayMember = "Text";
+            this.TransferKindInput.ValueMember = "Value";
+            this.TransferKindInput.DataSource = new[]
+            {
+                new { Value = TransferInjector.Kind.Transfer, Text = "Wechsel" },
+                new { Value = TransferInjector.Kind.Loan, Text = "Leihe" },
+                new { Value = TransferInjector.Kind.LoanWithBuyOption, Text = "Leihe mit Kaufoption" },
+            }.ToList();
+            this.TransferKindInput.SelectedIndexChanged += (s, e) => this.UpdateTransferKind();
+            this.TransferCountryInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (!this.populatingTransferCountries)
+                    this.PopulateTransferClubCombo();
+            };
+            this.TransferFeeInput.KeyPress += this.NumericOnly_KeyPress;
+            this.TransferFeeInput.TextChanged += this.IntMaxNumber_TextChanged;
+            this.TransferBuyPriceInput.KeyPress += this.NumericOnly_KeyPress;
+            this.TransferBuyPriceInput.TextChanged += this.IntMaxNumber_TextChanged;
+            this.TransferRequestBtn.Click += (s, e) => this.RequestTransfer();
+            this.UpdateTransferKind();
+        }
+
+        private TransferInjector.Kind SelectedTransferKind =>
+            this.TransferKindInput.SelectedValue is TransferInjector.Kind kind ? kind : TransferInjector.Kind.Transfer;
+
+        // The buy price only exists for a loan with buy option, "sofort" only for a transfer (loans have no deadline).
+        private void UpdateTransferKind()
+        {
+            TransferInjector.Kind kind = this.SelectedTransferKind;
+            this.TransferBuyPriceInput.Enabled = kind == TransferInjector.Kind.LoanWithBuyOption;
+            this.TransferImmediate.Enabled = kind == TransferInjector.Kind.Transfer;
+        }
+
+        private void ShowTransfer()
+        {
+            PlayerEnums.Country? previous = this.TransferCountryInput.SelectedValue as PlayerEnums.Country?;
+            List<PlayerEnums.Country> countries = (this.allClubs ?? new List<Club>())
+                .Select(c => c.Country)
+                .Where(c => c != PlayerEnums.Country.Sonstige && Enum.IsDefined(typeof(PlayerEnums.Country), c))
+                .Distinct()
+                .OrderBy(HomeCountryText)
+                .ToList();
+
+            this.TransferCountryInput.DisplayMember = "Text";
+            this.TransferCountryInput.ValueMember = "Value";
+            // Rebuilding the list selects other countries on the way - the club list follows only the final one.
+            this.populatingTransferCountries = true;
+            try
+            {
+                this.TransferCountryInput.DataSource = countries.Select(c => new { Value = c, Text = HomeCountryText(c) }).ToList();
+                if (previous.HasValue && countries.Contains(previous.Value))
+                    this.TransferCountryInput.SelectedValue = previous.Value;
+                else if (countries.Count > 0)
+                    this.TransferCountryInput.SelectedIndex = 0;
+            }
+            finally
+            {
+                this.populatingTransferCountries = false;
+            }
+            this.PopulateTransferClubCombo();
+            this.UpdateTransferBox();
+        }
+
+        // Clubs of the chosen country without the player's own; keeps the chosen club while the country stays.
+        private void PopulateTransferClubCombo()
+        {
+            Player player = this.bindingSource?.Current as Player;
+            PlayerEnums.Country country = this.TransferCountryInput.SelectedValue is PlayerEnums.Country selected ? selected : PlayerEnums.Country.Sonstige;
+            ushort? previous = country == this.transferClubCountry ? this.TransferClubInput.SelectedValue as ushort? : null;
+
+            var clubs = this.HomeClubsOf(country)
+                .Where(c => player == null || !(c.Country == player.ClubCountry && c.Id == player.ClubId))
+                .Select(c => new { Value = (ushort)c.Id, Text = c.ClubName })
+                .ToList();
+            this.TransferClubInput.DisplayMember = "Text";
+            this.TransferClubInput.ValueMember = "Value";
+            this.TransferClubInput.DataSource = clubs;
+            if (previous.HasValue && clubs.Any(c => c.Value == previous.Value))
+                this.TransferClubInput.SelectedValue = previous.Value;
+            else if (clubs.Count > 0)
+                this.TransferClubInput.SelectedIndex = 0;
+            this.transferClubCountry = country;
+        }
+
+        // Original build only, and not for youth players (they aren't in a squad); DisableEdits decides the rest.
+        private void UpdateTransferBox()
+        {
+            bool possible = this.playerController != null
+                && this.playerController.Type != PlayerEnums.AddressType.TRAINEE
+                && new TransferInjector(this.Memory).IsSupported;
+            if (!possible)
+                this.TransferBox.Enabled = false;
+        }
+
+        private void RequestTransfer()
+        {
+            if (!(this.bindingSource?.Current is Player player) || !(this.TransferCountryInput.SelectedValue is PlayerEnums.Country country) || !(this.TransferClubInput.SelectedValue is ushort clubId))
+                return;
+            uint.TryParse(this.TransferFeeInput.Text, out uint fee);
+            uint.TryParse(this.TransferBuyPriceInput.Text, out uint buyPrice);
+
+            TransferInjector.RequestResult result = new TransferInjector(this.Memory).Request(player, country, (byte)clubId, this.SelectedTransferKind, fee, buyPrice, this.TransferImmediate.Checked);
+            this.TransferStatus.Text = TransferMessage(result, player.ToString(), this.TransferClubInput.GetItemText(this.TransferClubInput.SelectedItem));
+        }
+
+        // What the last request came to, once the daily processing ran it (see RefreshPlayerListView).
+        private void ReportTransferOutcome()
+        {
+            TransferInjector.Outcome outcome = new TransferInjector(this.Memory).TakeOutcome();
+            if (outcome != TransferInjector.Outcome.None)
+                this.TransferStatus.Text = TransferOutcomeMessage(outcome);
+        }
+
+        internal static string TransferMessage(TransferInjector.RequestResult result, string playerName, string clubName)
+        {
+            switch (result)
+            {
+                case TransferInjector.RequestResult.Requested:
+                    return $"{playerName} wechselt beim nächsten Tagesabschluss zu {clubName}.";
+                case TransferInjector.RequestResult.NoClub:
+                    return "Der Spieler hat keinen Verein.";
+                case TransferInjector.RequestResult.SameClub:
+                    return "Das ist der aktuelle Verein des Spielers.";
+                case TransferInjector.RequestResult.NotSupported:
+                    return "Für diese Spielversion nicht verfügbar.";
+                default:
+                    return "Konnte im Spiel nicht vorbereitet werden, Details in der Logdatei.";
+            }
+        }
+
+        internal static string TransferOutcomeMessage(TransferInjector.Outcome outcome)
+        {
+            switch (outcome)
+            {
+                case TransferInjector.Outcome.Done:
+                    return "Wechsel erledigt.";
+                case TransferInjector.Outcome.NotInClub:
+                    return "Wechsel abgelehnt: Der Spieler war nicht mehr beim alten Verein.";
+                case TransferInjector.Outcome.SquadFull:
+                    return "Wechsel abgelehnt: Der Kader des neuen Vereins ist voll.";
+                default:
+                    return "";
+            }
+        }
+        #endregion
+
+        // "Stammverein" (Player.HomeCountry/HomeClubId): both combos are filled per player and written
+        // in their change handlers instead of being bound - the club list depends on the country, the
+        // same reason CoachView's "Nächste Saison" combos aren't plain bindings.
+        private void AttachHomeClubHandlers()
+        {
+            if (this.homeClubHandlersAttached)
+                return;
+            this.homeClubHandlersAttached = true;
+
+            this.HomeCountryInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (this.populatingHomeClub || !(this.bindingSource?.Current is Player player) || !(this.HomeCountryInput.SelectedValue is PlayerEnums.Country country))
+                    return;
+                player.HomeCountry = country;
+                Club first = this.HomeClubsOf(country).FirstOrDefault();
+                player.HomeClubId = first != null ? first.Id : (ushort)0;
+                this.PopulateHomeClubCombo(player);
+            };
+            this.HomeClubInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (!this.populatingHomeClub && this.bindingSource?.Current is Player player && this.HomeClubInput.SelectedValue is ushort id)
+                    player.HomeClubId = id;
+            };
+        }
+
+        // Country 0 means "no Stammverein" (not on loan); its entries in the club scan are unused slots.
+        private IEnumerable<Club> HomeClubsOf(PlayerEnums.Country country) =>
+            country == PlayerEnums.Country.Sonstige || this.allClubs == null
+                ? Enumerable.Empty<Club>()
+                : this.allClubs.Where(c => c.Country == country).OrderBy(c => c.ClubName);
+
+        private void ShowHomeClub(Player player)
+        {
+            this.populatingHomeClub = true;
+            try
+            {
+                List<PlayerEnums.Country> countries = (this.allClubs ?? new List<Club>())
+                    .Select(c => c.Country)
+                    .Where(c => c != PlayerEnums.Country.Sonstige && Enum.IsDefined(typeof(PlayerEnums.Country), c))
+                    .Distinct()
+                    .OrderBy(HomeCountryText)
+                    .ToList();
+                // Keep a stored country selectable even if the club scan doesn't cover it.
+                if (player != null && player.HomeCountry != PlayerEnums.Country.Sonstige && !countries.Contains(player.HomeCountry))
+                    countries.Add(player.HomeCountry);
+                countries.Insert(0, PlayerEnums.Country.Sonstige);
+
+                this.HomeCountryInput.DisplayMember = "Text";
+                this.HomeCountryInput.ValueMember = "Value";
+                this.HomeCountryInput.DataSource = countries.Select(c => new { Value = c, Text = HomeCountryText(c) }).ToList();
+                this.HomeCountryInput.SelectedValue = player?.HomeCountry ?? PlayerEnums.Country.Sonstige;
+            }
+            finally
+            {
+                this.populatingHomeClub = false;
+            }
+            this.PopulateHomeClubCombo(player);
+        }
+
+        private void PopulateHomeClubCombo(Player player)
+        {
+            this.populatingHomeClub = true;
+            try
+            {
+                PlayerEnums.Country country = player?.HomeCountry ?? PlayerEnums.Country.Sonstige;
+                var clubs = this.HomeClubsOf(country).Select(c => new { Value = (ushort)c.Id, Text = c.ClubName }).ToList();
+                // Keep a stored club selectable even if the club scan doesn't know it.
+                if (player != null && country != PlayerEnums.Country.Sonstige && !clubs.Any(c => c.Value == player.HomeClubId))
+                    clubs.Add(new { Value = player.HomeClubId, Text = $"Verein {player.HomeClubId}" });
+
+                this.HomeClubInput.DisplayMember = "Text";
+                this.HomeClubInput.ValueMember = "Value";
+                this.HomeClubInput.DataSource = clubs;
+                if (clubs.Count > 0)
+                    this.HomeClubInput.SelectedValue = player.HomeClubId;
+                this.HomeClubInput.Enabled = clubs.Count > 0;
+            }
+            finally
+            {
+                this.populatingHomeClub = false;
+            }
+        }
+
+        internal const string NoHomeClubText = "–";
+
+        // The club scan also turns up country values the enum doesn't name.
+        private static string HomeCountryText(PlayerEnums.Country country) =>
+            country == PlayerEnums.Country.Sonstige ? NoHomeClubText
+            : Enum.IsDefined(typeof(PlayerEnums.Country), country) ? PlayerEnums.GetDescription(country)
+            : $"Land {(byte)country}";
+        // The "Statistik" tab's inputs, all season counts of one byte each.
+        private TextBox[] StatisticInputs => new[]
+        {
+            this.AppearancesInput, this.SubbedInInput, this.SubbedOutInput, this.RedCardsSeasonInput, this.YellowRedCardsInput,
+            this.GoalsInput, this.AssistsInput, this.JokerGoalsInput, this.OwnGoalsInput, this.UpgradeGoalsInput
+        };
+
         private bool IsClub()
         {
             bool output = !String.IsNullOrEmpty(this.clubController.Club.ClubName);
@@ -343,6 +626,7 @@ namespace A2G_Trainer_XP.View
             if (this.IsGameRunning())
             {
                 this.processController.UpdatePlayerOffsets();
+                this.allClubs = new ClubController(this.Memory, this.processController.IsGog, PlayerEnums.AddressType.ALL, loadFullList: true).EntityList.ToList();
 
                 this.clubController = new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.OWN : type,
                     loadFullList: type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE);
@@ -423,6 +707,8 @@ namespace A2G_Trainer_XP.View
 
                     this.ShowClubLabel();
                     this.DisableEdits(this.IsClub());
+                    this.ShowTransfer();
+                    this.ReportTransferOutcome();
                 }
             }
         }
@@ -437,6 +723,8 @@ namespace A2G_Trainer_XP.View
                 if (item.Tag is Player player)
                 {
                     this.bindingSource.DataSource = player;
+                    this.ShowHomeClub(player);
+                    this.PopulateTransferClubCombo();
                 }
             }
         }

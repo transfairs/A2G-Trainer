@@ -48,10 +48,23 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SHOWUP, "B6"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.GOALS_BONUS, "B8"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.TRANSFER_FEE, "BA"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.BUY_PRICE, "BC"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.HOME_COUNTRY, "9E"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.HOME_CLUB, "A0"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CONTRACT_DURATION, "C0"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CONTRACT_DETAILS, "C1"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.YEARS_IN_CLUB, "C2"),
-            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CAREER, "D7")
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CAREER, "D7"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.RED_CARDS, "4B"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.YELLOW_RED_CARDS, "4C"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.GOALS, "56"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.OWN_GOALS, "6A"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.ASSISTS, "6B"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.JOKER_GOALS, "6C"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.APPEARANCES, "77"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SUBBED_IN, "78"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SUBBED_OUT, "79"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.UPGRADE_GOALS, "166")
         );
 
         /// <summary>Field offsets for the user's own club/stadium.</summary>
@@ -115,7 +128,8 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockISeats, "87C"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockJSeats, "87E"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockKSeats, "880"),
-            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockLSeats, "882")
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockLSeats, "882"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Capacity, "850")
         );
 
         /// <summary>Field offsets for the currently loaded opponent club.</summary>

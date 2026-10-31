@@ -122,5 +122,30 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal((ushort)2012, BitConverter.ToUInt16(fake.ReadDisplayCacheBytes(own[ClubEnums.AddressKey.BlockLSeats], 2), 0));
             }
         }
+        [Fact]
+        public void Save_RecountsTheCapacityTheGameSellsTicketsAgainst()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.ClubAddress[0]);
+                Addresses own = AddressPresets.OWN_CLUB;
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.PLAYER_COUNT], new byte[] { 15 });
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.Capacity], BitConverter.GetBytes(12345));
+
+                ClubController controller = new ClubController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN);
+                Assert.Equal(12345, controller.Club.Capacity);
+                controller.Club.ClubName = "X";
+                controller.Club.StadiumName = "Y";
+                controller.Club.BlockAStandings = 8000;
+                controller.Club.BlockASeats = 2000;
+                controller.Club.BlockCSeats = 5000;
+                controller.Club.BlockCWeeks = 2;
+
+                controller.Save();
+
+                Assert.Equal(10000, BitConverter.ToInt32(fake.ReadDisplayCacheBytes(own[ClubEnums.AddressKey.Capacity], 4), 0));
+                Assert.Equal(10000, controller.Club.Capacity);
+            }
+        }
     }
 }

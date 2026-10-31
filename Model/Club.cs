@@ -94,116 +94,141 @@ namespace A2G_Trainer_XP.Model
         /// <summary>Bitmask of which stadium blocks (A-L) currently have a roof.</summary>
         public ClubEnums.Roof Roof { get => this.roof; set => this.Setter(value); }
         private ClubEnums.Roof roof = ClubEnums.Roof.None;
-        /// <summary>Number of weeks stadium block A has been in its current state.</summary>
+        /// <summary>Weeks stadium block A is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockAWeeks { get => this.blockAWeeks; set { this.blockAWeeks = value; this.OnPropertyChanged(nameof(this.BlockAWeeks)); } }
         private byte blockAWeeks = 0;
-        /// <summary>Number of weeks stadium block B has been in its current state.</summary>
+        /// <summary>Weeks stadium block B is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockBWeeks { get => this.blockBWeeks; set { this.blockBWeeks = value; this.OnPropertyChanged(nameof(this.BlockBWeeks)); } }
         private byte blockBWeeks = 0;
-        /// <summary>Number of weeks stadium block C has been in its current state.</summary>
+        /// <summary>Weeks stadium block C is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockCWeeks { get => this.blockCWeeks; set { this.blockCWeeks = value; this.OnPropertyChanged(nameof(this.BlockCWeeks)); } }
         private byte blockCWeeks = 0;
-        /// <summary>Number of weeks stadium block D has been in its current state.</summary>
+        /// <summary>Weeks stadium block D is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockDWeeks { get => this.blockDWeeks; set { this.blockDWeeks = value; this.OnPropertyChanged(nameof(this.BlockDWeeks)); } }
         private byte blockDWeeks = 0;
-        /// <summary>Number of weeks stadium block E has been in its current state.</summary>
+        /// <summary>Weeks stadium block E is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockEWeeks { get => this.blockEWeeks; set { this.blockEWeeks = value; this.OnPropertyChanged(nameof(this.BlockEWeeks)); } }
         private byte blockEWeeks = 0;
-        /// <summary>Number of weeks stadium block F has been in its current state.</summary>
+        /// <summary>Weeks stadium block F is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockFWeeks { get => this.blockFWeeks; set { this.blockFWeeks = value; this.OnPropertyChanged(nameof(this.BlockFWeeks)); } }
         private byte blockFWeeks = 0;
-        /// <summary>Number of weeks stadium block G has been in its current state.</summary>
+        /// <summary>Weeks stadium block G is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockGWeeks { get => this.blockGWeeks; set { this.blockGWeeks = value; this.OnPropertyChanged(nameof(this.BlockGWeeks)); } }
         private byte blockGWeeks = 0;
-        /// <summary>Number of weeks stadium block H has been in its current state.</summary>
+        /// <summary>Weeks stadium block H is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockHWeeks { get => this.blockHWeeks; set { this.blockHWeeks = value; this.OnPropertyChanged(nameof(this.BlockHWeeks)); } }
         private byte blockHWeeks = 0;
-        /// <summary>Number of weeks stadium block I has been in its current state.</summary>
+        /// <summary>Weeks stadium block I is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockIWeeks { get => this.blockIWeeks; set { this.blockIWeeks = value; this.OnPropertyChanged(nameof(this.BlockIWeeks)); } }
         private byte blockIWeeks = 0;
-        /// <summary>Number of weeks stadium block J has been in its current state.</summary>
+        /// <summary>Weeks stadium block J is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockJWeeks { get => this.blockJWeeks; set { this.blockJWeeks = value; this.OnPropertyChanged(nameof(this.BlockJWeeks)); } }
         private byte blockJWeeks = 0;
-        /// <summary>Number of weeks stadium block K has been in its current state.</summary>
+        /// <summary>Weeks stadium block K is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockKWeeks { get => this.blockKWeeks; set { this.blockKWeeks = value; this.OnPropertyChanged(nameof(this.BlockKWeeks)); } }
         private byte blockKWeeks = 0;
-        /// <summary>Number of weeks stadium block L has been in its current state.</summary>
+        /// <summary>Weeks stadium block L is still under construction; while above 0 the block is closed and its places don't count.</summary>
         public byte BlockLWeeks { get => this.blockLWeeks; set { this.blockLWeeks = value; this.OnPropertyChanged(nameof(this.BlockLWeeks)); } }
         private byte blockLWeeks = 0;
 
         /// <summary>Number of standing-room places in stadium block A.</summary>
-        public ushort BlockAStandings { get => this.blockAStandings; set { this.blockAStandings = this.BlockSetter(this.blockAStandings, value); this.OnPropertyChanged(nameof(this.BlockAStandings)); } }
+        public ushort BlockAStandings { get => this.blockAStandings; set { this.blockAStandings = value; this.OnPropertyChanged(nameof(this.BlockAStandings)); } }
         private ushort blockAStandings = 0;
         /// <summary>Number of standing-room places in stadium block B.</summary>
-        public ushort BlockBStandings { get => this.blockBStandings; set { this.blockBStandings = this.BlockSetter(this.blockBStandings, value); this.OnPropertyChanged(nameof(this.BlockBStandings)); } }
+        public ushort BlockBStandings { get => this.blockBStandings; set { this.blockBStandings = value; this.OnPropertyChanged(nameof(this.BlockBStandings)); } }
         private ushort blockBStandings = 0;
         /// <summary>Number of standing-room places in stadium block C.</summary>
-        public ushort BlockCStandings { get => this.blockCStandings; set { this.blockCStandings = this.BlockSetter(this.blockCStandings, value); this.OnPropertyChanged(nameof(this.BlockCStandings)); } }
+        public ushort BlockCStandings { get => this.blockCStandings; set { this.blockCStandings = value; this.OnPropertyChanged(nameof(this.BlockCStandings)); } }
         private ushort blockCStandings = 0;
         /// <summary>Number of standing-room places in stadium block D.</summary>
-        public ushort BlockDStandings { get => this.blockDStandings; set { this.blockDStandings = this.BlockSetter(this.blockDStandings, value); this.OnPropertyChanged(nameof(this.BlockDStandings)); } }
+        public ushort BlockDStandings { get => this.blockDStandings; set { this.blockDStandings = value; this.OnPropertyChanged(nameof(this.BlockDStandings)); } }
         private ushort blockDStandings = 0;
         /// <summary>Number of standing-room places in stadium block E.</summary>
-        public ushort BlockEStandings { get => this.blockEStandings; set { this.blockEStandings = this.BlockSetter(this.blockEStandings, value); this.OnPropertyChanged(nameof(this.BlockEStandings)); } }
+        public ushort BlockEStandings { get => this.blockEStandings; set { this.blockEStandings = value; this.OnPropertyChanged(nameof(this.BlockEStandings)); } }
         private ushort blockEStandings = 0;
         /// <summary>Number of standing-room places in stadium block F.</summary>
-        public ushort BlockFStandings { get => this.blockFStandings; set { this.blockFStandings = this.BlockSetter(this.blockFStandings, value); this.OnPropertyChanged(nameof(this.BlockFStandings)); } }
+        public ushort BlockFStandings { get => this.blockFStandings; set { this.blockFStandings = value; this.OnPropertyChanged(nameof(this.BlockFStandings)); } }
         private ushort blockFStandings = 0;
         /// <summary>Number of standing-room places in stadium block G.</summary>
-        public ushort BlockGStandings { get => this.blockGStandings; set { this.blockGStandings = this.BlockSetter(this.blockGStandings, value); this.OnPropertyChanged(nameof(this.BlockGStandings)); } }
+        public ushort BlockGStandings { get => this.blockGStandings; set { this.blockGStandings = value; this.OnPropertyChanged(nameof(this.BlockGStandings)); } }
         private ushort blockGStandings = 0;
         /// <summary>Number of standing-room places in stadium block H.</summary>
-        public ushort BlockHStandings { get => this.blockHStandings; set { this.blockHStandings = this.BlockSetter(this.blockHStandings, value); this.OnPropertyChanged(nameof(this.BlockHStandings)); } }
+        public ushort BlockHStandings { get => this.blockHStandings; set { this.blockHStandings = value; this.OnPropertyChanged(nameof(this.BlockHStandings)); } }
         private ushort blockHStandings = 0;
         /// <summary>Number of standing-room places in stadium block I.</summary>
-        public ushort BlockIStandings { get => this.blockIStandings; set { this.blockIStandings = this.BlockSetter(this.blockIStandings, value); this.OnPropertyChanged(nameof(this.BlockIStandings)); } }
+        public ushort BlockIStandings { get => this.blockIStandings; set { this.blockIStandings = value; this.OnPropertyChanged(nameof(this.BlockIStandings)); } }
         private ushort blockIStandings = 0;
         /// <summary>Number of standing-room places in stadium block J.</summary>
-        public ushort BlockJStandings { get => this.blockJStandings; set { this.blockJStandings = this.BlockSetter(this.blockJStandings, value); this.OnPropertyChanged(nameof(this.BlockJStandings)); } }
+        public ushort BlockJStandings { get => this.blockJStandings; set { this.blockJStandings = value; this.OnPropertyChanged(nameof(this.BlockJStandings)); } }
         private ushort blockJStandings = 0;
         /// <summary>Number of standing-room places in stadium block K.</summary>
-        public ushort BlockKStandings { get => this.blockKStandings; set { this.blockKStandings = this.BlockSetter(this.blockKStandings, value); this.OnPropertyChanged(nameof(this.BlockKStandings)); } }
+        public ushort BlockKStandings { get => this.blockKStandings; set { this.blockKStandings = value; this.OnPropertyChanged(nameof(this.BlockKStandings)); } }
         private ushort blockKStandings = 0;
         /// <summary>Number of standing-room places in stadium block L.</summary>
-        public ushort BlockLStandings { get => this.blockLStandings; set { this.blockLStandings = this.BlockSetter(this.blockLStandings, value); this.OnPropertyChanged(nameof(this.BlockLStandings)); } }
+        public ushort BlockLStandings { get => this.blockLStandings; set { this.blockLStandings = value; this.OnPropertyChanged(nameof(this.BlockLStandings)); } }
         private ushort blockLStandings = 0;
 
         /// <summary>Number of seats in stadium block A.</summary>
-        public ushort BlockASeats { get => this.blockASeats; set { this.blockASeats = this.BlockSetter(this.blockASeats, value); this.OnPropertyChanged(nameof(this.BlockASeats)); } }
+        public ushort BlockASeats { get => this.blockASeats; set { this.blockASeats = value; this.OnPropertyChanged(nameof(this.BlockASeats)); } }
         private ushort blockASeats = 0;
         /// <summary>Number of seats in stadium block B.</summary>
-        public ushort BlockBSeats { get => this.blockBSeats; set { this.blockBSeats = this.BlockSetter(this.blockBSeats, value); this.OnPropertyChanged(nameof(this.BlockBSeats)); } }
+        public ushort BlockBSeats { get => this.blockBSeats; set { this.blockBSeats = value; this.OnPropertyChanged(nameof(this.BlockBSeats)); } }
         private ushort blockBSeats = 0;
         /// <summary>Number of seats in stadium block C.</summary>
-        public ushort BlockCSeats { get => this.blockCSeats; set { this.blockCSeats = this.BlockSetter(this.blockCSeats, value); this.OnPropertyChanged(nameof(this.BlockCSeats)); } }
+        public ushort BlockCSeats { get => this.blockCSeats; set { this.blockCSeats = value; this.OnPropertyChanged(nameof(this.BlockCSeats)); } }
         private ushort blockCSeats = 0;
         /// <summary>Number of seats in stadium block D.</summary>
-        public ushort BlockDSeats { get => this.blockDSeats; set { this.blockDSeats = this.BlockSetter(this.blockDSeats, value); this.OnPropertyChanged(nameof(this.BlockDSeats)); } }
+        public ushort BlockDSeats { get => this.blockDSeats; set { this.blockDSeats = value; this.OnPropertyChanged(nameof(this.BlockDSeats)); } }
         private ushort blockDSeats = 0;
         /// <summary>Number of seats in stadium block E.</summary>
-        public ushort BlockESeats { get => this.blockESeats; set { this.blockESeats = this.BlockSetter(this.blockESeats, value); this.OnPropertyChanged(nameof(this.BlockESeats)); } }
+        public ushort BlockESeats { get => this.blockESeats; set { this.blockESeats = value; this.OnPropertyChanged(nameof(this.BlockESeats)); } }
         private ushort blockESeats = 0;
         /// <summary>Number of seats in stadium block F.</summary>
-        public ushort BlockFSeats { get => this.blockFSeats; set { this.blockFSeats = this.BlockSetter(this.blockFSeats, value); this.OnPropertyChanged(nameof(this.BlockFSeats)); } }
+        public ushort BlockFSeats { get => this.blockFSeats; set { this.blockFSeats = value; this.OnPropertyChanged(nameof(this.BlockFSeats)); } }
         private ushort blockFSeats = 0;
         /// <summary>Number of seats in stadium block G.</summary>
-        public ushort BlockGSeats { get => this.blockGSeats; set { this.blockGSeats = this.BlockSetter(this.blockGSeats, value); this.OnPropertyChanged(nameof(this.BlockGSeats)); } }
+        public ushort BlockGSeats { get => this.blockGSeats; set { this.blockGSeats = value; this.OnPropertyChanged(nameof(this.BlockGSeats)); } }
         private ushort blockGSeats = 0;
         /// <summary>Number of seats in stadium block H.</summary>
-        public ushort BlockHSeats { get => this.blockHSeats; set { this.blockHSeats = this.BlockSetter(this.blockHSeats, value); this.OnPropertyChanged(nameof(this.BlockHSeats)); } }
+        public ushort BlockHSeats { get => this.blockHSeats; set { this.blockHSeats = value; this.OnPropertyChanged(nameof(this.BlockHSeats)); } }
         private ushort blockHSeats = 0;
         /// <summary>Number of seats in stadium block I.</summary>
-        public ushort BlockISeats { get => this.blockISeats; set { this.blockISeats = this.BlockSetter(this.blockISeats, value); this.OnPropertyChanged(nameof(this.BlockISeats)); } }
+        public ushort BlockISeats { get => this.blockISeats; set { this.blockISeats = value; this.OnPropertyChanged(nameof(this.BlockISeats)); } }
         private ushort blockISeats = 0;
         /// <summary>Number of seats in stadium block J.</summary>
-        public ushort BlockJSeats { get => this.blockJSeats; set { this.blockJSeats = this.BlockSetter(this.blockJSeats, value); this.OnPropertyChanged(nameof(this.BlockJSeats)); } }
+        public ushort BlockJSeats { get => this.blockJSeats; set { this.blockJSeats = value; this.OnPropertyChanged(nameof(this.BlockJSeats)); } }
         private ushort blockJSeats = 0;
         /// <summary>Number of seats in stadium block K.</summary>
-        public ushort BlockKSeats { get => this.blockKSeats; set { this.blockKSeats = this.BlockSetter(this.blockKSeats, value); this.OnPropertyChanged(nameof(this.BlockKSeats)); } }
+        public ushort BlockKSeats { get => this.blockKSeats; set { this.blockKSeats = value; this.OnPropertyChanged(nameof(this.BlockKSeats)); } }
         private ushort blockKSeats = 0;
         /// <summary>Number of seats in stadium block L.</summary>
-        public ushort BlockLSeats { get => this.blockLSeats; set { this.blockLSeats = this.BlockSetter(this.blockLSeats, value); this.OnPropertyChanged(nameof(this.BlockLSeats)); } }
+        public ushort BlockLSeats { get => this.blockLSeats; set { this.blockLSeats = value; this.OnPropertyChanged(nameof(this.BlockLSeats)); } }
         private ushort blockLSeats = 0;
+
+        /// <summary>
+        /// The stadium capacity the game sells tickets against (club +0x850). The game only recounts it
+        /// when a construction finishes or at the season change - see <see cref="OpenCapacity"/>.
+        /// </summary>
+        public int Capacity { get => this.capacity; set { this.capacity = value; this.OnPropertyChanged(nameof(this.Capacity)); } }
+        private int capacity = 0;
+
+        /// <summary>Capacity counted the way the game does it (FUN_00607920): standing and seats of every block not under construction, each an Int16.</summary>
+        public int OpenCapacity()
+        {
+            byte[] weeks = { this.BlockAWeeks, this.BlockBWeeks, this.BlockCWeeks, this.BlockDWeeks, this.BlockEWeeks, this.BlockFWeeks,
+                this.BlockGWeeks, this.BlockHWeeks, this.BlockIWeeks, this.BlockJWeeks, this.BlockKWeeks, this.BlockLWeeks };
+            ushort[] standings = { this.BlockAStandings, this.BlockBStandings, this.BlockCStandings, this.BlockDStandings, this.BlockEStandings, this.BlockFStandings,
+                this.BlockGStandings, this.BlockHStandings, this.BlockIStandings, this.BlockJStandings, this.BlockKStandings, this.BlockLStandings };
+            ushort[] seats = { this.BlockASeats, this.BlockBSeats, this.BlockCSeats, this.BlockDSeats, this.BlockESeats, this.BlockFSeats,
+                this.BlockGSeats, this.BlockHSeats, this.BlockISeats, this.BlockJSeats, this.BlockKSeats, this.BlockLSeats };
+            int total = 0;
+            for (int i = 0; i < weeks.Length; i++)
+            {
+                if (weeks[i] == 0)
+                    total += unchecked((short)standings[i] + (short)seats[i]);   // Int16 in the game: above 32767 counts negative
+            }
+            return total;
+        }
         #endregion
 
         #region Finance
@@ -297,7 +322,7 @@ namespace A2G_Trainer_XP.Model
             if (enabled)
             {
                 this.fieldCondition = fieldCondition;
-                this.OnPropertyChanged(nameof(this.DisplayUnit));
+                this.OnPropertyChanged(nameof(this.FieldCondition));
             }
             if (helper != null) this.OnPropertyChanged(helper);
         }
@@ -307,27 +332,8 @@ namespace A2G_Trainer_XP.Model
             {
                 this.roof = roof;
                 this.OnPropertyChanged(nameof(this.Roof));
-                if (!this.Initilisation)
-                {
-                    this.blockAWeeks = this.blockAWeeks < (byte)1 ? (byte)1 : this.blockAWeeks;
-                    this.OnPropertyChanged(nameof(this.BlockAWeeks));
-                }
             }
             if (helper != null) this.OnPropertyChanged(helper);
-        }
-        private ushort BlockSetter(ushort blocksize, ushort value)
-        {
-            ushort output = blocksize;
-            if (value != output)
-            {
-                output = value;
-                if (!this.Initilisation)
-                {
-                    this.blockAWeeks = this.blockAWeeks < (byte)1 ? (byte)1 : this.blockAWeeks;
-                    this.OnPropertyChanged(nameof(this.BlockAWeeks));
-                }
-            }
-            return output;
         }
         #endregion
 

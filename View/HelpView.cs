@@ -61,7 +61,12 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 
 {\fs24\b Verletzungen, Sperren & Vertrag}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Vertragslaufzeit, {\b Verletzungstage} und Verletzungsart, {\b verletzungsanfällig}, gesperrte Spiele, {\b gedopt} und gelbe Karten schreibt der Trainer in den gespeicherten Spielerdatensatz - sie bleiben also auch nach Tagesabschluss und Neuladen erhalten, auch bei Jugendspielern. Neu angehakt ist ein Spieler so lange verletzungsanfällig, wie das Spiel es üblicherweise festlegt.\par}
+{\pard\qj Vertragslaufzeit, {\b Verletzungstage} und Verletzungsart, {\b verletzungsanfällig}, gesperrte Spiele, {\b gedopt} und gelbe Karten schreibt der Trainer in den gespeicherten Spielerdatensatz - sie bleiben also auch nach Tagesabschluss und Neuladen erhalten, auch bei Jugendspielern. Neu angehakt ist ein Spieler so lange verletzungsanfällig, wie das Spiel es üblicherweise festlegt. Ebenso dauerhaft sind der {\b Kaufpreis}, der {\b Stammverein} geliehener Spieler und die Saisonwerte der Registerkarte {\b Statistik} (Einsätze, Ein- und Auswechslungen, rote und gelb-rote Karten, Tore, Vorlagen, Jokertore, Eigentore, {\b Tore für Aufwertung}).\par}
+\par
+
+{\fs24\b Spieler wechseln lassen}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Auf der Registerkarte {\b Wechsel} schicken Sie den gewählten Spieler zu einem anderen Verein - als Wechsel, Leihe oder Leihe mit Kaufoption, auch einen Spieler eines anderen Vereins zu Ihrem. Das Spiel führt den Wechsel beim nächsten {\b Tagesabschluss} mit seinen eigenen Funktionen aus, mit Ablöse, Vertrag, Transferhistorie und Meldung. Nach Tag 216 trägt das Spiel einen Wechsel sonst nur zum Saisonende ein; mit {\b sofort} wechselt der Spieler trotzdem direkt. Ein voller Kader (30 Spieler) lehnt den Wechsel ab. Nur in der Original-Version und nicht für Jugendspieler.\par}
 \par
 
 {\fs24\b Fenster vergrößern}\par
@@ -76,7 +81,7 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 
 {\fs24\b Mehrere Trainer, Aktien & Länder (Hot-Seat)}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Enthält der geladene Spielstand mehr als einen menschlichen Manager, erscheint im Menü {\b Trainer} für jeden ein eigener Eintrag. Neben Name, Alter, Vermögen und Schwierigkeitsgrad lassen sich dort auch die {\b Kompetenzpunkte} (Verhandlungsgeschick, Motivationsfähigkeit, Trainingsgestaltung, Autorität, Fremdsprachenkenntnisse, Ausstrahlung) für jedes Trainer-Level einzeln bearbeiten, sowie bis zu sechs {\b Aktienpositionen} (Land, Verein, Stückzahl, Kaufpreis). Neue Positionen lassen sich dabei nicht anlegen, nur bereits vorhandene ändern.\par}\par
+{\pard\qj Enthält der geladene Spielstand mehr als einen menschlichen Manager, erscheint im Menü {\b Trainer} für jeden ein eigener Eintrag. Neben Name, Alter, Vermögen und Schwierigkeitsgrad lassen sich dort auch die {\b Kompetenzpunkte} (Verhandlungsgeschick, Motivationsfähigkeit, Trainingsgestaltung, Autorität, Fremdsprachenkenntnisse, Ausstrahlung) für jedes Trainer-Level einzeln bearbeiten, das {\b Image} (z. B. Schleifer, Wissenschaftler) sowie bis zu sechs {\b Aktienpositionen} (Land, Verein, Stückzahl, Kaufpreis). Neue Positionen lassen sich dabei nicht anlegen, nur bereits vorhandene ändern.\par}\par
 
 {\pard\qj Die Registerkarte {\b Vertrag} zeigt alle Bedingungen des aktuellen Vertrags: Grundgehalt, Prämien, {\b Saisonziel}, Restlaufzeit, Verlängerungsoption und Extras (Fahrzeug, Wohnung). Dort stehen auch Land und Verein für die {\b nächste Saison} - angeboten werden nur Vereine, die das Spiel beim Saisonwechsel annimmt (im Hauptland jede Liga, in einem Bonusland nur die 1. Liga) -, die {\b Freigabeklausel} und {\b Jobangebot anfordern}: Der gewählte Verein macht beim nächsten {\b Tagesabschluss} ein normales Jobangebot, das Sie im Spiel annehmen. Vorher unbedingt speichern.\par}\par
 

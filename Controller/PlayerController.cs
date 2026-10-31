@@ -174,10 +174,18 @@ namespace A2G_Trainer_XP.Controller
             player.ShowUpBonus      = this.memory.ReadUInt16(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SHOWUP]));
             player.GoalsBonus       = this.memory.ReadUInt16(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.GOALS_BONUS]));
             player.TransferFee      = this.memory.ReadUInt16(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.TRANSFER_FEE]));
+            player.BuyPrice         = (uint)this.memory.ReadInt32(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BUY_PRICE]));
+            player.HomeCountry      = (PlayerEnums.Country)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HOME_COUNTRY]));
+            player.HomeClubId       = this.memory.ReadUInt16(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HOME_CLUB]));
             player.ContractDuration = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DURATION]));
             player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]));
             player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]));
             player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]));
+            #endregion
+
+            #region Statistics
+            foreach (StatisticField field in StatisticFields)
+                field.Set(player, (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[field.Key])));
             #endregion
 
             #region Other
@@ -191,20 +199,13 @@ namespace A2G_Trainer_XP.Controller
             player.ClubId                = this.memory.ReadByte(GetAddress(this.memory, player, "23"));
             player.PreviousForm          = this.memory.ReadByte(GetAddress(this.memory, player, "26"));
             player.Jersey                = this.memory.ReadByte(GetAddress(this.memory, player, "3A"));
-            player.RedCardsSeason        = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "4B"));
-            player.YellowRedCardsSeason  = (byte) this.memory.ReadByte(GetAddress(this.memory, player, "4C"));
-            player.Goals                 = this.memory.ReadByte(GetAddress(this.memory, player, "56"));
             player.GoalsCupNational      = this.memory.ReadByte(GetAddress(this.memory, player, "57"));
             player.GoalsCupInternational = this.memory.ReadByte(GetAddress(this.memory, player, "58"));
             player.Goals1stLeague        = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "5A"), 2), 0);
-            player.Assists               = this.memory.ReadByte(GetAddress(this.memory, player, "6B"));
-            player.JokerGoals            = this.memory.ReadByte(GetAddress(this.memory, player, "6C"));
             player.PenaltiesSeason       = this.memory.ReadByte(GetAddress(this.memory, player, "6F"));
             player.Penalties             = this.memory.ReadByte(GetAddress(this.memory, player, "70"));
             player.FreekicksSeason       = this.memory.ReadByte(GetAddress(this.memory, player, "71"));
             player.Freekicks             = this.memory.ReadByte(GetAddress(this.memory, player, "72"));
-            player.AppearancesSeason     = this.memory.ReadByte(GetAddress(this.memory, player, "77"));
-            player.JokerAppearances      = this.memory.ReadByte(GetAddress(this.memory, player, "78"));
             player.Appearances1stLeague  = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "7A"), 2), 0);
             */
             #endregion
@@ -304,13 +305,21 @@ namespace A2G_Trainer_XP.Controller
                 Logger.Warn($"ReadPersistentFields: couldn't read record for NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{baseAddress:X} - keeping display-cache values.");
             }
 
-            byte[] contractChunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordSalaryOffset, 8);
+            byte[] contractChunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordSalaryOffset, ContractChunkLength);
             if (contractChunk != null)
             {
                 player.Salary = BitConverter.ToUInt16(contractChunk, 0);
                 player.ShowUpBonus = BitConverter.ToUInt16(contractChunk, 2);
                 player.GoalsBonus = BitConverter.ToUInt16(contractChunk, (int)(Settings.PlayerRecordGoalsBonusOffset - Settings.PlayerRecordSalaryOffset));
                 player.TransferFee = BitConverter.ToUInt16(contractChunk, (int)(Settings.PlayerRecordTransferFeeOffset - Settings.PlayerRecordSalaryOffset));
+                player.BuyPrice = BitConverter.ToUInt32(contractChunk, (int)(Settings.PlayerRecordBuyPriceOffset - Settings.PlayerRecordSalaryOffset));
+            }
+
+            byte[] homeChunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordHomeCountryOffset, HomeChunkLength);
+            if (homeChunk != null)
+            {
+                player.HomeCountry = (PlayerEnums.Country)homeChunk[0];
+                player.HomeClubId = BitConverter.ToUInt16(homeChunk, (int)(Settings.PlayerRecordHomeClubOffset - Settings.PlayerRecordHomeCountryOffset));
             }
 
             // End year/join year/details are contiguous; the two years only turn into the displayed
@@ -333,6 +342,7 @@ namespace A2G_Trainer_XP.Controller
                 player.Career = (PlayerEnums.Career)careerByte[0];
 
             this.ReadPersistentConstitution(player, baseAddress);
+            this.ReadPersistentStatistics(player, baseAddress);
         }
 
         // Constitution block, +0x2A through YellowCardsSeason (+0x36). Injury type, suspension,
@@ -658,19 +668,35 @@ namespace A2G_Trainer_XP.Controller
             Logger.Debug($"Wrote persistent Nationality for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Nationality} (byte 0x{newByte:X2}, preserved high bit={(preservedHighBit != 0)}).");
         }
 
-        // Same rationale as WritePersistentLevel above, for Salary/ShowUpBonus/GoalsBonus/
-        // TransferFee - four contiguous UInt16s, written in one call.
+        // "Stammverein": country byte, one byte the game copies along but never reads, club UInt16.
+        private const int HomeChunkLength = 4;
+
+        // Country and club separately, so the byte between them stays as it is.
+        private void WritePersistentHomeClub(Player player)
+        {
+            PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
+            this.memory.WriteBytesAtAddress(recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordHomeCountryOffset), new byte[] { (byte)player.HomeCountry });
+            this.memory.WriteBytesAtAddress(recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordHomeClubOffset), BitConverter.GetBytes(player.HomeClubId));
+            Logger.Debug($"Wrote persistent home club for player NameRecordId={player.NameRecordId} (Id={player.Id}): {player.HomeCountry}/{player.HomeClubId}.");
+        }
+
+        // Salary/ShowUpBonus/GoalsBonus/TransferFee (four contiguous UInt16s) and BuyPrice (UInt32) -
+        // read and written as one block.
+        private const int ContractChunkLength = 0xC;
+
+        // Same rationale as WritePersistentLevel above, for the contract block - written in one call.
         private void WritePersistentSalary(Player player)
         {
             PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
             uint address = recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordSalaryOffset);
-            byte[] toWrite = new byte[8];
+            byte[] toWrite = new byte[ContractChunkLength];
             Array.Copy(BitConverter.GetBytes(player.Salary), 0, toWrite, 0, 2);
             Array.Copy(BitConverter.GetBytes(player.ShowUpBonus), 0, toWrite, 2, 2);
             Array.Copy(BitConverter.GetBytes(player.GoalsBonus), 0, toWrite, Settings.PlayerRecordGoalsBonusOffset - Settings.PlayerRecordSalaryOffset, 2);
             Array.Copy(BitConverter.GetBytes(player.TransferFee), 0, toWrite, Settings.PlayerRecordTransferFeeOffset - Settings.PlayerRecordSalaryOffset, 2);
+            Array.Copy(BitConverter.GetBytes(player.BuyPrice), 0, toWrite, Settings.PlayerRecordBuyPriceOffset - Settings.PlayerRecordSalaryOffset, 4);
             this.memory.WriteBytesAtAddress(address, toWrite);
-            Logger.Debug($"Wrote persistent Salary/ShowUpBonus/GoalsBonus/TransferFee for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Salary}/{player.ShowUpBonus}/{player.GoalsBonus}/{player.TransferFee}.");
+            Logger.Debug($"Wrote persistent Salary/ShowUpBonus/GoalsBonus/TransferFee/BuyPrice for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Salary}/{player.ShowUpBonus}/{player.GoalsBonus}/{player.TransferFee}/{player.BuyPrice}.");
         }
 
         // Constitution: injury type, red-card suspension, doping and yellow cards as plain bytes,
@@ -755,6 +781,52 @@ namespace A2G_Trainer_XP.Controller
             Logger.Debug($"Wrote persistent contract terms for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{termsAddress:X}: Duration={player.ContractDuration}, YearsInClub={player.YearsInClub}, Details={player.ContractDetails}, Career={player.Career}.");
         }
 
+        // The season statistics (see Settings.PlayerRecordRedCardsOffset): one byte each, with its
+        // display-cache key and its record offset.
+        private sealed class StatisticField
+        {
+            public PlayerEnums.AddressKey Key;
+            public uint RecordOffset;
+            public Func<Player, byte> Get;
+            public Action<Player, byte> Set;
+        }
+
+        private static readonly StatisticField[] StatisticFields =
+        {
+            new StatisticField { Key = PlayerEnums.AddressKey.RED_CARDS, RecordOffset = Settings.PlayerRecordRedCardsOffset, Get = p => p.RedCardsSeason, Set = (p, v) => p.RedCardsSeason = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.YELLOW_RED_CARDS, RecordOffset = Settings.PlayerRecordYellowRedCardsOffset, Get = p => p.YellowRedCardsSeason, Set = (p, v) => p.YellowRedCardsSeason = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.GOALS, RecordOffset = Settings.PlayerRecordGoalsOffset, Get = p => p.Goals, Set = (p, v) => p.Goals = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.OWN_GOALS, RecordOffset = Settings.PlayerRecordOwnGoalsOffset, Get = p => p.OwnGoals, Set = (p, v) => p.OwnGoals = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.ASSISTS, RecordOffset = Settings.PlayerRecordAssistsOffset, Get = p => p.Assists, Set = (p, v) => p.Assists = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.JOKER_GOALS, RecordOffset = Settings.PlayerRecordJokerGoalsOffset, Get = p => p.JokerGoals, Set = (p, v) => p.JokerGoals = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.APPEARANCES, RecordOffset = Settings.PlayerRecordAppearancesOffset, Get = p => p.Appearances, Set = (p, v) => p.Appearances = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.SUBBED_IN, RecordOffset = Settings.PlayerRecordSubbedInOffset, Get = p => p.SubbedIn, Set = (p, v) => p.SubbedIn = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.SUBBED_OUT, RecordOffset = Settings.PlayerRecordSubbedOutOffset, Get = p => p.SubbedOut, Set = (p, v) => p.SubbedOut = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.UPGRADE_GOALS, RecordOffset = Settings.PlayerRecordUpgradeGoalsOffset, Get = p => p.UpgradeGoals, Set = (p, v) => p.UpgradeGoals = v },
+        };
+
+        // All statistics lie between the red cards and the upgrade goals - read in one call.
+        private static readonly int StatisticsChunkLength = (int)(Settings.PlayerRecordUpgradeGoalsOffset - Settings.PlayerRecordRedCardsOffset + 1);
+
+        private void ReadPersistentStatistics(Player player, uint baseAddress)
+        {
+            byte[] chunk = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordRedCardsOffset, StatisticsChunkLength);
+            if (chunk == null)
+                return;
+
+            foreach (StatisticField field in StatisticFields)
+                field.Set(player, chunk[field.RecordOffset - Settings.PlayerRecordRedCardsOffset]);
+        }
+
+        // Byte by byte, so the bytes in between (other statistics the Trainer doesn't edit) stay as they are.
+        private void WritePersistentStatistics(Player player)
+        {
+            PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
+            foreach (StatisticField field in StatisticFields)
+                this.memory.WriteBytesAtAddress(recordResolver.GetFieldAddress(player.NameRecordId, field.RecordOffset), new byte[] { field.Get(player) });
+            Logger.Debug($"Wrote persistent statistics for player NameRecordId={player.NameRecordId} (Id={player.Id}): Goals={player.Goals}, Assists={player.Assists}, Appearances={player.Appearances}.");
+        }
+
         // Returns one warning per Firstname/Lastname that couldn't be permanently saved (see
         // WritePersistentName) - empty if everything went through.
         //
@@ -786,8 +858,10 @@ namespace A2G_Trainer_XP.Controller
                 this.WritePersistentConditionFreshness(player);
                 this.WritePersistentNationality(player);
                 this.WritePersistentSalary(player);
+                this.WritePersistentHomeClub(player);
                 this.WritePersistentContractTerms(player);
                 this.WritePersistentConstitution(player);
+                this.WritePersistentStatistics(player);
             }
 
             if (this.Type != PlayerEnums.AddressType.TRAINEE)
@@ -850,10 +924,18 @@ namespace A2G_Trainer_XP.Controller
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SHOWUP]), BitConverter.GetBytes(player.ShowUpBonus));
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.GOALS_BONUS]), BitConverter.GetBytes(player.GoalsBonus));
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.TRANSFER_FEE]), BitConverter.GetBytes(player.TransferFee));
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BUY_PRICE]), BitConverter.GetBytes(player.BuyPrice));
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HOME_COUNTRY]), new byte[] { (byte)player.HomeCountry });
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HOME_CLUB]), BitConverter.GetBytes(player.HomeClubId));
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DURATION]), new byte[] { (byte)player.ContractDuration });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]), BitConverter.GetBytes((byte)player.ContractDetails));
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]), new byte[] { (byte)player.YearsInClub });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]), BitConverter.GetBytes((byte)player.Career));
+                #endregion
+
+                #region Statistics
+                foreach (StatisticField field in StatisticFields)
+                    this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[field.Key]), new byte[] { field.Get(player) });
                 #endregion
 
                 #region Other

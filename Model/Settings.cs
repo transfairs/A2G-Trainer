@@ -105,6 +105,10 @@ namespace A2G_Trainer_XP.Controller
         private const uint coachRecordStride              = 0x2100;
         private const uint coachCompetencyRecordOffset    = 0x3ACAE2;
         private const uint coachCompetencyRecordStride    = 0x160;
+        // The manager image (UInt16, 0 "kein Image" .. 16 "Trunkenbold", see CoachEnums.ManagerImage)
+        // shares the competency table's per-ID block, 6 bytes before it. It has no working copy: the
+        // game reads (FUN_005baf90) and assigns it (FUN_0062af30 -> FUN_005baf70) only here.
+        private const uint coachImageRecordOffset         = 0x3ACADC;
 
         // Calendar values of the savegame (same meta block as ageReferenceYearOffset, plus one table
         // loaded with the savegame), which the player record stores injuries against - from the
@@ -148,6 +152,35 @@ namespace A2G_Trainer_XP.Controller
         private const uint jobOfferPresentFunctionOffset = 0x2296F0;   // FUN_006296f0
         private const uint jobOfferAddFunctionOffset     = 0x174740;   // FUN_00574740
         private const uint jobOfferListOffset            = 0x38BA08;   // offer list A (0x78BA08)
+
+        // Player transfers (original build). The daily processing FUN_0058f650 resolves the transfer
+        // market through FUN_00636b60 at two call sites (two near-identical branches, each
+        // "push ebp; call"); the game's own transfers there run, all cdecl: fetch the player
+        // (FUN_00582740) and both clubs (FUN_00585b00(country, club, 0xFFFF)), build a contract
+        // (FUN_005fac80(&contract, player, newClub), 0x10 bytes, years at +0xC), move the player
+        // (FUN_005fb480(player, new, old, fee, &contract), or as a loan FUN_005fb710(player, new,
+        // old, fee, buy price, &contract, kind 3 = with buy option)) and put everything back
+        // (FUN_00585c50 per club, FUN_00582870 for the player). FUN_005fb480 asks FUN_0062b800
+        // (day counter > 216) right at its start whether to postpone the move to the season end -
+        // TransferInjector redirects that one call. Fees are in money units, the buy price as
+        // stored = fee / moneyFactor (DAT_0078bbb8, i.e. x100 DM). See TransferInjector.
+        private static readonly uint[] transferMarketCallSiteOffsets = { 0x18F8E4, 0x190002 };   // E8 rel32 -> FUN_00636b60
+        private const uint transferMarketFunctionOffset   = 0x236B60;   // FUN_00636b60
+        private const uint transferDeadlineCallSiteOffset = 0x1FB487;   // E8 rel32 -> FUN_0062b800 in FUN_005fb480
+        private const uint transferDeadlineFunctionOffset = 0x22B800;   // FUN_0062b800
+        private const uint transferFetchPlayerOffset      = 0x182740;   // FUN_00582740
+        private const uint transferReleasePlayerOffset    = 0x182870;   // FUN_00582870
+        private const uint transferFetchClubOffset        = 0x185B00;   // FUN_00585b00
+        private const uint transferReleaseClubOffset      = 0x185C50;   // FUN_00585c50
+        private const uint transferBuildContractOffset    = 0x1FAC80;   // FUN_005fac80
+        private const uint transferMoveOffset             = 0x1FB480;   // FUN_005fb480
+        private const uint transferLoanOffset             = 0x1FB710;   // FUN_005fb710
+        private const uint moneyFactorOffset              = 0x38BBB8;   // DAT_0078bbb8 (Int32)
+        // A club's squad (working copy): player pointers from +0x990, count Int16 at +0xE6, room
+        // for 30 - the per-position counts follow at +0xA08 and FUN_005fbbe0 doesn't check.
+        private const uint clubSquadOffset                = 0x990;
+        private const uint clubSquadCountOffset           = 0xE6;
+        private const int  clubSquadCapacity              = 30;
 
         // Club records of the league countries (FUN_00585ff0 fetches one, FUN_00586b80 puts it
         // back): record index = leagueBaseTableOffset[league system] + club ID, valid while the ID
@@ -213,6 +246,11 @@ namespace A2G_Trainer_XP.Controller
         // the start than the display cache's 0xB4, since this record has none of the display
         // cache's large gaps (unused/statistical bytes). ShowUpBonus/"Auflaufprämie" (also UInt16)
         // follows immediately at +0x86, so both go out in one 4-byte write.
+        // "Stammverein" of a loaned player: country (Byte) at +0x80, club ID (UInt16) at +0x82 (display
+        // cache +0x9E/+0xA0). Set by a loan (FUN_005fb710) to the lending club, cleared by a normal
+        // transfer; at the season end the player returns to (or is bought from) this club (FUN_00427ad0).
+        private const uint playerRecordHomeCountryOffset = 0x80;
+        private const uint playerRecordHomeClubOffset = 0x82;
         private const uint playerRecordSalaryOffset = 0x84;
 
         // The "matches display-cache order, no gaps" pattern that worked for everything above
@@ -242,6 +280,10 @@ namespace A2G_Trainer_XP.Controller
         // ContractDetails directly follows the join year; Career sits further out on its own.
         private const uint playerRecordGoalsBonusOffset     = 0x88;
         private const uint playerRecordTransferFeeOffset    = 0x8A;
+        // UInt32 "Kaufpreis": the fee last paid for the player, on a loan with a buy option the price
+        // taken up at the season end (set by FUN_005fb710, paid by FUN_004278f0) - in units of the
+        // game's money factor x 100 (DAT_0078bbb8), i.e. x100 DM.
+        private const uint playerRecordBuyPriceOffset       = 0x8C;
         private const uint playerRecordContractEndYearOffset = 0x90;
         private const uint playerRecordJoinYearOffset       = 0x92;
         private const uint playerRecordContractDetailsOffset = 0x94;
@@ -258,6 +300,24 @@ namespace A2G_Trainer_XP.Controller
         private const uint playerRecordVulnerableOffset    = 0x32;
         private const uint playerRecordBannedOffset        = 0x34;
         private const uint playerRecordInjuryClearedFlagOffset = 0xAD;
+
+        // Season statistics (bytes), from the same converters. Their meaning comes from the game's
+        // statistics screens (FUN_0045ceb0), which sort and show exactly these display-cache fields:
+        // "Punkte Rot GelbRot Gelb" (+0x4B/+0x4C/+0x4A), "Eigentore" (+0x6A), Scorer = goals +
+        // assists (+0x56 + +0x6B), Joker "Tore Einw." (+0x6C/+0x78) and "Einsätze Einw. Ausw."
+        // (+0x77/+0x78/+0x79). The yellow cards (+0x36) are part of the constitution block above.
+        private const uint playerRecordRedCardsOffset       = 0x37;
+        private const uint playerRecordYellowRedCardsOffset = 0x38;
+        private const uint playerRecordGoalsOffset          = 0x42;
+        private const uint playerRecordOwnGoalsOffset       = 0x55;
+        private const uint playerRecordAssistsOffset        = 0x56;
+        private const uint playerRecordJokerGoalsOffset     = 0x57;
+        private const uint playerRecordAppearancesOffset    = 0x62;
+        private const uint playerRecordSubbedInOffset       = 0x63;
+        private const uint playerRecordSubbedOutOffset      = 0x64;
+        // League goals counted towards the season-end strength upgrade (display cache +0x166). The
+        // game raises it together with the goals (+0x42) but reads only this one for the upgrade.
+        private const uint playerRecordUpgradeGoalsOffset   = 0xBA;
 
 
         internal static uint NamePoolPointerOffset        { get => namePoolPointerOffset; }
@@ -278,6 +338,7 @@ namespace A2G_Trainer_XP.Controller
         internal static uint CoachRecordStride            { get => coachRecordStride; }
         internal static uint CoachCompetencyRecordOffset  { get => coachCompetencyRecordOffset; }
         internal static uint CoachCompetencyRecordStride  { get => coachCompetencyRecordStride; }
+        internal static uint CoachImageRecordOffset       { get => coachImageRecordOffset; }
         internal static uint StartYearOffset              { get => startYearOffset; }
         internal static uint DayCounterOffset             { get => dayCounterOffset; }
         internal static uint DaysPerYearOffset            { get => daysPerYearOffset; }
@@ -294,6 +355,21 @@ namespace A2G_Trainer_XP.Controller
         internal static uint JobOfferPresentFunctionOffset { get => jobOfferPresentFunctionOffset; }
         internal static uint JobOfferAddFunctionOffset     { get => jobOfferAddFunctionOffset; }
         internal static uint JobOfferListOffset            { get => jobOfferListOffset; }
+        internal static uint[] TransferMarketCallSiteOffsets { get => (uint[])transferMarketCallSiteOffsets.Clone(); }
+        internal static uint TransferMarketFunctionOffset  { get => transferMarketFunctionOffset; }
+        internal static uint TransferDeadlineCallSiteOffset { get => transferDeadlineCallSiteOffset; }
+        internal static uint TransferDeadlineFunctionOffset { get => transferDeadlineFunctionOffset; }
+        internal static uint TransferFetchPlayerOffset     { get => transferFetchPlayerOffset; }
+        internal static uint TransferReleasePlayerOffset   { get => transferReleasePlayerOffset; }
+        internal static uint TransferFetchClubOffset       { get => transferFetchClubOffset; }
+        internal static uint TransferReleaseClubOffset     { get => transferReleaseClubOffset; }
+        internal static uint TransferBuildContractOffset   { get => transferBuildContractOffset; }
+        internal static uint TransferMoveOffset            { get => transferMoveOffset; }
+        internal static uint TransferLoanOffset            { get => transferLoanOffset; }
+        internal static uint MoneyFactorOffset             { get => moneyFactorOffset; }
+        internal static uint ClubSquadOffset               { get => clubSquadOffset; }
+        internal static uint ClubSquadCountOffset          { get => clubSquadCountOffset; }
+        internal static int  ClubSquadCapacity             { get => clubSquadCapacity; }
         internal static uint ClubRecordTableOffset         { get => clubRecordTableOffset; }
         internal static uint ClubRecordStride              { get => clubRecordStride; }
         internal static uint ClubRecordSeasonGoalOffset    { get => clubRecordSeasonGoalOffset; }
@@ -317,6 +393,8 @@ namespace A2G_Trainer_XP.Controller
         internal static uint PlayerRecordHealthOffset       { get => playerRecordHealthOffset; }
         internal static uint PlayerRecordSkinColorOffset   { get => playerRecordSkinColorOffset; }
         internal static uint PlayerRecordUnhappyOffset      { get => playerRecordUnhappyOffset; }
+        internal static uint PlayerRecordHomeCountryOffset  { get => playerRecordHomeCountryOffset; }
+        internal static uint PlayerRecordHomeClubOffset     { get => playerRecordHomeClubOffset; }
         internal static uint PlayerRecordSalaryOffset       { get => playerRecordSalaryOffset; }
         internal static uint PlayerRecordFormOffset         { get => playerRecordFormOffset; }
         internal static uint PlayerRecordConditionOffset    { get => playerRecordConditionOffset; }
@@ -324,8 +402,8 @@ namespace A2G_Trainer_XP.Controller
         internal static uint PlayerRecordNationalityOffset  { get => playerRecordNationalityOffset; }
         internal static uint PlayerRecordGoalsBonusOffset   { get => playerRecordGoalsBonusOffset; }
         internal static uint PlayerRecordTransferFeeOffset  { get => playerRecordTransferFeeOffset; }
+        internal static uint PlayerRecordBuyPriceOffset     { get => playerRecordBuyPriceOffset; }
         internal static uint PlayerRecordContractEndYearOffset { get => playerRecordContractEndYearOffset; }
-        internal static uint PlayerRecordJoinYearOffset     { get => playerRecordJoinYearOffset; }
         internal static uint PlayerRecordContractDetailsOffset { get => playerRecordContractDetailsOffset; }
         internal static uint PlayerRecordCareerOffset       { get => playerRecordCareerOffset; }
         internal static uint PlayerRecordInjuryStartOffset  { get => playerRecordInjuryStartOffset; }
@@ -334,6 +412,16 @@ namespace A2G_Trainer_XP.Controller
         internal static uint PlayerRecordVulnerableOffset   { get => playerRecordVulnerableOffset; }
         internal static uint PlayerRecordBannedOffset       { get => playerRecordBannedOffset; }
         internal static uint PlayerRecordInjuryClearedFlagOffset { get => playerRecordInjuryClearedFlagOffset; }
+        internal static uint PlayerRecordRedCardsOffset     { get => playerRecordRedCardsOffset; }
+        internal static uint PlayerRecordYellowRedCardsOffset { get => playerRecordYellowRedCardsOffset; }
+        internal static uint PlayerRecordGoalsOffset        { get => playerRecordGoalsOffset; }
+        internal static uint PlayerRecordOwnGoalsOffset     { get => playerRecordOwnGoalsOffset; }
+        internal static uint PlayerRecordAssistsOffset      { get => playerRecordAssistsOffset; }
+        internal static uint PlayerRecordJokerGoalsOffset   { get => playerRecordJokerGoalsOffset; }
+        internal static uint PlayerRecordAppearancesOffset  { get => playerRecordAppearancesOffset; }
+        internal static uint PlayerRecordSubbedInOffset     { get => playerRecordSubbedInOffset; }
+        internal static uint PlayerRecordSubbedOutOffset    { get => playerRecordSubbedOutOffset; }
+        internal static uint PlayerRecordUpgradeGoalsOffset { get => playerRecordUpgradeGoalsOffset; }
 
         // gogOffset as a number, for the persistent anchors above (see PersistentLayout.CreateGogGuess).
         internal static uint   GogOffset         { get => Convert.ToUInt32(gogOffset, 16); }

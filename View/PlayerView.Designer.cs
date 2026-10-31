@@ -52,6 +52,9 @@ namespace A2G_Trainer_XP.View
             this.FairSkin = new System.Windows.Forms.RadioButton();
             this.BlackSkin = new System.Windows.Forms.RadioButton();
             this.NationalityCombo = new System.Windows.Forms.ComboBox();
+            this.HomeClubBox = new System.Windows.Forms.GroupBox();
+            this.HomeCountryInput = new System.Windows.Forms.ComboBox();
+            this.HomeClubInput = new System.Windows.Forms.ComboBox();
             this.NationalityLabel = new System.Windows.Forms.Label();
             this.LevelLabel = new System.Windows.Forms.Label();
             this.LevelInput = new System.Windows.Forms.TextBox();
@@ -195,7 +198,9 @@ namespace A2G_Trainer_XP.View
             this.ContractTab = new System.Windows.Forms.TabPage();
             this.ContractBox = new System.Windows.Forms.GroupBox();
             this.Retires = new System.Windows.Forms.CheckBox();
-            this.UnsetContractDetail = new System.Windows.Forms.CheckBox();
+            this.BuyPriceLabel = new System.Windows.Forms.Label();
+            this.BuyPriceInput = new System.Windows.Forms.TextBox();
+            this.DMLabel5 = new System.Windows.Forms.Label();
             this.YearsLabel1 = new System.Windows.Forms.Label();
             this.DMLabel4 = new System.Windows.Forms.Label();
             this.DMLabel3 = new System.Windows.Forms.Label();
@@ -207,7 +212,7 @@ namespace A2G_Trainer_XP.View
             this.OptionClub = new System.Windows.Forms.CheckBox();
             this.OptionPlayer = new System.Windows.Forms.CheckBox();
             this.JoinedThisSeason = new System.Windows.Forms.CheckBox();
-            this.UnknownContractCheckbox = new System.Windows.Forms.CheckBox();
+            this.BuyOptionOnHold = new System.Windows.Forms.CheckBox();
             this.LeasedWithOption = new System.Windows.Forms.CheckBox();
             this.Leased = new System.Windows.Forms.CheckBox();
             this.ContractYearsLabel = new System.Windows.Forms.Label();
@@ -221,6 +226,45 @@ namespace A2G_Trainer_XP.View
             this.SalaryLabel = new System.Windows.Forms.Label();
             this.SalaryInput = new System.Windows.Forms.TextBox();
             this.OtherTab = new System.Windows.Forms.TabPage();
+            this.StatisticsTab = new System.Windows.Forms.TabPage();
+            this.TransferTab = new System.Windows.Forms.TabPage();
+            this.TransferBox = new System.Windows.Forms.GroupBox();
+            this.TransferCountryLabel = new System.Windows.Forms.Label();
+            this.TransferCountryInput = new System.Windows.Forms.ComboBox();
+            this.TransferClubLabel = new System.Windows.Forms.Label();
+            this.TransferClubInput = new System.Windows.Forms.ComboBox();
+            this.TransferKindLabel = new System.Windows.Forms.Label();
+            this.TransferKindInput = new System.Windows.Forms.ComboBox();
+            this.TransferFeeLabel = new System.Windows.Forms.Label();
+            this.TransferFeeInput = new System.Windows.Forms.TextBox();
+            this.TransferFeeUnitLabel = new System.Windows.Forms.Label();
+            this.TransferBuyPriceLabel = new System.Windows.Forms.Label();
+            this.TransferBuyPriceInput = new System.Windows.Forms.TextBox();
+            this.TransferBuyPriceUnitLabel = new System.Windows.Forms.Label();
+            this.TransferImmediate = new System.Windows.Forms.CheckBox();
+            this.TransferRequestBtn = new System.Windows.Forms.Button();
+            this.TransferStatus = new System.Windows.Forms.Label();
+            this.SeasonBox = new System.Windows.Forms.GroupBox();
+            this.AppearancesLabel = new System.Windows.Forms.Label();
+            this.AppearancesInput = new System.Windows.Forms.TextBox();
+            this.SubbedInLabel = new System.Windows.Forms.Label();
+            this.SubbedInInput = new System.Windows.Forms.TextBox();
+            this.SubbedOutLabel = new System.Windows.Forms.Label();
+            this.SubbedOutInput = new System.Windows.Forms.TextBox();
+            this.RedCardsSeasonLabel = new System.Windows.Forms.Label();
+            this.RedCardsSeasonInput = new System.Windows.Forms.TextBox();
+            this.YellowRedCardsLabel = new System.Windows.Forms.Label();
+            this.YellowRedCardsInput = new System.Windows.Forms.TextBox();
+            this.GoalsLabel = new System.Windows.Forms.Label();
+            this.GoalsInput = new System.Windows.Forms.TextBox();
+            this.AssistsLabel = new System.Windows.Forms.Label();
+            this.AssistsInput = new System.Windows.Forms.TextBox();
+            this.JokerGoalsLabel = new System.Windows.Forms.Label();
+            this.JokerGoalsInput = new System.Windows.Forms.TextBox();
+            this.OwnGoalsLabel = new System.Windows.Forms.Label();
+            this.OwnGoalsInput = new System.Windows.Forms.TextBox();
+            this.UpgradeGoalsLabel = new System.Windows.Forms.Label();
+            this.UpgradeGoalsInput = new System.Windows.Forms.TextBox();
             this.TeamBus = new System.Windows.Forms.GroupBox();
             this.TeamContractDurationLabel = new System.Windows.Forms.Label();
             this.TeamContractDurationInput = new System.Windows.Forms.TextBox();
@@ -265,7 +309,12 @@ namespace A2G_Trainer_XP.View
             this.UnhappyBox.SuspendLayout();
             this.ContractTab.SuspendLayout();
             this.ContractBox.SuspendLayout();
+            this.HomeClubBox.SuspendLayout();
             this.OtherTab.SuspendLayout();
+            this.StatisticsTab.SuspendLayout();
+            this.TransferTab.SuspendLayout();
+            this.TransferBox.SuspendLayout();
+            this.SeasonBox.SuspendLayout();
             this.TeamBus.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -277,6 +326,8 @@ namespace A2G_Trainer_XP.View
             this.MainTabControl.Controls.Add(this.PropertiesTab);
             this.MainTabControl.Controls.Add(this.ConstitutionTab);
             this.MainTabControl.Controls.Add(this.ContractTab);
+            this.MainTabControl.Controls.Add(this.StatisticsTab);
+            this.MainTabControl.Controls.Add(this.TransferTab);
             this.MainTabControl.Controls.Add(this.OtherTab);
             this.MainTabControl.Location = new System.Drawing.Point(229, 13);
             this.MainTabControl.Margin = new System.Windows.Forms.Padding(0);
@@ -2145,6 +2196,7 @@ namespace A2G_Trainer_XP.View
             // ContractTab
             // 
             this.ContractTab.Controls.Add(this.ContractBox);
+            this.ContractTab.Controls.Add(this.HomeClubBox);
             this.ContractTab.Location = new System.Drawing.Point(4, 22);
             this.ContractTab.Name = "ContractTab";
             this.ContractTab.Size = new System.Drawing.Size(379, 349);
@@ -2155,7 +2207,9 @@ namespace A2G_Trainer_XP.View
             // ContractBox
             // 
             this.ContractBox.Controls.Add(this.Retires);
-            this.ContractBox.Controls.Add(this.UnsetContractDetail);
+            this.ContractBox.Controls.Add(this.BuyPriceLabel);
+            this.ContractBox.Controls.Add(this.BuyPriceInput);
+            this.ContractBox.Controls.Add(this.DMLabel5);
             this.ContractBox.Controls.Add(this.YearsLabel1);
             this.ContractBox.Controls.Add(this.DMLabel4);
             this.ContractBox.Controls.Add(this.DMLabel3);
@@ -2167,7 +2221,7 @@ namespace A2G_Trainer_XP.View
             this.ContractBox.Controls.Add(this.OptionClub);
             this.ContractBox.Controls.Add(this.OptionPlayer);
             this.ContractBox.Controls.Add(this.JoinedThisSeason);
-            this.ContractBox.Controls.Add(this.UnknownContractCheckbox);
+            this.ContractBox.Controls.Add(this.BuyOptionOnHold);
             this.ContractBox.Controls.Add(this.LeasedWithOption);
             this.ContractBox.Controls.Add(this.Leased);
             this.ContractBox.Controls.Add(this.ContractYearsLabel);
@@ -2187,6 +2241,35 @@ namespace A2G_Trainer_XP.View
             this.ContractBox.TabStop = false;
             this.ContractBox.Text = "Vertragsdetails";
             // 
+            // HomeClubBox
+            // 
+            this.HomeClubBox.Controls.Add(this.HomeCountryInput);
+            this.HomeClubBox.Controls.Add(this.HomeClubInput);
+            this.HomeClubBox.Location = new System.Drawing.Point(3, 247);
+            this.HomeClubBox.Name = "HomeClubBox";
+            this.HomeClubBox.Size = new System.Drawing.Size(373, 50);
+            this.HomeClubBox.TabIndex = 1;
+            this.HomeClubBox.TabStop = false;
+            this.HomeClubBox.Text = "Stammverein";
+            // 
+            // HomeCountryInput
+            // 
+            this.HomeCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.HomeCountryInput.FormattingEnabled = true;
+            this.HomeCountryInput.Location = new System.Drawing.Point(10, 19);
+            this.HomeCountryInput.Name = "HomeCountryInput";
+            this.HomeCountryInput.Size = new System.Drawing.Size(140, 21);
+            this.HomeCountryInput.TabIndex = 0;
+            // 
+            // HomeClubInput
+            // 
+            this.HomeClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.HomeClubInput.FormattingEnabled = true;
+            this.HomeClubInput.Location = new System.Drawing.Point(156, 19);
+            this.HomeClubInput.Name = "HomeClubInput";
+            this.HomeClubInput.Size = new System.Drawing.Size(207, 21);
+            this.HomeClubInput.TabIndex = 1;
+            // 
             // Retires
             // 
             this.Retires.CheckAlign = System.Drawing.ContentAlignment.TopRight;
@@ -2197,17 +2280,32 @@ namespace A2G_Trainer_XP.View
             this.Retires.Tag = "128";
             this.Retires.Text = "Beendet Karriere";
             this.Retires.UseVisualStyleBackColor = true;
-            // 
-            // UnsetContractDetail
-            // 
-            this.UnsetContractDetail.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.UnsetContractDetail.Location = new System.Drawing.Point(211, 171);
-            this.UnsetContractDetail.Name = "UnsetContractDetail";
-            this.UnsetContractDetail.Size = new System.Drawing.Size(156, 17);
-            this.UnsetContractDetail.TabIndex = 14;
-            this.UnsetContractDetail.Tag = "128";
-            this.UnsetContractDetail.Text = "[Ebenfalls unbekannt]";
-            this.UnsetContractDetail.UseVisualStyleBackColor = true;
+            //
+            // BuyPriceLabel
+            //
+            this.BuyPriceLabel.AutoSize = true;
+            this.BuyPriceLabel.Location = new System.Drawing.Point(208, 174);
+            this.BuyPriceLabel.Name = "BuyPriceLabel";
+            this.BuyPriceLabel.Size = new System.Drawing.Size(51, 13);
+            this.BuyPriceLabel.TabIndex = 61;
+            this.BuyPriceLabel.Text = "Kaufpreis";
+            //
+            // BuyPriceInput
+            //
+            this.BuyPriceInput.Location = new System.Drawing.Point(262, 171);
+            this.BuyPriceInput.Name = "BuyPriceInput";
+            this.BuyPriceInput.Size = new System.Drawing.Size(55, 20);
+            this.BuyPriceInput.TabIndex = 14;
+            this.BuyPriceInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // DMLabel5
+            //
+            this.DMLabel5.AutoSize = true;
+            this.DMLabel5.Location = new System.Drawing.Point(319, 174);
+            this.DMLabel5.Name = "DMLabel5";
+            this.DMLabel5.Size = new System.Drawing.Size(50, 13);
+            this.DMLabel5.TabIndex = 62;
+            this.DMLabel5.Text = "x100 DM";
             // 
             // YearsLabel1
             // 
@@ -2315,16 +2413,16 @@ namespace A2G_Trainer_XP.View
             this.JoinedThisSeason.Text = "In dieser Saison gekommen";
             this.JoinedThisSeason.UseVisualStyleBackColor = true;
             // 
-            // UnknownContractCheckbox
+            // BuyOptionOnHold
             // 
-            this.UnknownContractCheckbox.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.UnknownContractCheckbox.Location = new System.Drawing.Point(211, 73);
-            this.UnknownContractCheckbox.Name = "UnknownContractCheckbox";
-            this.UnknownContractCheckbox.Size = new System.Drawing.Size(156, 17);
-            this.UnknownContractCheckbox.TabIndex = 10;
-            this.UnknownContractCheckbox.Tag = "4";
-            this.UnknownContractCheckbox.Text = "[Unbekannter Wert]";
-            this.UnknownContractCheckbox.UseVisualStyleBackColor = true;
+            this.BuyOptionOnHold.CheckAlign = System.Drawing.ContentAlignment.TopRight;
+            this.BuyOptionOnHold.Location = new System.Drawing.Point(211, 73);
+            this.BuyOptionOnHold.Name = "BuyOptionOnHold";
+            this.BuyOptionOnHold.Size = new System.Drawing.Size(156, 17);
+            this.BuyOptionOnHold.TabIndex = 10;
+            this.BuyOptionOnHold.Tag = "4";
+            this.BuyOptionOnHold.Text = "Kaufoption ausgesetzt";
+            this.BuyOptionOnHold.UseVisualStyleBackColor = true;
             // 
             // LeasedWithOption
             // 
@@ -2432,6 +2530,365 @@ namespace A2G_Trainer_XP.View
             this.SalaryInput.Size = new System.Drawing.Size(46, 20);
             this.SalaryInput.TabIndex = 1;
             this.SalaryInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // TransferTab
+            // 
+            this.TransferTab.Controls.Add(this.TransferBox);
+            this.TransferTab.Location = new System.Drawing.Point(4, 22);
+            this.TransferTab.Name = "TransferTab";
+            this.TransferTab.Size = new System.Drawing.Size(379, 349);
+            this.TransferTab.TabIndex = 8;
+            this.TransferTab.Text = "Wechsel";
+            this.TransferTab.UseVisualStyleBackColor = true;
+            // 
+            // TransferBox
+            // 
+            this.TransferBox.Controls.Add(this.TransferCountryLabel);
+            this.TransferBox.Controls.Add(this.TransferCountryInput);
+            this.TransferBox.Controls.Add(this.TransferClubLabel);
+            this.TransferBox.Controls.Add(this.TransferClubInput);
+            this.TransferBox.Controls.Add(this.TransferKindLabel);
+            this.TransferBox.Controls.Add(this.TransferKindInput);
+            this.TransferBox.Controls.Add(this.TransferFeeLabel);
+            this.TransferBox.Controls.Add(this.TransferFeeInput);
+            this.TransferBox.Controls.Add(this.TransferFeeUnitLabel);
+            this.TransferBox.Controls.Add(this.TransferBuyPriceLabel);
+            this.TransferBox.Controls.Add(this.TransferBuyPriceInput);
+            this.TransferBox.Controls.Add(this.TransferBuyPriceUnitLabel);
+            this.TransferBox.Controls.Add(this.TransferImmediate);
+            this.TransferBox.Controls.Add(this.TransferRequestBtn);
+            this.TransferBox.Controls.Add(this.TransferStatus);
+            this.TransferBox.Location = new System.Drawing.Point(3, 3);
+            this.TransferBox.Name = "TransferBox";
+            this.TransferBox.Size = new System.Drawing.Size(373, 246);
+            this.TransferBox.TabIndex = 0;
+            this.TransferBox.TabStop = false;
+            this.TransferBox.Text = "Wechsel";
+            // 
+            // TransferCountryLabel
+            // 
+            this.TransferCountryLabel.AutoSize = true;
+            this.TransferCountryLabel.Location = new System.Drawing.Point(10, 25);
+            this.TransferCountryLabel.Name = "TransferCountryLabel";
+            this.TransferCountryLabel.TabIndex = 20;
+            this.TransferCountryLabel.Text = "Land";
+            // 
+            // TransferClubLabel
+            // 
+            this.TransferClubLabel.AutoSize = true;
+            this.TransferClubLabel.Location = new System.Drawing.Point(10, 52);
+            this.TransferClubLabel.Name = "TransferClubLabel";
+            this.TransferClubLabel.TabIndex = 21;
+            this.TransferClubLabel.Text = "Verein";
+            // 
+            // TransferKindLabel
+            // 
+            this.TransferKindLabel.AutoSize = true;
+            this.TransferKindLabel.Location = new System.Drawing.Point(10, 79);
+            this.TransferKindLabel.Name = "TransferKindLabel";
+            this.TransferKindLabel.TabIndex = 22;
+            this.TransferKindLabel.Text = "Art";
+            // 
+            // TransferFeeLabel
+            // 
+            this.TransferFeeLabel.AutoSize = true;
+            this.TransferFeeLabel.Location = new System.Drawing.Point(10, 106);
+            this.TransferFeeLabel.Name = "TransferFeeLabel";
+            this.TransferFeeLabel.TabIndex = 23;
+            this.TransferFeeLabel.Text = "Ablöse";
+            // 
+            // TransferFeeUnitLabel
+            // 
+            this.TransferFeeUnitLabel.AutoSize = true;
+            this.TransferFeeUnitLabel.Location = new System.Drawing.Point(153, 106);
+            this.TransferFeeUnitLabel.Name = "TransferFeeUnitLabel";
+            this.TransferFeeUnitLabel.TabIndex = 24;
+            this.TransferFeeUnitLabel.Text = "x100 DM";
+            // 
+            // TransferBuyPriceLabel
+            // 
+            this.TransferBuyPriceLabel.AutoSize = true;
+            this.TransferBuyPriceLabel.Location = new System.Drawing.Point(10, 132);
+            this.TransferBuyPriceLabel.Name = "TransferBuyPriceLabel";
+            this.TransferBuyPriceLabel.TabIndex = 25;
+            this.TransferBuyPriceLabel.Text = "Kaufpreis";
+            // 
+            // TransferBuyPriceUnitLabel
+            // 
+            this.TransferBuyPriceUnitLabel.AutoSize = true;
+            this.TransferBuyPriceUnitLabel.Location = new System.Drawing.Point(153, 132);
+            this.TransferBuyPriceUnitLabel.Name = "TransferBuyPriceUnitLabel";
+            this.TransferBuyPriceUnitLabel.TabIndex = 26;
+            this.TransferBuyPriceUnitLabel.Text = "x100 DM";
+            // 
+            // TransferCountryInput
+            // 
+            this.TransferCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TransferCountryInput.FormattingEnabled = true;
+            this.TransferCountryInput.Location = new System.Drawing.Point(80, 22);
+            this.TransferCountryInput.Name = "TransferCountryInput";
+            this.TransferCountryInput.Size = new System.Drawing.Size(283, 21);
+            this.TransferCountryInput.TabIndex = 0;
+            // 
+            // TransferClubInput
+            // 
+            this.TransferClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TransferClubInput.FormattingEnabled = true;
+            this.TransferClubInput.Location = new System.Drawing.Point(80, 49);
+            this.TransferClubInput.Name = "TransferClubInput";
+            this.TransferClubInput.Size = new System.Drawing.Size(283, 21);
+            this.TransferClubInput.TabIndex = 1;
+            // 
+            // TransferKindInput
+            // 
+            this.TransferKindInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TransferKindInput.FormattingEnabled = true;
+            this.TransferKindInput.Location = new System.Drawing.Point(80, 76);
+            this.TransferKindInput.Name = "TransferKindInput";
+            this.TransferKindInput.Size = new System.Drawing.Size(160, 21);
+            this.TransferKindInput.TabIndex = 2;
+            // 
+            // TransferFeeInput
+            // 
+            this.TransferFeeInput.Location = new System.Drawing.Point(80, 103);
+            this.TransferFeeInput.Name = "TransferFeeInput";
+            this.TransferFeeInput.Size = new System.Drawing.Size(70, 20);
+            this.TransferFeeInput.TabIndex = 3;
+            this.TransferFeeInput.Text = "0";
+            this.TransferFeeInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // TransferBuyPriceInput
+            // 
+            this.TransferBuyPriceInput.Location = new System.Drawing.Point(80, 129);
+            this.TransferBuyPriceInput.Name = "TransferBuyPriceInput";
+            this.TransferBuyPriceInput.Size = new System.Drawing.Size(70, 20);
+            this.TransferBuyPriceInput.TabIndex = 4;
+            this.TransferBuyPriceInput.Text = "0";
+            this.TransferBuyPriceInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // TransferImmediate
+            // 
+            this.TransferImmediate.AutoSize = true;
+            this.TransferImmediate.Location = new System.Drawing.Point(80, 155);
+            this.TransferImmediate.Name = "TransferImmediate";
+            this.TransferImmediate.TabIndex = 5;
+            this.TransferImmediate.Text = "sofort";
+            this.TransferImmediate.UseVisualStyleBackColor = true;
+            // 
+            // TransferRequestBtn
+            // 
+            this.TransferRequestBtn.Location = new System.Drawing.Point(80, 180);
+            this.TransferRequestBtn.Name = "TransferRequestBtn";
+            this.TransferRequestBtn.Size = new System.Drawing.Size(160, 23);
+            this.TransferRequestBtn.TabIndex = 6;
+            this.TransferRequestBtn.Text = "Wechsel anfordern";
+            this.TransferRequestBtn.UseVisualStyleBackColor = true;
+            // 
+            // TransferStatus
+            // 
+            this.TransferStatus.Location = new System.Drawing.Point(10, 210);
+            this.TransferStatus.Name = "TransferStatus";
+            this.TransferStatus.Size = new System.Drawing.Size(353, 30);
+            this.TransferStatus.TabIndex = 27;
+            // 
+            // StatisticsTab
+            // 
+            this.StatisticsTab.Controls.Add(this.SeasonBox);
+            this.StatisticsTab.Location = new System.Drawing.Point(4, 22);
+            this.StatisticsTab.Name = "StatisticsTab";
+            this.StatisticsTab.Size = new System.Drawing.Size(379, 349);
+            this.StatisticsTab.TabIndex = 7;
+            this.StatisticsTab.Text = "Statistik";
+            this.StatisticsTab.UseVisualStyleBackColor = true;
+            // 
+            // SeasonBox
+            // 
+            this.SeasonBox.Controls.Add(this.AppearancesLabel);
+            this.SeasonBox.Controls.Add(this.AppearancesInput);
+            this.SeasonBox.Controls.Add(this.SubbedInLabel);
+            this.SeasonBox.Controls.Add(this.SubbedInInput);
+            this.SeasonBox.Controls.Add(this.SubbedOutLabel);
+            this.SeasonBox.Controls.Add(this.SubbedOutInput);
+            this.SeasonBox.Controls.Add(this.RedCardsSeasonLabel);
+            this.SeasonBox.Controls.Add(this.RedCardsSeasonInput);
+            this.SeasonBox.Controls.Add(this.YellowRedCardsLabel);
+            this.SeasonBox.Controls.Add(this.YellowRedCardsInput);
+            this.SeasonBox.Controls.Add(this.GoalsLabel);
+            this.SeasonBox.Controls.Add(this.GoalsInput);
+            this.SeasonBox.Controls.Add(this.AssistsLabel);
+            this.SeasonBox.Controls.Add(this.AssistsInput);
+            this.SeasonBox.Controls.Add(this.JokerGoalsLabel);
+            this.SeasonBox.Controls.Add(this.JokerGoalsInput);
+            this.SeasonBox.Controls.Add(this.OwnGoalsLabel);
+            this.SeasonBox.Controls.Add(this.OwnGoalsInput);
+            this.SeasonBox.Controls.Add(this.UpgradeGoalsLabel);
+            this.SeasonBox.Controls.Add(this.UpgradeGoalsInput);
+            this.SeasonBox.Location = new System.Drawing.Point(3, 3);
+            this.SeasonBox.Name = "SeasonBox";
+            this.SeasonBox.Size = new System.Drawing.Size(373, 154);
+            this.SeasonBox.TabIndex = 0;
+            this.SeasonBox.TabStop = false;
+            this.SeasonBox.Text = "Saison";
+            // 
+            // AppearancesLabel
+            // 
+            this.AppearancesLabel.AutoSize = true;
+            this.AppearancesLabel.Location = new System.Drawing.Point(7, 22);
+            this.AppearancesLabel.Name = "AppearancesLabel";
+            this.AppearancesLabel.TabIndex = 20;
+            this.AppearancesLabel.Text = "Einsätze";
+            // 
+            // AppearancesInput
+            // 
+            this.AppearancesInput.Location = new System.Drawing.Point(130, 19);
+            this.AppearancesInput.Name = "AppearancesInput";
+            this.AppearancesInput.Size = new System.Drawing.Size(43, 20);
+            this.AppearancesInput.TabIndex = 0;
+            this.AppearancesInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // SubbedInLabel
+            // 
+            this.SubbedInLabel.AutoSize = true;
+            this.SubbedInLabel.Location = new System.Drawing.Point(7, 48);
+            this.SubbedInLabel.Name = "SubbedInLabel";
+            this.SubbedInLabel.TabIndex = 21;
+            this.SubbedInLabel.Text = "Einwechslungen";
+            // 
+            // SubbedInInput
+            // 
+            this.SubbedInInput.Location = new System.Drawing.Point(130, 45);
+            this.SubbedInInput.Name = "SubbedInInput";
+            this.SubbedInInput.Size = new System.Drawing.Size(43, 20);
+            this.SubbedInInput.TabIndex = 1;
+            this.SubbedInInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // SubbedOutLabel
+            // 
+            this.SubbedOutLabel.AutoSize = true;
+            this.SubbedOutLabel.Location = new System.Drawing.Point(7, 74);
+            this.SubbedOutLabel.Name = "SubbedOutLabel";
+            this.SubbedOutLabel.TabIndex = 22;
+            this.SubbedOutLabel.Text = "Auswechslungen";
+            // 
+            // SubbedOutInput
+            // 
+            this.SubbedOutInput.Location = new System.Drawing.Point(130, 71);
+            this.SubbedOutInput.Name = "SubbedOutInput";
+            this.SubbedOutInput.Size = new System.Drawing.Size(43, 20);
+            this.SubbedOutInput.TabIndex = 2;
+            this.SubbedOutInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // RedCardsSeasonLabel
+            // 
+            this.RedCardsSeasonLabel.AutoSize = true;
+            this.RedCardsSeasonLabel.Location = new System.Drawing.Point(7, 100);
+            this.RedCardsSeasonLabel.Name = "RedCardsSeasonLabel";
+            this.RedCardsSeasonLabel.TabIndex = 23;
+            this.RedCardsSeasonLabel.Text = "Rote Karten";
+            // 
+            // RedCardsSeasonInput
+            // 
+            this.RedCardsSeasonInput.Location = new System.Drawing.Point(130, 97);
+            this.RedCardsSeasonInput.Name = "RedCardsSeasonInput";
+            this.RedCardsSeasonInput.Size = new System.Drawing.Size(43, 20);
+            this.RedCardsSeasonInput.TabIndex = 3;
+            this.RedCardsSeasonInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // YellowRedCardsLabel
+            // 
+            this.YellowRedCardsLabel.AutoSize = true;
+            this.YellowRedCardsLabel.Location = new System.Drawing.Point(7, 126);
+            this.YellowRedCardsLabel.Name = "YellowRedCardsLabel";
+            this.YellowRedCardsLabel.TabIndex = 24;
+            this.YellowRedCardsLabel.Text = "Gelb-Rote Karten";
+            // 
+            // YellowRedCardsInput
+            // 
+            this.YellowRedCardsInput.Location = new System.Drawing.Point(130, 123);
+            this.YellowRedCardsInput.Name = "YellowRedCardsInput";
+            this.YellowRedCardsInput.Size = new System.Drawing.Size(43, 20);
+            this.YellowRedCardsInput.TabIndex = 4;
+            this.YellowRedCardsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // GoalsLabel
+            // 
+            this.GoalsLabel.AutoSize = true;
+            this.GoalsLabel.Location = new System.Drawing.Point(190, 22);
+            this.GoalsLabel.Name = "GoalsLabel";
+            this.GoalsLabel.TabIndex = 25;
+            this.GoalsLabel.Text = "Tore";
+            // 
+            // GoalsInput
+            // 
+            this.GoalsInput.Location = new System.Drawing.Point(321, 19);
+            this.GoalsInput.Name = "GoalsInput";
+            this.GoalsInput.Size = new System.Drawing.Size(43, 20);
+            this.GoalsInput.TabIndex = 5;
+            this.GoalsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // AssistsLabel
+            // 
+            this.AssistsLabel.AutoSize = true;
+            this.AssistsLabel.Location = new System.Drawing.Point(190, 48);
+            this.AssistsLabel.Name = "AssistsLabel";
+            this.AssistsLabel.TabIndex = 26;
+            this.AssistsLabel.Text = "Vorlagen";
+            // 
+            // AssistsInput
+            // 
+            this.AssistsInput.Location = new System.Drawing.Point(321, 45);
+            this.AssistsInput.Name = "AssistsInput";
+            this.AssistsInput.Size = new System.Drawing.Size(43, 20);
+            this.AssistsInput.TabIndex = 6;
+            this.AssistsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // JokerGoalsLabel
+            // 
+            this.JokerGoalsLabel.AutoSize = true;
+            this.JokerGoalsLabel.Location = new System.Drawing.Point(190, 74);
+            this.JokerGoalsLabel.Name = "JokerGoalsLabel";
+            this.JokerGoalsLabel.TabIndex = 27;
+            this.JokerGoalsLabel.Text = "Jokertore";
+            // 
+            // JokerGoalsInput
+            // 
+            this.JokerGoalsInput.Location = new System.Drawing.Point(321, 71);
+            this.JokerGoalsInput.Name = "JokerGoalsInput";
+            this.JokerGoalsInput.Size = new System.Drawing.Size(43, 20);
+            this.JokerGoalsInput.TabIndex = 7;
+            this.JokerGoalsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // OwnGoalsLabel
+            // 
+            this.OwnGoalsLabel.AutoSize = true;
+            this.OwnGoalsLabel.Location = new System.Drawing.Point(190, 100);
+            this.OwnGoalsLabel.Name = "OwnGoalsLabel";
+            this.OwnGoalsLabel.TabIndex = 28;
+            this.OwnGoalsLabel.Text = "Eigentore";
+            // 
+            // OwnGoalsInput
+            // 
+            this.OwnGoalsInput.Location = new System.Drawing.Point(321, 97);
+            this.OwnGoalsInput.Name = "OwnGoalsInput";
+            this.OwnGoalsInput.Size = new System.Drawing.Size(43, 20);
+            this.OwnGoalsInput.TabIndex = 8;
+            this.OwnGoalsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // UpgradeGoalsLabel
+            // 
+            this.UpgradeGoalsLabel.AutoSize = true;
+            this.UpgradeGoalsLabel.Location = new System.Drawing.Point(190, 126);
+            this.UpgradeGoalsLabel.Name = "UpgradeGoalsLabel";
+            this.UpgradeGoalsLabel.TabIndex = 29;
+            this.UpgradeGoalsLabel.Text = "Tore für Aufwertung";
+            // 
+            // UpgradeGoalsInput
+            // 
+            this.UpgradeGoalsInput.Location = new System.Drawing.Point(321, 123);
+            this.UpgradeGoalsInput.Name = "UpgradeGoalsInput";
+            this.UpgradeGoalsInput.Size = new System.Drawing.Size(43, 20);
+            this.UpgradeGoalsInput.TabIndex = 9;
+            this.UpgradeGoalsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // OtherTab
             // 
@@ -2689,7 +3146,14 @@ namespace A2G_Trainer_XP.View
             this.ContractTab.ResumeLayout(false);
             this.ContractBox.ResumeLayout(false);
             this.ContractBox.PerformLayout();
+            this.HomeClubBox.ResumeLayout(false);
             this.OtherTab.ResumeLayout(false);
+            this.StatisticsTab.ResumeLayout(false);
+            this.TransferTab.ResumeLayout(false);
+            this.TransferBox.ResumeLayout(false);
+            this.TransferBox.PerformLayout();
+            this.SeasonBox.ResumeLayout(false);
+            this.SeasonBox.PerformLayout();
             this.TeamBus.ResumeLayout(false);
             this.TeamBus.PerformLayout();
             this.ResumeLayout(false);
@@ -2863,8 +3327,13 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.CheckBox WillEndlichSpielen;
         private System.Windows.Forms.TabPage ContractTab;
         private System.Windows.Forms.GroupBox ContractBox;
+        private System.Windows.Forms.GroupBox HomeClubBox;
+        private System.Windows.Forms.ComboBox HomeCountryInput;
+        private System.Windows.Forms.ComboBox HomeClubInput;
         private System.Windows.Forms.CheckBox Retires;
-        private System.Windows.Forms.CheckBox UnsetContractDetail;
+        private System.Windows.Forms.Label BuyPriceLabel;
+        private System.Windows.Forms.TextBox BuyPriceInput;
+        private System.Windows.Forms.Label DMLabel5;
         private System.Windows.Forms.Label YearsLabel1;
         private System.Windows.Forms.Label DMLabel4;
         private System.Windows.Forms.Label DMLabel3;
@@ -2876,7 +3345,7 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.CheckBox OptionClub;
         private System.Windows.Forms.CheckBox OptionPlayer;
         private System.Windows.Forms.CheckBox JoinedThisSeason;
-        private System.Windows.Forms.CheckBox UnknownContractCheckbox;
+        private System.Windows.Forms.CheckBox BuyOptionOnHold;
         private System.Windows.Forms.CheckBox LeasedWithOption;
         private System.Windows.Forms.CheckBox Leased;
         private System.Windows.Forms.Label ContractYearsLabel;
@@ -2890,6 +3359,45 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Label SalaryLabel;
         private System.Windows.Forms.TextBox SalaryInput;
         private System.Windows.Forms.TabPage OtherTab;
+        private System.Windows.Forms.TabPage StatisticsTab;
+        private System.Windows.Forms.TabPage TransferTab;
+        private System.Windows.Forms.GroupBox TransferBox;
+        private System.Windows.Forms.Label TransferCountryLabel;
+        private System.Windows.Forms.ComboBox TransferCountryInput;
+        private System.Windows.Forms.Label TransferClubLabel;
+        private System.Windows.Forms.ComboBox TransferClubInput;
+        private System.Windows.Forms.Label TransferKindLabel;
+        private System.Windows.Forms.ComboBox TransferKindInput;
+        private System.Windows.Forms.Label TransferFeeLabel;
+        private System.Windows.Forms.TextBox TransferFeeInput;
+        private System.Windows.Forms.Label TransferFeeUnitLabel;
+        private System.Windows.Forms.Label TransferBuyPriceLabel;
+        private System.Windows.Forms.TextBox TransferBuyPriceInput;
+        private System.Windows.Forms.Label TransferBuyPriceUnitLabel;
+        private System.Windows.Forms.CheckBox TransferImmediate;
+        private System.Windows.Forms.Button TransferRequestBtn;
+        private System.Windows.Forms.Label TransferStatus;
+        private System.Windows.Forms.GroupBox SeasonBox;
+        private System.Windows.Forms.Label AppearancesLabel;
+        private System.Windows.Forms.TextBox AppearancesInput;
+        private System.Windows.Forms.Label SubbedInLabel;
+        private System.Windows.Forms.TextBox SubbedInInput;
+        private System.Windows.Forms.Label SubbedOutLabel;
+        private System.Windows.Forms.TextBox SubbedOutInput;
+        private System.Windows.Forms.Label RedCardsSeasonLabel;
+        private System.Windows.Forms.TextBox RedCardsSeasonInput;
+        private System.Windows.Forms.Label YellowRedCardsLabel;
+        private System.Windows.Forms.TextBox YellowRedCardsInput;
+        private System.Windows.Forms.Label GoalsLabel;
+        private System.Windows.Forms.TextBox GoalsInput;
+        private System.Windows.Forms.Label AssistsLabel;
+        private System.Windows.Forms.TextBox AssistsInput;
+        private System.Windows.Forms.Label JokerGoalsLabel;
+        private System.Windows.Forms.TextBox JokerGoalsInput;
+        private System.Windows.Forms.Label OwnGoalsLabel;
+        private System.Windows.Forms.TextBox OwnGoalsInput;
+        private System.Windows.Forms.Label UpgradeGoalsLabel;
+        private System.Windows.Forms.TextBox UpgradeGoalsInput;
         private System.Windows.Forms.GroupBox TeamBus;
         private System.Windows.Forms.Label TeamContractDurationLabel;
         private System.Windows.Forms.TextBox TeamContractDurationInput;

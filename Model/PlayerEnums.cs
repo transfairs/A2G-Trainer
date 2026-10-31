@@ -62,12 +62,25 @@ namespace A2G_Trainer_XP.Model
             SHOWUP,
             GOALS_BONUS,
             TRANSFER_FEE,
+            BUY_PRICE,
+            HOME_COUNTRY,
+            HOME_CLUB,
             CONTRACT_DURATION,
             CONTRACT_DETAILS,
             YEARS_IN_CLUB,
             CAREER,
             CLUB_ID,
-            CLUB_COUNTRY
+            CLUB_COUNTRY,
+            RED_CARDS,
+            YELLOW_RED_CARDS,
+            GOALS,
+            OWN_GOALS,
+            ASSISTS,
+            JOKER_GOALS,
+            APPEARANCES,
+            SUBBED_IN,
+            SUBBED_OUT,
+            UPGRADE_GOALS
         }
 
         /// <summary>Player character trait (single selection, bit-packed but mutually exclusive in practice).</summary>
@@ -96,18 +109,24 @@ namespace A2G_Trainer_XP.Model
             Unknown6 = 1 << 6,
             Retires  = 1 << 7
         }
-        /// <summary>Contract-status bitmask (loan/buy-option/etc.).</summary>
+        /// <summary>
+        /// Contract-status bitmask (loan/buy-option/etc.). Lending a player (FUN_005fb710) sets
+        /// Leased, plus BuyOption for a loan with a buy option. At the season end FUN_00427ad0 decides
+        /// for every loan with a buy option whether it's taken up (FUN_004278f0 clears bits 0-2) or the
+        /// player goes back - except when BuyOptionOnHold is set, which skips that decision. No code
+        /// in the game sets BuyOptionOnHold, and none reads Unused at all.
+        /// </summary>
         public enum Contract : byte
         {
             None             = 0,
             Leased           = 1 << 0,
             BuyOption        = 1 << 1,
-            Unknown          = 1 << 2,
+            BuyOptionOnHold  = 1 << 2,
             JoinedThisSeason = 1 << 3,
             OptionPlayer     = 1 << 4,
             OptionClub       = 1 << 5,
             Seated           = 1 << 6,
-            Unset            = 1 << 7
+            Unused           = 1 << 7
         }
         /// <summary>Nationality/club country, single-byte encoded (see Settings.playerRecordNationalityOffset for the persistent-record quirk).</summary>
         public enum Country : byte

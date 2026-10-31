@@ -204,6 +204,7 @@ namespace A2G_Trainer_XP.Controller
                     club.BlockJSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockJSeats]));
                     club.BlockKSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockKSeats]));
                     club.BlockLSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockLSeats]));
+                    club.Capacity = this.memory.ReadInt32(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Capacity]));
                 }
             }
             club.Initilisation = false;
@@ -276,6 +277,11 @@ namespace A2G_Trainer_XP.Controller
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "88D"), new byte[] { this.Club.BlockJWeeks });
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "88E"), new byte[] { this.Club.BlockKWeeks });
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "88F"), new byte[] { this.Club.BlockLWeeks });
+
+            // The game only recounts the capacity when a construction finishes (FUN_006076c0) or at the
+            // season change - recount it here, so changed places and construction weeks count right away.
+            this.Club.Capacity = this.Club.OpenCapacity();
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, club.Addresses[ClubEnums.AddressKey.Capacity]), BitConverter.GetBytes(this.Club.Capacity));
 
             // this.memory.WriteBytes(GetAddress(this.memory, this.Club, "854"), new byte[] { (byte)player.SkinColor });
         }

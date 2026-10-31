@@ -161,7 +161,7 @@
               <dt>Sitzplätze</dt><dd>Anzahl Sitzplätze im Block (bis zu 32.767).</dd>
               <dt>Stehplätze</dt><dd>Anzahl Stehplätze im Block (bis zu 32.767).</dd>
               <dt>überdacht</dt><dd>Kontrollkästchen, ob der Block überdacht ist.</dd>
-              <dt>Wochen Bauzeit</dt><dd>Verbleibende Bauzeit des Blocks in Wochen.</dd>
+              <dt>Wochen Bauzeit</dt><dd>Verbleibende Bauzeit des Blocks in Wochen. Solange sie über 0 liegt, ist der Block gesperrt und zählt nicht zur Kapazität. Die Platzzahlen sind während des Baus schon die neuen. Mit 0 ist ein Ausbau sofort fertig.</dd>
             </dl>
           </fieldset>
 
@@ -170,9 +170,9 @@
             Um einem Block eine <em>negative</em> Anzahl Plätze zuzuweisen, tragen Sie einfach einen Wert <strong>größer als 32.767</strong> ein. Der Zähler läuft dann ins Negative um.
           </div>
 
-          <div class="callout warn">
-            <strong class="label">Block A und die Bauzeit</strong>
-            Nach dem Bearbeiten eines Blocks setzt der Trainer <strong>Block A automatisch auf eine Woche Bauzeit</strong>. Das stellt sicher, dass das Spiel alle Änderungen tatsächlich übernimmt.
+          <div class="callout tip">
+            <strong class="label">Änderungen gelten sofort</strong>
+            Das Spiel rechnet die Kapazität seines Stadions selbst nur neu, wenn ein Ausbau fertig wird oder eine neue Saison beginnt. Der Trainer rechnet sie deshalb beim Speichern gleich mit, genauso wie das Spiel: Steh- und Sitzplätze aller Blöcke ohne Bauzeit. Geänderte Plätze und Bauzeiten zählen damit ab dem nächsten Heimspiel.
           </div>
 
           <p>Zum Vergleich: Die folgende Ansicht zeigt links die Trainer-Blockübersicht, rechts die zugehörige Stadion-Grafik im Spiel selbst.</p>
@@ -194,6 +194,8 @@
           <button data-sub="eigenschaften">Eigenschaften</button>
           <button data-sub="verfassung">Verfassung</button>
           <button data-sub="vertrag">Vertrag</button>
+          <button data-sub="statistik">Statistik</button>
+          <button data-sub="wechsel">Wechsel</button>
           <button data-sub="team">Team</button>
         </div>
 
@@ -303,6 +305,7 @@
               <span class="chip">toller Vertrag</span><span class="chip">tolle Prämien</span><span class="chip">tolle Stimmung</span>
               <span class="chip">toller Vertrag (doppelt)</span><span class="chip">toller Trainer</span>
             </p>
+            <p>„toller Vertrag“ gibt es im Spiel tatsächlich zweimal, mit genau demselben Text. Das erste setzt das Spiel jede Woche bei starker Leistung, etwa ab 20 Saisontoren oder bei Spielern über 33 mit mehr als 30 voll gespielten Einsätzen. Das zweite („doppelt“) setzt das Spiel selbst nie; angehakt zählt es wie jeder andere Grund für die Zufriedenheit.</p>
           </fieldset>
           <fieldset class="groupbox">
             <legend>Unbehagen</legend>
@@ -346,16 +349,50 @@
               <dt>Beendet Karriere</dt><dd>Kontrollkästchen.</dd>
               <dt>Verliehen</dt><dd>Kontrollkästchen.</dd>
               <dt>mit Kaufoption</dt><dd>Kontrollkästchen.</dd>
+              <dt>Kaufoption ausgesetzt</dt><dd>Kontrollkästchen. Am Saisonende entscheidet das Spiel für jeden geliehenen Spieler mit Kaufoption, ob der Verein ihn kauft oder ob er zurückgeht. Ist dieses Kästchen angehakt, überspringt das Spiel diese Entscheidung, der Spieler bleibt also vorerst geliehen. Das Spiel selbst setzt es nie.</dd>
+              <dt>Kaufpreis</dt><dd>Angabe x 100 DM. Bei einer Leihe mit Kaufoption der Preis, den der Verein beim Ziehen der Option zahlt; sonst die zuletzt für den Spieler gezahlte Ablöse.</dd>
               <dt>In dieser Saison gekommen</dt><dd>Kontrollkästchen.</dd>
               <dt>Option Spieler / Option Verein</dt><dd>Kontrollkästchen für die jeweiligen Vertragsoptionen.</dd>
               <dt>Jahre im Verein</dt><dd>Bei „0“ kann der Spieler diese Saison nicht wechseln.</dd>
             </dl>
           </fieldset>
-          <div class="callout warn">
-            <strong class="label">Zwei unbekannte Kontrollkästchen</strong>
-            In dieser Registerkarte gibt es zwei zusätzliche Kontrollkästchen, deren genaue Bedeutung von der Community bisher nicht vollständig geklärt werden konnte. Sie werden im Trainer entsprechend als „[Unbekannter Wert]“ bzw. „[Ebenfalls unbekannt]“ angezeigt. Ändern Sie diese vorsichtshalber nicht, wenn Sie sich der Wirkung nicht sicher sind.
-          </div>
+          <fieldset class="groupbox">
+            <legend>Stammverein</legend>
+            <p>Land und Verein, von dem ein Spieler ausgeliehen ist. Am Saisonende geht er dorthin zurück, oder sein Verein kauft ihn bei einer Leihe mit Kaufoption von diesem Verein (siehe „Kaufpreis“). Beim Verleihen trägt das Spiel den abgebenden Verein ein, bei einem normalen Wechsel löscht es den Eintrag („–“). Wer im Trainer „Verliehen“ anhakt, sollte hier auch den Stammverein wählen, sonst kehrt der Spieler zu keinem gültigen Verein zurück. Angeboten werden alle Vereine, die der Spielstand kennt.</p>
+          </fieldset>
           <img class="screenshot" src="img/ContractTab.png" alt="Registerkarte Vertrag" style="max-width:420px">
+        </div>
+
+        <div class="subpanel" data-sub="statistik">
+          <fieldset class="groupbox">
+            <legend>Saison</legend>
+            <dl class="field-list">
+              <dt>Einsätze</dt><dd>Spiele in dieser Saison, Einwechslungen eingeschlossen.</dd>
+              <dt>Einwechslungen / Auswechslungen</dt><dd>Wie oft der Spieler in dieser Saison ein- bzw. ausgewechselt wurde.</dd>
+              <dt>Rote Karten / Gelb-Rote Karten</dt><dd>Karten in dieser Saison. Die gelben Karten stehen unter „Verfassung“.</dd>
+              <dt>Tore / Vorlagen</dt><dd>Tore und Torvorlagen in dieser Saison.</dd>
+              <dt>Jokertore</dt><dd>Tore nach einer Einwechslung.</dd>
+              <dt>Eigentore</dt><dd>Eigentore in dieser Saison.</dd>
+              <dt>Tore für Aufwertung</dt><dd>Ligatore, mit denen das Spiel am Saisonende die Aufwertung prüft. Das Spiel zählt sie zusammen mit den Toren hoch, wertet aber nur diesen Zähler aus; geänderte „Tore“ allein bringen also keine Aufwertung. Ein Feldspieler unter 34 Jahren mit Stärke unter 7 wird in der Regel um eine Stufe aufgewertet, wenn der Wert die Schwelle erreicht. In einer Liga mit 18 Vereinen liegt sie bei Stärke 1/2/3/4/5/6 bei 4/7/11/16/21/26 Toren, in größeren Ligen etwas höher. „Tore bis Aufw.“ in den Spielertrends zeigt, wie viele noch fehlen.</dd>
+            </dl>
+            <p>Die Statistik-Bildschirme des Spiels (Torjäger, Scorer, Einsätze, Joker, Eigentore, Fair-Play) rechnen direkt mit diesen Werten. Die „ewigen“ Ranglisten und die Noten der einzelnen Spiele führt das Spiel getrennt, sie ändern sich dadurch nicht. Auch bei Jugendspielern werden die Werte dauerhaft gespeichert.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="wechsel">
+          <fieldset class="groupbox">
+            <legend>Wechsel</legend>
+            <p>Schickt den Spieler zu einem anderen Verein, als Wechsel, Leihe oder Leihe mit Kaufoption. Das geht in beide Richtungen: einen eigenen Spieler abgeben oder in der <em>Dynamischen Mannschaft</em> einen Spieler eines anderen Vereins wählen und den eigenen Verein als Ziel nehmen. Das Spiel führt den Wechsel mit seinen eigenen Funktionen aus, also mit Kader, Aufstellung, Geld, Transferhistorie, Meldung und bei einer Leihe dem Stammverein.</p>
+            <dl class="field-list">
+              <dt>Land / Verein</dt><dd>Der neue Verein. Der aktuelle Verein des Spielers wird nicht angeboten.</dd>
+              <dt>Art</dt><dd>Wechsel, Leihe oder Leihe mit Kaufoption.</dd>
+              <dt>Ablöse</dt><dd>Angabe x 100 DM, bei einer Leihe die Leihgebühr. Der neue Verein zahlt, der alte bekommt das Geld. 0 ist erlaubt.</dd>
+              <dt>Kaufpreis</dt><dd>Nur bei einer Leihe mit Kaufoption: der Preis, zu dem der Verein den Spieler am Saisonende kaufen kann.</dd>
+              <dt>sofort</dt><dd>Nur beim Wechsel. Nach Tag 216 der Saison trägt das Spiel einen Wechsel sonst nur für das Saisonende ein (das Geld fließt trotzdem gleich). Mit „sofort“ wechselt der Spieler auch dann direkt. Leihen gelten immer sofort.</dd>
+              <dt>Wechsel anfordern</dt><dd>Der Wechsel geschieht beim nächsten <strong>Tagesabschluss</strong>. Eine neue Anforderung ersetzt eine noch nicht ausgeführte. Nach dem Tagesabschluss zeigt die Registerkarte beim nächsten Aktualisieren, ob er geklappt hat.</dd>
+            </dl>
+            <p>Das Spiel bestimmt den Vertrag beim neuen Verein (Gehalt, Prämien, Laufzeit von mindestens 2 Jahren) wie bei seinen eigenen Wechseln; ändern lässt er sich danach wie gewohnt. Abgelehnt wird der Wechsel, wenn der Kader des neuen Vereins schon 30 Spieler hat (mehr verkraftet das Spiel nicht) oder der Spieler zum Zeitpunkt des Tagesabschlusses nicht mehr beim alten Verein ist. Nur in der Original-Version und nicht für Jugendspieler.</p>
+          </fieldset>
         </div>
 
         <div class="subpanel" data-sub="team">
@@ -392,10 +429,11 @@
               <span class="chip">Eigenschaften / Charakter / Gesundheitszustand</span><span class="chip">Hautfarbe / Haarfarbe</span>
               <span class="chip">Form</span><span class="chip">Kondition / Frische</span><span class="chip">Nationalität</span>
               <span class="chip">Unbehagen / Zufriedenheit</span><span class="chip">Gehalt / Auflaufprämie</span>
-              <span class="chip">Torprämie / Fixe Ablöse</span><span class="chip">Vertragslaufzeit / Jahre im Verein</span>
+              <span class="chip">Torprämie / Fixe Ablöse</span><span class="chip">Kaufpreis</span><span class="chip">Stammverein</span><span class="chip">Vertragslaufzeit / Jahre im Verein</span>
               <span class="chip">Vertragsdetails</span><span class="chip">Karriere</span>
               <span class="chip">Verletzung / Verletzungstage</span><span class="chip">Verletzungsanfällig</span>
               <span class="chip">Gesperrte Spiele</span><span class="chip">Gedopt</span><span class="chip">Gelbe Karten</span>
+              <span class="chip">Statistik</span>
             </p>
             <p>Für Namenswechsel gelten dieselben Regeln wie beim Kader, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>.</p>
           </fieldset>
@@ -447,6 +485,20 @@
               <span class="chip">Autorität</span><span class="chip">Fremdsprachenkenntnisse</span><span class="chip">Ausstrahlung</span>
             </p>
             <p>Pro erreichtem Level stehen 6 Punkte zur Verfügung (Level&nbsp;1 &rarr; 6 Punkte, Level&nbsp;15 &rarr; 90 Punkte); eine Anzeige unterhalb der Felder zeigt die aktuell verteilte Summe im Verhältnis zur erwarteten Gesamtsumme.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Image</legend>
+            <p>Das Image des Managers, wie es das Spiel in der Karriere anzeigt:</p>
+            <p>
+              <span class="chip">kein Image</span><span class="chip">harter Hund</span><span class="chip">Schleifer</span><span class="chip">Schlitzohr</span>
+              <span class="chip">Streber</span><span class="chip">Ahnungsloser</span><span class="chip">Absteiger</span><span class="chip">Choleriker</span>
+              <span class="chip">Weichei</span><span class="chip">Weltenbummler</span><span class="chip">Wissenschaftler</span><span class="chip">Hoffnungsträger</span>
+              <span class="chip">PR-Mann</span><span class="chip">lustiger Geselle</span><span class="chip">unbekannte Größe</span><span class="chip">Motivationskünstler</span>
+              <span class="chip">Trunkenbold</span>
+            </p>
+            <p>Das Spiel prüft das Image jede Woche neu, sobald der Manager länger als 28 Tage bei seinem Verein ist. Trifft eine seiner Bedingungen zu, vergibt es das passende Image: zum Beispiel <strong>Schleifer</strong> nach mehr als 8 der letzten 20 Wochen mit hartem Training, <strong>Wissenschaftler</strong> nach mehr als 7 Wochen mit den übrigen Trainingsarten, <strong>PR-Mann</strong> bei hoher Ausstrahlung. Trifft keine zu, bleibt das eingetragene Image stehen; nur in etwa jeder zehnten Woche fällt es dann auf „kein Image“ zurück. Hoffnungsträger, Motivationskünstler, Weltenbummler und Trunkenbold vergibt diese Prüfung nie, ein eingetragenes bleibt also, bis eine andere Bedingung greift.</p>
+            <p>Die Auswahl ist nur in der Originalversion sowie in GOG und 2007er-CD verfügbar, sobald der Trainer deren Adressen bestätigt hat.</p>
           </fieldset>
 
           <img class="screenshot" src="img/CoachView.png" alt="Trainer-Ansicht, Registerkarte Allgemein mit Kompetenzen" style="max-width:420px">
@@ -562,11 +614,6 @@
           <div class="callout tip">
             <strong class="label">Negative Platzzahl im Stadion</strong>
             Um einem Stadionblock eine negative Anzahl Plätze zuzuweisen, tragen Sie einen Wert <strong>größer als 32.767</strong> ein.
-          </div>
-
-          <div class="callout tip">
-            <strong class="label">Block A nach jeder Stadion-Änderung</strong>
-            Nach dem Bearbeiten eines beliebigen Stadionblocks setzt der Trainer <strong>Block A automatisch auf eine Woche Bauzeit</strong>, damit alle Änderungen sicher übernommen werden.
           </div>
 
           <div class="callout tip">

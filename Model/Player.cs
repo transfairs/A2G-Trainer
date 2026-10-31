@@ -261,9 +261,9 @@ namespace A2G_Trainer_XP.Model
         /// <summary>Whether the player's <see cref="Unhappy"/> mood flags include "lousy trainer" (ScheissTrainer).</summary>
         public bool IsScheissTrainer        { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.ScheissTrainer);        set => this.Multiplex(PlayerEnums.Unhappy.ScheissTrainer, value, nameof(this.IsScheissTrainer)); }
         /// <summary>Whether the player's <see cref="Unhappy"/> mood flags include "negotiation fell through" (VerhandlungGeplatzt).</summary>
-        public bool IsVerhandlungGeplatzt   { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.VerhandlungGeplatzt);   set => this.Multiplex(PlayerEnums.Unhappy.ScheissTrainer, value, nameof(this.IsVerhandlungGeplatzt)); }
+        public bool IsVerhandlungGeplatzt   { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.VerhandlungGeplatzt);   set => this.Multiplex(PlayerEnums.Unhappy.VerhandlungGeplatzt, value, nameof(this.IsVerhandlungGeplatzt)); }
         /// <summary>Whether the player's <see cref="Unhappy"/> mood flags include "lousy manager" (ScheissManager).</summary>
-        public bool IsScheissManager        { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.ScheissManager);        set => this.Multiplex(PlayerEnums.Unhappy.ScheissTrainer, value, nameof(this.IsScheissManager)); }
+        public bool IsScheissManager        { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.ScheissManager);        set => this.Multiplex(PlayerEnums.Unhappy.ScheissManager, value, nameof(this.IsScheissManager)); }
         /// <summary>Whether the player's <see cref="Unhappy"/> mood flags include "lousy youth round" (ScheissNachwuchsrunde).</summary>
         public bool IsScheissNachwuchsrunde { get => this.Unhappy.HasFlag(PlayerEnums.Unhappy.ScheissNachwuchsrunde); set => this.Multiplex(PlayerEnums.Unhappy.ScheissNachwuchsrunde, value, nameof(this.IsScheissNachwuchsrunde)); }
 
@@ -271,8 +271,8 @@ namespace A2G_Trainer_XP.Model
         public bool IsLeased { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Leased); set => this.Multiplex(PlayerEnums.Contract.Leased, value, nameof(this.IsLeased)); }
         /// <summary>Whether the player's <see cref="ContractDetails"/> flags include a buy option.</summary>
         public bool HasBuyOption { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.BuyOption); set => this.Multiplex(PlayerEnums.Contract.BuyOption, value, nameof(this.HasBuyOption)); }
-        /// <summary>Whether the player's <see cref="ContractDetails"/> flags include the unmapped Unknown bit.</summary>
-        public bool IsUnknownContractDetail { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Unknown); set => this.Multiplex(PlayerEnums.Contract.Unknown, value, nameof(this.IsUnknownContractDetail)); }
+        /// <summary>Whether the player's <see cref="ContractDetails"/> flags hold back the season-end decision on a buy option (see <see cref="PlayerEnums.Contract.BuyOptionOnHold"/>).</summary>
+        public bool IsBuyOptionOnHold { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.BuyOptionOnHold); set => this.Multiplex(PlayerEnums.Contract.BuyOptionOnHold, value, nameof(this.IsBuyOptionOnHold)); }
         /// <summary>Whether the player's <see cref="ContractDetails"/> flags include "joined this season".</summary>
         public bool IsJoinedThisSeason { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.JoinedThisSeason); set => this.Multiplex(PlayerEnums.Contract.JoinedThisSeason, value, nameof(this.IsJoinedThisSeason)); }
         /// <summary>Whether the player's <see cref="ContractDetails"/> flags include an option held by the player.</summary>
@@ -281,8 +281,6 @@ namespace A2G_Trainer_XP.Model
         public bool HasOptionClub { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.OptionClub); set => this.Multiplex(PlayerEnums.Contract.OptionClub, value, nameof(this.HasOptionClub)); }
         /// <summary>Whether the player's <see cref="ContractDetails"/> flags include a seated (guaranteed) contract.</summary>
         public bool IsSeatedGuarantee { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Seated); set => this.Multiplex(PlayerEnums.Contract.Seated, value, nameof(this.IsSeatedGuarantee)); }
-        /// <summary>Whether the player's <see cref="ContractDetails"/> flags include the Unset bit.</summary>
-        public bool IsUnsetContractDetail { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Unset); set => this.Multiplex(PlayerEnums.Contract.Unset, value, nameof(this.IsUnsetContractDetail)); }
         /// <summary>Whether the player's <see cref="Career"/> flags include Retires.</summary>
         public bool IsRetires { get => this.Career.HasFlag(PlayerEnums.Career.Retires); set => this.Multiplex(PlayerEnums.Career.Retires, value, nameof(this.IsRetires)); }
         #endregion
@@ -416,6 +414,18 @@ namespace A2G_Trainer_XP.Model
         /// <summary>Player's transfer fee.</summary>
         public ushort TransferFee { get => this.transferFee; set { this.transferFee = value; this.OnPropertyChanged(nameof(this.TransferFee)); } }
         private ushort transferFee = 0;
+        /// <summary>
+        /// "Kaufpreis" (x100 DM, UInt32): the transfer fee last paid for the player, or, on a loan with
+        /// a buy option, the price his club pays if it takes the option up at the season end (FUN_004278f0).
+        /// </summary>
+        public uint BuyPrice { get => this.buyPrice; set { this.buyPrice = value; this.OnPropertyChanged(nameof(this.BuyPrice)); } }
+        private uint buyPrice = 0;
+        /// <summary>Country of the "Stammverein" a loaned player returns to (or is bought from) at the season end; Sonstige (0) when not on loan.</summary>
+        public PlayerEnums.Country HomeCountry { get => this.homeCountry; set { this.homeCountry = value; this.OnPropertyChanged(nameof(this.HomeCountry)); } }
+        private PlayerEnums.Country homeCountry;
+        /// <summary>Club ID of the "Stammverein" within <see cref="HomeCountry"/>.</summary>
+        public ushort HomeClubId { get => this.homeClubId; set { this.homeClubId = value; this.OnPropertyChanged(nameof(this.HomeClubId)); } }
+        private ushort homeClubId;
         /// <summary>Remaining duration of the player's contract.</summary>
         public byte ContractDuration { get => this.contractDuration; set { this.contractDuration = value; this.OnPropertyChanged(nameof(this.ContractDuration)); } }
         private byte contractDuration = 0;
@@ -430,28 +440,52 @@ namespace A2G_Trainer_XP.Model
         private PlayerEnums.Career career = PlayerEnums.Career.None;
         #endregion
 
+        #region Statistics
+        // Season values, see Settings.PlayerRecordRedCardsOffset for where their meaning comes from.
+        /// <summary>Red cards this season.</summary>
+        public byte RedCardsSeason { get => this.redCardsSeason; set { this.redCardsSeason = value; this.OnPropertyChanged(nameof(this.RedCardsSeason)); } }
+        private byte redCardsSeason;
+        /// <summary>Yellow-red cards this season.</summary>
+        public byte YellowRedCardsSeason { get => this.yellowRedCardsSeason; set { this.yellowRedCardsSeason = value; this.OnPropertyChanged(nameof(this.YellowRedCardsSeason)); } }
+        private byte yellowRedCardsSeason;
+        /// <summary>Goals this season.</summary>
+        public byte Goals { get => this.goals; set { this.goals = value; this.OnPropertyChanged(nameof(this.Goals)); } }
+        private byte goals;
+        /// <summary>Own goals this season.</summary>
+        public byte OwnGoals { get => this.ownGoals; set { this.ownGoals = value; this.OnPropertyChanged(nameof(this.OwnGoals)); } }
+        private byte ownGoals;
+        /// <summary>Assists this season.</summary>
+        public byte Assists { get => this.assists; set { this.assists = value; this.OnPropertyChanged(nameof(this.Assists)); } }
+        private byte assists;
+        /// <summary>Goals scored after coming on as a substitute this season.</summary>
+        public byte JokerGoals { get => this.jokerGoals; set { this.jokerGoals = value; this.OnPropertyChanged(nameof(this.JokerGoals)); } }
+        private byte jokerGoals;
+        /// <summary>Appearances this season, substitutions included.</summary>
+        public byte Appearances { get => this.appearances; set { this.appearances = value; this.OnPropertyChanged(nameof(this.Appearances)); } }
+        private byte appearances;
+        /// <summary>Appearances this season as a substitute.</summary>
+        public byte SubbedIn { get => this.subbedIn; set { this.subbedIn = value; this.OnPropertyChanged(nameof(this.SubbedIn)); } }
+        private byte subbedIn;
+        /// <summary>Times substituted off this season.</summary>
+        public byte SubbedOut { get => this.subbedOut; set { this.subbedOut = value; this.OnPropertyChanged(nameof(this.SubbedOut)); } }
+        private byte subbedOut;
+        /// <summary>League goals this season that count towards the season-end strength upgrade ("Tore bis Aufw.").</summary>
+        public byte UpgradeGoals { get => this.upgradeGoals; set { this.upgradeGoals = value; this.OnPropertyChanged(nameof(this.UpgradeGoals)); } }
+        private byte upgradeGoals;
+        #endregion
+
         #region NotImplemented
         /*
         public byte PreviousForm { get => this.previousForm; set => this. = this.Setter(value, this.previousForm); }
         private byte previousForm = 0;
         public byte Jersey { get => this.jersey; set => this. = this.Setter(value, this.jersey); }
         private byte jersey = 0;
-        public byte RedCardsSeason { get => this.redCardsSeason; set => this. = this.Setter(value, this.redCardsSeason); }
-        private byte redCardsSeason = 0;
-        public byte YellowRedCardsSeason { get => this.yellowRedCardsSeason; set => this. = this.Setter(value, this.yellowRedCardsSeason); }
-        private byte yellowRedCardsSeason = 0;
-        public byte Goals { get => this.goals; set => this. = this.Setter(value, this.goals); }
-        private byte goals = 0;
         public byte GoalsCupNational { get => this.goalsCupNational; set => this. = this.Setter(value, this.goalsCupNational); }
         private byte goalsCupNational = 0;
         public byte GoalsCupInternational { get => this.goalsCupInternational; set => this. = this.Setter(value, this.goalsCupInternational); }
         private byte goalsCupInternational = 0;
         public ushort Goals1stLeague { get => this.goals1stLeague; set => this. = this.Setter(value, this.goals1stLeague); }
         private ushort goals1stLeague = 0;
-        public byte Assists { get => this.assists; set => this. = this.Setter(value, this.assists); }
-        private byte assists = 0;
-        public byte JokerGoals { get => this.jokerGoals; set => this. = this.Setter(value, this.jokerGoals); }
-        private byte jokerGoals = 0;
         public byte PenaltiesSeason { get => this.penaltiesSeason; set => this. = this.Setter(value, this.penaltiesSeason); }
         private byte penaltiesSeason = 0;
         public byte Penalties { get => this.penalties; set => this. = this.Setter(value, this.penalties); }
@@ -460,10 +494,6 @@ namespace A2G_Trainer_XP.Model
         private byte freekicksSeason = 0;
         public byte Freekicks { get => this.freekicks; set => this. = this.Setter(value, this.freekicks); }
         private byte freekicks = 0;
-        public byte AppearancesSeason { get => this.appearancesSeason; set => this. = this.Setter(value, this.appearancesSeason); }
-        private byte appearancesSeason = 0;
-        public byte JokerAppearances { get => this.jokerAppearances; set => this. = this.Setter(value, this.jokerAppearances); }
-        private byte jokerAppearances = 0;
         public ushort Appearances1stLeague { get => this.appearances1stLeaque; set => this. = this.Setter(value, this.appearances1stLeaque); }
         private ushort appearances1stLeaque = 0;
         */

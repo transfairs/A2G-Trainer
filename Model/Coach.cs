@@ -80,6 +80,13 @@ namespace A2G_Trainer_XP.Model
         /// <summary>One entry per trainer level (index 0..MaxLevel) - see <see cref="CoachCompetencyLevel"/>.</summary>
         public CoachCompetencyLevel[] CompetencyLevels { get; } = Enumerable.Range(0, LevelCount).Select(_ => new CoachCompetencyLevel()).ToArray();
 
+        /// <summary>The manager's image ("Image" in the game, see <see cref="CoachEnums.ManagerImage"/>).</summary>
+        public CoachEnums.ManagerImage Image { get => this.image; set { this.image = value; this.OnPropertyChanged(nameof(this.Image)); } }
+        private CoachEnums.ManagerImage image = CoachEnums.ManagerImage.KeinImage;
+        /// <summary>Whether <see cref="Image"/> was read from the game: only builds with known fixed addresses (see FixedAddresses) have it.</summary>
+        public bool HasImage { get => this.hasImage; set { this.hasImage = value; this.OnPropertyChanged(nameof(this.HasImage)); } }
+        private bool hasImage;
+
         /// <summary>Number of trainer slots a savegame can hold.</summary>
         public const int MaxTrainers = 4;
 
