@@ -95,6 +95,7 @@ namespace A2G_Trainer_XP.View
                 this.ConditionInput.KeyPress += this.NumericOnly_KeyPress;
                 this.FreshnessInput.KeyPress += this.NumericOnly_KeyPress;
                 this.FormInput.KeyPress += this.NumericOnly_KeyPress;
+                this.JerseyInput.KeyPress += this.NumericOnly_KeyPress;
                 this.RedCardsInput.KeyPress += this.NumericOnly_KeyPress;
                 this.YellowCardsInput.KeyPress += this.NumericOnly_KeyPress;
                 this.TeamLevelInput.KeyPress += this.NumericOnly_KeyPress;
@@ -118,6 +119,7 @@ namespace A2G_Trainer_XP.View
                 this.ConditionInput.TextChanged += this.ByteMax255_TextChanged;
                 this.FreshnessInput.TextChanged += this.ByteMax255_TextChanged;
                 this.FormInput.TextChanged += this.ByteMax255_TextChanged;
+                this.JerseyInput.TextChanged += this.ByteMax255_TextChanged;
                 this.RedCardsInput.TextChanged += this.ByteMax255_TextChanged;
                 this.YellowCardsInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamLevelInput.TextChanged += this.ByteMax255_TextChanged;
@@ -144,6 +146,7 @@ namespace A2G_Trainer_XP.View
                 this.ConditionInput.DataBindings.Add("Text", this.bindingSource, "Condition");
                 this.FreshnessInput.DataBindings.Add("Text", this.bindingSource, "Freshness");
                 this.FormInput.DataBindings.Add("Text", this.bindingSource, "Form");
+                this.JerseyInput.DataBindings.Add("Text", this.bindingSource, "Jersey");
 
                 this.FairSkin.DataBindings.Add("Checked", this.bindingSource, "HasFairSkin");
                 this.DarkSkin.DataBindings.Add("Checked", this.bindingSource, "HasDarkSkin");
@@ -431,7 +434,7 @@ namespace A2G_Trainer_XP.View
             this.transferClubCountry = country;
         }
 
-        // Original build only, and not for youth players (they aren't in a squad); DisableEdits decides the rest.
+        // Builds whose transfer code is known only, and not for youth players (they aren't in a squad); DisableEdits decides the rest.
         private void UpdateTransferBox()
         {
             bool possible = this.playerController != null
@@ -756,6 +759,12 @@ namespace A2G_Trainer_XP.View
                     if (hasFreshness) player.Freshness = byte.Parse(this.TeamFreshnessInput.Text);
                     if (hasContractDuration) player.ContractDuration = byte.Parse(this.TeamContractDurationInput.Text);
                 }
+                string jerseyProblem = PlayerController.JerseyProblem(this.playerController.EntityList, this.playerController.Type);
+                if (jerseyProblem != null)
+                {
+                    MessageBox.Show(this, jerseyProblem, "Rückennummern", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 List<string> nameWarnings = this.playerController.SaveEntityList();
                 if (nameWarnings.Count > 0)
                 {
@@ -806,6 +815,10 @@ namespace A2G_Trainer_XP.View
                     List<PlayerEnums.AddressKey> keysToUpdate = new List<PlayerEnums.AddressKey>(frozenValues.Keys);
 
                     foreach (Player player in this.playerController.EntityList) {
+                        // Another club is loaded into the slot (Wochenabschluss, match) - skip, or
+                        // the game would keep the frozen value for that club's player for good
+                        if (!this.playerController.IsStillLoaded(player)) continue;
+
                         // Update the model state
                         this.ApplyFrozenValuesToPlayer(player, frozenValues);
 

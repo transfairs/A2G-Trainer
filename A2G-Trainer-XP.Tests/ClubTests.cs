@@ -83,8 +83,8 @@ namespace A2G_Trainer_XP.Tests
             club.BlockBWeeks = 0;
             Assert.Equal(4230, club.OpenCapacity());
 
-            // The game counts the places as Int16 - the "negative places" trick.
-            club.BlockLSeats = 65516;
+            // Negative places count as such (the game keeps them as Int16).
+            club.BlockLSeats = -20;
             Assert.Equal(4190, club.OpenCapacity());
         }
 

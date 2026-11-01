@@ -23,6 +23,7 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CLUB_ID, "24"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.LEVEL, "1F"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.FORM, "25"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.JERSEY, "3A"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SKIN, "1C"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.HAIR, "1D"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CONDITION, "30"),
@@ -129,7 +130,22 @@ namespace A2G_Trainer_XP.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockJSeats, "87E"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockKSeats, "880"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.BlockLSeats, "882"),
-            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Capacity, "850")
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Capacity, "850"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.HasRunningTrack, "89A"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.HasUpperSeats, "899"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.GrantPot, "3B8"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.GrantRate, "3B4"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Jersey, "E8"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.FanTurnout, "EE"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.FanType, "EF"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Article, "F2"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.FanFriendship, "F3"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.ArchRival, "F4"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Board, "F5"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Preposition, "F8"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Town, "839"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.MapX, "1438"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.MapY, "143A")
         );
 
         /// <summary>Field offsets for the currently loaded opponent club.</summary>

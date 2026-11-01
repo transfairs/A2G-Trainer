@@ -180,31 +180,37 @@ namespace A2G_Trainer_XP.Controller
                     club.BlockKWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockKWeeks]));
                     club.BlockLWeeks = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockLWeeks]));
 
-                    club.BlockAStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockAStandings]));
-                    club.BlockBStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockBStandings]));
-                    club.BlockCStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockCStandings]));
-                    club.BlockDStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockDStandings]));
-                    club.BlockEStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockEStandings]));
-                    club.BlockFStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockFStandings]));
-                    club.BlockGStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockGStandings]));
-                    club.BlockHStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockHStandings]));
-                    club.BlockIStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockIStandings]));
-                    club.BlockJStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockJStandings]));
-                    club.BlockKStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockKStandings]));
-                    club.BlockLStandings = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockLStandings]));
-                    club.BlockASeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockASeats])); // -72FF4
-                    club.BlockBSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockBSeats]));
-                    club.BlockCSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockCSeats]));
-                    club.BlockDSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockDSeats]));
-                    club.BlockESeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockESeats]));
-                    club.BlockFSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockFSeats]));
-                    club.BlockGSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockGSeats]));
-                    club.BlockHSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockHSeats]));
-                    club.BlockISeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockISeats]));
-                    club.BlockJSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockJSeats]));
-                    club.BlockKSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockKSeats]));
-                    club.BlockLSeats = this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockLSeats]));
+                    club.BlockAStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockAStandings])));
+                    club.BlockBStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockBStandings])));
+                    club.BlockCStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockCStandings])));
+                    club.BlockDStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockDStandings])));
+                    club.BlockEStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockEStandings])));
+                    club.BlockFStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockFStandings])));
+                    club.BlockGStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockGStandings])));
+                    club.BlockHStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockHStandings])));
+                    club.BlockIStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockIStandings])));
+                    club.BlockJStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockJStandings])));
+                    club.BlockKStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockKStandings])));
+                    club.BlockLStandings = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockLStandings])));
+                    club.BlockASeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockASeats]))); // -72FF4
+                    club.BlockBSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockBSeats])));
+                    club.BlockCSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockCSeats])));
+                    club.BlockDSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockDSeats])));
+                    club.BlockESeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockESeats])));
+                    club.BlockFSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockFSeats])));
+                    club.BlockGSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockGSeats])));
+                    club.BlockHSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockHSeats])));
+                    club.BlockISeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockISeats])));
+                    club.BlockJSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockJSeats])));
+                    club.BlockKSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockKSeats])));
+                    club.BlockLSeats = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.BlockLSeats])));
                     club.Capacity = this.memory.ReadInt32(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Capacity]));
+                    club.HasRunningTrack = this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.HasRunningTrack])) > 0;
+                    club.HasUpperSeats = this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.HasUpperSeats])) > 0;
+                    club.GrantPot = this.memory.ReadInt32(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.GrantPot]));
+                    club.GrantRate = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.GrantRate])));
+
+                    this.ReadEditorSettings(club);
                 }
             }
             club.Initilisation = false;
@@ -239,31 +245,35 @@ namespace A2G_Trainer_XP.Controller
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "897"), new byte[] { this.Club.HasFloodLight ? (byte)1 : (byte)0 });
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "898"), new byte[] { (byte)(this.Club.HasGrassHeating ? 1 : 0) });
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "89B"), BitConverter.GetBytes((byte)this.Club.FieldCondition));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, club.Addresses[ClubEnums.AddressKey.HasRunningTrack]), new byte[] { (byte)(this.Club.HasRunningTrack ? 1 : 0) });
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, club.Addresses[ClubEnums.AddressKey.HasUpperSeats]), new byte[] { (byte)(this.Club.HasUpperSeats ? 1 : 0) });
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, club.Addresses[ClubEnums.AddressKey.GrantPot]), BitConverter.GetBytes(this.Club.GrantPot));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, club.Addresses[ClubEnums.AddressKey.GrantRate]), BitConverter.GetBytes(this.Club.GrantRate));
 
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "854"), BitConverter.GetBytes((ushort)this.Club.BlockAStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "856"), BitConverter.GetBytes((ushort)this.Club.BlockBStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "858"), BitConverter.GetBytes((ushort)this.Club.BlockCStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "85A"), BitConverter.GetBytes((ushort)this.Club.BlockDStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "85C"), BitConverter.GetBytes((ushort)this.Club.BlockEStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "85E"), BitConverter.GetBytes((ushort)this.Club.BlockFStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "860"), BitConverter.GetBytes((ushort)this.Club.BlockGStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "862"), BitConverter.GetBytes((ushort)this.Club.BlockHStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "864"), BitConverter.GetBytes((ushort)this.Club.BlockIStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "866"), BitConverter.GetBytes((ushort)this.Club.BlockJStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "868"), BitConverter.GetBytes((ushort)this.Club.BlockKStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "86A"), BitConverter.GetBytes((ushort)this.Club.BlockLStandings));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "86C"), BitConverter.GetBytes((ushort)this.Club.BlockASeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "86E"), BitConverter.GetBytes((ushort)this.Club.BlockBSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "870"), BitConverter.GetBytes((ushort)this.Club.BlockCSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "872"), BitConverter.GetBytes((ushort)this.Club.BlockDSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "874"), BitConverter.GetBytes((ushort)this.Club.BlockESeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "876"), BitConverter.GetBytes((ushort)this.Club.BlockFSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "878"), BitConverter.GetBytes((ushort)this.Club.BlockGSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "87A"), BitConverter.GetBytes((ushort)this.Club.BlockHSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "87C"), BitConverter.GetBytes((ushort)this.Club.BlockISeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "87E"), BitConverter.GetBytes((ushort)this.Club.BlockJSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "880"), BitConverter.GetBytes((ushort)this.Club.BlockKSeats));
-            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "882"), BitConverter.GetBytes((ushort)this.Club.BlockLSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "854"), BitConverter.GetBytes(this.Club.BlockAStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "856"), BitConverter.GetBytes(this.Club.BlockBStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "858"), BitConverter.GetBytes(this.Club.BlockCStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "85A"), BitConverter.GetBytes(this.Club.BlockDStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "85C"), BitConverter.GetBytes(this.Club.BlockEStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "85E"), BitConverter.GetBytes(this.Club.BlockFStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "860"), BitConverter.GetBytes(this.Club.BlockGStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "862"), BitConverter.GetBytes(this.Club.BlockHStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "864"), BitConverter.GetBytes(this.Club.BlockIStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "866"), BitConverter.GetBytes(this.Club.BlockJStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "868"), BitConverter.GetBytes(this.Club.BlockKStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "86A"), BitConverter.GetBytes(this.Club.BlockLStandings));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "86C"), BitConverter.GetBytes(this.Club.BlockASeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "86E"), BitConverter.GetBytes(this.Club.BlockBSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "870"), BitConverter.GetBytes(this.Club.BlockCSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "872"), BitConverter.GetBytes(this.Club.BlockDSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "874"), BitConverter.GetBytes(this.Club.BlockESeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "876"), BitConverter.GetBytes(this.Club.BlockFSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "878"), BitConverter.GetBytes(this.Club.BlockGSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "87A"), BitConverter.GetBytes(this.Club.BlockHSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "87C"), BitConverter.GetBytes(this.Club.BlockISeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "87E"), BitConverter.GetBytes(this.Club.BlockJSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "880"), BitConverter.GetBytes(this.Club.BlockKSeats));
+            this.memory.WriteBytes(GetAddress(this.memory, this.Club, "882"), BitConverter.GetBytes(this.Club.BlockLSeats));
 
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "884"), new byte[] { this.Club.BlockAWeeks });
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, "885"), new byte[] { this.Club.BlockBWeeks });
@@ -283,7 +293,96 @@ namespace A2G_Trainer_XP.Controller
             this.Club.Capacity = this.Club.OpenCapacity();
             this.memory.WriteBytes(GetAddress(this.memory, this.Club, club.Addresses[ClubEnums.AddressKey.Capacity]), BitConverter.GetBytes(this.Club.Capacity));
 
+            this.SaveEditorSettings();
+
             // this.memory.WriteBytes(GetAddress(this.memory, this.Club, "854"), new byte[] { (byte)player.SkinColor });
         }
+
+        #region Editor settings
+        private static readonly Encoding Latin1 = Encoding.GetEncoding("iso-8859-1");
+
+        /// <summary>Clubs of the own club's country with their map positions (for rival, fan friendship and the map); empty if unknown.</summary>
+        internal List<ClubRecords.Entry> CountryClubs { get; private set; } = new List<ClubRecords.Entry>();
+
+        private FixedAddresses Fixed => FixedAddresses.For(this.memory);
+
+        // The settings of the game's data editor: read from the working copy the club is shown
+        // through, short name, chant and fan name from the club record (they only exist there).
+        private void ReadEditorSettings(Club club)
+        {
+            byte[] jersey = this.memory.ReadBytes(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Jersey]), Club.JerseyLength);
+            if (jersey != null)
+                club.Jersey = jersey;
+            club.FanTurnout = (ClubEnums.FanTurnout)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.FanTurnout]));
+            club.FanType = (ClubEnums.FanType)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.FanType]));
+            club.Article = (ClubEnums.Article)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Article]));
+            club.FanFriendshipId = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.FanFriendship]));
+            club.ArchRivalId = (byte)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.ArchRival]));
+            club.Board = (ClubEnums.Board)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Board]));
+            club.Preposition = (ClubEnums.Preposition)this.memory.ReadByte(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Preposition]));
+            club.Town = this.memory.ReadString(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.Town]), Club.TownLength + 1, Latin1);
+            club.MapX = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.MapX])));
+            club.MapY = unchecked((short)this.memory.ReadUInt16(GetAddress(this.memory, club, club.Addresses[ClubEnums.AddressKey.MapY])));
+
+            FixedAddresses fixedAddresses = this.Fixed;
+            uint? record = ClubRecords.RecordAddress(this.memory, fixedAddresses, club.Country, club.Id);
+            club.HasRecord = record.HasValue;
+            if (record.HasValue)
+            {
+                club.ShortName = this.memory.ReadStringAtAddress(record.Value + Settings.ClubRecordShortNameOffset, Club.ShortNameLength + 1, Latin1);
+                club.Chant = this.memory.ReadStringAtAddress(record.Value + Settings.ClubRecordChantOffset, Club.FanTextLength + 1, Latin1);
+                club.FanName = this.memory.ReadStringAtAddress(record.Value + Settings.ClubRecordFanNameOffset, Club.FanTextLength + 1, Latin1);
+            }
+            this.CountryClubs = ClubRecords.CountryClubs(this.memory, fixedAddresses, club.Country);
+        }
+
+        // The bytes of a mirrored editor setting as the game stores them.
+        private byte[] EditorSettingBytes(ClubEnums.AddressKey key)
+        {
+            switch (key)
+            {
+                case ClubEnums.AddressKey.Jersey: return this.Club.Jersey;
+                case ClubEnums.AddressKey.FanTurnout: return new[] { (byte)this.Club.FanTurnout };
+                case ClubEnums.AddressKey.FanType: return new[] { (byte)this.Club.FanType };
+                case ClubEnums.AddressKey.Article: return new[] { (byte)this.Club.Article };
+                case ClubEnums.AddressKey.FanFriendship: return new[] { this.Club.FanFriendshipId };
+                case ClubEnums.AddressKey.ArchRival: return new[] { this.Club.ArchRivalId };
+                case ClubEnums.AddressKey.Board: return new[] { (byte)this.Club.Board };
+                case ClubEnums.AddressKey.Preposition: return new[] { (byte)this.Club.Preposition };
+                case ClubEnums.AddressKey.Town: return Latin1.GetBytes(this.Club.Town.PadRight(Club.TownLength + 1, '\0'));
+                case ClubEnums.AddressKey.MapX: return BitConverter.GetBytes(this.Club.MapX);
+                case ClubEnums.AddressKey.MapY: return BitConverter.GetBytes(this.Club.MapY);
+                default: throw new ArgumentOutOfRangeException(nameof(key), key, null);
+            }
+        }
+
+        // Writes the editor settings to the working copy shown, every other cached working copy of
+        // the club and its record - the game puts a working copy back over the record.
+        private void SaveEditorSettings()
+        {
+            FixedAddresses fixedAddresses = this.Fixed;
+            List<uint> copies = ClubRecords.WorkingCopies(this.memory, fixedAddresses, this.Club.Country, this.Club.Id);
+            uint? record = ClubRecords.RecordAddress(this.memory, fixedAddresses, this.Club.Country, this.Club.Id);
+
+            foreach (ClubEnums.AddressKey key in Settings.ClubRecordMirrorKeys)
+            {
+                byte[] data = this.EditorSettingBytes(key);
+                string offset = this.Club.Addresses[key];
+                this.memory.WriteBytes(GetAddress(this.memory, this.Club, offset), data);
+                foreach (uint copy in copies)
+                    this.memory.WriteBytesAtAddress(copy + Convert.ToUInt32(offset, 16), data);
+                if (record.HasValue)
+                    this.memory.WriteBytesAtAddress(record.Value + Settings.ClubRecordMirrorOffset(key), data);
+            }
+
+            if (record.HasValue && this.Club.HasRecord)
+            {
+                this.memory.WriteBytesAtAddress(record.Value + Settings.ClubRecordShortNameOffset, Latin1.GetBytes(this.Club.ShortName.PadRight(Club.ShortNameLength, '-') + "\0"));
+                this.memory.WriteBytesAtAddress(record.Value + Settings.ClubRecordChantOffset, Latin1.GetBytes(this.Club.Chant.PadRight(Club.FanTextLength + 1, '\0')));
+                this.memory.WriteBytesAtAddress(record.Value + Settings.ClubRecordFanNameOffset, Latin1.GetBytes(this.Club.FanName.PadRight(Club.FanTextLength + 1, '\0')));
+            }
+            Logger.Debug($"Saved editor settings of {this.Club.Country}/{this.Club.Id} ({copies.Count} cached copies, record {(record.HasValue ? "found" : "unknown")}).");
+        }
+        #endregion
     }
 }

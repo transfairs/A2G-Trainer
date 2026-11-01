@@ -78,6 +78,14 @@ namespace A2G_Trainer_XP.Tests
             trainer.PlayerView.InitMainTabControl();
         }
 
+        // The freeze tick only writes while the roster's slot still holds the same players, which it
+        // checks via the player ID - so the player pointer has to resolve too, not just the club's.
+        private static void SeedOneOwnPlayerWithSlotAndRefresh(Trainer trainer, FakeModule fake)
+        {
+            fake.RoutePointerSlot(Settings.PlayerAddress[0]);
+            SeedOneOwnPlayerAndRefresh(trainer, fake);
+        }
+
         // Accessing a WinForms control's own Handle property forces it to be created even with no
         // parent Form ever Shown - and, once created, a ListViewItem's Selected setter goes through
         // the real native LVM_SETITEMSTATE call, which both populates SelectedItems and raises
@@ -269,7 +277,7 @@ namespace A2G_Trainer_XP.Tests
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
-                SeedOneOwnPlayerAndRefresh(trainer, fake);
+                SeedOneOwnPlayerWithSlotAndRefresh(trainer, fake);
 
                 GetPrivateField<CheckBox>(trainer.PlayerView, "TeamConditionFreezeCheck").Checked = true;
                 GetPrivateField<TextBox>(trainer.PlayerView, "TeamConditionInput").Text = "55";
@@ -281,6 +289,32 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Null(thrown);
                 Assert.Equal((byte)55, trainer.PlayerView.PlayerController.EntityList[0].Condition);
                 Assert.Equal((byte)66, trainer.PlayerView.PlayerController.EntityList[0].Freshness);
+                Assert.Equal((byte)55, fake.ReadDisplayCacheBytes(AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.CONDITION], 1)[0]);
+                Assert.Equal((byte)66, fake.ReadDisplayCacheBytes(AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.FRESHNESS], 1)[0]);
+            }
+        });
+
+        [Fact]
+        public void FreezeTimerTick_WhenAnotherClubIsLoadedIntoTheSlot_LeavesItsPlayersAlone() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                SeedOneOwnPlayerWithSlotAndRefresh(trainer, fake);
+                Player player = trainer.PlayerView.PlayerController.EntityList[0];
+                byte conditionBefore = player.Condition;
+
+                // Wochenabschluss/match: the game swaps a foreign player into the frozen roster's slot
+                string idAddress = AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.ID];
+                fake.WriteDisplayCacheBytes(idAddress, BitConverter.GetBytes((ushort)(player.NameRecordId + 1)));
+
+                GetPrivateField<CheckBox>(trainer.PlayerView, "TeamConditionFreezeCheck").Checked = true;
+                GetPrivateField<TextBox>(trainer.PlayerView, "TeamConditionInput").Text = "55";
+
+                InvokePrivate(trainer.PlayerView, "FreezeTimer_Tick", null, EventArgs.Empty);
+
+                Assert.Equal(conditionBefore, player.Condition);
+                Assert.Equal(conditionBefore, fake.ReadDisplayCacheBytes(AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.CONDITION], 1)[0]);
             }
         });
 
@@ -290,7 +324,7 @@ namespace A2G_Trainer_XP.Tests
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
-                SeedOneOwnPlayerAndRefresh(trainer, fake);
+                SeedOneOwnPlayerWithSlotAndRefresh(trainer, fake);
 
                 Exception thrown = Record.Exception(() => InvokePrivate(trainer.PlayerView, "FreezeTimer_Tick", null, EventArgs.Empty));
 
@@ -317,7 +351,7 @@ namespace A2G_Trainer_XP.Tests
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
             {
-                SeedOneOwnPlayerAndRefresh(trainer, fake);
+                SeedOneOwnPlayerWithSlotAndRefresh(trainer, fake);
 
                 GetPrivateField<CheckBox>(trainer.PlayerView, "TeamConditionFreezeCheck").Checked = true;
                 GetPrivateField<TextBox>(trainer.PlayerView, "TeamConditionInput").Text = "55";

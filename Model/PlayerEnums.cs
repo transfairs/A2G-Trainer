@@ -37,6 +37,7 @@ namespace A2G_Trainer_XP.Model
             LASTNAME,
             LEVEL,
             FORM,
+            JERSEY,
             SKIN,
             HAIR,
             CONDITION,

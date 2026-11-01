@@ -221,38 +221,17 @@ namespace A2G_Trainer_XP.Controller
         // while the game has it fetched (FUN_00543970/FUN_0063dae0 read club +0x10C). Contract +0x5C
         // is only a copy for the season-goal bonus, refreshed from the club whenever the goal is
         // agreed (FUN_0063c960). Only the league countries' clubs have records at a known place
-        // (FUN_00585b00 -> FUN_00585ff0); for any other club this returns no addresses.
-        private static readonly PlayerEnums.Country[] LeagueRecordCountries =
-            { PlayerEnums.Country.Deutschland, PlayerEnums.Country.England, PlayerEnums.Country.Frankreich, PlayerEnums.Country.Italien, PlayerEnums.Country.Spanien };
-
+        // (FUN_00585b00 -> FUN_00585ff0, see ClubRecords); for any other club this returns no addresses.
         private List<uint> ClubSeasonGoalAddresses(Coach coach)
         {
             List<uint> addresses = new List<uint>();
-            if (!this.HasFixedAddresses || !LeagueRecordCountries.Contains(coach.CurrentCountry))
-                return addresses;
-
-            byte[] system = this.memory.ReadBytesAtAddress(this.Fixed.Static(this.memory, Settings.LeagueSystemByCountryOffset) + (uint)coach.CurrentCountry, 1);
-            if (system == null)
-                return addresses;
-            byte[] count = this.memory.ReadBytesAtAddress(this.Fixed.Static(this.memory, Settings.LeagueClubCountTableOffset) + (uint)system[0] * 2, 2);
-            byte[] first = this.memory.ReadBytesAtAddress(this.Fixed.Static(this.memory, Settings.LeagueBaseTableOffset) + (uint)system[0] * 2, 2);
-            if (count == null || first == null || coach.CurrentClubId >= BitConverter.ToInt16(count, 0))
+            uint? record = ClubRecords.RecordAddress(this.memory, this.Fixed, coach.CurrentCountry, coach.CurrentClubId);
+            if (!record.HasValue)
                 return addresses;
 
             // Cached working copies first: they're newer than the record while the game has the club fetched.
-            uint cache = this.Fixed.Runtime(this.memory, Settings.ClubCacheTableOffset);
-            for (int slot = 0; slot < Settings.ClubCacheSlots; slot++)
-            {
-                byte[] entry = this.memory.ReadBytesAtAddress(cache + (uint)slot * Settings.ClubCacheStride, (int)Settings.ClubCacheStride);
-                if (entry == null || entry[0] == 0 || entry[1] != (byte)coach.CurrentCountry || entry[2] != coach.CurrentClubId)
-                    continue;
-                uint workingCopy = BitConverter.ToUInt32(entry, (int)Settings.ClubCachePointerOffset);
-                if (workingCopy != 0)
-                    addresses.Add(workingCopy + Settings.ClubSeasonGoalOffset);
-            }
-
-            uint record = (uint)(BitConverter.ToInt16(first, 0) + coach.CurrentClubId);
-            addresses.Add(this.Fixed.Runtime(this.memory, Settings.ClubRecordTableOffset) + record * Settings.ClubRecordStride + Settings.ClubRecordSeasonGoalOffset);
+            addresses.AddRange(ClubRecords.WorkingCopies(this.memory, this.Fixed, coach.CurrentCountry, coach.CurrentClubId).Select(copy => copy + Settings.ClubSeasonGoalOffset));
+            addresses.Add(record.Value + Settings.ClubRecordSeasonGoalOffset);
             return addresses;
         }
 

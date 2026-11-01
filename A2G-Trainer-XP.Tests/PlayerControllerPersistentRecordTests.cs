@@ -34,6 +34,7 @@ namespace A2G_Trainer_XP.Tests
             fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.UNHAPPY], BitConverter.GetBytes((ushort)0x0808));
             fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.HAPPY], new byte[] { (byte)PlayerEnums.Happy.TollePraemien });
             fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.FORM], new byte[] { 92 });
+            fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.JERSEY], new byte[] { 95 });
             fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.CONDITION], new byte[] { 93 });
             fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.FRESHNESS], new byte[] { 94 });
             fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.NATIONALITY], new byte[] { (byte)PlayerEnums.Country.Wales });
@@ -55,7 +56,7 @@ namespace A2G_Trainer_XP.Tests
             fake.WriteModuleBytes(b + Settings.PlayerRecordSkillsOffset, Concat(BitConverter.GetBytes((ushort)0x0311), BitConverter.GetBytes((ushort)0x0522)));
             fake.WriteModuleBytes(b + Settings.PlayerRecordPersonalityOffset, Concat(BitConverter.GetBytes((ushort)0x0644), new byte[] { (byte)PlayerEnums.Character.Phlegma, (byte)PlayerEnums.Health.Robustheit }));
             fake.WriteModuleBytes(b + Settings.PlayerRecordUnhappyOffset, Concat(BitConverter.GetBytes((ushort)0x0955), new byte[] { (byte)PlayerEnums.Happy.TollerTrainer }));
-            fake.WriteModuleBytes(b + Settings.PlayerRecordFormOffset, new byte[] { 20 });
+            fake.WriteModuleBytes(b + Settings.PlayerRecordFormOffset, new byte[] { 20, 13 });
             fake.WriteModuleBytes(b + Settings.PlayerRecordConditionOffset, new byte[] { 81, 85 });
             fake.WriteModuleBytes(b + Settings.PlayerRecordNationalityOffset, new byte[] { (byte)PlayerEnums.Country.Deutschland });
             fake.WriteModuleBytes(b + Settings.PlayerRecordSalaryOffset, Concat(BitConverter.GetBytes((ushort)1234), BitConverter.GetBytes((ushort)56), BitConverter.GetBytes((ushort)78), BitConverter.GetBytes((ushort)910)));
@@ -92,6 +93,7 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal((PlayerEnums.Unhappy)0x0955, player.Unhappy);
                 Assert.Equal(PlayerEnums.Happy.TollerTrainer, player.Happy);
                 Assert.Equal((byte)20, player.Form);
+                Assert.Equal((byte)13, player.Jersey);
                 Assert.Equal((byte)81, player.Condition);
                 Assert.Equal((byte)85, player.Freshness);
                 Assert.Equal(PlayerEnums.Country.Deutschland, player.Nationality);
@@ -204,6 +206,7 @@ namespace A2G_Trainer_XP.Tests
                 player.Unhappy = (PlayerEnums.Unhappy)0x0488;
                 player.Happy = PlayerEnums.Happy.TolleStimmung;
                 player.Form = 60;
+                player.Jersey = 23;
                 player.Condition = 61;
                 player.Freshness = 62;
                 player.Nationality = PlayerEnums.Country.Italien;
@@ -231,7 +234,8 @@ namespace A2G_Trainer_XP.Tests
                 Assert.Equal(Concat(BitConverter.GetBytes((ushort)0x0155), BitConverter.GetBytes((ushort)0x0266)), fake.ReadModuleBytes(b + Settings.PlayerRecordSkillsOffset, 4));
                 Assert.Equal(Concat(BitConverter.GetBytes((ushort)0x0377), new byte[] { (byte)PlayerEnums.Character.Musterprofi, (byte)PlayerEnums.Health.Anfaelligkeit }), fake.ReadModuleBytes(b + Settings.PlayerRecordPersonalityOffset, 4));
                 Assert.Equal(Concat(BitConverter.GetBytes((ushort)0x0488), new byte[] { (byte)PlayerEnums.Happy.TolleStimmung }), fake.ReadModuleBytes(b + Settings.PlayerRecordUnhappyOffset, 3));
-                Assert.Equal((byte)60, fake.ReadModuleBytes(b + Settings.PlayerRecordFormOffset, 1)[0]);
+                Assert.Equal(new byte[] { 60, 23 }, fake.ReadModuleBytes(b + Settings.PlayerRecordFormOffset, 2));
+                Assert.Equal((byte)23, fake.ReadDisplayCacheBytes(Own[PlayerEnums.AddressKey.JERSEY], 1)[0]);
                 Assert.Equal(new byte[] { 61, 62 }, fake.ReadModuleBytes(b + Settings.PlayerRecordConditionOffset, 2));
                 Assert.Equal((byte)PlayerEnums.Country.Italien, fake.ReadModuleBytes(b + Settings.PlayerRecordNationalityOffset, 1)[0]);
                 Assert.Equal(Concat(BitConverter.GetBytes((ushort)4321), BitConverter.GetBytes((ushort)654)), fake.ReadModuleBytes(b + Settings.PlayerRecordSalaryOffset, 4));

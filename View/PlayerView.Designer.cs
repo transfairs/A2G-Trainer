@@ -36,6 +36,8 @@ namespace A2G_Trainer_XP.View
             this.PersonalBox = new System.Windows.Forms.GroupBox();
             this.Form = new System.Windows.Forms.Label();
             this.FormInput = new System.Windows.Forms.TextBox();
+            this.JerseyLabel = new System.Windows.Forms.Label();
+            this.JerseyInput = new System.Windows.Forms.TextBox();
             this.Freshness = new System.Windows.Forms.Label();
             this.FreshnessInput = new System.Windows.Forms.TextBox();
             this.Condition = new System.Windows.Forms.Label();
@@ -368,6 +370,8 @@ namespace A2G_Trainer_XP.View
             // 
             // PersonalBox
             // 
+            this.PersonalBox.Controls.Add(this.JerseyLabel);
+            this.PersonalBox.Controls.Add(this.JerseyInput);
             this.PersonalBox.Controls.Add(this.Form);
             this.PersonalBox.Controls.Add(this.FormInput);
             this.PersonalBox.Controls.Add(this.Freshness);
@@ -396,19 +400,36 @@ namespace A2G_Trainer_XP.View
             // Form
             // 
             this.Form.AutoSize = true;
-            this.Form.Location = new System.Drawing.Point(164, 230);
+            this.Form.Location = new System.Drawing.Point(114, 230);
             this.Form.Name = "Form";
             this.Form.Size = new System.Drawing.Size(30, 13);
             this.Form.TabIndex = 57;
             this.Form.Text = "Form";
-            // 
+            //
             // FormInput
-            // 
-            this.FormInput.Location = new System.Drawing.Point(167, 246);
+            //
+            this.FormInput.Location = new System.Drawing.Point(117, 246);
             this.FormInput.Name = "FormInput";
             this.FormInput.Size = new System.Drawing.Size(42, 20);
             this.FormInput.TabIndex = 8;
             this.FormInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // JerseyLabel
+            //
+            this.JerseyLabel.AutoSize = true;
+            this.JerseyLabel.Location = new System.Drawing.Point(164, 230);
+            this.JerseyLabel.Name = "JerseyLabel";
+            this.JerseyLabel.Size = new System.Drawing.Size(52, 13);
+            this.JerseyLabel.TabIndex = 58;
+            this.JerseyLabel.Text = "Rückennr.";
+            //
+            // JerseyInput
+            //
+            this.JerseyInput.Location = new System.Drawing.Point(167, 246);
+            this.JerseyInput.Name = "JerseyInput";
+            this.JerseyInput.Size = new System.Drawing.Size(42, 20);
+            this.JerseyInput.TabIndex = 9;
+            this.JerseyInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // Freshness
             // 
@@ -3169,6 +3190,8 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.GroupBox PersonalBox;
         private System.Windows.Forms.Label Form;
         private System.Windows.Forms.TextBox FormInput;
+        private System.Windows.Forms.Label JerseyLabel;
+        private System.Windows.Forms.TextBox JerseyInput;
         private System.Windows.Forms.Label Freshness;
         private System.Windows.Forms.TextBox FreshnessInput;
         private System.Windows.Forms.Label Condition;

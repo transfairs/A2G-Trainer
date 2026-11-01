@@ -24,7 +24,8 @@ namespace A2G_Trainer_XP.Controller
     /// Its one call of the deadline check (Settings.TransferDeadlineCallSiteOffset) is redirected
     /// to a second entry of the stub, which answers "before the deadline" while the stub's own
     /// immediate move runs and otherwise just continues to the original check. Loans have no
-    /// deadline. Original build only; the redirects live in the running process only.
+    /// deadline. The redirects live in the running process only. Other builds use the code
+    /// FixedAddresses finds for them.
     ///
     /// Stub layout: +0x00 signature, +0x08 request flag, +0x0C outcome, +0x10 arguments (each a
     /// dword: player ID, old country, old club, new country, new club, kind, fee, buy price,
@@ -49,7 +50,7 @@ namespace A2G_Trainer_XP.Controller
         {
             /// <summary>The move will be made at the next daily processing.</summary>
             Requested,
-            /// <summary>Only available for the original build.</summary>
+            /// <summary>The attached build's transfer code isn't known.</summary>
             NotSupported,
             /// <summary>The player has no club to leave.</summary>
             NoClub,
@@ -90,19 +91,24 @@ namespace A2G_Trainer_XP.Controller
         private const int ContractYearsOffset = 0xC;
 
         private readonly ProcessMemory memory;
+        // The attached build's addresses (see FixedAddresses); either is null if not known.
+        private readonly FixedAddresses fixedAddresses;
+        private readonly FixedAddresses.TransferCode code;
 
         /// <summary>Creates an injector for the given attached game process.</summary>
         public TransferInjector(ProcessMemory memory)
         {
             this.memory = memory;
+            this.fixedAddresses = FixedAddresses.For(memory);
+            this.code = this.fixedAddresses?.Transfer;
         }
 
-        /// <summary>Whether moves can be requested for the attached build (original build only).</summary>
-        public bool IsSupported => this.memory.Layout.HasOriginalBuildAnchors;
+        /// <summary>Whether moves can be requested for the attached build.</summary>
+        public bool IsSupported => this.code != null;
 
         private uint Module(uint offset) => this.memory.ModuleBase + offset;
-        private uint MarketFunction => this.Module(Settings.TransferMarketFunctionOffset);
-        private uint DeadlineFunction => this.Module(Settings.TransferDeadlineFunctionOffset);
+        private uint MarketFunction => this.Module(this.code.MarketFunction);
+        private uint DeadlineFunction => this.Module(this.code.DeadlineFunction);
 
         /// <summary>
         /// Requests moving <paramref name="player"/> from his current club to <paramref name="clubId"/>
@@ -143,7 +149,7 @@ namespace A2G_Trainer_XP.Controller
         // The game's fees are money units; the Trainer shows x100 DM, i.e. units of DAT_0078bbb8.
         private uint ReadMoneyFactor()
         {
-            byte[] factor = this.memory.ReadBytesAtAddress(this.Module(Settings.MoneyFactorOffset), 4);
+            byte[] factor = this.memory.ReadBytesAtAddress(this.fixedAddresses.Runtime(this.memory, Settings.MoneyFactorOffset), 4);
             int value = factor != null ? BitConverter.ToInt32(factor, 0) : 0;
             return value > 0 ? (uint)value : 100u;
         }
@@ -179,8 +185,8 @@ namespace A2G_Trainer_XP.Controller
             if (!this.IsSupported)
                 return null;
 
-            uint[] marketSites = Settings.TransferMarketCallSiteOffsets.Select(this.Module).ToArray();
-            uint deadlineSite = this.Module(Settings.TransferDeadlineCallSiteOffset);
+            uint[] marketSites = this.code.MarketCallSites.Select(this.Module).ToArray();
+            uint deadlineSite = this.Module(this.code.DeadlineCallSite);
             uint?[] marketTargets = marketSites.Select(this.ReadCallTarget).ToArray();
             uint? deadlineTarget = this.ReadCallTarget(deadlineSite);
             if (marketTargets.Any(t => !t.HasValue) || !deadlineTarget.HasValue)
@@ -208,7 +214,7 @@ namespace A2G_Trainer_XP.Controller
                 stub = this.memory.AllocateExecutable(StubSize);
                 if (!stub.HasValue)
                     return null;
-                this.memory.WriteBytesAtAddress(stub.Value, BuildStub(stub.Value, this.memory.ModuleBase));
+                this.memory.WriteBytesAtAddress(stub.Value, BuildStub(stub.Value, this.memory.ModuleBase, this.code));
             }
 
             // Deadline first: it only matters once the stub runs, which the market redirects start.
@@ -236,7 +242,7 @@ namespace A2G_Trainer_XP.Controller
         {
             if (!this.IsSupported)
                 return null;
-            uint? target = this.ReadCallTarget(this.Module(Settings.TransferMarketCallSiteOffsets[0]));
+            uint? target = this.ReadCallTarget(this.Module(this.code.MarketCallSites[0]));
             return target.HasValue && target.Value != this.MarketFunction ? this.StubAt(target.Value - CodeOffset) : null;
         }
 
@@ -256,19 +262,19 @@ namespace A2G_Trainer_XP.Controller
             return signature != null && signature.SequenceEqual(Signature) ? stub : (uint?)null;
         }
 
-        /// <summary>Builds the complete stub (data + code) for the game module at <paramref name="moduleBase"/> - see the class remarks.</summary>
-        internal static byte[] BuildStub(uint stubBase, uint moduleBase) =>
+        /// <summary>Builds the complete stub (data + code) for the game module at <paramref name="moduleBase"/> with the build's <paramref name="code"/> - see the class remarks.</summary>
+        internal static byte[] BuildStub(uint stubBase, uint moduleBase, FixedAddresses.TransferCode code) =>
             BuildStub(stubBase, new StubTargets
             {
-                Market = moduleBase + Settings.TransferMarketFunctionOffset,
-                Deadline = moduleBase + Settings.TransferDeadlineFunctionOffset,
-                FetchPlayer = moduleBase + Settings.TransferFetchPlayerOffset,
-                ReleasePlayer = moduleBase + Settings.TransferReleasePlayerOffset,
-                FetchClub = moduleBase + Settings.TransferFetchClubOffset,
-                ReleaseClub = moduleBase + Settings.TransferReleaseClubOffset,
-                BuildContract = moduleBase + Settings.TransferBuildContractOffset,
-                Move = moduleBase + Settings.TransferMoveOffset,
-                Loan = moduleBase + Settings.TransferLoanOffset,
+                Market = moduleBase + code.MarketFunction,
+                Deadline = moduleBase + code.DeadlineFunction,
+                FetchPlayer = moduleBase + code.FetchPlayer,
+                ReleasePlayer = moduleBase + code.ReleasePlayer,
+                FetchClub = moduleBase + code.FetchClub,
+                ReleaseClub = moduleBase + code.ReleaseClub,
+                BuildContract = moduleBase + code.BuildContract,
+                Move = moduleBase + code.Move,
+                Loan = moduleBase + code.Loan,
             });
 
         /// <summary>Absolute addresses of the game functions the stub calls.</summary>

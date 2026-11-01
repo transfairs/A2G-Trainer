@@ -51,7 +51,7 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 \par
 {\fs24\b Werte einfrieren (Team-Tab)}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Im Team-Tab lassen sich {\b Kondition} und {\b Frische} nicht nur einmalig setzen, sondern auch dauerhaft {\b einfrieren}: Haken Sie die Checkbox neben dem jeweiligen Wert an und tragen Sie den gewünschten Wert ein. Solange die Checkbox angehakt bleibt, schreibt der Trainer diesen Wert laufend zurück - auch wenn das Spiel ihn von selbst verändert.\par}
+{\pard\qj Im Team-Tab lassen sich {\b Kondition} und {\b Frische} nicht nur einmalig setzen, sondern auch dauerhaft {\b einfrieren}: Haken Sie die Checkbox neben dem jeweiligen Wert an und tragen Sie den gewünschten Wert ein. Solange die Checkbox angehakt bleibt, schreibt der Trainer diesen Wert laufend zurück - auch wenn das Spiel ihn von selbst verändert. Das gilt nur für das gewählte Team: Lädt das Spiel beim Wochenabschluss oder während eines Spiels vorübergehend andere Vereine, pausiert das Einfrieren, damit deren Spieler unverändert bleiben.\par}
 \par
 
 {\fs24\b Spieler dauerhaft umbenennen}\par
@@ -59,14 +59,29 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 {\pard\qj Das Spiel speichert jeden Vor- und Nachnamen nur einmal, alle Spieler mit demselben Namen teilen sich diesen Eintrag. In der {\b Original- und der GOG-Version} wird jede Namensänderung {\b dauerhaft} gespeichert, in beliebiger Länge bis zu 9 Zeichen (Vorname) bzw. 15 Zeichen (Nachname): Kommt der neue Name im Spielstand schon vor, verwendet der Trainer diesen Eintrag, sonst fügt er ihn neu hinzu - so wie das Spiel selbst neue Namen anlegt. Andere Spieler mit dem alten Namen behalten ihn in jedem Fall. In Versionen, deren Adressen der Trainer nicht bestätigen kann (z. B. die {\b 2007er-CD}, solange der Trainer ihre Adressen nicht bestätigen konnte), gilt weiterhin: dauerhaft nur, wenn der neue Name {\b im Spielstand schon vorkommt} oder der alte Name {\b nur diesem einen Spieler} gehört und der neue {\b exakt gleich viele Zeichen} hat. Kann ein Name nicht dauerhaft gespeichert werden, wird er bis zum nächsten Tagesabschluss oder Neuladen zwar noch angezeigt, und der Trainer zeigt nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log}.\par}
 \par
 
+{\fs24\b Rückennummer (Feld Rückennr.)}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Erlaubt sind 1 bis 99, wie im Spiel jede Nummer nur einmal pro Kader. Ist eine Nummer doppelt vergeben oder größer als 99, speichert der Trainer nicht und nennt den betroffenen Spieler. 0 heißt {\i noch keine Nummer} (z. B. direkt nach einem Wechsel), das Spiel vergibt dann selbst eine.\par}
+\par
+
 {\fs24\b Verletzungen, Sperren & Vertrag}\par
 -------------------------------------------------------------------------------------------------------\par
 {\pard\qj Vertragslaufzeit, {\b Verletzungstage} und Verletzungsart, {\b verletzungsanfällig}, gesperrte Spiele, {\b gedopt} und gelbe Karten schreibt der Trainer in den gespeicherten Spielerdatensatz - sie bleiben also auch nach Tagesabschluss und Neuladen erhalten, auch bei Jugendspielern. Neu angehakt ist ein Spieler so lange verletzungsanfällig, wie das Spiel es üblicherweise festlegt. Ebenso dauerhaft sind der {\b Kaufpreis}, der {\b Stammverein} geliehener Spieler und die Saisonwerte der Registerkarte {\b Statistik} (Einsätze, Ein- und Auswechslungen, rote und gelb-rote Karten, Tore, Vorlagen, Jokertore, Eigentore, {\b Tore für Aufwertung}).\par}
 \par
 
+{\fs24\b Stadion}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Die Registerkarte {\b Stadion} zeigt das Stadion von oben wie im Spiel. Ein Klick auf einen Block wählt ihn aus; rechts lassen sich seine Plätze (Block K: {\b Logen}), die Bauzeit und das Dach ändern, auch negativ bis -32.768. Die {\b Kapazität} rechnet der Trainer beim Speichern selbst neu, Änderungen gelten also ab dem nächsten Heimspiel und nicht erst nach einem fertigen Ausbau. Dazu kommen {\b Tartanbahn}, {\b Sitzplätze oben} und unter Allgemein der {\b Stadtzuschuss}.\par}
+\par
+
+{\fs24\b Identität, Trikotsätze und Landkarte}\par
+-------------------------------------------------------------------------------------------------------\par
+{\pard\qj Die Einstellungen des Dateneditors für das laufende Spiel: {\b Kürzel}, {\b Anfeuerung}, {\b Fanbezeichnung}, {\b Ort}, {\b Artikel} und {\b Präposition} für die Texte des Spiels, {\b Fanaufkommen}, {\b Vorstand}, {\b Erzrivale}, {\b Fanfreundschaft} und {\b Art der Fans} (das Spiel bestimmt sie nach jedem Spiel neu). Unter {\b Trikotsätze} wechselt ein Klick auf Hemd, Hose oder Stutzen die Farbe (Rechtsklick zurück), das Streifenmuster hat die Farbe der Hose. Die {\b Landkarte} zeigt das Land mit seinen inneren Grenzen und alle Vereine; ein Klick versetzt den eigenen Verein. Je näher zwei Vereine liegen, desto mehr Fans kommen zu ihren Spielen, vor allem Gästefans. Der Trainer schreibt alles dauerhaft in den Vereinsdatensatz. Kürzel, Anfeuerung und Fanbezeichnung gibt es nur für Vereine der fünf Länder mit Ligabetrieb. Kartendaten: Natural Earth (gemeinfrei).\par}
+\par
+
 {\fs24\b Spieler wechseln lassen}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Auf der Registerkarte {\b Wechsel} schicken Sie den gewählten Spieler zu einem anderen Verein - als Wechsel, Leihe oder Leihe mit Kaufoption, auch einen Spieler eines anderen Vereins zu Ihrem. Das Spiel führt den Wechsel beim nächsten {\b Tagesabschluss} mit seinen eigenen Funktionen aus, mit Ablöse, Vertrag, Transferhistorie und Meldung. Nach Tag 216 trägt das Spiel einen Wechsel sonst nur zum Saisonende ein; mit {\b sofort} wechselt der Spieler trotzdem direkt. Ein voller Kader (30 Spieler) lehnt den Wechsel ab. Nur in der Original-Version und nicht für Jugendspieler.\par}
+{\pard\qj Auf der Registerkarte {\b Wechsel} schicken Sie den gewählten Spieler zu einem anderen Verein - als Wechsel, Leihe oder Leihe mit Kaufoption, auch einen Spieler eines anderen Vereins zu Ihrem. Das Spiel führt den Wechsel beim nächsten {\b Tagesabschluss} mit seinen eigenen Funktionen aus, mit Ablöse, Vertrag, Transferhistorie und Meldung. Nach Tag 216 trägt das Spiel einen Wechsel sonst nur zum Saisonende ein; mit {\b sofort} wechselt der Spieler trotzdem direkt. Ein voller Kader (30 Spieler) lehnt den Wechsel ab. Nicht für Jugendspieler. In der Original-, der GOG-Version und der 2007er-CD.\par}
 \par
 
 {\fs24\b Fenster vergrößern}\par

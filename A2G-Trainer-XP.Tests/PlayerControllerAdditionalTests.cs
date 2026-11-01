@@ -79,6 +79,34 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
+        public void IsStillLoaded_WhileTheSlotHoldsTheSamePlayer_ReturnsTrue()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.PlayerAddress[0]);
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.ID], BitConverter.GetBytes((ushort)0x1234));
+                PlayerController controller = new PlayerController(fake.Memory, NewSinglePlayerClub(), isGog: false, PlayerEnums.AddressType.OWN);
+
+                Assert.True(controller.IsStillLoaded(controller.EntityList.Single()));
+            }
+        }
+
+        [Fact]
+        public void IsStillLoaded_AfterTheGameLoadedAnotherPlayerIntoTheSlot_ReturnsFalse()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.PlayerAddress[0]);
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.ID], BitConverter.GetBytes((ushort)0x1234));
+                PlayerController controller = new PlayerController(fake.Memory, NewSinglePlayerClub(), isGog: false, PlayerEnums.AddressType.OWN);
+
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_PLAYERS[PlayerEnums.AddressKey.ID], BitConverter.GetBytes((ushort)0x4321));
+
+                Assert.False(controller.IsStillLoaded(controller.EntityList.Single()));
+            }
+        }
+
+        [Fact]
         public void Save_WithNoSecondaryPositions_WritesOnlyMainPosition()
         {
             using (FakeModule fake = new FakeModule())

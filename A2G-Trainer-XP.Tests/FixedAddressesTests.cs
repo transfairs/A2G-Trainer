@@ -40,6 +40,44 @@ namespace A2G_Trainer_XP.Tests
             fake.WriteModuleBytes(callSite, new byte[] { 0xE8 }.Concat(BitConverter.GetBytes(rel)).Concat(Settings.JobOfferCallTrailPattern).ToArray());
         }
 
+        // Where GOG and the 2007 CD have the transfer code, as found live on 01.11.2026.
+        private static readonly uint[] GogMarketCallSites = { 0x191B84, 0x1922A2 };
+        private const uint GogMarket = 0x23B6A0;
+        private const uint GogDeadline = 0x230380;
+        private const uint GogMove = 0x1FFDE0;
+        private const uint GogLoan = 0x200070;
+        private const uint GogFetchPlayer = 0x184A00;
+        private const uint GogReleasePlayer = 0x184B30;
+        private const uint GogFetchClub = 0x187DA0;
+        private const uint GogReleaseClub = 0x187EF0;
+        private const uint GogBuildContract = 0x1FF5E0;
+
+        private static byte[] Call(uint site, uint target) =>
+            new byte[] { 0xE8 }.Concat(BitConverter.GetBytes(unchecked((int)(target - (site + 5))))).ToArray();
+
+        private static byte[] Bytes(params byte[][] parts) => parts.SelectMany(p => p).ToArray();
+
+        // The global counter's address in the build's code, which the deadline check and the market read.
+        private static byte[] Counter(FakeModule fake, uint runtimeShift, uint plus = 0) =>
+            BitConverter.GetBytes(fake.ModuleBase + Settings.GlobalCounterOffset + runtimeShift + plus);
+
+        private static void PlantTransferCode(FakeModule fake, uint runtimeShift, int marketCalls = 2)
+        {
+            fake.WriteModuleBytes(GogFetchPlayer, Settings.TransferFetchPlayerPattern);
+            fake.WriteModuleBytes(GogReleasePlayer, Settings.TransferReleasePlayerPattern);
+            fake.WriteModuleBytes(GogFetchClub, Settings.TransferFetchClubPattern);
+            fake.WriteModuleBytes(GogReleaseClub, Settings.TransferReleaseClubPattern);
+            fake.WriteModuleBytes(GogBuildContract, Settings.TransferBuildContractPattern);
+            fake.WriteModuleBytes(GogLoan, Settings.TransferLoanPattern);
+            fake.WriteModuleBytes(GogDeadline, Bytes(Settings.TransferDeadlinePatternHead, Counter(fake, runtimeShift), Settings.TransferDeadlinePatternTail));
+            byte[] marketRead = Bytes(Settings.TransferMarketPatternHead, Counter(fake, runtimeShift, 2));
+            fake.WriteModuleBytes(GogMarket, Bytes(marketRead, Settings.TransferMarketPatternTail));
+            foreach (uint site in GogMarketCallSites.Take(marketCalls))
+                fake.WriteModuleBytes(site - 1, Bytes(Settings.TransferMarketCallLeadPattern, Call(site, GogMarket), marketRead, Settings.TransferMarketCallTrailTail));
+            uint deadlineSite = GogMove + (uint)Settings.TransferDeadlineCallLeadPattern.Length;
+            fake.WriteModuleBytes(GogMove, Bytes(Settings.TransferDeadlineCallLeadPattern, Call(deadlineSite, GogDeadline), Settings.TransferDeadlineCallTrailPattern));
+        }
+
         private static PersistentLayout CalibratedLayout(uint runtimeShift) => new PersistentLayout(
             Settings.PlayerRecordTableOffset + runtimeShift,
             Settings.NamePoolPointerOffset + runtimeShift,
@@ -49,7 +87,7 @@ namespace A2G_Trainer_XP.Tests
 
         // Attached to GOG with the layout the calibrator confirms for it and the game's tables and code
         // where GOG keeps them.
-        private static void MakeGog(FakeModule fake, bool withStaticTables = true, bool withJobOfferCode = true)
+        private static void MakeGog(FakeModule fake, bool withStaticTables = true, bool withJobOfferCode = true, bool withTransferCode = true)
         {
             fake.Memory.Build = GameBuild.Gog;
             fake.Memory.Layout = CalibratedLayout(Settings.GogOffset);
@@ -57,6 +95,8 @@ namespace A2G_Trainer_XP.Tests
                 PlantStaticTables(fake, GogStaticOffset);
             if (withJobOfferCode)
                 PlantJobOfferCode(fake, GogPresentCallSite, GogPresentFunction, GogAddFunction);
+            if (withTransferCode)
+                PlantTransferCode(fake, Settings.GogOffset);
         }
 
         [Fact]
@@ -429,6 +469,141 @@ namespace A2G_Trainer_XP.Tests
                 Assert.True(Contains(code, new byte[] { 0xB9 }.Concat(BitConverter.GetBytes(fake.ModuleBase + Settings.JobOfferListOffset + Settings.GogOffset)).ToArray()));
                 Assert.True(Contains(code, new byte[] { 0xB8 }.Concat(BitConverter.GetBytes(fake.ModuleBase + GogAddFunction)).ToArray()));
                 Assert.True(Contains(code, new byte[] { 0xB8 }.Concat(BitConverter.GetBytes(present)).ToArray()));
+            }
+        }
+
+        [Fact]
+        public void For_CalibratedGog_FindsGogsTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+
+                FixedAddresses.TransferCode found = FixedAddresses.For(fake.Memory).Transfer;
+
+                Assert.Equal(GogMarketCallSites, found.MarketCallSites);
+                Assert.Equal(GogMarket, found.MarketFunction);
+                Assert.Equal(GogMove + 7, found.DeadlineCallSite);
+                Assert.Equal(GogDeadline, found.DeadlineFunction);
+                Assert.Equal(GogMove, found.Move);
+                Assert.Equal(GogLoan, found.Loan);
+                Assert.Equal(GogFetchPlayer, found.FetchPlayer);
+                Assert.Equal(GogReleasePlayer, found.ReleasePlayer);
+                Assert.Equal(GogFetchClub, found.FetchClub);
+                Assert.Equal(GogReleaseClub, found.ReleaseClub);
+                Assert.Equal(GogBuildContract, found.BuildContract);
+            }
+        }
+
+        // Redirects the three calls into a stub at module offset stubOffset, as a trainer started
+        // earlier against the same, still running game leaves them; with signature it's a real stub.
+        private static void RedirectToStub(FakeModule fake, uint stubOffset, bool signature)
+        {
+            if (signature)
+                fake.WriteModuleBytes(stubOffset, TransferInjector.Signature);
+            foreach (uint site in GogMarketCallSites)
+                fake.WriteModuleBytes(site, Call(site, stubOffset + TransferInjector.CodeOffset));
+            uint deadlineSite = GogMove + (uint)Settings.TransferDeadlineCallLeadPattern.Length;
+            fake.WriteModuleBytes(deadlineSite, Call(deadlineSite, stubOffset + TransferInjector.DeadlineCodeOffset));
+        }
+
+        [Fact]
+        public void For_WithTheCallsAlreadyRedirectedToAStub_StillFindsTheTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                RedirectToStub(fake, 0x500000, signature: true);
+
+                FixedAddresses.TransferCode found = FixedAddresses.For(fake.Memory).Transfer;
+
+                Assert.NotNull(found);
+                Assert.Equal(GogMarketCallSites, found.MarketCallSites);
+                Assert.Equal(GogMarket, found.MarketFunction);
+                Assert.Equal(GogMove + 7, found.DeadlineCallSite);
+                Assert.Equal(GogDeadline, found.DeadlineFunction);
+                Assert.True(new TransferInjector(fake.Memory).IsSupported);
+            }
+        }
+
+        [Fact]
+        public void For_WithTheCallsGoingToForeignCode_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                RedirectToStub(fake, 0x500000, signature: false);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).Transfer);
+            }
+        }
+
+        [Fact]
+        public void For_WithOnlyOneMarketCall_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake, withTransferCode: false);
+                PlantTransferCode(fake, Settings.GogOffset, marketCalls: 1);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found.JobOffer);
+                Assert.Null(found.Transfer);
+                Assert.False(new TransferInjector(fake.Memory).IsSupported);
+            }
+        }
+
+        // The deadline check and the market must read the global counter where this build keeps it.
+        [Fact]
+        public void For_WithTheCodeReadingAnotherCounter_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake, withTransferCode: false);
+                PlantTransferCode(fake, 0);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).Transfer);
+            }
+        }
+
+        [Fact]
+        public void For_WithTheMarketCallWindowUnreadable_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                uint window = Settings.FixedAddressSearchWindow;
+                fake.MakeModuleRegionUnreadable(Settings.TransferMarketCallSiteOffsets[0] - window, (int)(2 * window));
+
+                Assert.Null(FixedAddresses.For(fake.Memory).Transfer);
+            }
+        }
+
+        [Fact]
+        public void Transfer_OnGog_RedirectsGogsCallSitesToAStubUsingGogsAddresses()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                fake.WriteModuleBytes(Settings.MoneyFactorOffset + Settings.GogOffset, BitConverter.GetBytes(1000));
+                TransferInjector injector = new TransferInjector(fake.Memory);
+
+                TransferInjector.RequestResult result = injector.Request(
+                    new Player { NameRecordId = 0x1234, ClubCountry = PlayerEnums.Country.Deutschland, ClubId = 5 },
+                    PlayerEnums.Country.England, 7, TransferInjector.Kind.Transfer, 3, 0, immediate: true);
+
+                Assert.Equal(TransferInjector.RequestResult.Requested, result);
+                uint CallTarget(uint site) => unchecked((uint)(fake.ModuleBase + site + 5 + BitConverter.ToInt32(fake.ReadModuleBytes(site, 5), 1)));
+                uint stub = CallTarget(GogMarketCallSites[0]) - TransferInjector.CodeOffset;
+                Assert.Equal(stub + TransferInjector.CodeOffset, CallTarget(GogMarketCallSites[1]));
+                Assert.Equal(stub + TransferInjector.DeadlineCodeOffset, CallTarget(GogMove + 7));
+                byte[] code = fake.Memory.ReadBytesAtAddress(stub, TransferInjector.StubSize);
+                foreach (uint function in new[] { GogMarket, GogDeadline, GogMove, GogLoan, GogFetchPlayer, GogReleasePlayer, GogFetchClub, GogReleaseClub, GogBuildContract })
+                    Assert.True(Contains(code, new byte[] { 0xB8 }.Concat(BitConverter.GetBytes(fake.ModuleBase + function)).ToArray()), $"0x{function:X}");
+                // Fee in money units, with the money factor read from the shifted runtime data.
+                Assert.Equal(3000u, BitConverter.ToUInt32(fake.Memory.ReadBytesAtAddress(stub + TransferInjector.ArgumentsOffset + TransferInjector.ArgFee * 4, 4), 0));
+                Assert.True(injector.IsRequestPending());
             }
         }
 

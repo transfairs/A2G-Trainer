@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Controller\CoachController.cs" />
     <Compile Include="Controller\ClubController.cs" />
+    <Compile Include="Controller\ClubRecords.cs" />
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\FixedAddresses.cs" />
     <Compile Include="Controller\GameBuild.cs" />
@@ -117,6 +118,16 @@
     <Compile Include="Model\Club.cs" />
     <Compile Include="Controller\Tools.cs" />
     <Compile Include="Controller\TransferInjector.cs" />
+    <Compile Include="View\StadiumPlan.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\ClubMap.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\CountryMap.cs" />
+    <Compile Include="View\JerseyView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\CoachView.cs">
@@ -152,6 +163,11 @@
     <Compile Include="View\PlayerView.Designer.cs">
       <DependentUpon>PlayerView.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Resources\Maps\DEU.map" />
+    <EmbeddedResource Include="Resources\Maps\ESP.map" />
+    <EmbeddedResource Include="Resources\Maps\FRA.map" />
+    <EmbeddedResource Include="Resources\Maps\GBR.map" />
+    <EmbeddedResource Include="Resources\Maps\ITA.map" />
     <EmbeddedResource Include="Trainer.resx">
       <DependentUpon>Trainer.cs</DependentUpon>
     </EmbeddedResource>

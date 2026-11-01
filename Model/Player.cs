@@ -311,6 +311,9 @@ namespace A2G_Trainer_XP.Model
         /// <summary>Player's current form rating.</summary>
         public byte Form { get => this.form; set { this.form = value; this.OnPropertyChanged(nameof(this.Form)); } }
         private byte form = 0;
+        /// <summary>Shirt number ("Rückennummer"), 1-99 and unique within the squad; 0 = none yet (the game assigns one).</summary>
+        public byte Jersey { get => this.jersey; set { this.jersey = value; this.OnPropertyChanged(nameof(this.Jersey)); } }
+        private byte jersey = 0;
         /// <summary>Player's current fitness condition.</summary>
         public byte Condition { get => this.condition; set { this.condition = value; this.OnPropertyChanged(nameof(this.Condition)); } }
         private byte condition = 0;
@@ -478,8 +481,6 @@ namespace A2G_Trainer_XP.Model
         /*
         public byte PreviousForm { get => this.previousForm; set => this. = this.Setter(value, this.previousForm); }
         private byte previousForm = 0;
-        public byte Jersey { get => this.jersey; set => this. = this.Setter(value, this.jersey); }
-        private byte jersey = 0;
         public byte GoalsCupNational { get => this.goalsCupNational; set => this. = this.Setter(value, this.goalsCupNational); }
         private byte goalsCupNational = 0;
         public byte GoalsCupInternational { get => this.goalsCupInternational; set => this. = this.Setter(value, this.goalsCupInternational); }

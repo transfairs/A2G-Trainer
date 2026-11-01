@@ -193,6 +193,27 @@ namespace A2G_Trainer_XP.Controller
         private const uint clubRecordStride             = 0x770;
         private const uint clubRecordSeasonGoalOffset   = 0x101;
         private const uint clubSeasonGoalOffset         = 0x10C;
+        // The editor's club settings (loaded from LandXxxx.sav by FUN_005b0d60, stadium from
+        // StadXxxx.sav by FUN_005b25d0). Short name, chant and fan name exist only in the record and
+        // are read from there (FUN_00589050, FUN_00589210); the other fields are copied to the working copy at
+        // the AddressPresets.OWN_CLUB offsets and back, so both are written.
+        private const uint clubRecordShortNameOffset    = 0x14;
+        private const uint clubRecordChantOffset        = 0x18;
+        private const uint clubRecordFanNameOffset      = 0x4A;
+        private static readonly Dictionary<ClubEnums.AddressKey, uint> clubRecordMirrorOffsets = new Dictionary<ClubEnums.AddressKey, uint>
+        {
+            { ClubEnums.AddressKey.Jersey,        0xE0 },
+            { ClubEnums.AddressKey.FanTurnout,    0xE6 },
+            { ClubEnums.AddressKey.FanType,       0xE7 },
+            { ClubEnums.AddressKey.Article,       0xEA },
+            { ClubEnums.AddressKey.FanFriendship, 0xEB },
+            { ClubEnums.AddressKey.ArchRival,     0xEC },
+            { ClubEnums.AddressKey.Board,         0xED },
+            { ClubEnums.AddressKey.Preposition,   0xF0 },
+            { ClubEnums.AddressKey.Town,          0x509 },
+            { ClubEnums.AddressKey.MapX,          0x702 },
+            { ClubEnums.AddressKey.MapY,          0x704 },
+        };
         private const uint clubCacheTableOffset         = 0x400708;
         private const uint clubCacheStride              = 0xC;
         private const int  clubCacheSlots               = 6;
@@ -217,6 +238,33 @@ namespace A2G_Trainer_XP.Controller
         private static readonly byte[] jobOfferAddPattern      = { 0x8B, 0x44, 0x24, 0x04, 0x66, 0x3D, 0x01, 0x00, 0x7C, 0x58, 0x66, 0x3D, 0x04, 0x00, 0x7F, 0x52, 0x48, 0x0F, 0xBF, 0xC0 };
         private static readonly byte[] jobOfferPresentPattern  = { 0x81, 0xEC, 0x74, 0x01, 0x00, 0x00, 0x33, 0xC0, 0x53, 0x89, 0x44, 0x24, 0x18, 0x55, 0x89, 0x44, 0x24, 0x20, 0x56, 0x89 };
         private static readonly byte[] jobOfferCallTrailPattern = { 0x6A, 0x02, 0xC7, 0x44, 0x24, 0x14, 0x02, 0x00, 0x00, 0x00 };
+
+        // The transfer code, found the same way (GOG and the 2007 CD, confirmed on 01.11.2026: fetch
+        // player/club, release player/club +0x22C0/+0x22A0, contract, move and loan +0x4960, deadline
+        // check +0x4B80, market +0x4B40, market calls +0x22A0). The patterns are the functions' first
+        // instructions up to the first operand that differs between builds. The deadline check and the
+        // market function read the global counter (+0 / +2) through an absolute operand, which moves
+        // with the runtime data - their patterns are completed with that address during the search
+        // (head, address, tail). The market calls are "push ebp; call" followed by the same read; the
+        // deadline call is the move function's first call, which gives the move function as well.
+        private static readonly byte[] transferFetchPlayerPattern    = { 0x56, 0x57, 0x8B, 0x7C, 0x24, 0x0C, 0x66, 0x85, 0xFF, 0x74, 0x57, 0x57 };
+        // Ends in a call of the function right behind it, which moves along with it.
+        private static readonly byte[] transferReleasePlayerPattern  = { 0x8B, 0x44, 0x24, 0x04, 0x66, 0x8B, 0x08, 0x51, 0x50, 0xE8, 0x12, 0x00, 0x00, 0x00, 0x83, 0xC4, 0x08, 0xC3 };
+        private static readonly byte[] transferFetchClubPattern      = { 0x53, 0x56, 0x57, 0x8B, 0x7C, 0x24, 0x14, 0x66, 0x81, 0xFF, 0xC8, 0x00, 0x75, 0x16, 0x8B, 0x44, 0x24, 0x18, 0x8B, 0x4C, 0x24, 0x10, 0x50, 0x51 };
+        private static readonly byte[] transferReleaseClubPattern    = { 0x8B, 0x44, 0x24, 0x04, 0x68, 0xFF, 0xFF, 0x00, 0x00, 0x66, 0x0F, 0xB6, 0x88, 0x02, 0x01, 0x00, 0x00, 0x66, 0x0F, 0xB6, 0x90, 0x03, 0x01, 0x00, 0x00, 0x51, 0x52, 0x50 };
+        private static readonly byte[] transferBuildContractPattern  = { 0x55, 0x56, 0x57, 0x8B, 0x7C, 0x24, 0x14, 0x66, 0x0F, 0xB6, 0x47, 0x24, 0x66, 0x0F, 0xB6, 0x4F, 0x23, 0x50, 0x51 };
+        private static readonly byte[] transferLoanPattern           = { 0x53, 0x55, 0x8B, 0x6C, 0x24, 0x18, 0x8B, 0x5C, 0x24, 0x10, 0x56, 0x8B, 0x74, 0x24, 0x10, 0x57, 0x8B, 0x7C, 0x24, 0x1C, 0x55, 0x53, 0x8A, 0x87 };
+        // xor eax, eax; cmp word [global counter], 217 / setge al; ret
+        private static readonly byte[] transferDeadlinePatternHead   = { 0x33, 0xC0, 0x66, 0x81, 0x3D };
+        private static readonly byte[] transferDeadlinePatternTail   = { 0xD9, 0x00, 0x0F, 0x9D, 0xC0, 0xC3 };
+        // mov ax, [global counter + 2] / sub esp, 0x64; ...
+        private static readonly byte[] transferMarketPatternHead     = { 0x66, 0xA1 };
+        private static readonly byte[] transferMarketPatternTail     = { 0x83, 0xEC, 0x64, 0x8D, 0x4C, 0x24, 0x1C, 0x56, 0x66, 0x8B, 0x74, 0x24, 0x6C, 0x66, 0x03, 0xC6, 0x50, 0x51 };
+        private static readonly byte[] transferMarketCallLeadPattern = { 0x55 };
+        // after "mov ax, [global counter + 2]"
+        private static readonly byte[] transferMarketCallTrailTail   = { 0x83, 0xC4, 0x04, 0x66, 0x03, 0xC5, 0x50 };
+        private static readonly byte[] transferDeadlineCallLeadPattern  = { 0x83, 0xEC, 0x2C, 0x53, 0x55, 0x56, 0x57 };
+        private static readonly byte[] transferDeadlineCallTrailPattern = { 0x85, 0xC0, 0x0F, 0x84, 0xBE, 0x00, 0x00, 0x00, 0x8B, 0x7C, 0x24, 0x40 };
 
         // Offset within the same per-player record for Position (Hauptposition). The next two
         // bytes (+0xC, +0xD) are the two secondary positions, contiguous with the main one, so all
@@ -260,6 +308,10 @@ namespace A2G_Trainer_XP.Controller
         // it had been assumed omitted like the club-context fields (ClubId/ClubCountry), but it
         // isn't.
         private const uint playerRecordFormOffset        = 0x1E;
+        // Shirt number (display +0x3A). The game keeps the numbers in use in 100-entry tables
+        // (FUN_005e54d0/FUN_005e56c0), so only 1-99 are valid; its own "Rückennummern" dialog
+        // refuses 0 and duplicates within a squad (FUN_004e0b50).
+        private const uint playerRecordJerseyOffset      = 0x1F;
         private const uint playerRecordConditionOffset   = 0x21;
         private const uint playerRecordFreshnessOffset   = 0x22;
 
@@ -374,6 +426,11 @@ namespace A2G_Trainer_XP.Controller
         internal static uint ClubRecordStride              { get => clubRecordStride; }
         internal static uint ClubRecordSeasonGoalOffset    { get => clubRecordSeasonGoalOffset; }
         internal static uint ClubSeasonGoalOffset          { get => clubSeasonGoalOffset; }
+        internal static uint ClubRecordShortNameOffset     { get => clubRecordShortNameOffset; }
+        internal static uint ClubRecordChantOffset         { get => clubRecordChantOffset; }
+        internal static uint ClubRecordFanNameOffset       { get => clubRecordFanNameOffset; }
+        internal static uint ClubRecordMirrorOffset(ClubEnums.AddressKey key) => clubRecordMirrorOffsets[key];
+        internal static IEnumerable<ClubEnums.AddressKey> ClubRecordMirrorKeys { get => clubRecordMirrorOffsets.Keys; }
         internal static uint ClubCacheTableOffset          { get => clubCacheTableOffset; }
         internal static uint ClubCacheStride               { get => clubCacheStride; }
         internal static int  ClubCacheSlots                { get => clubCacheSlots; }
@@ -386,6 +443,20 @@ namespace A2G_Trainer_XP.Controller
         internal static byte[] JobOfferAddPattern          { get => (byte[])jobOfferAddPattern.Clone(); }
         internal static byte[] JobOfferPresentPattern      { get => (byte[])jobOfferPresentPattern.Clone(); }
         internal static byte[] JobOfferCallTrailPattern    { get => (byte[])jobOfferCallTrailPattern.Clone(); }
+        internal static byte[] TransferFetchPlayerPattern   { get => (byte[])transferFetchPlayerPattern.Clone(); }
+        internal static byte[] TransferReleasePlayerPattern { get => (byte[])transferReleasePlayerPattern.Clone(); }
+        internal static byte[] TransferFetchClubPattern     { get => (byte[])transferFetchClubPattern.Clone(); }
+        internal static byte[] TransferReleaseClubPattern   { get => (byte[])transferReleaseClubPattern.Clone(); }
+        internal static byte[] TransferBuildContractPattern { get => (byte[])transferBuildContractPattern.Clone(); }
+        internal static byte[] TransferLoanPattern          { get => (byte[])transferLoanPattern.Clone(); }
+        internal static byte[] TransferDeadlinePatternHead  { get => (byte[])transferDeadlinePatternHead.Clone(); }
+        internal static byte[] TransferDeadlinePatternTail  { get => (byte[])transferDeadlinePatternTail.Clone(); }
+        internal static byte[] TransferMarketPatternHead    { get => (byte[])transferMarketPatternHead.Clone(); }
+        internal static byte[] TransferMarketPatternTail    { get => (byte[])transferMarketPatternTail.Clone(); }
+        internal static byte[] TransferMarketCallLeadPattern { get => (byte[])transferMarketCallLeadPattern.Clone(); }
+        internal static byte[] TransferMarketCallTrailTail  { get => (byte[])transferMarketCallTrailTail.Clone(); }
+        internal static byte[] TransferDeadlineCallLeadPattern  { get => (byte[])transferDeadlineCallLeadPattern.Clone(); }
+        internal static byte[] TransferDeadlineCallTrailPattern { get => (byte[])transferDeadlineCallTrailPattern.Clone(); }
         internal static uint PlayerRecordPositionOffset   { get => playerRecordPositionOffset; }
         internal static uint PlayerRecordSkillsOffset     { get => playerRecordSkillsOffset; }
         internal static uint PlayerRecordPersonalityOffset { get => playerRecordPersonalityOffset; }
@@ -397,6 +468,7 @@ namespace A2G_Trainer_XP.Controller
         internal static uint PlayerRecordHomeClubOffset     { get => playerRecordHomeClubOffset; }
         internal static uint PlayerRecordSalaryOffset       { get => playerRecordSalaryOffset; }
         internal static uint PlayerRecordFormOffset         { get => playerRecordFormOffset; }
+        internal static uint PlayerRecordJerseyOffset       { get => playerRecordJerseyOffset; }
         internal static uint PlayerRecordConditionOffset    { get => playerRecordConditionOffset; }
         internal static uint PlayerRecordFreshnessOffset    { get => playerRecordFreshnessOffset; }
         internal static uint PlayerRecordNationalityOffset  { get => playerRecordNationalityOffset; }

@@ -131,7 +131,8 @@ namespace A2G_Trainer_XP.Controller
             player.Age         = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.AGE]));
             player.Level       = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEVEL]));
             player.Form        = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FORM]));
-            player.Condition   = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONDITION]));
+            player.Jersey      = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.JERSEY]));
+            player.Condition  = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONDITION]));
             player.Freshness   = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FRESHNESS]));
             player.Nationality = (PlayerEnums.Country)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NATIONALITY]));
             #endregion
@@ -198,7 +199,6 @@ namespace A2G_Trainer_XP.Controller
             /*
             player.ClubId                = this.memory.ReadByte(GetAddress(this.memory, player, "23"));
             player.PreviousForm          = this.memory.ReadByte(GetAddress(this.memory, player, "26"));
-            player.Jersey                = this.memory.ReadByte(GetAddress(this.memory, player, "3A"));
             player.GoalsCupNational      = this.memory.ReadByte(GetAddress(this.memory, player, "57"));
             player.GoalsCupInternational = this.memory.ReadByte(GetAddress(this.memory, player, "58"));
             player.Goals1stLeague        = BitConverter.ToUInt16(this.memory.ReadBytes(GetAddress(this.memory, player, "5A"), 2), 0);
@@ -289,6 +289,7 @@ namespace A2G_Trainer_XP.Controller
                 player.Unhappy = (PlayerEnums.Unhappy)BitConverter.ToUInt16(chunk, (int)Settings.PlayerRecordUnhappyOffset);
                 player.Happy = (PlayerEnums.Happy)chunk[Settings.PlayerRecordUnhappyOffset + 2];
                 player.Form = chunk[Settings.PlayerRecordFormOffset];
+                player.Jersey = chunk[Settings.PlayerRecordJerseyOffset];
                 player.Condition = chunk[Settings.PlayerRecordConditionOffset];
                 player.Freshness = chunk[Settings.PlayerRecordFreshnessOffset];
                 // The Country ID only ever occupies the low 7 bits here - Robin found a Russian
@@ -623,16 +624,36 @@ namespace A2G_Trainer_XP.Controller
             Logger.Debug($"Wrote persistent Unhappy/Happy for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Unhappy}/{player.Happy}.");
         }
 
+        /// <summary>
+        /// Why the shirt numbers of <paramref name="squad"/> can't be saved as they are - a number
+        /// above 99 or one given twice, as the game's own "Rückennummern" dialog refuses - or null
+        /// if they're fine. 0 (no number yet, e.g. right after a transfer) is left for the game to
+        /// fill in. Youth players aren't in a squad and have no number to check.
+        /// </summary>
+        internal static string JerseyProblem(IEnumerable<Player> squad, PlayerEnums.AddressType type)
+        {
+            if (type == PlayerEnums.AddressType.TRAINEE)
+                return null;
+            List<Player> players = squad.Where(p => p.Jersey != 0).ToList();
+            Player outOfRange = players.FirstOrDefault(p => p.Jersey > 99);
+            if (outOfRange != null)
+                return $"Rückennummern gehen von 1 bis 99 ({outOfRange}: {outOfRange.Jersey}).";
+            IGrouping<byte, Player> twice = players.GroupBy(p => p.Jersey).FirstOrDefault(g => g.Count() > 1);
+            if (twice != null)
+                return $"Bitte jede Rückennummer nur einmal vergeben! (Nr. {twice.Key}: {string.Join(", ", twice)})";
+            return null;
+        }
+
         // Robin found this one directly, isolated from the group above (+0x1E) - Form had been
         // assumed omitted like the other club-context fields (ClubId/ClubCountry), but it turns out
-        // it isn't. Written on its own since it's 3 bytes past Happy (+0x1A/+0x1B end) with unknown
-        // content in between that this shouldn't touch.
+        // it isn't. The shirt number follows right after it (+0x1F, FUN_00582a60/FUN_00583120), so
+        // both go in one write; the 3 bytes between Happy (+0x1A/+0x1B end) and Form stay untouched.
         private void WritePersistentForm(Player player)
         {
             PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
             uint address = recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordFormOffset);
-            this.memory.WriteBytesAtAddress(address, new byte[] { player.Form });
-            Logger.Debug($"Wrote persistent Form for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Form}.");
+            this.memory.WriteBytesAtAddress(address, new byte[] { player.Form, player.Jersey });
+            Logger.Debug($"Wrote persistent Form/Jersey for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Form}/{player.Jersey}.");
         }
 
         // Condition/Freshness, found directly by Robin at +0x21/+0x22 - contiguous with each other
@@ -878,6 +899,7 @@ namespace A2G_Trainer_XP.Controller
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.AGE]), new byte[] { player.Age });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEVEL]), new byte[] { player.Level });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FORM]), new byte[] { player.Form });
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.JERSEY]), new byte[] { player.Jersey });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONDITION]), new byte[] { player.Condition });
                 this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FRESHNESS]), new byte[] { player.Freshness });
 
@@ -987,6 +1009,16 @@ namespace A2G_Trainer_XP.Controller
                         break;
                 }
             }
+        }
+
+        /// <summary>True while the display-cache slot this player was read from still holds the same player.</summary>
+        // The game reuses the OWN/OPPONENT slots for other clubs during a Wochenabschluss or a match
+        // and packs the slot back into each player's record afterwards (FUN_00583120), so a write
+        // into a slot that now holds someone else ends up permanently in that player's record.
+        internal bool IsStillLoaded(Player player)
+        {
+            byte[] nameRecordIdBytes = this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]), 2);
+            return nameRecordIdBytes != null && BitConverter.ToUInt16(nameRecordIdBytes, 0) == player.NameRecordId;
         }
 
         private void InitOffsets(string offset)

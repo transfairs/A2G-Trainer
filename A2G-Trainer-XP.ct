@@ -639,6 +639,119 @@
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
+        <CheatEntry>
+          <ID>943</ID>
+          <Description>"Trikots (je Satz Hemd, Hose, Stutzen; Hemd = Farbe + 16 x Muster)"</Description>
+          <VariableType>Array of byte</VariableType>
+          <ByteLength>6</ByteLength>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>E8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>944</ID>
+          <Description>"Fanaufkommen (0 wahre Horden ... 5 ärmlich, 6 Fans?)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>EE</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>953</ID>
+          <Description>"Art der Fans (0 normal, 1 lautstark, 2 verwöhnt, 3 anspruchsvoll, 4 treu, 5 erfolgshungrig, 6 frustriert, 7 euphorisch)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>EF</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>945</ID>
+          <Description>"Artikel (0 der, 1 die, 2/3 ohne)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>F2</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>946</ID>
+          <Description>"Fanfreundschaft (Vereins-ID im selben Land, 255 = keine)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>F3</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>947</ID>
+          <Description>"Erzrivale (Vereins-ID im selben Land, 255 = keiner)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>F4</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>948</ID>
+          <Description>"Vorstand (0 Pulverfaß ... 5 treu)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>F5</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>949</ID>
+          <Description>"Präposition (0 vom, 1 von den, 2 von, 3 von der)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>F8</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>950</ID>
+          <Description>"Ort"</Description>
+          <VariableType>String</VariableType>
+          <Length>16</Length>
+          <Unicode>0</Unicode>
+          <CodePage>0</CodePage>
+          <ZeroTerminate>1</ZeroTerminate>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>839</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>951</ID>
+          <Description>"Landkarte X"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>1438</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>952</ID>
+          <Description>"Landkarte Y"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>143A</Offset>
+          </Offsets>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -2630,6 +2743,15 @@
               <Address>anstoss2.exe+557BC8</Address>
               <Offsets>
                 <Offset>1E</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>942</ID>
+              <Description>"     Rückennummer (1-99, je Kader eindeutig)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>anstoss2.exe+557BC8</Address>
+              <Offsets>
+                <Offset>1F</Offset>
               </Offsets>
             </CheatEntry>
             <CheatEntry>

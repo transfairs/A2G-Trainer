@@ -144,7 +144,7 @@ namespace A2G_Trainer_XP.Tests
         }
 
         [Fact]
-        public void Request_WithoutOriginalBuildAnchors_IsNotSupported()
+        public void Request_WithoutKnownTransferCode_IsNotSupported()
         {
             using (FakeModule fake = new FakeModule())
             {
@@ -428,7 +428,7 @@ namespace A2G_Trainer_XP.Tests
         public void BuildStub_ForTheGameModule_UsesTheGamesFunctions()
         {
             const uint moduleBase = 0x400000;
-            byte[] stub = TransferInjector.BuildStub(0x10000000, moduleBase);
+            byte[] stub = TransferInjector.BuildStub(0x10000000, moduleBase, FixedAddresses.Original.Transfer);
             byte[] code = stub.Skip(TransferInjector.CodeOffset).ToArray();
 
             // mov eax, market; jmp eax at the end of the market entry

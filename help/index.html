@@ -104,7 +104,7 @@
           <p>Diese Onlinehilfe erklärt alle Funktionen des Trainers im Detail. Wählen Sie oben in der Menüleiste oder links in der Liste einen Bereich:</p>
 
           <div class="toc-grid">
-            <a class="toc-card" href="#verein" data-jump="verein"><h3>Verein</h3><p>Vereinsname, Stadion, Finanzen und Blockübersicht bearbeiten.</p></a>
+            <a class="toc-card" href="#verein" data-jump="verein"><h3>Verein</h3><p>Vereinsname, Stadion, Finanzen, Fans, Trikots und Landkarte bearbeiten.</p></a>
             <a class="toc-card" href="#spieler" data-jump="spieler"><h3>Spieler</h3><p>Kader, Gegner und dynamisches Team editieren: Fähigkeiten, Vertrag, Verfassung.</p></a>
             <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Was bei Nachwuchsspielern dauerhaft gespeichert wird und was nicht.</p></a>
             <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
@@ -119,11 +119,14 @@
       <section class="panel" id="panel-verein">
         <div class="panel-header">
           <h1>Verein</h1>
-          <p class="lead">Erreichbar über <span class="menu-path">Verein → Eigener</span>. Die Vereinsansicht öffnet sich in einem eigenen Fenster mit zwei Registerkarten.</p>
+          <p class="lead">Erreichbar über <span class="menu-path">Verein → Eigener</span>. Die Vereinsansicht öffnet sich in einem eigenen Fenster mit fünf Registerkarten.</p>
         </div>
         <div class="subtabs">
           <button data-sub="allgemein" class="active">Allgemein</button>
           <button data-sub="stadion">Stadion</button>
+          <button data-sub="identitaet">Identität</button>
+          <button data-sub="trikots">Trikotsätze</button>
+          <button data-sub="landkarte">Landkarte</button>
         </div>
 
         <div class="subpanel active" data-sub="allgemein">
@@ -136,6 +139,15 @@
               <dt>Rasenheizung</dt><dd>Ein-/Ausschalten per Kontrollkästchen.</dd>
               <dt>Flutlicht</dt><dd>Ein-/Ausschalten per Kontrollkästchen.</dd>
               <dt>Rasenpflege</dt><dd>Zustand des Rasens (Auswahlliste, z.&nbsp;B. „Holprig“).</dd>
+            </dl>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Stadtzuschuss</legend>
+            <p>Die Stadt beteiligt sich an Ausbauten des Stadions, laut Spielhilfe mit bis zu 30&nbsp;% der Kosten.</p>
+            <dl class="field-list">
+              <dt>Topf</dt><dd>Geld, das die Stadt für das Stadion bereithält (in DM). Daraus zahlt sie ihren Anteil an Ausbauten; einige Ereignisse bauen davon auch Dach, Rasenheizung oder Flutlicht.</dd>
+              <dt>Quote (%)</dt><dd>Das Spiel würfelt sie jede Saison neu (0 bis 25). Sie ist zugleich die Chance, dass die Stadt bei einem Ausbau mitzahlt, und dann übernimmt sie Quote + 5&nbsp;% der Kosten, höchstens so viel, wie im Topf ist.</dd>
             </dl>
           </fieldset>
 
@@ -155,28 +167,98 @@
 
         <div class="subpanel" data-sub="stadion">
           <fieldset class="groupbox">
-            <legend>Blockübersicht</legend>
-            <p>Für jeden der zwölf Stadionblöcke (A bis L) lassen sich folgende Werte einstellen:</p>
+            <legend>Stadionplan</legend>
+            <p>Der Plan zeigt das Stadion von oben wie die Stadionansicht im Spiel: das Spielfeld mit den zwölf Blöcken drumherum (oben F, E, D, rechts B, unten J, K, L, links H, in den Ecken G, C, I und A). Jeder Block zeigt zum Spielfeld hin seine Steh- bzw. Logenplätze und dahinter die Sitzplätze, in den Farben der Legende, dunkler wenn überdacht. Ein Block im Bau ist schraffiert und zeigt seine Bauwochen. Ein Klick wählt einen Block aus.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Block</legend>
             <dl class="field-list">
-              <dt>Sitzplätze</dt><dd>Anzahl Sitzplätze im Block (bis zu 32.767).</dd>
-              <dt>Stehplätze</dt><dd>Anzahl Stehplätze im Block (bis zu 32.767).</dd>
-              <dt>überdacht</dt><dd>Kontrollkästchen, ob der Block überdacht ist.</dd>
+              <dt>Stehplätze / Logen</dt><dd>Block K hat statt Stehplätzen Logen, wie im Spiel.</dd>
+              <dt>Sitzplätze</dt><dd>Anzahl Sitzplätze im Block.</dd>
               <dt>Wochen Bauzeit</dt><dd>Verbleibende Bauzeit des Blocks in Wochen. Solange sie über 0 liegt, ist der Block gesperrt und zählt nicht zur Kapazität. Die Platzzahlen sind während des Baus schon die neuen. Mit 0 ist ein Ausbau sofort fertig.</dd>
+              <dt>überdacht</dt><dd>Ob der Block ein Dach hat.</dd>
+            </dl>
+            <p>Plätze lassen sich von −32.768 bis 32.767 eintragen. Negative Werte zählt das Spiel so mit, sie verringern also die Kapazität.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Legende und Kapazität</legend>
+            <p>Die Legende zählt die Plätze aller Blöcke nach Art zusammen, auch die von Blöcken im Bau. <strong>Kapazität</strong> ist der Wert, gegen den das Spiel Karten verkauft: Steh-, Logen- und Sitzplätze aller Blöcke ohne Bauzeit.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Weitere Einstellungen</legend>
+            <dl class="field-list">
+              <dt>Tartanbahn</dt><dd>Ein Stadion mit Laufbahn. Das Spiel legt damit die Höchstgrößen fest, bis zu denen es selbst einen Block ausbaut. Außerdem kann nur mit Bahn das Ereignis eintreten, dass das Ballfangnetz vor dem Gästeblock ausgetauscht werden muss. Das kostet den Verein Geld. Auf die Spiele selbst hat die Bahn keinen Einfluss.</dd>
+              <dt>Sitzplätze oben</dt><dd>Die Sitzplätze liegen über den Stehplätzen. Ein Umbau zwischen Steh- und Sitzplätzen kostet dann weniger.</dd>
             </dl>
           </fieldset>
 
           <div class="callout tip">
-            <strong class="label">Negative Platzzahl eintragen</strong>
-            Um einem Block eine <em>negative</em> Anzahl Plätze zuzuweisen, tragen Sie einfach einen Wert <strong>größer als 32.767</strong> ein. Der Zähler läuft dann ins Negative um.
+            <strong class="label">Änderungen gelten sofort</strong>
+            Das Spiel rechnet die Kapazität seines Stadions selbst nur neu, wenn ein Ausbau fertig wird oder eine neue Saison beginnt. Der Trainer rechnet sie deshalb beim Speichern gleich mit, genauso wie das Spiel. Geänderte Plätze und Bauzeiten zählen damit ab dem nächsten Heimspiel.
           </div>
+
+          <div class="callout warn">
+            <strong class="label">Höchstgrößen der Blöcke</strong>
+            Im Spiel selbst lässt sich ein Block nur bis zu einer Höchstgröße ausbauen; Sitzplätze zählen dabei anderthalbfach. Ohne Tartanbahn sind das 9.000 für die Eckblöcke A, C, G und I, 27.000 für B und H und 18.000 für die übrigen; mit Tartanbahn 18.000 für jeden Block. Der Trainer lässt mehr zu. Ob das Spiel größere Blöcke überall verkraftet, ist nicht geprüft.
+          </div>
+        </div>
+
+        <div class="subpanel" data-sub="identitaet">
+          <p>Die Einstellungen, die sonst nur der Dateneditor des Spiels vor Spielbeginn kennt, hier für das laufende Spiel.</p>
+
+          <fieldset class="groupbox">
+            <legend>Verein</legend>
+            <dl class="field-list">
+              <dt>Kürzel</dt><dd>Drei Zeichen, „---“ heißt kein Kürzel. Kürzere Eingaben füllt der Trainer mit „-“ auf.</dd>
+              <dt>Anfeuerung</dt><dd>Was die Fans rufen, z.&nbsp;B. „Hertha“ (bis 20 Zeichen).</dd>
+              <dt>Fanbezeichnung</dt><dd>Wie die Fans heißen, z.&nbsp;B. „Herthaner“ (bis 20 Zeichen).</dd>
+              <dt>Ort</dt><dd>Die Stadt des Stadions (bis 16 Zeichen).</dd>
+              <dt>Artikel</dt><dd>Wie die Texte des Spiels den Verein nennen: „<em>Der</em> MSV Duisburg …“, „<em>Die</em> TSG …“ oder ohne Artikel. „ohne Artikel (Nationalteam)“ setzt das Spiel bei Nationalmannschaften.</dd>
+              <dt>Präposition</dt><dd>Für Sätze wie „… <em>vom</em> MSV Duisburg kam …“: vom, von den, von oder von der.</dd>
+            </dl>
+            <p>Kürzel, Anfeuerung und Fanbezeichnung gibt es nur für Vereine der fünf Länder mit Ligabetrieb und in Versionen, deren feste Adressen der Trainer kennt (Original, GOG, 2007er-CD). Sonst sind die Felder gesperrt.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Fans und Vorstand</legend>
+            <dl class="field-list">
+              <dt>Fanaufkommen</dt><dd>Von „wahre Horden“ bis „ärmlich“ und „Fans?“. Je mehr Fans, desto mehr nimmt der Verein ein. Das Spiel verändert den Wert im Lauf der Saison selbst.</dd>
+              <dt>Vorstand</dt><dd>Von „Pulverfaß“ bis „treu“. Je ruhiger der Vorstand, desto seltener werden Sie entlassen. Auch dieser Wert ändert sich im Spiel.</dd>
+              <dt>Erzrivale</dt><dd>Ein Verein desselben Landes, gegen den es ein Derby ist; „–“ heißt keiner.</dd>
+              <dt>Fanfreundschaft mit</dt><dd>Ein Verein desselben Landes, mit dessen Fans sich Ihre Fans verstehen; „–“ heißt keiner.</dd>
+              <dt>Art der Fans</dt><dd>Normal, lautstark, verwöhnt, anspruchsvoll, treu, erfolgshungrig, frustriert oder euphorisch. Sie beeinflusst, wie viele Zuschauer kommen. Das Spiel bestimmt sie nach jedem Spiel neu, unter anderem nach Stadion, Ergebnissen und Titeln; eine Änderung gilt also nur bis zum nächsten Spiel.</dd>
+            </dl>
+          </fieldset>
 
           <div class="callout tip">
-            <strong class="label">Änderungen gelten sofort</strong>
-            Das Spiel rechnet die Kapazität seines Stadions selbst nur neu, wenn ein Ausbau fertig wird oder eine neue Saison beginnt. Der Trainer rechnet sie deshalb beim Speichern gleich mit, genauso wie das Spiel: Steh- und Sitzplätze aller Blöcke ohne Bauzeit. Geänderte Plätze und Bauzeiten zählen damit ab dem nächsten Heimspiel.
+            <strong class="label">Dauerhaft gespeichert</strong>
+            Der Trainer schreibt alle Werte dieser Registerkarte, der Trikotsätze und der Landkarte in den Vereinsdatensatz und in jede Kopie, die das Spiel gerade geladen hat. Sie bleiben damit auch nach Tagesabschluss und Neuladen erhalten.
           </div>
 
-          <p>Zum Vergleich: Die folgende Ansicht zeigt links die Trainer-Blockübersicht, rechts die zugehörige Stadion-Grafik im Spiel selbst.</p>
-          <img class="screenshot" src="img/Stadium.png" alt="Stadion-Registerkarte im Trainer neben der Stadionansicht im Spiel">
+          <div class="callout">
+            <strong class="label">Nicht enthalten</strong>
+            „Pokalmannschaft“ liest das Spiel nirgends. Das Wappen lässt sich im Editor des Spiels auch während eines laufenden Spiels ändern.
+          </div>
+        </div>
+
+        <div class="subpanel" data-sub="trikots">
+          <fieldset class="groupbox">
+            <legend>Trikotsätze</legend>
+            <p>Wie im Dateneditor: links der erste, rechts der zweite Trikotsatz. Ein Klick auf Hemd, Hose oder Stutzen wechselt zur nächsten der 13 Farben des Editors, ein Rechtsklick zur vorherigen. Unter <strong>Streifenmuster</strong> steht links die Spalte für den ersten, rechts die für den zweiten Satz: neutral, längs, quer, Halb/Halb, Schulter, Brustring oder Ärmel wie Hose („Ärmel w. H.“). Das Muster hat die Farbe der Hose.</p>
+            <p>Die Heimmannschaft spielt immer im ersten Satz, die Gäste weichen bei gleicher Hemdfarbe auf ihren zweiten aus. Die beiden Hemden sollten sich deshalb in der Farbe unterscheiden.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="landkarte">
+          <fieldset class="groupbox">
+            <legend>Landkarte</legend>
+            <p>Die Karte zeigt das Land Ihres Vereins mit seinen Nachbarn und inneren Grenzen: Bundesländer in Deutschland, Regionen und Counties in England, Régions und Départements in Frankreich, Regioni und Provinzen in Italien, Comunidades und Provinzen in Spanien. Sie ist genau auf die Landkarte des Editors ausgerichtet, also liegen alle Vereine des Landes als Punkte dort, wo der Editor sie zeigt. Ihr Verein ist blau, der Erzrivale rot und der Verein mit Fanfreundschaft grün umrandet. Fährt die Maus über einen Punkt, erscheint der Vereinsname. Ein Klick versetzt Ihren Verein an diese Stelle; <strong>X</strong> und <strong>Y</strong> lassen sich auch direkt eintragen.</p>
+            <p>Das Spiel nutzt die Position nur über die Entfernung zwischen zwei Vereinen. Sie bestimmt, wie viele Fans zu einem Spiel kommen, vor allem Gästefans: Je näher die Vereine, desto mehr. Das Spiel rechnet mit einem Faktor von 3 unter 3 Einheiten Entfernung, 2,5 unter 10, 2 unter 25, 0,8 unter 50, 0,4 unter 100, 0,2 unter 250 und 0,125 darüber oder bei Vereinen aus verschiedenen Ländern. Bei den Gästefans gilt der Faktor immer, bei den Heimfans nur, wenn er über 1 liegt. Die gestrichelten Kreise zeigen 25, 50, 100 und 250 Einheiten. Bei wenigen Ereignissen spielt die Entfernung ebenfalls eine Rolle, etwa bei einem Lokalderby.</p>
+            <p>Kartendaten: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (gemeinfrei).</p>
+          </fieldset>
         </div>
       </section>
 
@@ -227,6 +309,7 @@
               <dt>Alter</dt><dd>Alter des Spielers in Jahren.</dd>
               <dt>Nationalität</dt><dd>Auswahlliste mit allen Nationalitäten des Spiels.</dd>
               <dt>Kondition / Frische / Form</dt><dd>Aktuelle Werte. Kondition und Frische lassen sich zusätzlich dauerhaft <a href="#spieler" data-jump="spieler:team">einfrieren</a>.</dd>
+              <dt>Rückennr. (Rückennummer)</dt><dd>1 bis 99, wie im Spiel jede Nummer nur einmal pro Kader. Ist eine Nummer doppelt vergeben oder größer als 99, speichert der Trainer nicht und meldet den betroffenen Spieler. 0 heißt „noch keine Nummer“ (z. B. direkt nach einem Wechsel), das Spiel vergibt dann selbst eine.</dd>
               <dt>Hautfarbe</dt><dd>hell / dunkel / schwarz (Auswahlschalter).</dd>
               <dt>Haarfarbe</dt><dd>hellblond / blond / braun / rot / schwarz / Glatze (Auswahlschalter).</dd>
             </dl>
@@ -391,7 +474,7 @@
               <dt>sofort</dt><dd>Nur beim Wechsel. Nach Tag 216 der Saison trägt das Spiel einen Wechsel sonst nur für das Saisonende ein (das Geld fließt trotzdem gleich). Mit „sofort“ wechselt der Spieler auch dann direkt. Leihen gelten immer sofort.</dd>
               <dt>Wechsel anfordern</dt><dd>Der Wechsel geschieht beim nächsten <strong>Tagesabschluss</strong>. Eine neue Anforderung ersetzt eine noch nicht ausgeführte. Nach dem Tagesabschluss zeigt die Registerkarte beim nächsten Aktualisieren, ob er geklappt hat.</dd>
             </dl>
-            <p>Das Spiel bestimmt den Vertrag beim neuen Verein (Gehalt, Prämien, Laufzeit von mindestens 2 Jahren) wie bei seinen eigenen Wechseln; ändern lässt er sich danach wie gewohnt. Abgelehnt wird der Wechsel, wenn der Kader des neuen Vereins schon 30 Spieler hat (mehr verkraftet das Spiel nicht) oder der Spieler zum Zeitpunkt des Tagesabschlusses nicht mehr beim alten Verein ist. Nur in der Original-Version und nicht für Jugendspieler.</p>
+            <p>Das Spiel bestimmt den Vertrag beim neuen Verein (Gehalt, Prämien, Laufzeit von mindestens 2 Jahren) wie bei seinen eigenen Wechseln; ändern lässt er sich danach wie gewohnt. Abgelehnt wird der Wechsel, wenn der Kader des neuen Vereins schon 30 Spieler hat (mehr verkraftet das Spiel nicht) oder der Spieler zum Zeitpunkt des Tagesabschlusses nicht mehr beim alten Verein ist. Nicht für Jugendspieler. In der Original-Version, der GOG-Version und der 2007er-CD; bei anderen Versionen nur, wenn der Trainer beim Verbinden ihre Adressen bestätigen konnte.</p>
           </fieldset>
         </div>
 
@@ -403,6 +486,7 @@
           <div class="callout tip">
             <strong class="label">Wie das Einfrieren wirkt</strong>
             Solange die Checkbox angehakt bleibt, schreibt der Trainer diesen Wert laufend zurück in das Spiel, auch wenn das Spiel ihn von selbst verändert, zum Beispiel nach einem Spiel oder Training.
+            Das gilt nur für das Team, das beim Einfrieren gewählt war. Lädt das Spiel beim Wochenabschluss oder während eines Spiels vorübergehend andere Vereine, pausiert das Einfrieren, damit deren Spieler unverändert bleiben.
           </div>
         </div>
       </section>
@@ -427,7 +511,7 @@
               <span class="chip">Name</span><span class="chip">Stärke</span><span class="chip">Alter</span>
               <span class="chip">Haupt- &amp; Nebenpositionen</span><span class="chip">Fähigkeiten / Negative Fähigkeiten</span>
               <span class="chip">Eigenschaften / Charakter / Gesundheitszustand</span><span class="chip">Hautfarbe / Haarfarbe</span>
-              <span class="chip">Form</span><span class="chip">Kondition / Frische</span><span class="chip">Nationalität</span>
+              <span class="chip">Form</span><span class="chip">Rückennummer</span><span class="chip">Kondition / Frische</span><span class="chip">Nationalität</span>
               <span class="chip">Unbehagen / Zufriedenheit</span><span class="chip">Gehalt / Auflaufprämie</span>
               <span class="chip">Torprämie / Fixe Ablöse</span><span class="chip">Kaufpreis</span><span class="chip">Stammverein</span><span class="chip">Vertragslaufzeit / Jahre im Verein</span>
               <span class="chip">Vertragsdetails</span><span class="chip">Karriere</span>
@@ -613,7 +697,7 @@
 
           <div class="callout tip">
             <strong class="label">Negative Platzzahl im Stadion</strong>
-            Um einem Stadionblock eine negative Anzahl Plätze zuzuweisen, tragen Sie einen Wert <strong>größer als 32.767</strong> ein.
+            Stadionblöcke nehmen auch negative Platzzahlen an (bis −32.768). Das Spiel zählt sie so mit, die Kapazität sinkt entsprechend.
           </div>
 
           <div class="callout tip">

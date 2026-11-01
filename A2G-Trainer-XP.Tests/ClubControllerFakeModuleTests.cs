@@ -94,16 +94,16 @@ namespace A2G_Trainer_XP.Tests
                 foreach (char letter in "ABCDEFGHIJKL")
                 {
                     byte expectedWeeks = (byte)(letter - 'A' + 1);
-                    ushort expectedStandings = (ushort)(1000 + (letter - 'A'));
-                    ushort expectedSeats = (ushort)(2000 + (letter - 'A'));
+                    short expectedStandings = (short)(1000 + (letter - 'A'));
+                    short expectedSeats = (short)(2000 + (letter - 'A'));
 
                     PropertyInfo weeksProp = typeof(Club).GetProperty($"Block{letter}Weeks");
                     PropertyInfo standingsProp = typeof(Club).GetProperty($"Block{letter}Standings");
                     PropertyInfo seatsProp = typeof(Club).GetProperty($"Block{letter}Seats");
 
                     Assert.Equal(expectedWeeks, (byte)weeksProp.GetValue(club));
-                    Assert.Equal(expectedStandings, (ushort)standingsProp.GetValue(club));
-                    Assert.Equal(expectedSeats, (ushort)seatsProp.GetValue(club));
+                    Assert.Equal(expectedStandings, (short)standingsProp.GetValue(club));
+                    Assert.Equal(expectedSeats, (short)seatsProp.GetValue(club));
                 }
             }
         }
