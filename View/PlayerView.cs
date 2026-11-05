@@ -91,7 +91,7 @@ namespace A2G_Trainer.View
             this.InjuryKindInput.DisplayMember = "Text";
             this.InjuryKindInput.ValueMember = "Value";
 
-            if (this.PlayerListView != null && this.PlayerListView.Items != null && this.PlayerListView.Items.Count > 0)
+            if (this.PlayerListView.Items.Count > 0)
             {
                 this.bindingSource = new BindingSource
                 {

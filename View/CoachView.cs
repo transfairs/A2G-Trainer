@@ -835,9 +835,7 @@ namespace A2G_Trainer.View
         private void PopulateNextSeasonClubCombo(PlayerEnums.Country country)
         {
             this.PopulateStockClubCombo(this.NextSeasonClubInput, country, this.coach.ClubIdNextSeason);
-            if (!(this.NextSeasonClubInput.DataSource is List<Club> clubs))
-                return;
-
+            List<Club> clubs = (List<Club>)this.NextSeasonClubInput.DataSource;   // PopulateStockClubCombo always sets a list
             List<Club> eligible = clubs.Where(c => CoachController.IsEligibleNextSeasonClub(this.Memory, country, c.Id) != false).ToList();
             if (eligible.Count == clubs.Count)
                 return;

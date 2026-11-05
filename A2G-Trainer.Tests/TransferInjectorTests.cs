@@ -128,6 +128,27 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
+        public void Request_WhenOnlyTheDeadlineCallStillGoesToTheStub_ReusesThatStub()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                WriteOriginalCalls(fake);
+                TransferInjector injector = new TransferInjector(fake.Memory);
+                injector.Request(BayernPlayer(), PlayerEnums.Country.England, 7, TransferInjector.Kind.Transfer, 0, 0, false);
+                uint deadlineCode = CallTarget(fake, Settings.TransferDeadlineCallSiteOffset);
+                // Install interrupted the other way round: both market calls back to the original.
+                foreach (uint site in Settings.TransferMarketCallSiteOffsets)
+                    WriteCall(fake, site, Settings.TransferMarketFunctionOffset);
+
+                Assert.Equal(TransferInjector.RequestResult.Requested, injector.Request(BayernPlayer(), PlayerEnums.Country.England, 7, TransferInjector.Kind.Transfer, 0, 0, false));
+                uint stub = deadlineCode - TransferInjector.DeadlineCodeOffset;
+                Assert.Equal(deadlineCode, CallTarget(fake, Settings.TransferDeadlineCallSiteOffset));
+                foreach (uint site in Settings.TransferMarketCallSiteOffsets)
+                    Assert.Equal(stub + TransferInjector.CodeOffset, CallTarget(fake, site));
+            }
+        }
+
+        [Fact]
         public void Request_ChecksThePlayersClubBeforeTouchingAnything()
         {
             using (FakeModule fake = new FakeModule())

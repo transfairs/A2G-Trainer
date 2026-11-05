@@ -82,7 +82,7 @@ namespace A2G_Trainer.View
                 Page page = new Page { Title = titles.TryGetValue(panel, out string title) ? title : panel };
                 if (subOrder.Count == 0)
                 {
-                    page.Sections.Add(new KeyValuePair<string, string>(null, RtfHeader + intro + "}"));
+                    page.Sections.Add(new KeyValuePair<string, string>(null, RtfHeader + intro.ToString() + "}"));
                 }
                 else
                 {
@@ -91,7 +91,7 @@ namespace A2G_Trainer.View
                     for (int i = 0; i < subOrder.Count; i++)
                     {
                         string key = subOrder[i];
-                        string text = (i == 0 ? intro.ToString() : "") + subs[key];
+                        string text = (i == 0 ? intro.ToString() : "") + subs[key].ToString();
                         page.Sections.Add(new KeyValuePair<string, string>(subTitles.TryGetValue(key, out string sub) ? sub : null, RtfHeader + text + "}"));
                     }
                 }

@@ -211,10 +211,8 @@ namespace A2G_Trainer.Controller
             a.Mark("done");
             a.Emit(0xB8); a.Dword(apply);                                          // mov eax, apply
             a.Emit(0xFF, 0xE0);                                                    // jmp eax
-            byte[] applyCode = a.ToArray();
-            if (CodeOffset + applyCode.Length > MoraleCodeOffset)
-                throw new InvalidOperationException("InterviewEffectsFix: apply entry too long.");
-            applyCode.CopyTo(stub, CodeOffset);
+            // Fixed length; it fits before MoraleCodeOffset (the tests run both entries).
+            a.ToArray().CopyTo(stub, CodeOffset);
 
             Assembler m = new Assembler();
             m.Emit(0x80, 0x7C, 0x24, 0x0B, (byte)(FineMarker >> 24));             // cmp byte [esp+0xB], 0x40

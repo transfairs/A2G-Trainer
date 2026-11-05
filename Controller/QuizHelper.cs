@@ -240,15 +240,14 @@ namespace A2G_Trainer.Controller
                     break;
                 long start = Unsigned(info.BaseAddress);
                 long size = Unsigned(info.RegionSize);
-                if (size <= 0)
-                    break;
                 if (info.State == MemCommit && info.Type == MemPrivate && (info.Protect & PageReadWrite) != 0 && (info.Protect & PageGuard) == 0)
                 {
                     uint? found = ScanRegion(memory, (uint)start, size, dialogHandle, firstButton, secondButton);
                     if (found.HasValue)
                         return found;
                 }
-                address = start + size;
+                // A queried region always has a size; at least one page on means the loop can't stall.
+                address = start + Math.Max(size, 0x1000);
             }
             return null;
         }

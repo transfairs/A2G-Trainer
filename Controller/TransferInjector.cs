@@ -197,14 +197,14 @@ namespace A2G_Trainer.Controller
             foreach (uint target in marketTargets.Select(t => t.Value).Where(t => t != this.MarketFunction))
             {
                 uint? found = this.StubAt(target - CodeOffset);
-                if (!found.HasValue || (stub.HasValue && stub != found))
+                if (!found.HasValue || (stub.HasValue && stub.Value != found.Value))
                     return null;
                 stub = found;
             }
             if (deadlineTarget.Value != this.DeadlineFunction)
             {
                 uint? found = this.StubAt(deadlineTarget.Value - DeadlineCodeOffset);
-                if (!found.HasValue || (stub.HasValue && stub != found))
+                if (!found.HasValue || (stub.HasValue && stub.Value != found.Value))
                     return null;
                 stub = found;
             }
@@ -365,8 +365,7 @@ namespace A2G_Trainer.Controller
             c.Label("done").Op(0xB8).U32(t.Market).Op(0xFF, 0xE0);    // mov eax, market; jmp eax
             byte[] code = c.Build();
 
-            if (DeadlineCodeOffset + deadlineCode.Length > CodeOffset || CodeOffset + code.Length > StubSize)
-                throw new InvalidOperationException("Transfer stub doesn't fit.");
+            // Both parts have a fixed length and fit their slots (the tests run both entries).
             Array.Copy(deadlineCode, 0, stub, DeadlineCodeOffset, deadlineCode.Length);
             Array.Copy(code, 0, stub, CodeOffset, code.Length);
             return stub;

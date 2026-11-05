@@ -155,7 +155,7 @@ namespace A2G_Trainer.View
         private void ShowCareerEnd()
         {
             int? end = this.coach?.CurrentYear > 0 ? this.coach.CareerEndYear : null;
-            this.careerEndValue.Text = end.HasValue ? $"{end}/{(end + 1) % 100:00}" : "-";
+            this.careerEndValue.Text = end.HasValue ? $"{end.Value}/{(end.Value + 1) % 100:00}" : "-";
         }
 
         // Caps at the Int16 range and, for a title counter, hands the value to the coach.

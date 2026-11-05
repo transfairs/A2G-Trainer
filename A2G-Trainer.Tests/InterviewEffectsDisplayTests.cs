@@ -98,6 +98,29 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
+        public void Enabled_LabelsThroughItsTimer_AndATickQueuedAfterSwitchingOffDoesNothing()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                uint[] originals = PlantQuestionList(fake);
+                using (InterviewEffectsDisplay display = new InterviewEffectsDisplay(fake.Memory))
+                {
+                    display.Enabled = true;
+                    DateTime deadline = DateTime.UtcNow.AddSeconds(5);
+                    while (Slot(fake, 0) == originals[0] && DateTime.UtcNow < deadline)
+                        System.Threading.Thread.Sleep(20);
+                    Assert.Equal("Antwort 1 [Fans -3, Vorstand -3]", Text(fake, Slot(fake, 0)));
+
+                    display.Enabled = false;
+                    typeof(InterviewEffectsDisplay).GetMethod("TimerTick", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                        .Invoke(display, null);
+
+                    Assert.Equal(originals, Enumerable.Range(0, 4).Select(i => Slot(fake, i)));
+                }
+            }
+        }
+
+        [Fact]
         public void Tick_AfterATrainerRestart_KeepsTheLabelsAndCanStillPutTheOriginalsBack()
         {
             using (FakeModule fake = new FakeModule())

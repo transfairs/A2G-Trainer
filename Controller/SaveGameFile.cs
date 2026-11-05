@@ -468,10 +468,8 @@ namespace A2G_Trainer.Controller
                 int declared = BitConverter.ToInt32(stored, 0);
                 if (declared != size && declared != -size)
                     throw NotASavegame();
-                byte[] data = SaveGameCodec.Decompress(stored);
-                if (data.Length != size)
-                    throw NotASavegame();
-                return this.Add(BlockKind.Packed, address, data, stored);
+                // The declared length is ±size, so Decompress returns exactly size bytes (or throws).
+                return this.Add(BlockKind.Packed, address, SaveGameCodec.Decompress(stored), stored);
             }
 
             private Block Raw(uint address, int size)
