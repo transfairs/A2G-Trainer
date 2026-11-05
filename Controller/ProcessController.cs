@@ -52,11 +52,39 @@ namespace A2G_Trainer.Controller
         // "ANSTOSS 2 ..." (e.g. dialogs), and other programs (e.g. verl.exe from the same
         // install) title theirs that way too, so TryAttach identifies the actual build and
         // confirms readable club data.
+        // Under Wine/Proton the title can't be relied on: Wine Mono reports no window titles at all
+        // (MainWindowTitle is null), and a game in another Wine desktop (e.g. a virtual desktop)
+        // has no main window from the trainer's side. So the game's own process names count as
+        // well; TryAttach still identifies the build (verl.exe and Editor.exe are rejected there).
         internal override IEnumerable<Process> GetGameCandidates() =>
-            Process.GetProcesses()
-                .Where(p =>
-                    p.MainWindowTitle.StartsWith("ANSTOSS 2") &&
-                    !p.MainWindowTitle.Contains("Dateneditor"));
+            Process.GetProcesses().Where(p => IsGameCandidate(SafeGet(() => p.ProcessName), SafeGet(() => p.MainWindowTitle)));
+
+        /// <summary>Process names (without ".exe") of the game builds: anstoss2 (original), run (GOG, 2007 CD).</summary>
+        internal static readonly string[] GameProcessNames = { "anstoss2", "run" };
+
+        /// <summary>Whether a process with this name and main window title (either may be null) may be the game.</summary>
+        internal static bool IsGameCandidate(string processName, string windowTitle)
+        {
+            if (windowTitle != null && windowTitle.Contains("Dateneditor"))
+                return false;
+            if (windowTitle != null && windowTitle.StartsWith("ANSTOSS 2"))
+                return true;
+            return processName != null &&
+                   GameProcessNames.Any(name => string.Equals(name, processName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Process properties throw for processes that exit meanwhile or can't be queried.
+        private static string SafeGet(Func<string> get)
+        {
+            try
+            {
+                return get();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Attempts to attach to a candidate process: identifies its game build from the mapped main
