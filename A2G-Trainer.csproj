@@ -106,6 +106,9 @@
     <Compile Include="Controller\Logger.A2.cs" />
     <Compile Include="Controller\PlayerController.cs" />
     <Compile Include="Controller\ProcessController.cs" />
+    <Compile Include="Controller\SaveGameCodec.cs" />
+    <Compile Include="Controller\SaveGameEditor.cs" />
+    <Compile Include="Controller\SaveGameFile.cs" />
     <Compile Include="Model\AddressPresets.cs" />
     <Compile Include="Model\CoachEnums.cs" />
     <Compile Include="Model\Coach.cs" />
@@ -118,9 +121,11 @@
     <Compile Include="Model\LeagueEnums.cs" />
     <Compile Include="Model\LeagueSettings.cs" />
     <Compile Include="Model\Stock.cs" />
+    <Compile Include="Model\Highscores.cs" />
     <Compile Include="Model\ClubEnums.cs" />
     <Compile Include="Model\Addresses.cs" />
     <Compile Include="Model\PlayerEnums.cs" />
+    <Compile Include="Model\SaveGameEntries.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Trainer.cs">
       <SubType>Form</SubType>
@@ -144,6 +149,13 @@
     <Compile Include="View\CountryMap.cs" />
     <Compile Include="View\QuizMark.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\SaveGamePropertyEditors.cs" />
+    <Compile Include="View\SaveGameView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\HighscoreView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\MechanicsView.cs">
       <SubType>UserControl</SubType>
