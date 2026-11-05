@@ -204,11 +204,8 @@
     <Compile Include="View\EntityView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\AboutView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="View\AboutView.Designer.cs">
-      <DependentUpon>AboutView.cs</DependentUpon>
+    <Compile Include="View\AboutDialog.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\HelpView.cs">
       <SubType>UserControl</SubType>
@@ -243,9 +240,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\ClubView.resx">
       <DependentUpon>ClubView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\AboutView.resx">
-      <DependentUpon>AboutView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\HelpView.resx">
       <DependentUpon>HelpView.cs</DependentUpon>

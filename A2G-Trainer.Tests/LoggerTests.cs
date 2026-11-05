@@ -20,6 +20,9 @@ namespace A2G_Trainer.Tests
 
         private static string ReadLogTail()
         {
+            // A fresh machine (or a renamed log folder) has no log yet until the first write.
+            if (!File.Exists(LogFilePath))
+                return string.Empty;
             using (FileStream stream = new FileStream(LogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (StreamReader reader = new StreamReader(stream))
                 return reader.ReadToEnd();
