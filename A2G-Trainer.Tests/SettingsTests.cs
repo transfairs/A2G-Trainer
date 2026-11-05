@@ -1,4 +1,4 @@
-using A2G_Trainer.Controller;
+﻿using A2G_Trainer.Controller;
 using A2G_Trainer.Model;
 using Xunit;
 
@@ -40,6 +40,17 @@ namespace A2G_Trainer.Tests
         {
             Assert.Equal(PlayerEnums.AddressType.NON_PLAYABLE, Settings.NonPlayableInitialOffset.Value.Item2);
             Assert.Equal((ushort)130, Settings.NonPlayableInitialOffset.Value.Item1);
+        }
+
+        [Fact]
+        public void ClubPlannedDepartments_FollowThePlannedLawFirm_AndPrecedeTheCurrentOnes()
+        {
+            // Planned law firm, statistics and computer, then the current three, one byte each.
+            Assert.Equal(Settings.ClubPlannedLawFirmOffset + 1, Settings.ClubPlannedStatisticsOffset);
+            Assert.Equal(Settings.ClubPlannedLawFirmOffset + 2, Settings.ClubPlannedComputerOffset);
+            Assert.Equal(Settings.ClubPlannedComputerOffset + 1, Settings.ClubLawFirmOffset);
+            Assert.Equal(0x371u, Settings.ClubPlannedStatisticsOffset);
+            Assert.Equal(0x372u, Settings.ClubPlannedComputerOffset);
         }
     }
 }

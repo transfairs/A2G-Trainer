@@ -11,7 +11,8 @@ namespace A2G_Trainer.Model
             BONUS_COUNTRY_COUNT,
             MAIN_COUNTRY,
             ADDITIONAL_COUNTRY,
-            BONUS_LEAGUE_SYSTEM
+            BONUS_LEAGUE_SYSTEM,
+            WITH_DISMISSALS
         }
     }
 }

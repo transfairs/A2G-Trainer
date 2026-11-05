@@ -79,12 +79,71 @@ namespace A2G_Trainer.Controller
             public uint Loan { get; set; }
         }
 
-        internal FixedAddresses(uint runtimeShift, uint staticShift, JobOfferCode jobOffer, TransferCode transfer)
+        /// <summary>The national coach code in this build, or null if it couldn't be found.</summary>
+        public NationalCoachCode NationalCoach { get; }
+
+        /// <summary>Module-relative addresses of the code NationalCoachInjector hooks and calls (see Settings).</summary>
+        internal sealed class NationalCoachCode
         {
+            /// <summary>Call site of the daily offer generation (E8 rel32), right before the job-offer presentation call.</summary>
+            public uint CallSite { get; set; }
+            /// <summary>The offer generation the call site originally goes to.</summary>
+            public uint Continue { get; set; }
+            /// <summary>Makes a Mitspieler national coach (ID, country).</summary>
+            public uint Take { get; set; }
+            /// <summary>Ends a Mitspieler's national coach job (ID).</summary>
+            public uint Leave { get; set; }
+            /// <summary>Draws the friendly candidates of every human national coach.</summary>
+            public uint Candidates { get; set; }
+        }
+
+        /// <summary>The interview code in this build, or null if it couldn't be found.</summary>
+        public InterviewCode Interview { get; }
+
+        /// <summary>Module-relative addresses of the code InterviewEffectsFix hooks (see Settings).</summary>
+        internal sealed class InterviewCode
+        {
+            /// <summary>Call site of the effect application (E8 rel32), right after "push context".</summary>
+            public uint ApplyCallSite { get; set; }
+            /// <summary>The effect application the call site originally goes to.</summary>
+            public uint ApplyFunction { get; set; }
+            /// <summary>Call site of the morale change in the effect application's case 12 (E8 rel32).</summary>
+            public uint MoraleCallSite { get; set; }
+            /// <summary>The morale change that call site originally goes to.</summary>
+            public uint MoraleFunction { get; set; }
+        }
+
+        /// <summary>The match engine's goal limits in this build, or null if they couldn't be found.</summary>
+        public GoalLimitCode GoalLimit { get; }
+
+        /// <summary>Module-relative addresses of the code GoalLimitPatch rewrites: each site is the start of its pattern (see Settings).</summary>
+        internal sealed class GoalLimitCode
+        {
+            /// <summary>The limit of 6/10 goals: "cmp word [clock+8], 45 ... setg".</summary>
+            public uint LimitSite { get; set; }
+            /// <summary>The home team's chances halved from 7 goals: "cmp word [match+0xE], 6 ...", then jle.</summary>
+            public uint HomeBrakeSite { get; set; }
+            /// <summary>The away team's chances halved from 7 goals: "... cmp dx, 6 ...", then jle.</summary>
+            public uint AwayBrakeSite { get; set; }
+        }
+
+        /// <summary>Module-relative offset of the trainer pool (co-trainers), or null if it couldn't be found.</summary>
+        public uint? CoachPoolTable { get; }
+        /// <summary>Module-relative offset of the goalkeeper trainer table, or null if it couldn't be found.</summary>
+        public uint? GoalkeeperCoachTable { get; }
+
+        internal FixedAddresses(uint runtimeShift, uint staticShift, JobOfferCode jobOffer, TransferCode transfer, NationalCoachCode nationalCoach = null,
+            uint? coachPoolTable = null, uint? goalkeeperCoachTable = null, InterviewCode interview = null, GoalLimitCode goalLimit = null)
+        {
+            this.GoalLimit = goalLimit;
             this.RuntimeShift = runtimeShift;
             this.StaticShift = staticShift;
             this.JobOffer = jobOffer;
             this.Transfer = transfer;
+            this.NationalCoach = nationalCoach;
+            this.CoachPoolTable = coachPoolTable;
+            this.GoalkeeperCoachTable = goalkeeperCoachTable;
+            this.Interview = interview;
         }
 
         /// <summary>The original build's addresses.</summary>
@@ -103,6 +162,28 @@ namespace A2G_Trainer.Controller
                 BuildContract = Settings.TransferBuildContractOffset,
                 Move = Settings.TransferMoveOffset,
                 Loan = Settings.TransferLoanOffset,
+            },
+            new NationalCoachCode
+            {
+                CallSite = Settings.OfferGenerateCallSiteOffset,
+                Continue = Settings.OfferGenerateFunctionOffset,
+                Take = Settings.NationalTakeFunctionOffset,
+                Leave = Settings.NationalLeaveFunctionOffset,
+                Candidates = Settings.NationalCandidatesFunctionOffset,
+            },
+            Settings.CoachPoolTableOffset, Settings.GoalkeeperCoachTableOffset,
+            new InterviewCode
+            {
+                ApplyCallSite = Settings.InterviewApplyCallSiteOffset,
+                ApplyFunction = Settings.InterviewApplyFunctionOffset,
+                MoraleCallSite = Settings.InterviewMoraleCallSiteOffset,
+                MoraleFunction = Settings.InterviewMoraleFunctionOffset,
+            },
+            new GoalLimitCode
+            {
+                LimitSite = Settings.GoalLimitSiteOffset,
+                HomeBrakeSite = Settings.GoalHomeBrakeSiteOffset,
+                AwayBrakeSite = Settings.GoalAwayBrakeSiteOffset,
             });
 
         /// <summary>Absolute address of runtime data at the original build's module-relative <paramref name="offset"/>.</summary>
@@ -174,7 +255,107 @@ namespace A2G_Trainer.Controller
                 (transfer != null
                     ? $"Wechsel: Markt 0x{transfer.MarketFunction:X} (Aufrufe {string.Join(", ", transfer.MarketCallSites.Select(s => $"0x{s:X}"))}), Frist 0x{transfer.DeadlineFunction:X} (Aufruf 0x{transfer.DeadlineCallSite:X}), Wechsel 0x{transfer.Move:X}, Leihe 0x{transfer.Loan:X}."
                     : "Wechsel-Code nicht eindeutig gefunden."));
-            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer);
+            NationalCoachCode nationalCoach = DiscoverNationalCoach(memory, runtimeShift, jobOffer);
+            Logger.Warn(nationalCoach != null
+                ? $"FixedAddresses: Nationaltrainer: Aufruf 0x{nationalCoach.CallSite:X}, Übernehmen 0x{nationalCoach.Take:X}, Rücktritt 0x{nationalCoach.Leave:X}, Kandidaten 0x{nationalCoach.Candidates:X}."
+                : "FixedAddresses: Nationaltrainer-Code nicht eindeutig gefunden.");
+            DiscoverStaffTables(memory, out uint? coachPool, out uint? goalkeeperCoaches);
+            Logger.Warn(coachPool.HasValue
+                ? $"FixedAddresses: Trainerpool 0x{coachPool:X}, Torwarttrainer 0x{goalkeeperCoaches:X}."
+                : "FixedAddresses: Co-/Torwarttrainer-Tabellen nicht eindeutig gefunden.");
+            InterviewCode interview = DiscoverInterview(memory, runtimeShift);
+            Logger.Warn(interview != null
+                ? $"FixedAddresses: Interview: Aufruf 0x{interview.ApplyCallSite:X}, Wirkung 0x{interview.ApplyFunction:X}, Moral 0x{interview.MoraleFunction:X} (Aufruf 0x{interview.MoraleCallSite:X})."
+                : "FixedAddresses: Interview-Code nicht eindeutig gefunden.");
+            GoalLimitCode goalLimit = DiscoverGoalLimit(memory);
+            Logger.Warn(goalLimit != null
+                ? $"FixedAddresses: Torgrenzen: Grenze 0x{goalLimit.LimitSite:X}, Bremse Heim 0x{goalLimit.HomeBrakeSite:X}, Gast 0x{goalLimit.AwayBrakeSite:X}."
+                : "FixedAddresses: Torgrenzen-Code nicht eindeutig gefunden.");
+            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit);
+        }
+
+        // The patterns end before the bytes GoalLimitPatch rewrites, so they're found patched or not.
+        private static GoalLimitCode DiscoverGoalLimit(ProcessMemory memory)
+        {
+            uint? limit = FindUnique(memory, Settings.GoalLimitSiteOffset, Settings.GoalLimitPattern);
+            uint? home = FindUnique(memory, Settings.GoalHomeBrakeSiteOffset, Settings.GoalHomeBrakePattern);
+            uint? away = FindUnique(memory, Settings.GoalAwayBrakeSiteOffset, Settings.GoalAwayBrakePattern);
+            if (!limit.HasValue || !home.HasValue || !away.HasValue)
+                return null;
+            return new GoalLimitCode { LimitSite = limit.Value, HomeBrakeSite = home.Value, AwayBrakeSite = away.Value };
+        }
+
+        // The effect application and the morale change are found by their first instructions, their call
+        // sites as the only calls to them (or to an installed InterviewEffectsFix stub): the application's
+        // between "push context" and "mov eax, [context+0x10]", the morale change's in case 12.
+        private static InterviewCode DiscoverInterview(ProcessMemory memory, uint runtimeShift)
+        {
+            uint? apply = FindUnique(memory, Settings.InterviewApplyFunctionOffset, Settings.InterviewApplyPattern);
+            uint? morale = FindUnique(memory, Settings.InterviewMoraleFunctionOffset, Settings.InterviewMoralePattern);
+            if (!apply.HasValue || !morale.HasValue)
+                return null;
+            uint context = unchecked(memory.ModuleBase + Settings.InterviewContextOffset + runtimeShift);
+            byte[] lead = Concat(new byte[] { 0x68 }, BitConverter.GetBytes(context));
+            byte[] trail = Concat(new byte[] { 0xA1 }, BitConverter.GetBytes(context + 0x10));
+            List<uint> applySites = FindCalls(memory, Settings.InterviewApplyCallSiteOffset, apply.Value, lead, trail,
+                InterviewEffectsFix.CodeOffset, InterviewEffectsFix.Signature);
+            List<uint> moraleSites = FindCalls(memory, Settings.InterviewMoraleCallSiteOffset, morale.Value,
+                Settings.InterviewMoraleCallLeadPattern, Settings.InterviewMoraleCallTrailPattern, InterviewEffectsFix.MoraleCodeOffset, InterviewEffectsFix.Signature);
+            if (applySites?.Count != 1 || moraleSites?.Count != 1)
+                return null;
+            return new InterviewCode { ApplyCallSite = applySites[0], ApplyFunction = apply.Value, MoraleCallSite = moraleSites[0], MoraleFunction = morale.Value };
+        }
+
+        // The trainer pool and the goalkeeper trainer table don't move like the other runtime data in
+        // every build, so their addresses are read from the game's two getters (see Settings).
+        private static void DiscoverStaffTables(ProcessMemory memory, out uint? coachPool, out uint? goalkeeperCoaches)
+        {
+            coachPool = goalkeeperCoaches = null;
+            byte[] pattern = Settings.StaffGetterPattern;
+            byte[] window = ReadWindow(memory, Settings.CoachPoolGetterOffset, out _);
+            if (window == null)
+                return;
+
+            List<int> hits = new List<int>();
+            for (int i = 0; i + pattern.Length + 4 <= window.Length; i++)
+            {
+                if (Matches(window, i, pattern))
+                    hits.Add(i);
+            }
+            if (hits.Count != 2 || hits[1] - hits[0] != Settings.GoalkeeperCoachGetterOffset - Settings.CoachPoolGetterOffset)
+                return;
+            coachPool = unchecked(BitConverter.ToUInt32(window, hits[0] + pattern.Length) - memory.ModuleBase);
+            goalkeeperCoaches = unchecked(BitConverter.ToUInt32(window, hits[1] + pattern.Length) - memory.ModuleBase);
+        }
+
+        private static NationalCoachCode DiscoverNationalCoach(ProcessMemory memory, uint runtimeShift, JobOfferCode jobOffer)
+        {
+            if (jobOffer == null)
+                return null;
+
+            byte[] table = BitConverter.GetBytes(unchecked(memory.ModuleBase + Settings.NationalCoachTableOffset + runtimeShift));
+            uint? take = FindUnique(memory, Settings.NationalTakeFunctionOffset, Settings.NationalTakePattern);
+            uint? leave = FindUnique(memory, Settings.NationalLeaveFunctionOffset, Concat(Settings.NationalLeavePatternHead, table));
+            uint? candidates = FindUnique(memory, Settings.NationalCandidatesFunctionOffset, Settings.NationalCandidatesPattern);
+            if (!take.HasValue || !leave.HasValue || !candidates.HasValue)
+                return null;
+
+            // The offer generation is called right before the job-offer presentation. A trainer started
+            // earlier may have redirected the call to its stub already (the game keeps running).
+            uint callSite = jobOffer.PresentCallSite - 5;
+            byte[] call = memory.ReadBytesAtAddress(memory.ModuleBase + callSite, 5);
+            if (call == null || call[0] != 0xE8)
+                return null;
+            uint target = unchecked((uint)(callSite + 5 + BitConverter.ToInt32(call, 1)));
+            uint? next = NationalCoachInjector.ContinueOf(memory, unchecked(memory.ModuleBase + target)) ?? unchecked(memory.ModuleBase + target);
+            return new NationalCoachCode
+            {
+                CallSite = callSite,
+                Continue = unchecked(next.Value - memory.ModuleBase),
+                Take = take.Value,
+                Leave = leave.Value,
+                Candidates = candidates.Value,
+            };
         }
 
         private static JobOfferCode DiscoverJobOffer(ProcessMemory memory)
@@ -239,9 +420,10 @@ namespace A2G_Trainer.Controller
 
         // Module-relative offsets of every CALL rel32 to target within the search window around
         // originalCallSite that has lead right before and trail right after it; null if the window
-        // can't be read. With stubOffset, a call to that entry of an installed TransferInjector stub
-        // counts as well.
-        private static List<uint> FindCalls(ProcessMemory memory, uint originalCallSite, uint target, byte[] lead, byte[] trail, int stubOffset = -1)
+        // can't be read. With stubOffset, a call to that entry of an installed stub (TransferInjector's,
+        // or the one with stubSignature) counts as well.
+        private static List<uint> FindCalls(ProcessMemory memory, uint originalCallSite, uint target, byte[] lead, byte[] trail, int stubOffset = -1,
+            byte[] stubSignature = null)
         {
             uint windowStart;
             byte[] window = ReadWindow(memory, originalCallSite, out windowStart);
@@ -253,16 +435,16 @@ namespace A2G_Trainer.Controller
                 if (window[i] != 0xE8 || !Matches(window, i - lead.Length, lead) || !Matches(window, i + 5, trail))
                     continue;
                 uint callTarget = unchecked((uint)(windowStart + i + 5 + BitConverter.ToInt32(window, i + 1)));
-                if (callTarget == target || (stubOffset >= 0 && IsTransferStub(memory, unchecked(memory.ModuleBase + callTarget - (uint)stubOffset))))
+                if (callTarget == target || (stubOffset >= 0 && IsStub(memory, unchecked(memory.ModuleBase + callTarget - (uint)stubOffset), stubSignature ?? TransferInjector.Signature)))
                     sites.Add(windowStart + (uint)i);
             }
             return sites;
         }
 
-        private static bool IsTransferStub(ProcessMemory memory, uint stub)
+        private static bool IsStub(ProcessMemory memory, uint stub, byte[] expected)
         {
-            byte[] signature = memory.ReadBytesAtAddress(stub, TransferInjector.Signature.Length);
-            return signature != null && signature.SequenceEqual(TransferInjector.Signature);
+            byte[] signature = memory.ReadBytesAtAddress(stub, expected.Length);
+            return signature != null && signature.SequenceEqual(expected);
         }
 
         // Module-relative offset of the only occurrence of pattern within the search window around the

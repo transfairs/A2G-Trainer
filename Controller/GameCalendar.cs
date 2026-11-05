@@ -25,7 +25,7 @@ namespace A2G_Trainer.Controller
             this.GlobalCounter = globalCounter;
         }
 
-        /// <summary>The year the savegame started in.</summary>
+        /// <summary>The current calendar year (Settings.StartYearOffset; the game counts it up on 1 January).</summary>
         public short StartYear { get; }
         /// <summary>Days since 1 January of <see cref="StartYear"/> - "today".</summary>
         public short DayCounter { get; }

@@ -17,14 +17,11 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void From_Club_TraineeAndDynamic_BothResolveToOpponentPreset()
+        public void From_Club_ClubUsesTheWorkingCopyLayout_TraineeHasNoClubPreset()
         {
-            Addresses opponent = AddressPresets.From(PlayerEnums.AddressType.OPPONENT, isClub: true);
-            Addresses trainee = AddressPresets.From(PlayerEnums.AddressType.TRAINEE, isClub: true);
-            Addresses dynamic = AddressPresets.From(PlayerEnums.AddressType.DYNAMIC, isClub: true);
-
-            Assert.Same(opponent, trainee);
-            Assert.Same(opponent, dynamic);
+            // A club from its record is put together in the working copy's layout.
+            Assert.Same(AddressPresets.OWN_CLUB, AddressPresets.From(PlayerEnums.AddressType.CLUB, isClub: true));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => AddressPresets.From(PlayerEnums.AddressType.TRAINEE, isClub: true));
         }
 
         [Fact]
@@ -132,14 +129,10 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void InitDynamicTeam_PopulatesDynamicPlayersFromInitPreset()
+        public void From_Players_TraineeAndClub_UseTheWorkingCopyLayout()
         {
-            AddressPresets.InitDynamicTeam("A");
-
-            Addresses expected = AddressPresets.InitPreset("A");
-            Addresses dynamic = AddressPresets.From(PlayerEnums.AddressType.DYNAMIC, isClub: false);
-
-            Assert.Equal(expected[PlayerEnums.AddressKey.ID], dynamic[PlayerEnums.AddressKey.ID]);
+            Assert.Same(AddressPresets.OWN_PLAYERS, AddressPresets.From(PlayerEnums.AddressType.TRAINEE, isClub: false));
+            Assert.Same(AddressPresets.OWN_PLAYERS, AddressPresets.From(PlayerEnums.AddressType.CLUB, isClub: false));
         }
     }
 }

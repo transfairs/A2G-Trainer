@@ -91,6 +91,12 @@ namespace A2G_Trainer.Model
             FreeTickets,
             RoadGameSupport,
             TeamCohesion,
+            Pressing,
+            OffsideTrap,
+            AntiOffsideTrap,
+            TeamSkills,
+            CoTrainer,
+            GoalkeeperCoach,
             Wealth,
             Jersey,
             FanTurnout,
@@ -102,7 +108,8 @@ namespace A2G_Trainer.Model
             Preposition,
             Town,
             MapX,
-            MapY
+            MapY,
+            Association
         }
 
         /// <summary>Maps the raw field-condition byte (lower is better) to its display bucket.</summary>
@@ -262,6 +269,56 @@ namespace A2G_Trainer.Model
             Frustriert = 6,
             [Description("euphorisch")]
             Euphorisch = 7
+        }
+
+        /// <summary>The club's image with the public (texts 1506-1510), from club +0x10E by FUN_00469d90.</summary>
+        public enum PublicImage : byte
+        {
+            [Description("vollkommen verhaßt")]
+            VollkommenVerhasst = 1,
+            [Description("wenig angesehen")]
+            WenigAngesehen = 2,
+            [Description("neutral")]
+            Neutral = 3,
+            [Description("recht angesehen")]
+            RechtAngesehen = 4,
+            [Description("sehr beliebt")]
+            SehrBeliebt = 5
+        }
+
+        /// <summary>The association's requirements, one bit of club +0x100 each (FUN_005b5820, FUN_005b5b40).</summary>
+        [Flags]
+        public enum Requirement : byte
+        {
+            [Description("Stadionausbau verboten")]
+            NoStadiumConstruction = 0x01,
+            [Description("Trainingslager verboten")]
+            NoTrainingCamp = 0x02,
+            [Description("Zuschauer begrenzt (x 1.000)")]
+            SpectatorLimit = 0x04,
+            [Description("Schulden begrenzt (x 1 Mio. DM)")]
+            DebtLimit = 0x08,
+            [Description("Transferüberschuss (x 100.000 DM)")]
+            TransferSurplus = 0x10,
+            [Description("Transferausgaben begrenzt (x 100.000 DM)")]
+            TransferLimit = 0x20,
+            [Description("Gehälter begrenzt (x 100.000 DM)")]
+            SalaryLimit = 0x40
+        }
+
+        /// <summary>"Image Ihres Vereins beim Verband" (texts 1511-1515), derived from club +0x101 by FUN_005b5c30.</summary>
+        public enum AssociationImage : byte
+        {
+            [Description("verzockt")]
+            Verzockt = 1,
+            [Description("bescheiden")]
+            Bescheiden = 2,
+            [Description("normal")]
+            Normal = 3,
+            [Description("angesehen")]
+            Angesehen = 4,
+            [Description("ausgezeichnet")]
+            Ausgezeichnet = 5
         }
 
         /// <summary>"Vorstand" (club +0xF5), with the game's own names (the editor calls 4 "souverän").</summary>

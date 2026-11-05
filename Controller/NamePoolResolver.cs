@@ -339,8 +339,24 @@ namespace A2G_Trainer.Controller
             byte[] indexBytes = this.memory.ReadBytesAtAddress(this.records.GetFieldAddress(playerId, (uint)indexFieldOffset), 2);
             if (indexBytes == null)
                 return null;
-            int targetIndex = BitConverter.ToUInt16(indexBytes, 0);
+            return this.ResolveIndex(BitConverter.ToUInt16(indexBytes, 0));
+        }
 
+        /// <summary>Reads the name pool entry <paramref name="index"/>, or null if it can't be resolved.</summary>
+        public string ReadName(ushort index, Encoding encoding)
+        {
+            if (!this.poolPointerOffset.HasValue)
+                return null;
+            uint? address = this.ResolveIndex(index);
+            string name = address.HasValue ? this.memory.ReadStringAtAddress(address.Value, MaxNameLength, encoding) : null;
+            return string.IsNullOrEmpty(name) ? null : name;
+        }
+
+        // Longest name read back (the game's own names stay well below).
+        private const int MaxNameLength = 32;
+
+        private uint? ResolveIndex(int targetIndex)
+        {
             // Where the game's own table is known, use it like the game does: direct, and correct
             // even for appended names regardless of how the pool bytes are laid out.
             if (this.hasPoolBookkeeping)

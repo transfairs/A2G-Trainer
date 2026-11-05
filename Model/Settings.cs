@@ -110,14 +110,77 @@ namespace A2G_Trainer.Controller
         // game reads (FUN_005baf90) and assigns it (FUN_0062af30 -> FUN_005baf70) only here.
         private const uint coachImageRecordOffset         = 0x3ACADC;
 
+        // National coach (original build, confirmed live on GOG). The saved record keeps it at its
+        // end, past the working copy's size: +0x20F0 the national team's country (UInt16, 0 = none),
+        // +0x20F8 the annual salary (Int32, a twelfth paid monthly, FUN_00642e20) and +0x20FC the
+        // bonus paid for every knockout round reached at a EM/WM (Int32, FUN_005abcf0). The working
+        // copy only mirrors the country, at +0x1896 (FUN_005bab80). Two further copies of who
+        // trains a national team: one 8-byte entry per Mitspieler ID (country byte, UInt16 200 = the
+        // national team's "club ID"), and the national team's own record (club-record layout,
+        // country * clubRecordStride) with the Mitspieler ID in both coach posts. The game sets all
+        // of them in FUN_005cf1e0, clears them in FUN_005cf340 and rebuilds the latter two from the
+        // record's country when it loads a savegame (FUN_005ba7c0).
+        private const uint coachRecordNationalTeamOffset   = 0x20F0;
+        private const uint coachRecordNationalSalaryOffset = 0x20F8;
+        private const uint coachRecordNationalBonusOffset  = 0x20FC;
+        // Wettbüro: one 0x20-byte bet block per league system in the saved record only (FUN_005badb0 /
+        // FUN_005bae10), +0x18 champion bet stake (Int32), +0x1C club (UInt16), +0x1E odds (Int16).
+        private const uint coachRecordBetOffset            = 0x1A74;
+        private const uint coachRecordBetStride            = 0x20;
+        private const uint coachBetChampionOffset          = 0x18;
+        // The level and Fortbildung block: working copy +0x1820..+0x1833, record +0x1B14.. (FUN_005b9df0).
+        private const uint coachSlotLevelBlockOffset       = 0x1820;
+        private const uint coachRecordLevelBlockOffset     = 0x1B14;
+        private const uint coachLevelBlockLength           = 0x14;
+        // Event flags: working copy +0x1888 (byte, referee outbursts) and +0x188C (UInt32 bits), record
+        // +0x20B8/+0x20BC. Series in points +0xB4, last level change +0xAA (half-week) / +0xAC (season);
+        // same offsets in both copies (FUN_005b9df0, FUN_00628420).
+        private const uint coachSlotFlagsOffset            = 0x1888;
+        private const uint coachRecordFlagsOffset          = 0x20B8;
+        private const uint coachFlagsLength                = 8;
+        private const uint coachSlotSeriesOffset           = 0xB4;
+        private const uint coachSlotLastLevelChangeOffset  = 0xAA;
+        // Sabotage against a manager: record only, +0x1A60 + perpetrator ID * 4 (byte kind, byte weeks
+        // left, Int16 player ID; FUN_004ea350, FUN_00417510 counts down, FUN_005ee810 carries it out).
+        private const uint coachRecordSabotageOffset       = 0x1A60;
+        // Naturalisation talks per manager (FUN_004cc220, savegame block 0x7DCFD0): 0x7DCF56 + ID * 0x7A,
+        // Int16 talks this season, then 20 x (Int16 player ID, Int16 flags, Int16 day); flag bit 2 refused.
+        private const uint naturalisationTableOffset       = 0x3DCF56;
+        private const uint naturalisationTableStride       = 0x7A;
+        private const int  naturalisationEntries           = 20;
+        // "Stationen und Erfolge": one block per Mitspieler ID, saved record only (FUN_0057d390), with
+        // the title counters (see CoachAchievements); the stations behind them (+0x1A8 count, from
+        // +0x1AC) are documented in docs/pointer-investigation-guide.md.
+        private const uint coachAchievementsOffset         = 0x3DB180;
+        private const uint coachAchievementsStride         = 0x610;
+        // The season index (Int16, 1 = the savegame's first season), right before the current year.
+        private const uint seasonIndexOffset               = 0x426660;
+        private const uint coachSlotNationalTeamOffset     = 0x1896;
+        private const uint nationalCoachTableOffset        = 0x81DAB0;
+        private const uint nationalCoachEntryStride        = 8;
+        private const uint nationalTeamRecordTableOffset   = 0x3DD1C0;
+        private const uint nationalTeamCoachPostOffset     = 0x86;
+        private const ushort nationalTeamClubId            = 200;
+        // The national team's squad uses the club record's squad fields (count, player IDs), but
+        // holds at most 22 players (FUN_004c88d0). The game keeps it sorted by position and, for a
+        // national team without a human coach, picks it anew in every week with a national match
+        // (FUN_005d1650 -> FUN_005d0f20); a human national coach's squad is left alone.
+        private const int  nationalTeamSquadCapacity       = 22;
+        // Number of player records: the savegame load numbers them up to 0xBF3124 (FUN_005af600);
+        // unused ones have no name indices.
+        private const int  playerRecordCapacity            = 14990;
+
         // Calendar values of the savegame (same meta block as ageReferenceYearOffset, plus one table
         // loaded with the savegame), which the player record stores injuries against - from the
         // original build's FUN_00582a60/FUN_00583120 and confirmed against a live savegame:
-        //   startYearOffset: the year the savegame started in (Int16).
+        //   startYearOffset: the current calendar year (Int16), not the year the savegame started in:
+        //   FUN_005a3c20 counts it up when December turns into January and resets dayCounterOffset.
         //   dayCounterOffset: days since 1 January of that year (Int16) - "today".
         //   daysPerYearOffset: 365 (Int16), used when turning an injury end date back into days.
         //   calendarTableOffset: one entry per day counter value: Int16 year, Int16 day of that year.
-        //   globalCounterOffset: the counter "verletzungsanfällig" is stored as an end value of.
+        //   globalCounterOffset: the day of the season (FUN_005901d0 counts it up, the season change
+        //   resets it to 0); "verletzungsanfällig" is stored as an end value of it, the transfer list
+        //   dates its entries with it.
         private const uint startYearOffset         = 0x426676;
         private const uint dayCounterOffset        = 0x426678;
         private const uint daysPerYearOffset       = 0x426728;
@@ -193,6 +256,93 @@ namespace A2G_Trainer.Controller
         private const uint clubRecordStride             = 0x770;
         private const uint clubRecordSeasonGoalOffset   = 0x101;
         private const uint clubSeasonGoalOffset         = 0x10C;
+        // Whether the club is listed on the stock market: working copy +0x115, set by its IPO
+        // (FUN_004015f0), stored in the record at +0x10A (FUN_00586b80). Only listed clubs
+        // have shares (FUN_00401aa0).
+        private const uint clubRecordListedOffset       = 0x10A;
+        private const uint clubListedOffset             = 0x115;
+        // The club's finance block (working copy +0x154..+0x49C, record +0x50 further on): the
+        // "Kalkulation" (FUN_004b65e0 tickets, FUN_004b21b0 law firm and departments), the slush fund
+        // just before it (record +0x138), the loans (8 x 0x14) and the investments (6 x 0x10).
+        private const uint clubSeasonTicketDiscountOffset = 0x270;
+        private const uint clubSeasonTicketQuotaOffset  = 0x271;
+        private const uint clubStandingPriceOffset      = 0x272;
+        private const uint clubSeatPriceOffset          = 0x274;
+        private const uint clubSecurityOffset           = 0x2AC;
+        private const uint clubPlannedLawFirmOffset     = 0x370;
+        private const uint clubPlannedStatisticsOffset  = 0x371;
+        private const uint clubPlannedComputerOffset    = 0x372;
+        private const uint clubLawFirmOffset            = 0x373;
+        private const uint clubStatisticsOffset         = 0x374;
+        private const uint clubComputerOffset           = 0x375;
+        private const uint clubSlushFundOffset          = 0x144;
+        private const uint clubSlushFundRateOffset      = 0x148;
+        private const uint clubLoansOffset              = 0x15C;
+        private const uint clubLoanStride               = 0x14;
+        private const int  clubLoanSlots                = 8;
+        private const uint clubInvestmentsOffset        = 0x1FC;
+        private const uint clubInvestmentStride         = 0x10;
+        private const int  clubInvestmentSlots          = 6;
+        // Savegame-wide interest rates in basis points (Int16, block 0x826620): over the overdraft
+        // limit, on a positive balance, overdraft, loan base, Tagesgeld (FUN_0058c030, FUN_0058ba80).
+        private const uint interestOverLimitOffset      = 0x426704;
+        private const uint interestDepositOffset        = 0x426706;
+        private const uint interestOverdraftOffset      = 0x426708;
+        private const uint interestLoanOffset           = 0x42670A;
+        private const uint interestCallMoneyOffset      = 0x42670E;
+        // Index of each kind of investment (Int32 x 5, start 1000, FUN_0058c1d0) and the corporation
+        // tax in percent (byte; the byte behind it keeps last year's rate).
+        private const uint investmentIndexOffset        = 0x426710;
+        private const uint corporationTaxOffset         = 0x427BB1;
+        // Calendar of the game state block: Int16 day of the month (hi word of 0x826670) and month.
+        private const uint dayOfMonthOffset             = 0x426672;
+        private const uint monthOffset                  = 0x426674;
+        // More of the finance block: legal fees booked this season (Int32) and the overdraft limit
+        // (Int16, units of 100,000, set at the season change by FUN_0063e220).
+        private const uint clubLegalCostsOffset         = 0x384;
+        private const uint clubOverdraftLimitOffset     = 0x39C;
+        // The club's image with the public (byte 10..50, record +0x103, FUN_005b7950).
+        private const uint clubPublicImageOffset        = 0x10E;
+        // Licence procedure (record +0xF5): bit 7 licence refused (FUN_005b52a0 sets |= 0x90, a granted
+        // licence clears bit 7). Association requirements (record +0xF6), set anew at every season end
+        // from the club's wealth (FUN_005b5820), each bit a requirement - see Club.Requirements. Their
+        // limits sit in the finance block: +0x494 debt (byte, x 1,000,000), +0x495 spectators (byte, x 1,000),
+        // +0x496 salaries (UInt16, x 100,000), +0x498 transfers (Int16, x 100,000; FUN_005b5b40 checks them;
+        // units read live: 0x78BB48 = 1,000,000, 0x78BB10 = 100,000 DM).
+        private const uint clubLicenceOffset            = 0xFF;
+        private const uint clubRequirementsOffset       = 0x100;
+        private const uint clubDebtLimitOffset          = 0x494;
+        private const uint clubSpectatorLimitOffset     = 0x495;
+        private const uint clubSalaryLimitOffset        = 0x496;
+        private const uint clubTransferLimitOffset      = 0x498;
+        // Locks. Bribery (record +0x13E): bit 7 referee tried, bit 5 opponent asked, bit 4 opponent paid;
+        // the game clears bits 4-7 after every league match (FUN_005f5850). Short training camp before
+        // the next match (UInt32, record +0x6FC): bit 0x800 booked, bits 8-9 camps this season
+        // (FUN_0052d8f0, FUN_0052dba0). Requests to the sponsor (byte, only the first one pays,
+        // FUN_0050b7e0; kept with the human manager's club data, not in the record). Scouting spent
+        // this season (Int32, finance block; from 2 Mio. DM no more, FUN_004855a0).
+        private const uint clubBriberyOffset            = 0x14A;
+        private const uint clubShortCampOffset          = 0x1074;
+        private const uint clubSponsorRequestsOffset    = 0xFC;
+        private const uint clubScoutSpendingOffset      = 0x2FC;
+        // The running matches (see LiveMatch): table 0x82E460, 0x26C per match, the clock 0xC24E10
+        // (+2 Int16 number of matches, +8 Int16 minute). Line-up (11 x Int16) and bench (7 x Int16)
+        // in the club's working copy, record +0x148/+0x15E. A player's match flags in his working
+        // copy +0x84 (1 starting, 3 came on, 4 off, 8/0x10/0x20 cards).
+        private const uint matchTableOffset             = 0x42E460;
+        private const uint matchStride                  = 0x26C;
+        private const uint matchClockOffset             = 0x824E10;
+        private const uint clubLineUpOffset             = 0x8FC;
+        private const uint clubBenchOffset              = 0x912;
+        private const uint playerMatchFlagsOffset       = 0x84;
+        // The club's stock block, in the record only (FUN_0057d4b0): +0 shares issued (Int32),
+        // +4 price (Int16), +0x18 ten weekly prices for the chart.
+        private const uint clubRecordStockOffset        = 0x10C;
+        // Static tables in the writable data section (module-relative, original build): law firm fees
+        // per case, 5 x {red card, other} Int16 in thousands of DM; department costs, statistics
+        // Int16[3] in units of 10,000 and computer Int16[2] (at +8) in units of 100,000.
+        private const uint lawFirmFeeTableOffset        = 0x2C1F10;
+        private const uint departmentCostTableOffset    = 0x2C1EE0;
         // The editor's club settings (loaded from LandXxxx.sav by FUN_005b0d60, stadium from
         // StadXxxx.sav by FUN_005b25d0). Short name, chant and fan name exist only in the record and
         // are read from there (FUN_00589050, FUN_00589210); the other fields are copied to the working copy at
@@ -213,13 +363,45 @@ namespace A2G_Trainer.Controller
             { ClubEnums.AddressKey.Town,          0x509 },
             { ClubEnums.AddressKey.MapX,          0x702 },
             { ClubEnums.AddressKey.MapY,          0x704 },
+            { ClubEnums.AddressKey.Association,   0xF7 },
         };
         private const uint clubCacheTableOffset         = 0x400708;
         private const uint clubCacheStride              = 0xC;
         private const int  clubCacheSlots               = 6;
         private const uint clubCachePointerOffset       = 0x8;
+        // The parts fetched into that working copy (UInt16 mask of the fetch flags, FUN_00585ff0).
+        private const uint clubCachePartsOffset         = 0x4;
         private const uint leagueBaseTableOffset        = 0x2C17F0;
         private const uint leagueClubCountTableOffset   = 0x2C1BE8;
+
+        // Who plays for a club, from the original build's fetch FUN_00585ff0 -> FUN_00581b10 and put
+        // FUN_00581e60: the record keeps the squad as player IDs (Int16 count +0xDE, IDs from +0x570)
+        // and the amateurs (byte count +0x5BD, IDs from +0x5BE, room for 5); a fetched club's working
+        // copy keeps pointers to the players' working copies instead (squad above, amateurs: byte
+        // count +0xA19, pointers from +0xA1C). Club ID and country are bytes +0xF4/+0xF8 of the record.
+        private const uint clubRecordSquadCountOffset   = 0xDE;
+        private const uint clubRecordSquadOffset        = 0x570;
+        private const uint clubRecordAmateurCountOffset = 0x5BD;
+        private const uint clubRecordAmateursOffset     = 0x5BE;
+        private const uint clubRecordIdOffset           = 0xF4;
+        private const uint clubRecordCountryOffset      = 0xF8;
+        private const uint clubAmateurCountOffset       = 0xA19;
+        private const uint clubAmateursOffset           = 0xA1C;
+        private const int  clubAmateurCapacity          = 5;
+        // Youth players (FUN_00584780 fetches, FUN_005848b0 puts back): one 0x1A-byte entry per club
+        // record index; bytes +1/+2/+3 count the A/B/C youth, their player IDs follow from +4 (4),
+        // +0xC (4) and +0x14 (3).
+        private const uint youthTableOffset             = 0x476FB0;
+        private const uint youthStride                  = 0x1A;
+        private static readonly uint[] youthIdOffsets   = { 0x4, 0xC, 0x14 };
+        private static readonly int[] youthCapacities   = { 4, 4, 3 };
+        // The players' working copies (FUN_005818b0 hands one out, FUN_00581a00 frees it): 300 slots
+        // of 0x178 bytes, byte 0 in use, the working copy from +4 starting with the player ID. Its
+        // layout is AddressPresets.OWN_PLAYERS; the game packs it back into the record (FUN_00582a30).
+        private const uint playerCacheTableOffset       = 0x3AFD08;
+        private const uint playerCacheStride            = 0x178;
+        private const int  playerCacheSlots             = 300;
+        private const uint playerCacheCopyOffset        = 0x4;
 
         // Other builds (GOG run.exe, confirmed live on 23.10.2026) keep every fixed address above at
         // a constant distance from the original, but not the same one for all kinds of data:
@@ -238,6 +420,95 @@ namespace A2G_Trainer.Controller
         private static readonly byte[] jobOfferAddPattern      = { 0x8B, 0x44, 0x24, 0x04, 0x66, 0x3D, 0x01, 0x00, 0x7C, 0x58, 0x66, 0x3D, 0x04, 0x00, 0x7F, 0x52, 0x48, 0x0F, 0xBF, 0xC0 };
         private static readonly byte[] jobOfferPresentPattern  = { 0x81, 0xEC, 0x74, 0x01, 0x00, 0x00, 0x33, 0xC0, 0x53, 0x89, 0x44, 0x24, 0x18, 0x55, 0x89, 0x44, 0x24, 0x20, 0x56, 0x89 };
         private static readonly byte[] jobOfferCallTrailPattern = { 0x6A, 0x02, 0xC7, 0x44, 0x24, 0x14, 0x02, 0x00, 0x00, 0x00 };
+
+        // Interviews (original build). The interview engine (pointer DAT_0077f898, its question list
+        // loaded from TEXTE\inttext.crn by FUN_005983b0) works on a heap copy of the interview context
+        // 0x77F960 (FUN_005995b0) and stores the two effect pairs of the chosen answer there
+        // (FUN_00599040, copy +0x14..+0x20). FUN_004f8a90 then applies the pairs with FUN_004f8a00 -
+        // but from 0x77F960 itself, whose pairs stay 0, so no answer has any effect (2007 CD checked
+        // live). InterviewEffectsFix redirects that call (push 0x77F960, E8 rel32) to a stub that copies
+        // the pairs over first. The pattern is FUN_004f8a00's first instructions (GOG/2007: +0x2230).
+        // The pairs' codes don't all match FUN_004f87f0's cases: the texts use 10 for the team's
+        // morale (no case) and 12 for a fine in DM (20000/100000; case 12 is the morale, FUN_005ffa50:
+        // club +0x9C += value, 0..200). The fix sends 10 to case 12 and redirects case 12's call
+        // (GOG/2007: call +0x2230, function +0x4960) to book a marked fine as the game books its own:
+        // added to the club's actual other costs (+0x38C, money units = DM * moneyFactor / 100).
+        private const uint interviewEngineOffset        = 0x37F898;   // DAT_0077f898
+        private const uint interviewContextOffset       = 0x37F960;   // DAT_0077f960
+        private const uint interviewApplyCallSiteOffset = 0x0F8AB0;   // E8 rel32 -> FUN_004f8a00 in FUN_004f8a90
+        private const uint interviewApplyFunctionOffset = 0x0F8A00;   // FUN_004f8a00
+        private const uint interviewMoraleCallSiteOffset = 0x0F899C;  // E8 rel32 -> FUN_005ffa50 in FUN_004f87f0, case 12
+        private const uint interviewMoraleFunctionOffset = 0x1FFA50;  // FUN_005ffa50
+        private const uint clubOtherCostsOffset         = 0x38C;      // club working copy, Int32 money units
+        private static readonly byte[] interviewApplyPattern = { 0x53, 0x55, 0x56, 0x8B, 0x74, 0x24, 0x10, 0x57, 0x66, 0x8B, 0x46, 0x74, 0x50, 0xE8 };
+        private static readonly byte[] interviewMoralePattern = { 0x8B, 0x4C, 0x24, 0x04, 0x8B, 0x44, 0x24, 0x08, 0x66, 0x0F, 0xB6, 0x91, 0x9C, 0x00, 0x00, 0x00, 0x03, 0xC2, 0x66, 0x3D, 0xC8, 0x00 };
+        private static readonly byte[] interviewMoraleCallLeadPattern = { 0x8B, 0x4C, 0x24, 0x50, 0x8B, 0x54, 0x24, 0x5C, 0x51, 0x52 };
+        private static readonly byte[] interviewMoraleCallTrailPattern = { 0x83, 0xC4, 0x08, 0x5F, 0x5E, 0x83, 0xC4, 0x40, 0xC3 };
+
+        // Goal limits of the match engine (original build). FUN_005f2850 plays one chance per team and
+        // minute and lets a team score only while it has fewer than 6 goals up to minute 45 and fewer
+        // than 10 after: cmp word [clock+8], 45 / setg r8 / dec r32 / and r, -4 / add r, 10. From 7
+        // goals on, it also doubles the random number the chance must beat (home: cmp word [esi+0xE], 6
+        // / jle, away: cmp dx, 6 / jle), halving the team's chances. GoalLimitPatch writes
+        // "mov r32, 15" (the most a result nibble holds) over the limit and turns both jle into jmp. The patterns are the
+        // instructions right before each patched byte; the 2007 CD run.exe (packed on disk, read live
+        // on 04.11.2026) and GOG have them 0x4968..0x496A further on, with ecx instead of eax for the limit.
+        private const uint goalLimitSiteOffset     = 0x1F2BCD;   // cmp word [edi+8], 0x2D ... setg
+        private const uint goalHomeBrakeSiteOffset = 0x1F2C0C;   // cmp word [esi+0xE], 6 ... jle
+        private const uint goalAwayBrakeSiteOffset = 0x1F2E6C;   // mov dx, [esi+0x10] ... cmp dx, 6 ... jle
+        // The patterns themselves live in GoalLimitBytes.
+        private static readonly byte[] goalLimitPattern     = GoalLimitBytes.LimitPattern;
+        private static readonly byte[] goalHomeBrakePattern = GoalLimitBytes.HomeBrakePattern;
+        private static readonly byte[] goalAwayBrakePattern = GoalLimitBytes.AwayBrakePattern;
+
+        // National coach (original build). The game's own takeover FUN_005cf1e0(ID, country), leave
+        // FUN_005cf340(ID) and friendly candidates FUN_005cf3e0() (all cdecl) also set up the national
+        // team's line-up and tactics and the three friendly dates' opponents to choose from, which the
+        // game otherwise only does at the season change - NationalCoachInjector has the game call them
+        // from the daily processing, at the call of the offer generation FUN_00627390 right before the
+        // job-offer presentation call. The friendlies live in one block per Mitspieler ID: 3 dates x 3
+        // candidates (6 bytes each: country, 0, UInt16 200, UInt16 home/away) from +0, then the chosen
+        // opponents. Found in other builds like the job-offer code (2007 CD: +0x3740); the leave
+        // pattern ends in the absolute address of the national coach table, which moves with the
+        // runtime data.
+        private const uint nationalTakeFunctionOffset       = 0x1CF1E0;
+        private const uint nationalLeaveFunctionOffset      = 0x1CF340;
+        private const uint nationalCandidatesFunctionOffset = 0x1CF3E0;
+        private const uint offerGenerateCallSiteOffset      = 0x1E5FE4;   // E8 rel32 -> FUN_00627390
+        private const uint offerGenerateFunctionOffset      = 0x227390;
+        private const uint nationalFriendlyBlockOffset      = 0x3D3AA8;
+        private const uint nationalFriendlyBlockStride      = 0x208;
+        private const int  nationalFriendlyCandidatesLength = 0x36;
+        // Behind the candidates: the chosen opponent of each friendly (3 x 6 bytes: country, 0, UInt16
+        // 200, UInt16 home/away with 0 = at home), then each result (UInt16, low byte 0xFF = not played).
+        private const uint nationalFriendlyChosenOffset     = 0x36;
+        private const uint nationalFriendlyResultsOffset    = 0x48;
+        private static readonly byte[] nationalTakePattern       = { 0x83, 0xEC, 0x64, 0x53, 0x8B, 0x5C, 0x24, 0x70, 0x66, 0x83, 0xFB, 0x01, 0x0F, 0x8C, 0x49, 0x01, 0x00, 0x00, 0x66, 0x83, 0xFB, 0x4B, 0x0F, 0x8F, 0x3F, 0x01, 0x00, 0x00 };
+        private static readonly byte[] nationalLeavePatternHead  = { 0x8B, 0x54, 0x24, 0x04, 0x53, 0x0F, 0xBF, 0xCA, 0xC1, 0xE1, 0x03, 0x33, 0xDB, 0x56, 0x8A, 0x81 };
+        private static readonly byte[] nationalCandidatesPattern = { 0x81, 0xEC, 0xA4, 0x02, 0x00, 0x00, 0x53, 0x55, 0x56, 0x57, 0xE8 };
+
+        // Co-trainer and goalkeeper trainer (original build). The club keeps their IDs at +0x82/+0x84
+        // (0 = none). A co-trainer is an entry of the trainer pool (getter FUN_0057d620, 1000 entries),
+        // a goalkeeper trainer one of the goalkeeper trainer table (getter FUN_0057d680, 101 entries),
+        // 32 bytes each: +0/+2 name pool indices, +4 competence (the co-trainer salary table
+        // DAT_006ab748 ends at 15), +6 reputation, +7 age, +8 contract years left (counted down at the
+        // season change, 0 lets him go), +0xC salary per year. Other builds: both getters - the only
+        // two with this body near the original - are found by pattern and the table addresses read
+        // from their code (2007 CD: both +0x3140, unlike the club data).
+        private const uint coachPoolTableOffset           = 0x47FFA8;
+        private const uint goalkeeperCoachTableOffset     = 0x7F31E8;
+        private const uint coachPoolGetterOffset          = 0x17D625;   // body after the leading call
+        private const uint goalkeeperCoachGetterOffset    = 0x17D685;
+        private const int  coachPoolCapacity              = 1000;
+        private const int  goalkeeperCoachCapacity        = 101;
+        private const uint staffEntryStride               = 0x20;
+        private const uint staffCompetenceOffset          = 0x04;
+        private const uint staffContractOffset            = 0x08;
+        private const uint staffSalaryOffset              = 0x0C;
+        private const byte maxStaffCompetence             = 15;
+        // test eax,eax / je / push edi / mov edi,[esp+0C] / push esi / mov ecx,8 / movsx esi,[esp+0C] /
+        // shl esi,5 / add esi, <table>
+        private static readonly byte[] staffGetterPattern = { 0x85, 0xC0, 0x74, 0x1D, 0x57, 0x8B, 0x7C, 0x24, 0x0C, 0x56, 0xB9, 0x08, 0x00, 0x00, 0x00, 0x0F, 0xBF, 0x74, 0x24, 0x0C, 0xC1, 0xE6, 0x05, 0x81, 0xC6 };
 
         // The transfer code, found the same way (GOG and the 2007 CD, confirmed on 01.11.2026: fetch
         // player/club, release player/club +0x22C0/+0x22A0, contract, move and loan +0x4960, deadline
@@ -351,6 +622,12 @@ namespace A2G_Trainer.Controller
         private const uint playerRecordInjuryOffset        = 0x30;
         private const uint playerRecordVulnerableOffset    = 0x32;
         private const uint playerRecordBannedOffset        = 0x34;
+        // The league ban itself (FUN_00582a60 unpacks, FUN_00583120 packs): +0x39 matches left in
+        // bits 0-4 plus flag bits 5-7, +0x3A the reason (bit 7 red card, bit 6 second yellow,
+        // bit 5 yellow cards, bits 0-4 offence index), +0xBE the season day the ban ends. +0x34
+        // ("banned for the next match") is only derived from them before each match (FUN_0057c600).
+        private const uint playerRecordLeagueBanOffset     = 0x39;
+        private const uint playerRecordLeagueBanEndOffset  = 0xBE;
         private const uint playerRecordInjuryClearedFlagOffset = 0xAD;
 
         // Season statistics (bytes), from the same converters. Their meaning comes from the game's
@@ -370,6 +647,16 @@ namespace A2G_Trainer.Controller
         // League goals counted towards the season-end strength upgrade (display cache +0x166). The
         // game raises it together with the goals (+0x42) but reads only this one for the upgrade.
         private const uint playerRecordUpgradeGoalsOffset   = 0xBA;
+        // National team caps (working copy +0x8E), raised after every international match played
+        // (FUN_005ce720); the naturalisation list (FUN_004cbe30) only shows players without any.
+        private const uint playerRecordCapsOffset           = 0x7B;
+        // The transfer list: a global list, not a record field (FUN_0062be30 adds, FUN_0062c0f0
+        // removes). Int16 count at +0, then up to 250 entries of 0x1C bytes from +8, each starting
+        // with the player ID (Int16). Career bit 4 mirrors it per player.
+        private const uint transferListOffset               = 0x8A2280;
+        private const uint transferListEntriesOffset        = 8;
+        private const uint transferListEntryStride          = 0x1C;
+        private const int  transferListCapacity             = 250;
 
 
         internal static uint NamePoolPointerOffset        { get => namePoolPointerOffset; }
@@ -391,6 +678,36 @@ namespace A2G_Trainer.Controller
         internal static uint CoachCompetencyRecordOffset  { get => coachCompetencyRecordOffset; }
         internal static uint CoachCompetencyRecordStride  { get => coachCompetencyRecordStride; }
         internal static uint CoachImageRecordOffset       { get => coachImageRecordOffset; }
+        internal static uint CoachRecordNationalTeamOffset   { get => coachRecordNationalTeamOffset; }
+        internal static uint CoachRecordNationalSalaryOffset { get => coachRecordNationalSalaryOffset; }
+        internal static uint CoachRecordNationalBonusOffset  { get => coachRecordNationalBonusOffset; }
+        internal static uint CoachRecordBetOffset            { get => coachRecordBetOffset; }
+        internal static uint CoachRecordBetStride            { get => coachRecordBetStride; }
+        internal static uint CoachBetChampionOffset          { get => coachBetChampionOffset; }
+        internal static uint CoachSlotLevelBlockOffset       { get => coachSlotLevelBlockOffset; }
+        internal static uint CoachRecordLevelBlockOffset     { get => coachRecordLevelBlockOffset; }
+        internal static uint CoachLevelBlockLength           { get => coachLevelBlockLength; }
+        internal static uint CoachSlotFlagsOffset            { get => coachSlotFlagsOffset; }
+        internal static uint CoachRecordFlagsOffset          { get => coachRecordFlagsOffset; }
+        internal static uint CoachFlagsLength                { get => coachFlagsLength; }
+        internal static uint CoachSlotSeriesOffset           { get => coachSlotSeriesOffset; }
+        internal static uint CoachSlotLastLevelChangeOffset  { get => coachSlotLastLevelChangeOffset; }
+        internal static uint CoachRecordSabotageOffset       { get => coachRecordSabotageOffset; }
+        internal static uint NaturalisationTableOffset       { get => naturalisationTableOffset; }
+        internal static uint NaturalisationTableStride       { get => naturalisationTableStride; }
+        internal static int  NaturalisationEntries           { get => naturalisationEntries; }
+        internal static int  NaturalisationTableLength       { get => 2 + naturalisationEntries * 6; }
+        internal static uint CoachAchievementsOffset         { get => coachAchievementsOffset; }
+        internal static uint CoachAchievementsStride         { get => coachAchievementsStride; }
+        internal static uint SeasonIndexOffset               { get => seasonIndexOffset; }
+        internal static uint CoachSlotNationalTeamOffset     { get => coachSlotNationalTeamOffset; }
+        internal static uint NationalCoachTableOffset        { get => nationalCoachTableOffset; }
+        internal static uint NationalCoachEntryStride        { get => nationalCoachEntryStride; }
+        internal static uint NationalTeamRecordTableOffset   { get => nationalTeamRecordTableOffset; }
+        internal static uint NationalTeamCoachPostOffset     { get => nationalTeamCoachPostOffset; }
+        internal static ushort NationalTeamClubId            { get => nationalTeamClubId; }
+        internal static int  NationalTeamSquadCapacity       { get => nationalTeamSquadCapacity; }
+        internal static int  PlayerRecordCapacity            { get => playerRecordCapacity; }
         internal static uint StartYearOffset              { get => startYearOffset; }
         internal static uint DayCounterOffset             { get => dayCounterOffset; }
         internal static uint DaysPerYearOffset            { get => daysPerYearOffset; }
@@ -407,6 +724,23 @@ namespace A2G_Trainer.Controller
         internal static uint JobOfferPresentFunctionOffset { get => jobOfferPresentFunctionOffset; }
         internal static uint JobOfferAddFunctionOffset     { get => jobOfferAddFunctionOffset; }
         internal static uint JobOfferListOffset            { get => jobOfferListOffset; }
+        internal static uint InterviewEngineOffset         { get => interviewEngineOffset; }
+        internal static uint InterviewContextOffset        { get => interviewContextOffset; }
+        internal static uint InterviewApplyCallSiteOffset  { get => interviewApplyCallSiteOffset; }
+        internal static uint InterviewApplyFunctionOffset  { get => interviewApplyFunctionOffset; }
+        internal static byte[] InterviewApplyPattern       { get => (byte[])interviewApplyPattern.Clone(); }
+        internal static uint InterviewMoraleCallSiteOffset { get => interviewMoraleCallSiteOffset; }
+        internal static uint InterviewMoraleFunctionOffset { get => interviewMoraleFunctionOffset; }
+        internal static uint ClubOtherCostsOffset          { get => clubOtherCostsOffset; }
+        internal static byte[] InterviewMoralePattern      { get => (byte[])interviewMoralePattern.Clone(); }
+        internal static byte[] InterviewMoraleCallLeadPattern  { get => (byte[])interviewMoraleCallLeadPattern.Clone(); }
+        internal static byte[] InterviewMoraleCallTrailPattern { get => (byte[])interviewMoraleCallTrailPattern.Clone(); }
+        internal static uint GoalLimitSiteOffset           { get => goalLimitSiteOffset; }
+        internal static uint GoalHomeBrakeSiteOffset       { get => goalHomeBrakeSiteOffset; }
+        internal static uint GoalAwayBrakeSiteOffset       { get => goalAwayBrakeSiteOffset; }
+        internal static byte[] GoalLimitPattern            { get => (byte[])goalLimitPattern.Clone(); }
+        internal static byte[] GoalHomeBrakePattern        { get => (byte[])goalHomeBrakePattern.Clone(); }
+        internal static byte[] GoalAwayBrakePattern        { get => (byte[])goalAwayBrakePattern.Clone(); }
         internal static uint[] TransferMarketCallSiteOffsets { get => (uint[])transferMarketCallSiteOffsets.Clone(); }
         internal static uint TransferMarketFunctionOffset  { get => transferMarketFunctionOffset; }
         internal static uint TransferDeadlineCallSiteOffset { get => transferDeadlineCallSiteOffset; }
@@ -426,6 +760,58 @@ namespace A2G_Trainer.Controller
         internal static uint ClubRecordStride              { get => clubRecordStride; }
         internal static uint ClubRecordSeasonGoalOffset    { get => clubRecordSeasonGoalOffset; }
         internal static uint ClubSeasonGoalOffset          { get => clubSeasonGoalOffset; }
+        internal static uint ClubRecordListedOffset        { get => clubRecordListedOffset; }
+        internal static uint ClubListedOffset              { get => clubListedOffset; }
+        internal static uint ClubSeasonTicketDiscountOffset { get => clubSeasonTicketDiscountOffset; }
+        internal static uint ClubSeasonTicketQuotaOffset   { get => clubSeasonTicketQuotaOffset; }
+        internal static uint ClubStandingPriceOffset       { get => clubStandingPriceOffset; }
+        internal static uint ClubSeatPriceOffset           { get => clubSeatPriceOffset; }
+        internal static uint ClubSecurityOffset            { get => clubSecurityOffset; }
+        internal static uint ClubPlannedLawFirmOffset      { get => clubPlannedLawFirmOffset; }
+        internal static uint ClubPlannedStatisticsOffset   { get => clubPlannedStatisticsOffset; }
+        internal static uint ClubPlannedComputerOffset     { get => clubPlannedComputerOffset; }
+        internal static uint ClubLawFirmOffset             { get => clubLawFirmOffset; }
+        internal static uint ClubStatisticsOffset          { get => clubStatisticsOffset; }
+        internal static uint ClubComputerOffset            { get => clubComputerOffset; }
+        internal static uint ClubSlushFundOffset           { get => clubSlushFundOffset; }
+        internal static uint ClubSlushFundRateOffset       { get => clubSlushFundRateOffset; }
+        internal static uint ClubLoansOffset               { get => clubLoansOffset; }
+        internal static uint ClubLoanStride                { get => clubLoanStride; }
+        internal static int  ClubLoanSlots                 { get => clubLoanSlots; }
+        internal static uint ClubInvestmentsOffset         { get => clubInvestmentsOffset; }
+        internal static uint ClubInvestmentStride          { get => clubInvestmentStride; }
+        internal static int  ClubInvestmentSlots           { get => clubInvestmentSlots; }
+        internal static uint InterestOverLimitOffset       { get => interestOverLimitOffset; }
+        internal static uint InterestDepositOffset         { get => interestDepositOffset; }
+        internal static uint InterestOverdraftOffset       { get => interestOverdraftOffset; }
+        internal static uint InterestLoanOffset            { get => interestLoanOffset; }
+        internal static uint InterestCallMoneyOffset       { get => interestCallMoneyOffset; }
+        internal static uint InvestmentIndexOffset         { get => investmentIndexOffset; }
+        internal static uint CorporationTaxOffset          { get => corporationTaxOffset; }
+        internal static uint DayOfMonthOffset              { get => dayOfMonthOffset; }
+        internal static uint MonthOffset                   { get => monthOffset; }
+        internal static uint ClubLegalCostsOffset          { get => clubLegalCostsOffset; }
+        internal static uint ClubOverdraftLimitOffset      { get => clubOverdraftLimitOffset; }
+        internal static uint ClubPublicImageOffset         { get => clubPublicImageOffset; }
+        internal static uint ClubLicenceOffset             { get => clubLicenceOffset; }
+        internal static uint ClubRequirementsOffset        { get => clubRequirementsOffset; }
+        internal static uint ClubDebtLimitOffset           { get => clubDebtLimitOffset; }
+        internal static uint ClubSpectatorLimitOffset      { get => clubSpectatorLimitOffset; }
+        internal static uint ClubSalaryLimitOffset         { get => clubSalaryLimitOffset; }
+        internal static uint ClubTransferLimitOffset       { get => clubTransferLimitOffset; }
+        internal static uint ClubBriberyOffset             { get => clubBriberyOffset; }
+        internal static uint ClubShortCampOffset           { get => clubShortCampOffset; }
+        internal static uint ClubSponsorRequestsOffset     { get => clubSponsorRequestsOffset; }
+        internal static uint ClubScoutSpendingOffset       { get => clubScoutSpendingOffset; }
+        internal static uint MatchTableOffset              { get => matchTableOffset; }
+        internal static uint MatchStride                   { get => matchStride; }
+        internal static uint MatchClockOffset              { get => matchClockOffset; }
+        internal static uint ClubLineUpOffset              { get => clubLineUpOffset; }
+        internal static uint ClubBenchOffset               { get => clubBenchOffset; }
+        internal static uint PlayerMatchFlagsOffset        { get => playerMatchFlagsOffset; }
+        internal static uint ClubRecordStockOffset         { get => clubRecordStockOffset; }
+        internal static uint LawFirmFeeTableOffset         { get => lawFirmFeeTableOffset; }
+        internal static uint DepartmentCostTableOffset     { get => departmentCostTableOffset; }
         internal static uint ClubRecordShortNameOffset     { get => clubRecordShortNameOffset; }
         internal static uint ClubRecordChantOffset         { get => clubRecordChantOffset; }
         internal static uint ClubRecordFanNameOffset       { get => clubRecordFanNameOffset; }
@@ -435,12 +821,57 @@ namespace A2G_Trainer.Controller
         internal static uint ClubCacheStride               { get => clubCacheStride; }
         internal static int  ClubCacheSlots                { get => clubCacheSlots; }
         internal static uint ClubCachePointerOffset        { get => clubCachePointerOffset; }
+        internal static uint ClubCachePartsOffset          { get => clubCachePartsOffset; }
         internal static uint LeagueBaseTableOffset         { get => leagueBaseTableOffset; }
         internal static uint LeagueClubCountTableOffset    { get => leagueClubCountTableOffset; }
+        // As many records as the club scan (ClubController.GetEntityList) walks.
+        internal static int  ClubRecordCount               { get => clubCount + 1; }
+        internal static uint ClubRecordSquadCountOffset    { get => clubRecordSquadCountOffset; }
+        internal static uint ClubRecordSquadOffset         { get => clubRecordSquadOffset; }
+        internal static uint ClubRecordAmateurCountOffset  { get => clubRecordAmateurCountOffset; }
+        internal static uint ClubRecordAmateursOffset      { get => clubRecordAmateursOffset; }
+        internal static uint ClubRecordIdOffset            { get => clubRecordIdOffset; }
+        internal static uint ClubRecordCountryOffset       { get => clubRecordCountryOffset; }
+        internal static uint ClubAmateurCountOffset        { get => clubAmateurCountOffset; }
+        internal static uint ClubAmateursOffset            { get => clubAmateursOffset; }
+        internal static int  ClubAmateurCapacity           { get => clubAmateurCapacity; }
+        internal static uint YouthTableOffset              { get => youthTableOffset; }
+        internal static uint YouthStride                   { get => youthStride; }
+        internal static uint[] YouthIdOffsets              { get => (uint[])youthIdOffsets.Clone(); }
+        internal static int[] YouthCapacities              { get => (int[])youthCapacities.Clone(); }
+        internal static uint PlayerCacheTableOffset        { get => playerCacheTableOffset; }
+        internal static uint PlayerCacheStride             { get => playerCacheStride; }
+        internal static int  PlayerCacheSlots              { get => playerCacheSlots; }
+        internal static uint PlayerCacheCopyOffset         { get => playerCacheCopyOffset; }
         internal static uint FixedAddressSearchWindow      { get => fixedAddressSearchWindow; }
         internal static byte[] LeagueBasePattern           { get => (byte[])leagueBasePattern.Clone(); }
         internal static byte[] LeagueRangePattern          { get => (byte[])leagueRangePattern.Clone(); }
         internal static byte[] JobOfferAddPattern          { get => (byte[])jobOfferAddPattern.Clone(); }
+        internal static uint NationalTakeFunctionOffset       { get => nationalTakeFunctionOffset; }
+        internal static uint NationalLeaveFunctionOffset      { get => nationalLeaveFunctionOffset; }
+        internal static uint NationalCandidatesFunctionOffset { get => nationalCandidatesFunctionOffset; }
+        internal static uint OfferGenerateCallSiteOffset      { get => offerGenerateCallSiteOffset; }
+        internal static uint OfferGenerateFunctionOffset      { get => offerGenerateFunctionOffset; }
+        internal static uint NationalFriendlyBlockOffset      { get => nationalFriendlyBlockOffset; }
+        internal static uint NationalFriendlyBlockStride      { get => nationalFriendlyBlockStride; }
+        internal static int  NationalFriendlyCandidatesLength { get => nationalFriendlyCandidatesLength; }
+        internal static uint NationalFriendlyChosenOffset     { get => nationalFriendlyChosenOffset; }
+        internal static uint NationalFriendlyResultsOffset    { get => nationalFriendlyResultsOffset; }
+        internal static byte[] NationalTakePattern            { get => (byte[])nationalTakePattern.Clone(); }
+        internal static byte[] NationalLeavePatternHead       { get => (byte[])nationalLeavePatternHead.Clone(); }
+        internal static byte[] NationalCandidatesPattern      { get => (byte[])nationalCandidatesPattern.Clone(); }
+        internal static uint CoachPoolTableOffset             { get => coachPoolTableOffset; }
+        internal static uint GoalkeeperCoachTableOffset       { get => goalkeeperCoachTableOffset; }
+        internal static uint CoachPoolGetterOffset            { get => coachPoolGetterOffset; }
+        internal static uint GoalkeeperCoachGetterOffset      { get => goalkeeperCoachGetterOffset; }
+        internal static int  CoachPoolCapacity                { get => coachPoolCapacity; }
+        internal static int  GoalkeeperCoachCapacity          { get => goalkeeperCoachCapacity; }
+        internal static uint StaffEntryStride                 { get => staffEntryStride; }
+        internal static uint StaffCompetenceOffset            { get => staffCompetenceOffset; }
+        internal static uint StaffContractOffset              { get => staffContractOffset; }
+        internal static uint StaffSalaryOffset                { get => staffSalaryOffset; }
+        internal static byte MaxStaffCompetence               { get => maxStaffCompetence; }
+        internal static byte[] StaffGetterPattern             { get => (byte[])staffGetterPattern.Clone(); }
         internal static byte[] JobOfferPresentPattern      { get => (byte[])jobOfferPresentPattern.Clone(); }
         internal static byte[] JobOfferCallTrailPattern    { get => (byte[])jobOfferCallTrailPattern.Clone(); }
         internal static byte[] TransferFetchPlayerPattern   { get => (byte[])transferFetchPlayerPattern.Clone(); }
@@ -483,6 +914,8 @@ namespace A2G_Trainer.Controller
         internal static uint PlayerRecordInjuryOffset       { get => playerRecordInjuryOffset; }
         internal static uint PlayerRecordVulnerableOffset   { get => playerRecordVulnerableOffset; }
         internal static uint PlayerRecordBannedOffset       { get => playerRecordBannedOffset; }
+        internal static uint PlayerRecordLeagueBanOffset    { get => playerRecordLeagueBanOffset; }
+        internal static uint PlayerRecordLeagueBanEndOffset { get => playerRecordLeagueBanEndOffset; }
         internal static uint PlayerRecordInjuryClearedFlagOffset { get => playerRecordInjuryClearedFlagOffset; }
         internal static uint PlayerRecordRedCardsOffset     { get => playerRecordRedCardsOffset; }
         internal static uint PlayerRecordYellowRedCardsOffset { get => playerRecordYellowRedCardsOffset; }
@@ -494,6 +927,11 @@ namespace A2G_Trainer.Controller
         internal static uint PlayerRecordSubbedInOffset     { get => playerRecordSubbedInOffset; }
         internal static uint PlayerRecordSubbedOutOffset    { get => playerRecordSubbedOutOffset; }
         internal static uint PlayerRecordUpgradeGoalsOffset { get => playerRecordUpgradeGoalsOffset; }
+        internal static uint PlayerRecordCapsOffset { get => playerRecordCapsOffset; }
+        internal static uint TransferListOffset { get => transferListOffset; }
+        internal static uint TransferListEntriesOffset { get => transferListEntriesOffset; }
+        internal static uint TransferListEntryStride { get => transferListEntryStride; }
+        internal static int  TransferListCapacity { get => transferListCapacity; }
 
         // gogOffset as a number, for the persistent anchors above (see PersistentLayout.CreateGogGuess).
         internal static uint   GogOffset         { get => Convert.ToUInt32(gogOffset, 16); }

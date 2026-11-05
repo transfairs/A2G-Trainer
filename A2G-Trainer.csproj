@@ -163,6 +163,9 @@
     <Compile Include="View\PlayerView.Designer.cs">
       <DependentUpon>PlayerView.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="help\index.html">
+      <LogicalName>A2G_Trainer.help.index.html</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Maps\DEU.map" />
     <EmbeddedResource Include="Resources\Maps\ESP.map" />
     <EmbeddedResource Include="Resources\Maps\FRA.map" />

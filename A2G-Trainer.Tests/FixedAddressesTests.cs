@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using A2G_Trainer.Controller;
 using A2G_Trainer.Model;
 using Xunit;
@@ -125,6 +126,50 @@ namespace A2G_Trainer.Tests
             }
         }
 
+        // The two staff getters: the pattern, then the table's absolute address.
+        private static void PlantStaffGetter(FakeModule fake, uint body, uint table)
+        {
+            byte[] pattern = Settings.StaffGetterPattern;
+            fake.WriteModuleBytes(body, pattern);
+            fake.WriteModuleBytes(body + (uint)pattern.Length, BitConverter.GetBytes(fake.ModuleBase + table));
+        }
+
+        [Fact]
+        public void StaffTables_AreKnownForTheOriginal_AndReadFromTheGettersElsewhere()
+        {
+            Assert.Equal(Settings.CoachPoolTableOffset, FixedAddresses.Original.CoachPoolTable);
+            Assert.Equal(Settings.GoalkeeperCoachTableOffset, FixedAddresses.Original.GoalkeeperCoachTable);
+
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                // Relinked code; the 2007 CD moves both tables by +0x3140 while its club data moves by +0x3740.
+                PlantStaffGetter(fake, Settings.CoachPoolGetterOffset + 0x22C0, Settings.CoachPoolTableOffset + 0x3140);
+                PlantStaffGetter(fake, Settings.GoalkeeperCoachGetterOffset + 0x22C0, Settings.GoalkeeperCoachTableOffset + 0x3140);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.Equal(Settings.CoachPoolTableOffset + 0x3140, found.CoachPoolTable);
+                Assert.Equal(Settings.GoalkeeperCoachTableOffset + 0x3140, found.GoalkeeperCoachTable);
+            }
+        }
+
+        [Fact]
+        public void StaffTables_WithoutBothGettersInPlace_AreUnknown()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantStaffGetter(fake, Settings.CoachPoolGetterOffset, Settings.CoachPoolTableOffset);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found);
+                Assert.Null(found.CoachPoolTable);
+                Assert.Null(found.GoalkeeperCoachTable);
+            }
+        }
+
         // A build missing from the known-build table (GameBuild.Known) but carrying the game's signature
         // and a calibrated layout gets the same search, whatever its distances are.
         [Fact]
@@ -221,6 +266,152 @@ namespace A2G_Trainer.Tests
                 fake.Memory.mProc.ModuleSize = 0x100000;
 
                 Assert.Null(FixedAddresses.For(fake.Memory));
+            }
+        }
+
+        // Where the 2007 CD has the interview code (run.exe, read live on 04.11.2026).
+        private const uint GogInterviewCodeShift = 0x2230;
+        private const uint GogMoraleFunctionShift = 0x4960;
+
+        // FUN_004f8a00's first instructions and its call between "push context" and "mov eax, [context+0x10]",
+        // FUN_005ffa50's and its call in case 12; with a stub, the calls go there instead.
+        private static void PlantInterviewCode(FakeModule fake, uint? stub = null, bool withMoraleCall = true)
+        {
+            uint apply = Settings.InterviewApplyFunctionOffset + GogInterviewCodeShift;
+            uint site = Settings.InterviewApplyCallSiteOffset + GogInterviewCodeShift;
+            uint morale = Settings.InterviewMoraleFunctionOffset + GogMoraleFunctionShift;
+            uint moraleSite = Settings.InterviewMoraleCallSiteOffset + GogInterviewCodeShift;
+            uint context = fake.ModuleBase + Settings.InterviewContextOffset + Settings.GogOffset;
+            fake.WriteModuleBytes(apply, Settings.InterviewApplyPattern);
+            fake.WriteModuleBytes(morale, Settings.InterviewMoralePattern);
+            fake.WriteModuleBytes(site - 5, Bytes(new byte[] { 0x68 }, BitConverter.GetBytes(context),
+                stub.HasValue ? Call(fake.ModuleBase + site, stub.Value + InterviewEffectsFix.CodeOffset) : Call(site, apply),
+                new byte[] { 0xA1 }, BitConverter.GetBytes(context + 0x10)));
+            if (withMoraleCall)
+                fake.WriteModuleBytes(moraleSite - (uint)Settings.InterviewMoraleCallLeadPattern.Length, Bytes(Settings.InterviewMoraleCallLeadPattern,
+                    stub.HasValue ? Call(fake.ModuleBase + moraleSite, stub.Value + InterviewEffectsFix.MoraleCodeOffset) : Call(moraleSite, morale),
+                    Settings.InterviewMoraleCallTrailPattern));
+        }
+
+        [Fact]
+        public void For_CalibratedGog_FindsTheInterviewCode()
+        {
+            Assert.Equal(Settings.InterviewApplyCallSiteOffset, FixedAddresses.Original.Interview.ApplyCallSite);
+            Assert.Equal(Settings.InterviewApplyFunctionOffset, FixedAddresses.Original.Interview.ApplyFunction);
+            Assert.Equal(Settings.InterviewMoraleCallSiteOffset, FixedAddresses.Original.Interview.MoraleCallSite);
+            Assert.Equal(Settings.InterviewMoraleFunctionOffset, FixedAddresses.Original.Interview.MoraleFunction);
+
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantInterviewCode(fake);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.Equal(Settings.InterviewApplyCallSiteOffset + GogInterviewCodeShift, found.Interview.ApplyCallSite);
+                Assert.Equal(Settings.InterviewApplyFunctionOffset + GogInterviewCodeShift, found.Interview.ApplyFunction);
+                Assert.Equal(Settings.InterviewMoraleCallSiteOffset + GogInterviewCodeShift, found.Interview.MoraleCallSite);
+                Assert.Equal(Settings.InterviewMoraleFunctionOffset + GogMoraleFunctionShift, found.Interview.MoraleFunction);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheMoraleCall_HasNoInterviewCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantInterviewCode(fake, withMoraleCall: false);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).Interview);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithTheInterviewFixInstalled_StillFindsTheCallSite()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                uint stub = fake.Memory.AllocateExecutable(InterviewEffectsFix.StubSize).Value;
+                fake.Memory.WriteBytesAtAddress(stub, InterviewEffectsFix.Signature);
+                PlantInterviewCode(fake, stub);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+                Assert.Equal(Settings.InterviewApplyCallSiteOffset + GogInterviewCodeShift, found.Interview.ApplyCallSite);
+                Assert.Equal(Settings.InterviewMoraleCallSiteOffset + GogInterviewCodeShift, found.Interview.MoraleCallSite);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheInterviewCall_HasNoInterviewCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                fake.WriteModuleBytes(Settings.InterviewApplyFunctionOffset + GogInterviewCodeShift, Settings.InterviewApplyPattern);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found.JobOffer);
+                Assert.Null(found.Interview);
+                Assert.False(new InterviewEffectsFix(fake.Memory).IsSupported);
+            }
+        }
+
+        // Where GOG and the 2007 CD have the goal limits (run.exe, read live on 04.11.2026).
+        private const uint GogGoalLimitSite = 0x1F7536;
+        private const uint GogGoalHomeBrakeSite = 0x1F7576;
+        private const uint GogGoalAwayBrakeSite = 0x1F77D4;
+
+        [Fact]
+        public void For_CalibratedGog_FindsTheGoalLimits_PatchedOrNot()
+        {
+            Assert.Equal(Settings.GoalLimitSiteOffset, FixedAddresses.Original.GoalLimit.LimitSite);
+            Assert.Equal(Settings.GoalHomeBrakeSiteOffset, FixedAddresses.Original.GoalLimit.HomeBrakeSite);
+            Assert.Equal(Settings.GoalAwayBrakeSiteOffset, FixedAddresses.Original.GoalLimit.AwayBrakeSite);
+
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                GoalLimitPatchTests.PlantGoalLimitCode(fake, GogGoalLimitSite, GogGoalHomeBrakeSite, GogGoalAwayBrakeSite, GoalLimitPatchTests.GogLimit);
+                GoalLimitPatch patch = new GoalLimitPatch(fake.Memory);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.Equal(GogGoalLimitSite, found.GoalLimit.LimitSite);
+                Assert.Equal(GogGoalHomeBrakeSite, found.GoalLimit.HomeBrakeSite);
+                Assert.Equal(GogGoalAwayBrakeSite, found.GoalLimit.AwayBrakeSite);
+                Assert.True(patch.SetEnabled(true));
+                Assert.Equal(new byte[] { 0xB9, 0x0F, 0x00, 0x00, 0x00, 0x90, 0x90 }, fake.ReadModuleBytes(GogGoalLimitSite + 11, 7));
+            }
+            // A trainer started later finds the patched code as well.
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                GoalLimitPatchTests.PlantGoalLimitCode(fake, GogGoalLimitSite, GogGoalHomeBrakeSite, GogGoalAwayBrakeSite,
+                    new byte[] { 0xC1, 0xB9, 0x0F, 0x00, 0x00, 0x00, 0x90, 0x90, 0x89 });
+
+                Assert.Equal(GogGoalLimitSite, FixedAddresses.For(fake.Memory).GoalLimit.LimitSite);
+                Assert.True(new GoalLimitPatch(fake.Memory).SetEnabled(false));
+                Assert.Equal(GoalLimitPatchTests.GogLimit, fake.ReadModuleBytes(GogGoalLimitSite + 10, 9));
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheAwayBrake_HasNoGoalLimits()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                fake.WriteModuleBytes(GogGoalLimitSite, Settings.GoalLimitPattern);
+                fake.WriteModuleBytes(GogGoalHomeBrakeSite, Settings.GoalHomeBrakePattern);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found);
+                Assert.Null(found.GoalLimit);
+                Assert.False(new GoalLimitPatch(fake.Memory).IsSupported);
             }
         }
 
@@ -809,5 +1000,230 @@ namespace A2G_Trainer.Tests
                 Assert.Equal((ushort)10, BitConverter.ToUInt16(CoachMemory.ReadRecord(fake, AddressPresets.COACH[CoachEnums.AddressKey.SEASON_GOAL], 2), 0));
             }
         }
+
+        #region National coach code, guards
+        // Where the national coach functions are planted for these tests (near their original offsets).
+        private const uint TestNationalShift = 0x2200;
+        private const uint TestOfferGenerate = 0x227390 + 0x3000;
+
+        private static void PlantNationalCoachCode(FakeModule fake, uint? callTarget)
+        {
+            fake.WriteModuleBytes(Settings.NationalTakeFunctionOffset + TestNationalShift, Settings.NationalTakePattern);
+            fake.WriteModuleBytes(Settings.NationalLeaveFunctionOffset + TestNationalShift,
+                Bytes(Settings.NationalLeavePatternHead, BitConverter.GetBytes(fake.ModuleBase + Settings.NationalCoachTableOffset + Settings.GogOffset)));
+            fake.WriteModuleBytes(Settings.NationalCandidatesFunctionOffset + TestNationalShift, Settings.NationalCandidatesPattern);
+            if (callTarget.HasValue)
+                fake.WriteModuleBytes(GogPresentCallSite - 5, Call(GogPresentCallSite - 5, callTarget.Value));
+        }
+
+        [Fact]
+        public void For_CalibratedGog_FindsTheNationalCoachCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantNationalCoachCode(fake, TestOfferGenerate);
+
+                FixedAddresses.NationalCoachCode found = FixedAddresses.For(fake.Memory).NationalCoach;
+
+                Assert.Equal(GogPresentCallSite - 5, found.CallSite);
+                Assert.Equal(TestOfferGenerate, found.Continue);
+                Assert.Equal(Settings.NationalTakeFunctionOffset + TestNationalShift, found.Take);
+                Assert.Equal(Settings.NationalLeaveFunctionOffset + TestNationalShift, found.Leave);
+                Assert.Equal(Settings.NationalCandidatesFunctionOffset + TestNationalShift, found.Candidates);
+            }
+        }
+
+        // A trainer started earlier redirected the offer call to its stub: the offer generation is
+        // where the stub continues.
+        [Fact]
+        public void For_GogWithTheOfferCallRedirectedToAStub_ContinuesWhereTheStubDoes()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                const uint stub = 0x51A000;
+                fake.WriteModuleBytes(stub, NationalCoachInjector.Signature);
+                fake.WriteModuleBytes(stub + NationalCoachInjector.ContinueOffset, BitConverter.GetBytes(fake.ModuleBase + TestOfferGenerate));
+                PlantNationalCoachCode(fake, stub + NationalCoachInjector.CodeOffset);
+
+                FixedAddresses.NationalCoachCode found = FixedAddresses.For(fake.Memory).NationalCoach;
+
+                Assert.Equal(GogPresentCallSite - 5, found.CallSite);
+                Assert.Equal(TestOfferGenerate, found.Continue);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheOfferCall_HasNoNationalCoachCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantNationalCoachCode(fake, null);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found.JobOffer);
+                Assert.Null(found.NationalCoach);
+            }
+        }
+
+        // Only reachable with a job offer call site whose preceding bytes can't be read - which the
+        // search itself never yields, so the guard is checked directly.
+        [Fact]
+        public void DiscoverNationalCoach_WithTheOfferCallUnreadable_IsNull()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantNationalCoachCode(fake, TestOfferGenerate);
+                MethodInfo discover = typeof(FixedAddresses).GetMethod("DiscoverNationalCoach", BindingFlags.NonPublic | BindingFlags.Static);
+                FixedAddresses.JobOfferCode readable = new FixedAddresses.JobOfferCode(GogPresentCallSite, GogPresentFunction, GogAddFunction);
+                FixedAddresses.JobOfferCode unreadable = new FixedAddresses.JobOfferCode(0x51F002, GogPresentFunction, GogAddFunction);
+                fake.MakeModuleRegionUnreadable(0x51E000, 0x1000);
+
+                Assert.NotNull(discover.Invoke(null, new object[] { fake.Memory, Settings.GogOffset, readable }));
+                Assert.Null(discover.Invoke(null, new object[] { fake.Memory, Settings.GogOffset, unreadable }));
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheInterviewApplyCall_HasNoInterviewCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantInterviewCode(fake);
+                fake.WriteModuleBytes(Settings.InterviewApplyCallSiteOffset + GogInterviewCodeShift, new byte[] { 0x90 });
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found.JobOffer);
+                Assert.Null(found.Interview);
+            }
+        }
+
+        [Fact]
+        public void For_WithoutTheDeadlineCall_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                fake.WriteModuleBytes(GogMove + (uint)Settings.TransferDeadlineCallLeadPattern.Length, new byte[] { 0x90 });
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found.JobOffer);
+                Assert.Null(found.Transfer);
+            }
+        }
+
+        [Fact]
+        public void For_WithTheCallsGoingToAnUnreadableStub_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                RedirectToStub(fake, 0x51E000, signature: false);
+                fake.MakeModuleRegionUnreadable(0x51E000, 0x10);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).Transfer);
+            }
+        }
+
+        // The fetch/release functions sit early in their search windows, before the market call
+        // window, which can't be read at all.
+        [Fact]
+        public void For_WithOnlyTheMarketCallWindowUnreadable_HasNoTransferCode()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                fake.WriteModuleBytes(0x163000, Settings.TransferFetchPlayerPattern);
+                fake.WriteModuleBytes(0x164000, Settings.TransferReleasePlayerPattern);
+                fake.WriteModuleBytes(0x166000, Settings.TransferFetchClubPattern);
+                fake.WriteModuleBytes(0x167000, Settings.TransferReleaseClubPattern);
+                uint window = Settings.FixedAddressSearchWindow;
+                fake.MakeModuleRegionUnreadable(Settings.TransferMarketCallSiteOffsets[0] - window, (int)(2 * window));
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.NotNull(found);
+                Assert.Null(found.Transfer);
+            }
+        }
+
+        [Fact]
+        public void For_WithTheStaffGetterWindowUnreadable_HasNoStaffTables()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                uint window = Settings.FixedAddressSearchWindow;
+                fake.MakeModuleRegionUnreadable(Settings.CoachPoolGetterOffset - window, (int)(2 * window));
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.Equal(GogStaticOffset, found.StaticShift);
+                Assert.Null(found.CoachPoolTable);
+                Assert.Null(found.GoalkeeperCoachTable);
+            }
+        }
+
+        private static FixedAddresses Discover(FakeModule fake, uint runtimeShift) =>
+            (FixedAddresses)typeof(FixedAddresses).GetMethod("Discover", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { fake.Memory, runtimeShift });
+
+        // For() only searches with a known build; the search itself copes without one (the log names it empty).
+        [Fact]
+        public void Discover_WithoutABuild_StillSearches()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                Assert.Null(Discover(fake, Settings.GogOffset));
+
+                fake.WriteModuleBytes(Settings.LeagueBaseTableOffset + GogStaticOffset, Settings.LeagueBasePattern);
+                Assert.Null(Discover(fake, Settings.GogOffset));
+
+                MakeGog(fake);
+                fake.Memory.Build = null;
+                FixedAddresses found = Discover(fake, Settings.GogOffset);
+                Assert.Equal(Settings.GogOffset, found.RuntimeShift);
+                Assert.Equal(GogStaticOffset, found.StaticShift);
+                Assert.NotNull(found.JobOffer);
+                Assert.NotNull(found.Transfer);
+            }
+        }
+
+        [Fact]
+        public void ReadWindow_NearTheModuleStart_StartsAtZero()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.WriteModuleBytes(0x20, new byte[] { 0xAB });
+                MethodInfo readWindow = typeof(FixedAddresses).GetMethod("ReadWindow", BindingFlags.NonPublic | BindingFlags.Static);
+                object[] args = { fake.Memory, 0x100u, 0u };
+
+                byte[] window = (byte[])readWindow.Invoke(null, args);
+
+                Assert.Equal(0u, (uint)args[2]);
+                Assert.Equal(0x100 + (int)Settings.FixedAddressSearchWindow, window.Length);
+                Assert.Equal(0xAB, window[0x20]);
+            }
+        }
+
+        [Fact]
+        public void Matches_OutsideTheData_IsFalse()
+        {
+            MethodInfo matches = typeof(FixedAddresses).GetMethod("Matches", BindingFlags.NonPublic | BindingFlags.Static);
+            byte[] data = { 1, 2, 3, 4 };
+            byte[] pattern = { 3, 4 };
+
+            Assert.True((bool)matches.Invoke(null, new object[] { data, 2, pattern }));
+            Assert.False((bool)matches.Invoke(null, new object[] { data, 1, pattern }));
+            Assert.False((bool)matches.Invoke(null, new object[] { data, -1, pattern }));
+            Assert.False((bool)matches.Invoke(null, new object[] { data, 3, pattern }));
+        }
+        #endregion
     }
 }

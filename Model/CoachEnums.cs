@@ -33,16 +33,67 @@ namespace A2G_Trainer.Model
             EXTEND_OPTION,
             PERKS,
             TRUST,
+            TRUST_BONUS,
             NERVES,
-            NATIONALTEAM,
-            NATIONAL_BONUS,
+            NERVES_SUM,
+            NERVES_WEEKS,
+            PUBLIC_STANDING,
+            FAN_STANDING,
+            MEDIA_STANDING,
             DIFFICULTY,
             GAMES,
             WINS,
             STOCK_COUNTRY,
             STOCK_CLUB,
             STOCK_SHARES,
-            STOCK_PRICE
+            STOCK_PRICE,
+            LEVEL_BASE,
+            RETIREMENT_AGE,
+            CAREER_MODE,
+            CAREER_START,
+            TRAINING_FLAGS,
+            TRAINING_RESULT
+        }
+
+        /// <summary>
+        /// How long the manager plays (+0x36, FUN_005f7950/FUN_005f7a70): 0-8 a fixed number of
+        /// seasons (table 0x6B7A30), 9 a career until retirement, 10 endless.
+        /// </summary>
+        public enum CareerMode : short
+        {
+            [Description("1 Jahr")]
+            OneYear = 0,
+            [Description("2 Jahre")]
+            TwoYears = 1,
+            [Description("3 Jahre")]
+            ThreeYears = 2,
+            [Description("4 Jahre")]
+            FourYears = 3,
+            [Description("5 Jahre")]
+            FiveYears = 4,
+            [Description("10 Jahre")]
+            TenYears = 5,
+            [Description("20 Jahre")]
+            TwentyYears = 6,
+            [Description("50 Jahre")]
+            FiftyYears = 7,
+            [Description("100 Jahre")]
+            HundredYears = 8,
+            [Description("Karriere bis zum Ruhestand")]
+            Career = 9,
+            [Description("Endlos")]
+            Endless = 10
+        }
+
+        /// <summary>Result of this season's Managerfortbildung (record +0x1B27); 0 means Nachhilfe on Mondays (FUN_00618ec0).</summary>
+        public enum TrainingResult : byte
+        {
+            [Description("nicht bestanden")]
+            Failed = 0,
+            [Description("bestanden")]
+            Passed = 1,
+            [Description("fehlerfrei")]
+            Perfect = 2
         }
 
         /// <summary>In-game difficulty levels, ordered from easiest (1) to hardest (5).</summary>
@@ -128,10 +179,14 @@ namespace A2G_Trainer.Model
         /// values index the game's text table at anstoss2.exe+2B96C8 (RESDLL.dll IDs 6249..6265), which
         /// is why they don't follow the texts' own order. Each week the game re-assigns it once the
         /// trainer has been at his club for more than 28 days (FUN_0062af30): e.g. "Schleifer" after
-        /// more than 8 of the last 20 weeks of hard training, "Wissenschaftler" after more than 7 weeks
-        /// of the other training kinds, "PR-Mann" for a high charisma value; if nothing applies it
-        /// keeps the current image (or, one week in ten, drops to "kein Image"). Hoffnungsträger,
-        /// Motivationskünstler, Weltenbummler and Trunkenbold are never assigned by that check.
+        /// more than 8 of the previous 21 weeks with own training week slot 1-3, "Wissenschaftler"
+        /// after more than 7 weeks with slot 4-7 or 9, "PR-Mann" for displayed media of 90 or more;
+        /// if nothing applies it keeps the current image (or, one week in ten, drops to "kein
+        /// Image"). Absteiger, Weltenbummler, Hoffnungsträger, Motivationskünstler and Trunkenbold
+        /// are never assigned. Full chain: docs/pointer-investigation-guide.md, "Manager-Image".
+        /// The image only has an effect when the manager takes over a new club (FUN_0062b100):
+        /// Hoffnungsträger gives the new team +10 will to win and +10 morale, Choleriker sets club
+        /// +0xFD to 4. All other values are display only.
         /// </summary>
         public enum ManagerImage : ushort
         {

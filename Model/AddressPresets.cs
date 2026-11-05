@@ -43,6 +43,9 @@ namespace A2G_Trainer.Model
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.INJURY, "46"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.VULNERABLE, "47"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.BANNED_MATCHES, "48"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.LEAGUE_BAN, "4D"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.LEAGUE_BAN_REASON, "4E"),
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.LEAGUE_BAN_END, "16C"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.DOPED, "49"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.YELLOW_CARDS, "4A"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SALARY, "B4"),
@@ -65,7 +68,9 @@ namespace A2G_Trainer.Model
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.APPEARANCES, "77"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SUBBED_IN, "78"),
             new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.SUBBED_OUT, "79"),
-            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.UPGRADE_GOALS, "166")
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.UPGRADE_GOALS, "166"),
+            // Caps for the national team (record +0x7B); the national coach can only naturalise players without any.
+            new KeyValuePair<Enum, string>(PlayerEnums.AddressKey.CAPS, "8E")
         );
 
         /// <summary>Field offsets for the user's own club/stadium.</summary>
@@ -76,6 +81,12 @@ namespace A2G_Trainer.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Will2Win, "9A"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Spirit, "9C"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TeamCohesion, "94C"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Pressing, "9D"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.OffsideTrap, "9E"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AntiOffsideTrap, "9F"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.TeamSkills, "A0"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.CoTrainer, "82"),
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.GoalkeeperCoach, "84"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.SponsorCash, "3C4"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.SponsorPeriod, "3BD"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.FreeTickets, "814"),
@@ -145,7 +156,10 @@ namespace A2G_Trainer.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Preposition, "F8"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Town, "839"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.MapX, "1438"),
-            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.MapY, "143A")
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.MapY, "143A"),
+            // Standing with the association: bits 0-4 an offence counter, bits 5/6 one stage lower, bit 7
+            // set by the licence procedure (FUN_005b5c30 maps it to the five stages, FUN_005b5d00).
+            new KeyValuePair<Enum, string>(ClubEnums.AddressKey.Association, "101")
         );
 
         /// <summary>Field offsets for the currently loaded opponent club.</summary>
@@ -156,9 +170,6 @@ namespace A2G_Trainer.Model
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.COUNTRY, "15E3"),
             new KeyValuePair<Enum, string>(ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT, "1EF9")
         );
-
-        /// <summary>Field offsets for whichever club is currently shown (club-membership lookups, trainee picker); shares OPPONENT_CLUB's layout.</summary>
-        public static Addresses DYNAMIC_CLUB { get { return AddressPresets.OPPONENT_CLUB; } }
 
         /// <summary>Field offsets for scanning every club in the league (used for club-membership/trainee lookups).</summary>
         public static readonly Addresses ALL_CLUBS = Addresses.Create(
@@ -188,7 +199,21 @@ namespace A2G_Trainer.Model
         public static readonly Addresses COACH = Addresses.Create(
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FIRSTNAME, "34B00"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LAST_NAME, "34B0A"),
+            // The game keeps two level bytes: +0x22 (motivation, charisma) and +0x21 (training,
+            // highscore). After every level change FUN_00628420 sets both to the lower one, so a
+            // level edited in only one of them falls back - both are written.
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LEVEL, "34B22"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.LEVEL_BASE, "34B21"),
+            // Career (Int16 each): retirement age (starts at 80, FUN_005f7bf0 moves it with the nerves'
+            // season average), mode (see CoachEnums.CareerMode) and the season index it started in;
+            // a fixed duration ends after season start + years - 1 (FUN_005f7a70).
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.RETIREMENT_AGE, "34B26"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CAREER_MODE, "34B36"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CAREER_START, "34B38"),
+            // Managerfortbildung: result at +0x1833, and bit 7 of +0x1828 the game sets when it is
+            // passed (FUN_00486fe0). The record keeps both 0x2F4 further on (+0x1B14.., FUN_005b9df0).
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRAINING_FLAGS, "36328"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRAINING_RESULT, "36333"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.AGE, "34B24"),
             // COUNTRY/CLUB: the club this trainer coaches right now (UInt16 each in the game, values
             // fit a byte). Found via the original build's GetMitspieler and confirmed live: Trainer
@@ -230,10 +255,25 @@ namespace A2G_Trainer.Model
             // the club draw it (FUN_00555b40: years left + 1, option cleared). PERKS: see CoachEnums.VehiclePerk.
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.EXTEND_OPTION, "34B60"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PERKS, "34B62"),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRUST, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONALTEAM, ""),
-            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NATIONAL_BONUS, ""),
+            // TRUST: the board's trust in the manager ("Vertrauen des Vorstandes"), base value (Int16).
+            // TRUST_BONUS: four more bytes the game adds to it (+0x96/+0x97 unsigned, +0x98/+0x99
+            // signed). The game only ever uses the sum, capped to 0..100 (FUN_00639100), e.g. for
+            // contract extensions (FUN_0062a980). A new club resets the base (65..100, FUN_00638fd0)
+            // and clears the four bytes (FUN_005f7ca0); matches move the base (FUN_005feac0).
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRUST, "34B94"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.TRUST_BONUS, "34B96"),
+            // NERVES: "Nervenkostüm" (Int16, 0..100), with the season's sum and number of weeks for its
+            // average behind it (FUN_00417510 adds weekly, FUN_0063d650 resets at the season end).
+            // PUBLIC/FAN/MEDIA_STANDING: SByte 0..100 each (FUN_00417e50 clamps); the media standing
+            // the game shows is derived from its byte (FUN_005bb0b0, see Coach.MediaStanding).
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES, "34B28"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES_SUM, "34B2A"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.NERVES_WEEKS, "34B2C"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.PUBLIC_STANDING, "34B30"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.FAN_STANDING, "34B31"),
+            new KeyValuePair<Enum, string>(CoachEnums.AddressKey.MEDIA_STANDING, "34B32"),
+            // DIFFICULTY: bits 0-2 the level (1..5), bit 7 "already changed once this game", which locks
+            // the game's own choice (FUN_004d32d0) - see Coach.DifficultyLocked.
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.DIFFICULTY, "34B34"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.GAMES, "34BCC"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.WINS, "34BCE"),
@@ -252,14 +292,15 @@ namespace A2G_Trainer.Model
             new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.BONUS_COUNTRY_COUNT, "393E"),
             new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.MAIN_COUNTRY, "3940"),
             new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.ADDITIONAL_COUNTRY, "3944"),
-            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.BONUS_LEAGUE_SYSTEM, "394C")
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.BONUS_LEAGUE_SYSTEM, "394C"),
+            // "Mit Entlassungen" (byte, 0x826BAA): chosen at the start of a new game only, unlike the
+            // other options next to it (0x826B98..0x826BC3), which the game's Optionen dialog changes
+            // any time. Without it the board never fires a human manager (FUN_0055c310).
+            new KeyValuePair<Enum, string>(LeagueEnums.AddressKey.WITH_DISMISSALS, "3EAA")
         );
 
         /// <summary>Player-field offsets for the current opponent roster; set by <see cref="InitOpponent"/>.</summary>
         public static Addresses OPPONENT_PLAYERS { get; private set; }
-
-        /// <summary>Player-field offsets for whichever roster is dynamically selected (e.g. trainees); set by <see cref="InitDynamicTeam"/>.</summary>
-        public static Addresses DYNAMIC_PLAYERS { get; private set; }
 
         /// <summary>Re-bases OWN_PLAYERS' field offsets onto a roster starting at <paramref name="lastPlayer"/>.</summary>
         public static Addresses InitPreset(string lastPlayer)
@@ -272,23 +313,21 @@ namespace A2G_Trainer.Model
         {
             AddressPresets.OPPONENT_PLAYERS = AddressPresets.InitPreset(lastPlayer);
         }
-        /// <summary>Computes and stores <see cref="DYNAMIC_PLAYERS"/> for the given roster start.</summary>
-        public static void InitDynamicTeam(string lastPlayer)
-        {
-            AddressPresets.DYNAMIC_PLAYERS = AddressPresets.InitPreset(lastPlayer);
-        }
 
-        /// <summary>Selects the address preset matching the given lookup context (own/opponent/dynamic/etc.) and entity kind.</summary>
+        /// <summary>
+        /// Selects the address preset matching the given lookup context (own/opponent/etc.) and entity
+        /// kind. Anything listed from the records (CLUB, TRAINEE) uses the own club's and own players'
+        /// layouts relative to the working copy.
+        /// </summary>
         public static Addresses From(PlayerEnums.AddressType type, bool isClub)
         {
             if (isClub)
             {
                 switch (type)
                 {
-                    case PlayerEnums.AddressType.OWN: return AddressPresets.OWN_CLUB;
+                    case PlayerEnums.AddressType.OWN:
+                    case PlayerEnums.AddressType.CLUB: return AddressPresets.OWN_CLUB;
                     case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT_CLUB;
-                    case PlayerEnums.AddressType.TRAINEE:
-                    case PlayerEnums.AddressType.DYNAMIC: return AddressPresets.DYNAMIC_CLUB;
                     case PlayerEnums.AddressType.ALL: return AddressPresets.ALL_CLUBS;
                     case PlayerEnums.AddressType.NON_PLAYABLE: return AddressPresets.NONPLAYABLE_CLUBS;
                     default: throw new ArgumentOutOfRangeException("type");
@@ -298,10 +337,10 @@ namespace A2G_Trainer.Model
             {
                 switch (type)
                 {
-                    case PlayerEnums.AddressType.OWN: return AddressPresets.OWN_PLAYERS;
+                    case PlayerEnums.AddressType.OWN:
+                    case PlayerEnums.AddressType.CLUB:
+                    case PlayerEnums.AddressType.TRAINEE: return AddressPresets.OWN_PLAYERS;
                     case PlayerEnums.AddressType.OPPONENT: return AddressPresets.OPPONENT_PLAYERS;
-                    case PlayerEnums.AddressType.TRAINEE:
-                    case PlayerEnums.AddressType.DYNAMIC: return AddressPresets.DYNAMIC_PLAYERS;
                     default: throw new ArgumentOutOfRangeException("type");
                 }
             }
