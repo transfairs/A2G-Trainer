@@ -9,7 +9,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 
 ![C#](https://img.shields.io/badge/language-C%23-239120?logo=c-sharp&logoColor=white) ![.NET Framework](https://img.shields.io/badge/.NET-4.0-blueviolet) [![Latest release](https://img.shields.io/github/v/release/transfairs/A2G-Trainer?label=release&color=orange)](https://github.com/transfairs/A2G-Trainer/releases/latest)
 
-[![⬇️ Download latest release](https://img.shields.io/badge/⬇️_Download-latest_release-2ea44f?style=for-the-badge)](https://github.com/transfairs/A2G-Trainer/releases/latest/download/A2G-Trainer-XP-Latest.zip)
+[![⬇️ Download latest release](https://img.shields.io/badge/⬇️_Download-latest_release-2ea44f?style=for-the-badge)](https://github.com/transfairs/A2G-Trainer/releases/latest/download/A2G-Trainer-Latest.zip)
 [![📖 Project page / online help](https://img.shields.io/badge/📖_Project_page-Online_help-1565C0?style=for-the-badge)](https://transfairs.github.io/A2G-Trainer/)
 
 </div>
@@ -64,18 +64,18 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - **Visual Studio 2019+** (Community is fine) with the **.NET desktop development** workload, *or* the standalone [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with the same workload. Either gives you the full MSBuild toolchain this project needs. See the note in **Testing** below on why the plain `dotnet` SDK CLI can't build it end-to-end.
 - The [.NET SDK](https://dotnet.microsoft.com/download) (8.0 or newer). Used to run already-built tests and to drive the `dotnet test`/coverage commands below. CI uses 8.0.x.
 - No manual **.NET Framework 4.0 Developer/Targeting Pack** install is needed for the main project. `Microsoft.NETFramework.ReferenceAssemblies` supplies those via NuGet automatically on restore.
-- The **A2G-Trainer-XP.Tests** project targets **.NET Framework 4.7.2**, which needs that version's Reference Assemblies installed which are included by the "`.NET desktop development`" VS workload above, so no extra step if you have that.
+- The **A2G-Trainer.Tests** project targets **.NET Framework 4.7.2**, which needs that version's Reference Assemblies installed which are included by the "`.NET desktop development`" VS workload above, so no extra step if you have that.
 
 ## 🚀 Run Instructions
-1. Launch `A2G-Trainer-XP.exe` and start **Anstoss 2 Gold**; either order works.  
+1. Launch `A2G-Trainer.exe` and start **Anstoss 2 Gold**; either order works.  
 2. Load your savegame. The tool detects the game automatically and reconnects on its own after a game restart or when you load a different savegame.  
 3. Use the **Tool Strip** to switch to the club view (finances, stadium, etc.) or edit other teams.
 
 ## 💡 Tips & Hints
 - To assign a **negative number of seats** to a stadium block, enter any value **greater than 32,767**.  
 - After editing a stadium block, **Block A is automatically set to one week construction time** to ensure all changes are persisted.  
-- A player rename survives a save/reload in any length up to 9/15 characters: a name the savegame already has is reused, a new one is added the way the game adds names, and other players with the old name keep it. Only on a version whose addresses the trainer can't confirm does the old rule apply (the new name must already exist in the savegame, or have **exactly as many characters** as the old one); otherwise the name only lasts until the next Tagesabschluss/load and you get a warning naming the player. Details land in `%LocalAppData%\A2G-Trainer-XP\trainer.log`.  
-- On the **GOG version** (and the 2007 CD release), the trainer checks where the permanently saved player data lives the first time it loads your own team. If it can't find it, it falls back to the in-memory display values as before: Jugendspieler then can't be changed permanently, and renames only last until the next load. The result is logged to `%LocalAppData%\A2G-Trainer-XP\trainer.log`; please attach it when reporting a problem.  
+- A player rename survives a save/reload in any length up to 9/15 characters: a name the savegame already has is reused, a new one is added the way the game adds names, and other players with the old name keep it. Only on a version whose addresses the trainer can't confirm does the old rule apply (the new name must already exist in the savegame, or have **exactly as many characters** as the old one); otherwise the name only lasts until the next Tagesabschluss/load and you get a warning naming the player. Details land in `%LocalAppData%\A2G-Trainer\trainer.log`.  
+- On the **GOG version** (and the 2007 CD release), the trainer checks where the permanently saved player data lives the first time it loads your own team. If it can't find it, it falls back to the in-memory display values as before: Jugendspieler then can't be changed permanently, and renames only last until the next load. The result is logged to `%LocalAppData%\A2G-Trainer\trainer.log`; please attach it when reporting a problem.  
 
 ## 🔧 Build Instructions
 1. Open the solution in **Visual Studio 2019**  
@@ -93,7 +93,7 @@ This trainer shares its foundation with the [A3-Trainer](https://github.com/tran
 - **Shared changes arrive automatically:** the Shared repository's CI builds and tests both trainers with every change. After a green push to its master, [`shared-update.yml`](.github/workflows/shared-update.yml) moves `Shared/` to the new commit, runs this trainer's tests and commits the update to master (or opens a pull request if the tests fail). It also runs daily and can be started by hand.
 
 ## 🧪 Testing
-The **A2G-Trainer-XP.Tests** project (xUnit) covers the memory-reading/writing logic and, for the WinForms views, the actual controls. None of it needs the game running.
+The **A2G-Trainer.Tests** project (xUnit) covers the memory-reading/writing logic and, for the WinForms views, the actual controls. None of it needs the game running.
 
 **Visual Studio**
 - `Test` → `Test Explorer`, then **Run All Tests**.
@@ -107,18 +107,18 @@ The **A2G-Trainer-XP.Tests** project (xUnit) covers the memory-reading/writing l
 
 Plain `dotnet build`/`dotnet test` **fails outright** on this project (`MSB3822`/`MSB3823`, about `Trainer.resx`'s binary resources needing `System.Resources.Extensions`), because the dotnet SDK's own MSBuild handles this legacy .NET Framework 4.0 project's resources differently than full Visual Studio MSBuild does. Build with `msbuild` first, then run the already-built tests with `dotnet test --no-build` (this is exactly what [`.github/workflows/release.yml`](.github/workflows/release.yml) does in CI):
 ```bash
-msbuild A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj /t:Restore,Build /p:Configuration=Debug
-dotnet test A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj --no-build --no-restore
+msbuild A2G-Trainer.Tests/A2G-Trainer.Tests.csproj /t:Restore,Build /p:Configuration=Debug
+dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --no-build --no-restore
 ```
 For coverage, add the collector once and pass the same flag to that build:
 ```bash
-dotnet add A2G-Trainer-XP.Tests package coverlet.collector
-msbuild A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj /t:Restore,Build /p:Configuration=Debug
-dotnet test A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj --no-build --no-restore --collect:"XPlat Code Coverage"
+dotnet add A2G-Trainer.Tests package coverlet.collector
+msbuild A2G-Trainer.Tests/A2G-Trainer.Tests.csproj /t:Restore,Build /p:Configuration=Debug
+dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --no-build --no-restore --collect:"XPlat Code Coverage"
 
 # turn the raw XML into a browsable report (one-time tool install)
 dotnet tool install -g dotnet-reportgenerator-globaltool
-reportgenerator -reports:"A2G-Trainer-XP.Tests/TestResults/**/coverage.cobertura.xml" -targetdir:coveragereport -reporttypes:Html
+reportgenerator -reports:"A2G-Trainer.Tests/TestResults/**/coverage.cobertura.xml" -targetdir:coveragereport -reporttypes:Html
 ```
 Open `coveragereport/index.html` for a per-file/method/line breakdown.
 

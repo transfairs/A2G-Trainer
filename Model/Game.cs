@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// Tracks the attached game process and whether it is currently running.

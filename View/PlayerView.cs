@@ -1,5 +1,5 @@
-﻿using A2G_Trainer_XP.Controller;
-using A2G_Trainer_XP.Model;
+﻿using A2G_Trainer.Controller;
+using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>Roster tab: lists a club's players and edits the selected player's fields.</summary>
     public partial class PlayerView : EntityView

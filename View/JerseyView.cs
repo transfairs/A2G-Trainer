@@ -1,4 +1,4 @@
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>
     /// The two jersey sets like the data editor's "Trikotsätze" tab: a player in each set, the

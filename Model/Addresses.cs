@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// Immutable map from an entity's field-key enum to its hex memory offset string.

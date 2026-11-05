@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// Enum groups used to look up coach memory addresses and describe coach-facing values.

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>In-app help tab; hosts the (German) RTF help text for each roster context.</summary>
     public partial class HelpView : UserControl
@@ -41,7 +41,7 @@ namespace A2G_Trainer_XP.View
 {\colortbl ;\red255\green0\blue0;\red0\green0\blue255;\red0\green128\blue0;}
 {\fonttbl{\f0 Arial;}}
 \fs20\b0\cf0
-{\fs24\b Willkommen zu A2G-Trainer-XP!}\par
+{\fs24\b Willkommen zu A2G-Trainer!}\par
 -------------------------------------------------------------------------------------------------------\par
 {\pard\qj Um mit dem Editieren loszulegen, starten Sie {\b Anstoss 2 Gold} und laden Sie einen Spielstand. Der Trainer erkennt das Spiel automatisch - egal ob Sie ihn vor oder nach dem Spiel starten. Auch nach einem Neustart des Spiels oder dem Laden eines anderen Spielstands verbindet er sich von selbst neu, ganz ohne Ihr Zutun. Los geht's!\par}\par
 
@@ -56,7 +56,7 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 
 {\fs24\b Spieler dauerhaft umbenennen}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Das Spiel speichert jeden Vor- und Nachnamen nur einmal, alle Spieler mit demselben Namen teilen sich diesen Eintrag. In der {\b Original- und der GOG-Version} wird jede Namensänderung {\b dauerhaft} gespeichert, in beliebiger Länge bis zu 9 Zeichen (Vorname) bzw. 15 Zeichen (Nachname): Kommt der neue Name im Spielstand schon vor, verwendet der Trainer diesen Eintrag, sonst fügt er ihn neu hinzu - so wie das Spiel selbst neue Namen anlegt. Andere Spieler mit dem alten Namen behalten ihn in jedem Fall. In Versionen, deren Adressen der Trainer nicht bestätigen kann (z. B. die {\b 2007er-CD}, solange der Trainer ihre Adressen nicht bestätigen konnte), gilt weiterhin: dauerhaft nur, wenn der neue Name {\b im Spielstand schon vorkommt} oder der alte Name {\b nur diesem einen Spieler} gehört und der neue {\b exakt gleich viele Zeichen} hat. Kann ein Name nicht dauerhaft gespeichert werden, wird er bis zum nächsten Tagesabschluss oder Neuladen zwar noch angezeigt, und der Trainer zeigt nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log}.\par}
+{\pard\qj Das Spiel speichert jeden Vor- und Nachnamen nur einmal, alle Spieler mit demselben Namen teilen sich diesen Eintrag. In der {\b Original- und der GOG-Version} wird jede Namensänderung {\b dauerhaft} gespeichert, in beliebiger Länge bis zu 9 Zeichen (Vorname) bzw. 15 Zeichen (Nachname): Kommt der neue Name im Spielstand schon vor, verwendet der Trainer diesen Eintrag, sonst fügt er ihn neu hinzu - so wie das Spiel selbst neue Namen anlegt. Andere Spieler mit dem alten Namen behalten ihn in jedem Fall. In Versionen, deren Adressen der Trainer nicht bestätigen kann (z. B. die {\b 2007er-CD}, solange der Trainer ihre Adressen nicht bestätigen konnte), gilt weiterhin: dauerhaft nur, wenn der neue Name {\b im Spielstand schon vorkommt} oder der alte Name {\b nur diesem einen Spieler} gehört und der neue {\b exakt gleich viele Zeichen} hat. Kann ein Name nicht dauerhaft gespeichert werden, wird er bis zum nächsten Tagesabschluss oder Neuladen zwar noch angezeigt, und der Trainer zeigt nach dem Speichern eine Warnung mit dem Namen des betroffenen Spielers an. Details dazu landen zusätzlich in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer\\trainer.log}.\par}
 \par
 
 {\fs24\b Rückennummer (Feld Rückennr.)}\par
@@ -91,7 +91,7 @@ Manchmal hilft es auch, den Verein noch einmal explizit im {\b Transfermarkt} un
 
 {\fs24\b GOG-Version und 2007er-CD}\par
 -------------------------------------------------------------------------------------------------------\par
-{\pard\qj Bei der {\b GOG-Version} (und der 2007er-CD) sucht der Trainer beim ersten Laden des eigenen Teams selbst, wo die dauerhaft gespeicherten Spielerdaten liegen. Findet er sie nicht, liest und speichert er die Werte wie früher nur über den Anzeigespeicher. {\i Jugendspieler} lassen sich dann nicht dauerhaft ändern, und Namensänderungen gelten nur bis zum nächsten Laden. Das Ergebnis steht in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer-XP\\trainer.log} - bei Problemen bitte mitschicken.\par}
+{\pard\qj Bei der {\b GOG-Version} (und der 2007er-CD) sucht der Trainer beim ersten Laden des eigenen Teams selbst, wo die dauerhaft gespeicherten Spielerdaten liegen. Findet er sie nicht, liest und speichert er die Werte wie früher nur über den Anzeigespeicher. {\i Jugendspieler} lassen sich dann nicht dauerhaft ändern, und Namensänderungen gelten nur bis zum nächsten Laden. Das Ergebnis steht in der Logdatei unter {\b %LocalAppData%\\A2G-Trainer\\trainer.log} - bei Problemen bitte mitschicken.\par}
 \par
 
 {\fs24\b Mehrere Trainer, Aktien & Länder (Hot-Seat)}\par

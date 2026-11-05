@@ -1,4 +1,4 @@
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// The module-relative anchors of the save-persistent data (per-player record table, name-pool

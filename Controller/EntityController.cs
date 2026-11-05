@@ -1,9 +1,9 @@
-﻿using A2G_Trainer_XP.Model;
+﻿using A2G_Trainer.Model;
 using System;
 using System.ComponentModel;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Base class for controllers that read/write a specific entity type (player, club, coach, ...)

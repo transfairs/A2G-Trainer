@@ -1,9 +1,9 @@
-﻿using A2G_Trainer_XP.Controller;
+﻿using A2G_Trainer.Controller;
 using AnstossTrainer.Shared;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>Base class for the Anstoss 2 tab views (Club/Coach/Player): the controllers they share on top of the common TrainerView helpers.</summary>
     public partial class EntityView : TrainerView

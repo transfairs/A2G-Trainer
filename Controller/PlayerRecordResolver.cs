@@ -1,7 +1,7 @@
 using System;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Resolves absolute memory addresses within the permanent per-player record table (see

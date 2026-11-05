@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// One trainer level's distribution of the 6 points a coach gets to allocate across the six

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>About tab: credits and clickable links to the project's home/community threads.</summary>
     public partial class AboutView : UserControl

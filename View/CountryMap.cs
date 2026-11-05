@@ -1,11 +1,11 @@
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>
     /// A country of the five leagues as drawn on the "Landkarte" tab, in the pixel grid of the data
@@ -66,7 +66,7 @@ namespace A2G_Trainer_XP.View
                     return map;
                 map = null;
                 if (Files.TryGetValue(country, out string file))
-                    using (Stream stream = typeof(CountryMap).Assembly.GetManifestResourceStream($"A2G_Trainer_XP.Resources.Maps.{file}.map"))
+                    using (Stream stream = typeof(CountryMap).Assembly.GetManifestResourceStream($"A2G_Trainer.Resources.Maps.{file}.map"))
                         map = stream != null ? Read(stream) : null;
                 Loaded[country] = map;
                 return map;

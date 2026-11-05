@@ -38,10 +38,10 @@ $manifest = [ordered]@{
     version     = $version
     publishedAt = $publishedAt
     assets      = [ordered]@{
-        exe       = "$base/A2G-Trainer-XP-$Tag.exe"
-        ct        = "$base/A2G-Trainer-XP-$Tag.ct"
-        ctGog     = "$base/A2G-Trainer-XP-$Tag-GOG.ct"
-        zip       = "$latestBase/A2G-Trainer-XP-Latest.zip"
+        exe       = "$base/A2G-Trainer-$Tag.exe"
+        ct        = "$base/A2G-Trainer-$Tag.ct"
+        ctGog     = "$base/A2G-Trainer-$Tag-GOG.ct"
+        zip       = "$latestBase/A2G-Trainer-Latest.zip"
     }
     sha256      = [ordered]@{
         zip = $zipSha

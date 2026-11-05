@@ -1,4 +1,4 @@
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// Enum groups used to look up league/country memory addresses.

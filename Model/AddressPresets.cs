@@ -1,10 +1,10 @@
-﻿using A2G_Trainer_XP.Controller;
+﻿using A2G_Trainer.Controller;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// Static table of reverse-engineered hex memory offsets for each entity/context combination

@@ -1,9 +1,9 @@
-﻿using A2G_Trainer_XP.Model;
+﻿using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Reverse-engineered, module-relative memory addresses/offsets the rest of the app
@@ -15,7 +15,7 @@ namespace A2G_Trainer_XP.Controller
         // Not const: tests flip this via reflection (restoring it in a finally block) to exercise
         // Logger.Debug/Info's write path, which is otherwise permanently dead in a release build -
         // the test assembly disables parallelization specifically so a temporary flip here can't
-        // race another test (see A2G-Trainer-XP.Tests/AssemblyInfo.cs).
+        // race another test (see A2G-Trainer.Tests/AssemblyInfo.cs).
         private static bool  debug                    = false;
         private const ushort clubCount                = 294;
         private const ushort nonPlayableCount         = 130;

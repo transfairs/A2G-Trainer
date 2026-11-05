@@ -1,4 +1,4 @@
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>Reads/writes a single human trainer's (Mitspieler) slot: identity, contract, stocks, and wealth.</summary>
     public class CoachController : EntityController<Coach>

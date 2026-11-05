@@ -2,16 +2,16 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: InternalsVisibleTo("A2G-Trainer-XP.Tests")]
+[assembly: InternalsVisibleTo("A2G-Trainer.Tests")]
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("A2G-Trainer-XP")]
+[assembly: AssemblyTitle("A2G-Trainer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("A2G-Trainer-XP")]
+[assembly: AssemblyProduct("A2G-Trainer")]
 [assembly: AssemblyCopyright("Copyright © 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

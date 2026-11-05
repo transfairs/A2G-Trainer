@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Resolves the true, save-persistent address of a player's Firstname/Lastname.

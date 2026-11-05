@@ -1,11 +1,11 @@
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// The club records of the five league countries and the working copies the game has fetched

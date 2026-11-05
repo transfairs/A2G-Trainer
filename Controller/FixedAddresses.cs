@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Where the fixed addresses found by statically analysing the original build (Mitspieler copies,

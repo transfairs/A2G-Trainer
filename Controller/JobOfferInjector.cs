@@ -1,10 +1,10 @@
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using System;
 using System.Linq;
 using System.Text;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Makes the game offer a human trainer a job at a chosen club at the next daily processing,

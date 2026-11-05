@@ -1,4 +1,4 @@
-﻿using A2G_Trainer_XP.Model;
+﻿using A2G_Trainer.Model;
 using AnstossTrainer.Shared;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Anstoss 2 Gold's game observer (polling loop in the shared GameObserver): attaches to the

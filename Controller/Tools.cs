@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>Shared helpers for hex-address arithmetic and string handling used across the controllers.</summary>
     static class Tools

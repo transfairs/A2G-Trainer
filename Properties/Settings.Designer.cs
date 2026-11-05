@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 
-namespace A2G_Trainer_XP.Properties
+namespace A2G_Trainer.Properties
 {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]

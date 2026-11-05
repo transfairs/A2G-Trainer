@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// A human trainer/manager (Mitspieler) in one of the savegame's up-to-<see cref="MaxTrainers"/> slots.

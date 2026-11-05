@@ -1,7 +1,7 @@
 using System;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// The savegame's calendar values that injury-related player-record fields are stored against

@@ -1,5 +1,5 @@
 ﻿
-namespace A2G_Trainer_XP
+namespace A2G_Trainer
 {
     partial class Trainer
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Reads/writes the savegame-wide country selection (LeagueSettings). Unlike CoachController

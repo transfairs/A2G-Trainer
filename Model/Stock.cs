@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace A2G_Trainer_XP.Model
+namespace A2G_Trainer.Model
 {
     /// <summary>
     /// A single stock-market holding (Aktie) for one of a coach's up-to-<see cref="Coach.MaxStocks"/> slots.

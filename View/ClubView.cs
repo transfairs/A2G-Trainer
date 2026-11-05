@@ -1,11 +1,11 @@
-﻿using A2G_Trainer_XP.Controller;
-using A2G_Trainer_XP.Model;
+﻿using A2G_Trainer.Controller;
+using A2G_Trainer.Model;
 using System;
 using System.Linq;
 using System.Windows.Forms;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     /// <summary>Tab for the user's own club: identity, stadium, and finances.</summary>
     public partial class ClubView : EntityView

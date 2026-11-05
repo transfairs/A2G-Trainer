@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Derives a GOG-addressed Cheat Engine table from the original A2G-Trainer-XP.ct.
+    Derives a GOG-addressed Cheat Engine table from the original A2G-Trainer.ct.
 
 .DESCRIPTION
     Every <Address>anstoss2.exe+HEX</Address> entry is rewritten to <ModuleName>+<HEX + OffsetHex>,

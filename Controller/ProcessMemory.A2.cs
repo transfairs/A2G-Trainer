@@ -1,4 +1,4 @@
-using A2G_Trainer_XP.Controller;
+using A2G_Trainer.Controller;
 
 namespace AnstossTrainer.Shared
 {

@@ -25,7 +25,7 @@ jobs:
   update:
     runs-on: windows-2022
     env:
-      TESTS: A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj
+      TESTS: A2G-Trainer.Tests/A2G-Trainer.Tests.csproj
       GH_TOKEN: ${{ github.token }}
 
     steps:

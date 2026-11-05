@@ -1,12 +1,12 @@
-﻿using A2G_Trainer_XP.Controller;
-using A2G_Trainer_XP.Model;
-using A2G_Trainer_XP.View;
+﻿using A2G_Trainer.Controller;
+using A2G_Trainer.Model;
+using A2G_Trainer.View;
 using AnstossTrainer.Shared;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace A2G_Trainer_XP
+namespace A2G_Trainer
 {
     /// <summary>Main window: hosts the menu and swaps in the active tab (Club/Player/Coach/Help/About).</summary>
     public partial class Trainer : TrainerShell

@@ -1,5 +1,5 @@
 
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     partial class CoachView
     {
@@ -795,7 +795,7 @@ namespace A2G_Trainer_XP.View
             //
             // CoachView
             //
-            this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
+            this.BackgroundImage = global::A2G_Trainer.Properties.Resources.TabControl;
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.ClubTabControl);

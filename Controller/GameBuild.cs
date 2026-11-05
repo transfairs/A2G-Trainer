@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// One executable build of the game, told apart by its PE header's link timestamp and image

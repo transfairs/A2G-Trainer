@@ -1,5 +1,5 @@
 ﻿
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     partial class AboutView
     {
@@ -180,7 +180,7 @@ namespace A2G_Trainer_XP.View
             // 
             this.Logo.BackColor = System.Drawing.Color.Transparent;
             this.Logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Logo.Image = global::A2G_Trainer_XP.Properties.Resources.Trainer_Logo;
+            this.Logo.Image = global::A2G_Trainer.Properties.Resources.Trainer_Logo;
             this.Logo.InitialImage = null;
             this.Logo.Location = new System.Drawing.Point(421, 51);
             this.Logo.Name = "Logo";
@@ -191,7 +191,7 @@ namespace A2G_Trainer_XP.View
             // 
             // AboutView
             // 
-            this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
+            this.BackgroundImage = global::A2G_Trainer.Properties.Resources.TabControl;
             this.Controls.Add(this.Logo);
             this.Controls.Add(this.MainTabControl);
             this.Name = "AboutView";

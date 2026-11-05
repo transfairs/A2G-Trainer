@@ -42,10 +42,10 @@ jobs:
         # fails on Trainer.resx's binary resources (MSB3822/MSB3823, missing
         # System.Resources.Extensions), which the full Visual Studio MSBuild toolchain
         # handles natively for this legacy .NET Framework 4.0 project.
-        run: msbuild A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj /t:Restore,Build /p:Configuration=Release
+        run: msbuild A2G-Trainer.Tests/A2G-Trainer.Tests.csproj /t:Restore,Build /p:Configuration=Release
 
       - name: Run tests
-        run: dotnet test A2G-Trainer-XP.Tests/A2G-Trainer-XP.Tests.csproj --configuration Release --no-build --no-restore
+        run: dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --configuration Release --no-build --no-restore
 
       - name: Inject version from tag
         shell: pwsh
@@ -69,19 +69,19 @@ jobs:
       # One build for every game release: the trainer identifies original, GOG and 2007 CD itself
       # (Controller/GameBuild.cs).
       - name: Build Trainer
-        run: msbuild A2G-Trainer-XP.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86
+        run: msbuild A2G-Trainer.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86
 
       - name: Package binaries
         shell: pwsh
         run: |
           $tag = "${{ github.ref_name }}"
           New-Item -ItemType Directory -Force -Path dist | Out-Null
-          Copy-Item "bin\x86\Release\A2G-Trainer-XP.exe" "dist\A2G-Trainer-XP-$tag.exe"
-          Copy-Item "A2G-Trainer-XP.ct" "dist\A2G-Trainer-XP-$tag.ct"
+          Copy-Item "bin\x86\Release\A2G-Trainer.exe" "dist\A2G-Trainer-$tag.exe"
+          Copy-Item "A2G-Trainer.ct" "dist\A2G-Trainer-$tag.ct"
 
       - name: Build GOG cheat table
         shell: pwsh
-        run: ./scripts/Convert-CtToGog.ps1 -InputPath "A2G-Trainer-XP.ct" -OutputPath "dist/A2G-Trainer-XP-${{ github.ref_name }}-GOG.ct"
+        run: ./scripts/Convert-CtToGog.ps1 -InputPath "A2G-Trainer.ct" -OutputPath "dist/A2G-Trainer-${{ github.ref_name }}-GOG.ct"
 
       - name: Generate changelog
         shell: pwsh
@@ -97,20 +97,20 @@ jobs:
           $tag = "${{ github.ref_name }}"
           $bundleDir = "dist/bundle"
           New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
-          Copy-Item "dist\A2G-Trainer-XP-$tag.exe" "$bundleDir\A2G-Trainer-XP.exe"
-          Copy-Item "dist\A2G-Trainer-XP-$tag.ct" "$bundleDir\A2G-Trainer-XP.ct"
-          Copy-Item "dist\A2G-Trainer-XP-$tag-GOG.ct" "$bundleDir\A2G-Trainer-XP-GOG.ct"
+          Copy-Item "dist\A2G-Trainer-$tag.exe" "$bundleDir\A2G-Trainer.exe"
+          Copy-Item "dist\A2G-Trainer-$tag.ct" "$bundleDir\A2G-Trainer.ct"
+          Copy-Item "dist\A2G-Trainer-$tag-GOG.ct" "$bundleDir\A2G-Trainer-GOG.ct"
           Copy-Item "dist\Changelog.html" "$bundleDir\Changelog.html"
 
-          $zipPath = "dist/A2G-Trainer-XP-Latest.zip"
+          $zipPath = "dist/A2G-Trainer-Latest.zip"
           Compress-Archive -Path "$bundleDir\*" -DestinationPath $zipPath -Force
 
           $hash = (Get-FileHash -Algorithm SHA256 -Path $zipPath).Hash.ToLower()
-          "$hash  A2G-Trainer-XP-Latest.zip" | Set-Content "$zipPath.sha256" -Encoding utf8
+          "$hash  A2G-Trainer-Latest.zip" | Set-Content "$zipPath.sha256" -Encoding utf8
 
       - name: Build version manifest
         shell: pwsh
-        run: ./scripts/New-VersionManifest.ps1 -Tag "${{ github.ref_name }}" -Repository "${{ github.repository }}" -ZipShaPath "dist/A2G-Trainer-XP-Latest.zip.sha256"
+        run: ./scripts/New-VersionManifest.ps1 -Tag "${{ github.ref_name }}" -Repository "${{ github.repository }}" -ZipShaPath "dist/A2G-Trainer-Latest.zip.sha256"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -118,7 +118,7 @@ jobs:
           files: |
             dist/*.exe
             dist/*.ct
-            dist/A2G-Trainer-XP-Latest.zip
-            dist/A2G-Trainer-XP-Latest.zip.sha256
+            dist/A2G-Trainer-Latest.zip
+            dist/A2G-Trainer-Latest.zip.sha256
             dist/version*.json
           body_path: dist/current-version-notes.md

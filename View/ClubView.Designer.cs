@@ -1,5 +1,5 @@
 ﻿
-namespace A2G_Trainer_XP.View
+namespace A2G_Trainer.View
 {
     partial class ClubView
     {
@@ -50,7 +50,7 @@ namespace A2G_Trainer_XP.View
             this.StadiumNameInput = new System.Windows.Forms.TextBox();
             this.ClubNameInput = new System.Windows.Forms.TextBox();
             this.StadiumTab = new System.Windows.Forms.TabPage();
-            this.StadiumPlanView = new A2G_Trainer_XP.View.StadiumPlan();
+            this.StadiumPlanView = new A2G_Trainer.View.StadiumPlan();
             this.BlockBox = new System.Windows.Forms.GroupBox();
             this.BlockStandingsLabel = new System.Windows.Forms.Label();
             this.BlockStandingsInput = new System.Windows.Forms.TextBox();
@@ -81,9 +81,9 @@ namespace A2G_Trainer_XP.View
             this.UpperSeatsCheckBox = new System.Windows.Forms.CheckBox();
             this.IdentityTab = new System.Windows.Forms.TabPage();
             this.MapTab = new System.Windows.Forms.TabPage();
-            this.ClubMapView = new A2G_Trainer_XP.View.ClubMap();
+            this.ClubMapView = new A2G_Trainer.View.ClubMap();
             this.JerseyTab = new System.Windows.Forms.TabPage();
-            this.JerseyEditor = new A2G_Trainer_XP.View.JerseyView();
+            this.JerseyEditor = new A2G_Trainer.View.JerseyView();
             this.FanTypeLabel = new System.Windows.Forms.Label();
             this.FanTypeInput = new System.Windows.Forms.ComboBox();
             this.ShortNameLabel = new System.Windows.Forms.Label();
@@ -538,7 +538,7 @@ namespace A2G_Trainer_XP.View
             // 
             // LegendStandingOpenSwatch
             // 
-            this.LegendStandingOpenSwatch.BackColor = A2G_Trainer_XP.View.StadiumPlan.StandingOpen;
+            this.LegendStandingOpenSwatch.BackColor = A2G_Trainer.View.StadiumPlan.StandingOpen;
             this.LegendStandingOpenSwatch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LegendStandingOpenSwatch.Location = new System.Drawing.Point(10, 21);
             this.LegendStandingOpenSwatch.Name = "LegendStandingOpenSwatch";
@@ -563,7 +563,7 @@ namespace A2G_Trainer_XP.View
             // 
             // LegendStandingRoofedSwatch
             // 
-            this.LegendStandingRoofedSwatch.BackColor = A2G_Trainer_XP.View.StadiumPlan.StandingRoofed;
+            this.LegendStandingRoofedSwatch.BackColor = A2G_Trainer.View.StadiumPlan.StandingRoofed;
             this.LegendStandingRoofedSwatch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LegendStandingRoofedSwatch.Location = new System.Drawing.Point(10, 41);
             this.LegendStandingRoofedSwatch.Name = "LegendStandingRoofedSwatch";
@@ -588,7 +588,7 @@ namespace A2G_Trainer_XP.View
             // 
             // LegendSeatsOpenSwatch
             // 
-            this.LegendSeatsOpenSwatch.BackColor = A2G_Trainer_XP.View.StadiumPlan.SeatsOpen;
+            this.LegendSeatsOpenSwatch.BackColor = A2G_Trainer.View.StadiumPlan.SeatsOpen;
             this.LegendSeatsOpenSwatch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LegendSeatsOpenSwatch.Location = new System.Drawing.Point(10, 61);
             this.LegendSeatsOpenSwatch.Name = "LegendSeatsOpenSwatch";
@@ -613,7 +613,7 @@ namespace A2G_Trainer_XP.View
             // 
             // LegendSeatsRoofedSwatch
             // 
-            this.LegendSeatsRoofedSwatch.BackColor = A2G_Trainer_XP.View.StadiumPlan.SeatsRoofed;
+            this.LegendSeatsRoofedSwatch.BackColor = A2G_Trainer.View.StadiumPlan.SeatsRoofed;
             this.LegendSeatsRoofedSwatch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LegendSeatsRoofedSwatch.Location = new System.Drawing.Point(10, 81);
             this.LegendSeatsRoofedSwatch.Name = "LegendSeatsRoofedSwatch";
@@ -638,7 +638,7 @@ namespace A2G_Trainer_XP.View
             // 
             // LegendBoxesSwatch
             // 
-            this.LegendBoxesSwatch.BackColor = A2G_Trainer_XP.View.StadiumPlan.Boxes;
+            this.LegendBoxesSwatch.BackColor = A2G_Trainer.View.StadiumPlan.Boxes;
             this.LegendBoxesSwatch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LegendBoxesSwatch.Location = new System.Drawing.Point(10, 101);
             this.LegendBoxesSwatch.Name = "LegendBoxesSwatch";
@@ -1269,7 +1269,7 @@ namespace A2G_Trainer_XP.View
             // 
             // ClubView
             // 
-            this.BackgroundImage = global::A2G_Trainer_XP.Properties.Resources.TabControl;
+            this.BackgroundImage = global::A2G_Trainer.Properties.Resources.TabControl;
             this.Controls.Add(this.ClubSelect);
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
@@ -1330,12 +1330,12 @@ namespace A2G_Trainer_XP.View
         private System.Windows.Forms.Button SaveBtn;
         private System.Windows.Forms.Button ReloadBtn;
         private System.Windows.Forms.TabPage StadiumTab;
-        private A2G_Trainer_XP.View.StadiumPlan StadiumPlanView;
+        private A2G_Trainer.View.StadiumPlan StadiumPlanView;
         private System.Windows.Forms.TabPage IdentityTab;
         private System.Windows.Forms.TabPage MapTab;
-        private A2G_Trainer_XP.View.ClubMap ClubMapView;
+        private A2G_Trainer.View.ClubMap ClubMapView;
         private System.Windows.Forms.TabPage JerseyTab;
-        private A2G_Trainer_XP.View.JerseyView JerseyEditor;
+        private A2G_Trainer.View.JerseyView JerseyEditor;
         private System.Windows.Forms.Label FanTypeLabel;
         private System.Windows.Forms.ComboBox FanTypeInput;
         private System.Windows.Forms.Label ShortNameLabel;

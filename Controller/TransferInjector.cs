@@ -1,11 +1,11 @@
-using A2G_Trainer_XP.Model;
+using A2G_Trainer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AnstossTrainer.Shared;
 
-namespace A2G_Trainer_XP.Controller
+namespace A2G_Trainer.Controller
 {
     /// <summary>
     /// Moves a player to another club at the next daily processing - as a transfer, a loan or a loan
