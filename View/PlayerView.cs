@@ -22,12 +22,20 @@ namespace A2G_Trainer.View
         // Country the club list of the "Wechsel" tab was last filled for.
         private PlayerEnums.Country transferClubCountry;
         private bool populatingTransferCountries;
+        // Club selection above the list: every club with a record (ClubSquads), the club whose squad
+        // or youth the list shows from the records, and the one picked last ("Anderer Verein").
+        private ClubSelection clubSelection;
+        private ClubSquads.Entry chosenClub;
+
+        /// <summary>Raised when the user picks a club above the list; the list already shows it (CLUB, or TRAINEE for its youth).</summary>
+        internal event Action<ClubSquads.Entry, PlayerEnums.AddressType> ClubChosen;
 
         /// <summary>Creates the roster tab view bound to the given memory accessor and process controller.</summary>
         public PlayerView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
         {
             InitializeComponent();
             InitPlayerListView();
+            InitClubSelection();
             InitializeFreezeTimer();
         }
 
@@ -62,11 +70,10 @@ namespace A2G_Trainer.View
                         if (!(control is VScrollBar || control is HScrollBar))
                             control.Enabled = enable;
                     }
-                    // OtherTab (statistics) isn't part of what the persistent write path covers, so
-                    // it stays disabled for TRAINEE.
+                    // Youth players don't play, so the statistics tab stays disabled for them.
                     if (tabPage == this.OtherTab)
                     {
-                        tabPage.Enabled = this.clubController.Type != PlayerEnums.AddressType.TRAINEE && enable;
+                        tabPage.Enabled = this.playerController?.Type != PlayerEnums.AddressType.TRAINEE && enable;
                     }
                 }
             }
@@ -80,6 +87,10 @@ namespace A2G_Trainer.View
             this.NationalityCombo.DisplayMember = "Text";
             this.NationalityCombo.ValueMember = "Value";
 
+            this.InjuryKindInput.DataSource = Enum.GetValues(typeof(PlayerEnums.Injury)).Cast<PlayerEnums.Injury>().Select(i => new { Value = i, Text = PlayerEnums.GetDescription(i) }).ToList();
+            this.InjuryKindInput.DisplayMember = "Text";
+            this.InjuryKindInput.ValueMember = "Value";
+
             if (this.PlayerListView != null && this.PlayerListView.Items != null && this.PlayerListView.Items.Count > 0)
             {
                 this.bindingSource = new BindingSource
@@ -87,7 +98,7 @@ namespace A2G_Trainer.View
                     DataSource = this.PlayerListView.Items[0].Tag
                 };
 
-                this.ShowClubLabel();
+                this.ShowClubSelection();
                 this.DisableEdits(this.IsClub());
 
                 this.LevelInput.KeyPress += this.NumericOnly_KeyPress;
@@ -116,17 +127,17 @@ namespace A2G_Trainer.View
 
                 this.LevelInput.TextChanged += this.ByteMax255_TextChanged;
                 this.AgeInput.TextChanged += this.ByteMax255_TextChanged;
-                this.ConditionInput.TextChanged += this.ByteMax255_TextChanged;
-                this.FreshnessInput.TextChanged += this.ByteMax255_TextChanged;
+                this.ConditionInput.TextChanged += this.ConditionFreshness_TextChanged;
+                this.FreshnessInput.TextChanged += this.ConditionFreshness_TextChanged;
                 this.FormInput.TextChanged += this.ByteMax255_TextChanged;
                 this.JerseyInput.TextChanged += this.ByteMax255_TextChanged;
-                this.RedCardsInput.TextChanged += this.ByteMax255_TextChanged;
+                this.RedCardsInput.TextChanged += this.BannedMatches_TextChanged;
                 this.YellowCardsInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamLevelInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamFormInput.TextChanged += this.ByteMax255_TextChanged;
                 this.TeamAgeInput.TextChanged += this.ByteMax255_TextChanged;
-                this.TeamConditionInput.TextChanged += this.ByteMax255_TextChanged;
-                this.TeamFreshnessInput.TextChanged += this.ByteMax255_TextChanged;
+                this.TeamConditionInput.TextChanged += this.ConditionFreshness_TextChanged;
+                this.TeamFreshnessInput.TextChanged += this.ConditionFreshness_TextChanged;
                 this.SalaryInput.TextChanged += this.UshortMaxNumber_TextChanged;
                 this.ShowUpBonusInput.TextChanged += this.UshortMaxNumber_TextChanged;
                 this.GoalBonusInput.TextChanged += this.UshortMaxNumber_TextChanged;
@@ -302,6 +313,7 @@ namespace A2G_Trainer.View
                 this.ScheissNachwuchsrunde.DataBindings.Add("Checked", this.bindingSource, "IsScheissNachwuchsrunde");
 
                 this.InjuredDaysInput.DataBindings.Add("Text", this.bindingSource, "InjuredDays");
+                this.InjuryKindInput.DataBindings.Add("SelectedValue", this.bindingSource, nameof(Player.InjuryKind));
                 this.Vulnerable.DataBindings.Add("Checked", this.bindingSource, "Vulnerable");
                 this.Doped.DataBindings.Add("Checked", this.bindingSource, "Doped");
                 this.RedCardsInput.DataBindings.Add("Text", this.bindingSource, "RedCardBannedMatches");
@@ -322,6 +334,8 @@ namespace A2G_Trainer.View
                 this.SeatedGuarantee.DataBindings.Add("Checked", this.bindingSource, "IsSeatedGuarantee");
                 this.YearsInClubInput.DataBindings.Add("Text", this.bindingSource, "YearsInClub");
                 this.Retires.DataBindings.Add("Checked", this.bindingSource, "IsRetires");
+                // Ticking puts the player on the transfer list, unticking takes the player off (see PlayerController.Save).
+                this.TransferListed.DataBindings.Add("Checked", this.bindingSource, nameof(Player.IsTransferListed));
 
                 this.RedCardsSeasonInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.RedCardsSeason));
                 this.YellowRedCardsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.YellowRedCardsSeason));
@@ -333,6 +347,8 @@ namespace A2G_Trainer.View
                 this.SubbedInInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.SubbedIn));
                 this.SubbedOutInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.SubbedOut));
                 this.UpgradeGoalsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.UpgradeGoals));
+                this.CapsInput.DataBindings.Add("Text", this.bindingSource, nameof(Player.Caps));
+                this.NationalTeamRetired.DataBindings.Add("Checked", this.bindingSource, nameof(Player.IsNationalTeamRetired));
 
                 this.AttachHomeClubHandlers();
                 this.ShowHomeClub(this.bindingSource.Current as Player);
@@ -340,6 +356,39 @@ namespace A2G_Trainer.View
                 this.ShowTransfer();
             }
         }
+
+        #region Grenzen
+        /// <summary>
+        /// Highest condition and freshness. The game keeps both as signed bytes (AK +0x30/+0x31) and
+        /// clamps them to 0..100 (FUN_00624020); 128 and up read as negative and drop to 0.
+        /// </summary>
+        internal const byte MaxConditionFreshness = 100;
+
+        /// <summary>
+        /// Highest red-card ban. The game counts the league ban in bits 0-4 of AK +0x4D (FUN_0061f460
+        /// masks it with 0x1F) and copies it into AK +0x48 before a match (FUN_0057c600), so 32 wraps to 0.
+        /// </summary>
+        internal const byte MaxBannedMatches = 31;
+
+        private void ConditionFreshness_TextChanged(object sender, EventArgs e) => CapTypedValue((TextBox)sender, MaxConditionFreshness);
+
+        private void BannedMatches_TextChanged(object sender, EventArgs e) => CapTypedValue((TextBox)sender, MaxBannedMatches);
+
+        /// <summary>
+        /// Caps what the user typed at <paramref name="max"/>. A value the trainer loaded from the game
+        /// (Modified is false) stays as it is, so flag bits in a read byte are written back unchanged.
+        /// </summary>
+        internal static void CapTypedValue(TextBox textBox, int max)
+        {
+            if (string.IsNullOrEmpty(textBox.Text) || !textBox.Modified)
+                return;
+            if (!int.TryParse(textBox.Text, out int value) || value > max)
+            {
+                textBox.Text = max.ToString();
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
+        #endregion
 
         #region Wechsel
         // "Wechsel" tab (TransferInjector): the target club is chosen from the club scan like the
@@ -586,15 +635,21 @@ namespace A2G_Trainer.View
             country == PlayerEnums.Country.Sonstige ? NoHomeClubText
             : Enum.IsDefined(typeof(PlayerEnums.Country), country) ? PlayerEnums.GetDescription(country)
             : $"Land {(byte)country}";
-        // The "Statistik" tab's inputs, all season counts of one byte each.
+        // The "Statistik" tab's inputs, all counts of one byte each: the season plus the national caps.
         private TextBox[] StatisticInputs => new[]
         {
             this.AppearancesInput, this.SubbedInInput, this.SubbedOutInput, this.RedCardsSeasonInput, this.YellowRedCardsInput,
-            this.GoalsInput, this.AssistsInput, this.JokerGoalsInput, this.OwnGoalsInput, this.UpgradeGoalsInput
+            this.GoalsInput, this.AssistsInput, this.JokerGoalsInput, this.OwnGoalsInput, this.UpgradeGoalsInput, this.CapsInput
         };
 
+        // A list from the records always belongs to its club; the own/opponent roster slots only
+        // while every player in them still plays for the club read alongside.
         private bool IsClub()
         {
+            if (this.playerController?.RecordClub != null)
+                return true;
+            if (this.clubController == null)
+                return false;
             bool output = !String.IsNullOrEmpty(this.clubController.Club.ClubName);
             int i = 0;
             if (output)
@@ -618,102 +673,129 @@ namespace A2G_Trainer.View
             return output;
         }
 
-        private void ShowClubLabel()
+        #endregion
+
+        #region Club selection
+        private void InitClubSelection()
         {
-            this.CurrentClubLabel.Text = !this.IsClub() ? "!! Keine Vereinsansicht !!" : this.clubController.Club.ClubName;
+            this.clubSelection = new ClubSelection(this.ClubCountryInput, this.ClubInput);
+            this.clubSelection.Picked += this.ClubPicked;
+        }
+
+        // The club the list belongs to: the one it was read from, or for the own/opponent roster the
+        // record of the club read alongside.
+        private ClubSquads.Entry DisplayedClub()
+        {
+            if (this.playerController?.RecordClub != null)
+                return this.playerController.RecordClub;
+            if (this.clubController == null || !this.IsClub())
+                return null;
+            return this.clubSelection.Find(this.clubController.Club.Country, this.clubController.Club.Id);
+        }
+
+        private void ShowClubSelection() => this.clubSelection.Show(this.DisplayedClub());
+
+        // The youth list stays a youth list; the own squad, the opponent and any other club become "Verein".
+        private void ClubPicked(ClubSquads.Entry club)
+        {
+            PlayerEnums.AddressType type = this.playerController?.Type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.TRAINEE : PlayerEnums.AddressType.CLUB;
+            if (type == PlayerEnums.AddressType.CLUB)
+                this.chosenClub = club;
+            this.LoadPlayerList(type, club);
+            this.ClubChosen?.Invoke(club, type);
+        }
+
+        private ClubSquads.Entry OwnClub()
+        {
+            Club own = new ClubController(this.Memory, this.processController.IsGog, PlayerEnums.AddressType.OWN).Club;
+            return this.clubSelection.Find(own.Country, own.Id);
         }
         #endregion
 
+        /// <summary>
+        /// Shows the own squad (OWN), the next opponent (OPPONENT), the club picked last or else the own
+        /// club (CLUB), or the own club's youth players (TRAINEE).
+        /// </summary>
         internal void RefreshPlayerListView(PlayerEnums.AddressType type)
         {
             if (this.IsGameRunning())
+                this.LoadPlayerList(type, type == PlayerEnums.AddressType.CLUB ? this.chosenClub : null);
+        }
+
+        /// <summary>The club picked last ("Anderer Verein"), or null.</summary>
+        internal ClubSquads.Entry ChosenClub => this.chosenClub;
+
+        /// <summary>
+        /// Shows <paramref name="club"/>'s squad (CLUB, which also makes it the club picked last) or
+        /// its youth players (TRAINEE), as picking it above the list does - without raising ClubChosen.
+        /// </summary>
+        internal void ShowClub(ClubSquads.Entry club, PlayerEnums.AddressType type)
+        {
+            if (type == PlayerEnums.AddressType.CLUB)
+                this.chosenClub = club;
+            if (this.IsGameRunning())
+                this.LoadPlayerList(type, club);
+        }
+
+        // Reads the shown list again (Neu laden, after saving), for the same club.
+        private void ReloadPlayerListView()
+        {
+            if (this.playerController != null && this.IsGameRunning())
+                this.LoadPlayerList(this.playerController.Type, this.playerController.RecordClub);
+        }
+
+        // OWN/OPPONENT read the roster slots the game fills for them; CLUB/TRAINEE list <paramref name="club"/>
+        // (or, if this savegame hasn't got it, the own club) from the records.
+        private void LoadPlayerList(PlayerEnums.AddressType type, ClubSquads.Entry club)
+        {
+            // Also calibrates the record layout of builds other than the original on first use.
+            this.processController.UpdatePlayerOffsets();
+            this.allClubs = new ClubController(this.Memory, this.processController.IsGog, PlayerEnums.AddressType.ALL, loadFullList: true).EntityList.ToList();
+            this.clubSelection.Clubs = ClubSquads.Clubs(this.Memory, FixedAddresses.For(this.Memory));
+
+            if (type == PlayerEnums.AddressType.OWN || type == PlayerEnums.AddressType.OPPONENT)
             {
-                this.processController.UpdatePlayerOffsets();
-                this.allClubs = new ClubController(this.Memory, this.processController.IsGog, PlayerEnums.AddressType.ALL, loadFullList: true).EntityList.ToList();
-
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.TRAINEE ? PlayerEnums.AddressType.OWN : type,
-                    loadFullList: type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE);
-
-                if (type == PlayerEnums.AddressType.DYNAMIC || type == PlayerEnums.AddressType.TRAINEE)
-                {
-                    ushort pc = this.clubController.Club.PlayerCount;
-                    byte apc = this.clubController.Club.AmateurPlayerCount;
-                    this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
-                    // .FirstOrDefault(), not .First(): EntityList is legitimately empty when no
-                    // savegame is loaded (e.g. clicking a menu item at the main menu) - IsClubMember
-                    // below is already null-safe, so a null firstPlayer just naturally resolves to
-                    // "not a member"/"" instead of throwing.
-                    Player firstPlayer = this.playerController.EntityList.FirstOrDefault();
-
-                    if (type == PlayerEnums.AddressType.DYNAMIC)
-                    {
-                        // The club table we scan only covers leagues the game actually models (~27
-                        // countries) - a dynamic club from a country outside that set (e.g. Slowakei)
-                        // will never show up here even though it was read correctly below. Only the
-                        // direct read's PlayerCount/AmateurPlayerCount get clobbered by constructing
-                        // the PlayerController above, so those are restored - the already-correct
-                        // ClubName is kept rather than blanked.
-                        Club dynamic = this.clubController.EntityList.FirstOrDefault(c => c.IsClubMember(firstPlayer));
-                        // firstPlayer can be null (no savegame loaded / empty EntityList, see above) -
-                        // the interpolated string below is evaluated unconditionally regardless of the
-                        // Debug log level, so firstPlayer.ClubId/.ClubCountry must be accessed via ?.
-                        // rather than assuming firstPlayer is non-null.
-                        Logger.Debug($"Dynamic match: firstPlayer ClubId={firstPlayer?.ClubId} ClubCountry={firstPlayer?.ClubCountry} -> {(dynamic != null ? $"found {dynamic.ClubName} ({dynamic.Id}, {dynamic.Country}), {dynamic.PlayerCount} players" : "NOT found in EntityList (keeping direct-read club)")}");
-                        if (dynamic == null)
-                        {
-                            this.clubController.Club.PlayerCount = pc;
-                            this.clubController.Club.AmateurPlayerCount = apc;
-                        }
-                        this.clubController.Club = dynamic ?? this.clubController.Club;
-                    }
-                    if (type == PlayerEnums.AddressType.TRAINEE)
-                    {
-                        this.clubController.Club.ClubName = this.clubController.Club.IsClubMember(firstPlayer) ? "Jugendspieler" : "";
-                        Logger.Debug($"3. Spieler {firstPlayer} gehört zum Club: {this.clubController.Club.ClubName}, {this.clubController.Club.IsClubMember(firstPlayer)}");
-
-                        this.clubController.Club.PlayerCount = (ushort)(this.clubController.Club.TraineeACount + this.clubController.Club.TraineeBCount + this.clubController.Club.TraineeCCount);
-                        this.clubController.Club.AmateurPlayerCount = Byte.MinValue;
-                        this.clubController.Type = type;
-                    }
-                }
-
+                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type);
                 this.playerController = new PlayerController(this.Memory, this.clubController.Club, this.processController.IsGog, type);
-
-                Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;
-                this.PlayerListView.Items.Clear();
-
-                if (this.playerController != null)
-                {
-                    int i = 0;
-                    int pId = 0;
-                    foreach (var p in this.playerController.EntityList)
-                    {
-                        ListViewItem listViewItem = new ListViewItem(p.Position.ToString());
-                        listViewItem.SubItems.Add(p.ToString());
-                        listViewItem.SubItems.Add(p.Level.ToString());
-                        listViewItem.Tag = p;
-                        this.PlayerListView.Items.Add(listViewItem);
-
-                        if (player != null && p.Id == player.Id)
-                        {
-                            pId = i;
-                        }
-                        i++;
-                    }
-
-                    if (this.PlayerListView.Items.Count > pId)
-                    {
-                        this.PlayerListView.Items[pId].Selected = true;
-                        this.PlayerListView.Items[pId].Focused = true;
-                        this.PlayerListView.EnsureVisible(pId);
-                    }
-
-                    this.ShowClubLabel();
-                    this.DisableEdits(this.IsClub());
-                    this.ShowTransfer();
-                    this.ReportTransferOutcome();
-                }
             }
+            else
+            {
+                club = (club == null ? null : this.clubSelection.Find(club.Country, club.Id)) ?? this.OwnClub();
+                this.clubController = null;
+                this.playerController = new PlayerController(this.Memory, club, this.processController.IsGog, type);
+            }
+
+            Player player = (this.PlayerListView.SelectedItems.Count > 0) ? (Player)this.PlayerListView.SelectedItems[0].Tag : null;
+            this.PlayerListView.Items.Clear();
+
+            int i = 0;
+            int pId = 0;
+            foreach (var p in this.playerController.EntityList)
+            {
+                ListViewItem listViewItem = new ListViewItem(p.Position.ToString());
+                listViewItem.SubItems.Add(p.ToString());
+                listViewItem.SubItems.Add(p.Level.ToString());
+                listViewItem.Tag = p;
+                this.PlayerListView.Items.Add(listViewItem);
+
+                if (player != null && p.Id == player.Id)
+                {
+                    pId = i;
+                }
+                i++;
+            }
+
+            if (this.PlayerListView.Items.Count > pId)
+            {
+                this.PlayerListView.Items[pId].Selected = true;
+                this.PlayerListView.Items[pId].Focused = true;
+                this.PlayerListView.EnsureVisible(pId);
+            }
+
+            this.ShowClubSelection();
+            this.DisableEdits(this.IsClub());
+            this.ShowTransfer();
+            this.ReportTransferOutcome();
         }
         private void PlayerListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -733,10 +815,7 @@ namespace A2G_Trainer.View
         }
         private void ReloadBtn_Click(object sender, EventArgs e)
         {
-            if (this.playerController != null)
-            {
-                this.RefreshPlayerListView(this.playerController.Type);
-            }
+            this.ReloadPlayerListView();
         }
 
         private void SaveBtn_Click(object sender, EventArgs e)
@@ -790,7 +869,7 @@ namespace A2G_Trainer.View
                 }
                 this.ClearAllFields(this.TeamBus, frozenControls);
 
-                this.RefreshPlayerListView(this.playerController.Type);
+                this.ReloadPlayerListView();
             }
         }
 

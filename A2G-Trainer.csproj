@@ -81,6 +81,8 @@
     <Compile Include="Controller\CoachController.cs" />
     <Compile Include="Controller\ClubController.cs" />
     <Compile Include="Controller\ClubRecords.cs" />
+    <Compile Include="Controller\TransferList.cs" />
+    <Compile Include="Controller\ClubSquads.cs" />
     <Compile Include="Controller\EntityController.cs" />
     <Compile Include="Controller\FixedAddresses.cs" />
     <Compile Include="Controller\GameBuild.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="View\StadiumPlan.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="View\ClubSelection.cs" />
     <Compile Include="View\ClubMap.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -61,7 +61,7 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void PlayerController_OwnType_WithEmptyClub_InitialisesOpponentAndDynamicPresets()
+        public void PlayerController_OwnType_WithEmptyClub_InitialisesOpponentPreset()
         {
             ProcessMemory memory = new ProcessMemory();
             Club emptyClub = new Club();
@@ -69,12 +69,10 @@ namespace A2G_Trainer.Tests
             PlayerController controller = new PlayerController(memory, emptyClub, isGog: false, PlayerEnums.AddressType.OWN);
 
             Assert.Equal(string.Empty, controller.OpponentOffset);
-            Assert.Equal(string.Empty, controller.OtherOffset);
 
             // playerOffset ("178") + "" == "178"; OWN_PLAYERS shifted by that offset.
             Addresses expected = AddressPresets.InitPreset(string.Empty);
             Assert.Equal(expected[PlayerEnums.AddressKey.ID], AddressPresets.OPPONENT_PLAYERS[PlayerEnums.AddressKey.ID]);
-            Assert.Equal(expected[PlayerEnums.AddressKey.ID], AddressPresets.DYNAMIC_PLAYERS[PlayerEnums.AddressKey.ID]);
         }
 
         [Fact]

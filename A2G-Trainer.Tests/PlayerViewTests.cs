@@ -37,7 +37,7 @@ namespace A2G_Trainer.Tests
 
                     Assert.Null(thrown);
                     Assert.Empty(trainer.PlayerView.PlayerController.EntityList);
-                    Assert.Equal(string.Empty, trainer.PlayerView.ClubController.Club.ClubName);
+                    Assert.Null(trainer.PlayerView.PlayerController.RecordClub);
                 }
             });
         }

@@ -51,12 +51,15 @@ namespace A2G_Trainer.Tests
             {
                 SeedPlayerAndCalendar(fake);
                 // Injured since counter 3, until day 110 of 2001 (10 days from today), type 21;
-                // vulnerable until counter 12 (5 ticks left); 2 matches banned; doping countdown
-                // running (0x0C) plus an unrelated marker bit; 4 yellow cards.
+                // vulnerable until counter 12 (5 ticks left); a red-card league ban with 2 matches
+                // left plus a flag bit, until season day 30; doping countdown running (0x0C) plus an
+                // unrelated marker bit; 4 yellow cards.
                 WriteInt16s(fake, Record + 0x2A, 3, StartYear, 110);
                 fake.WriteModuleBytes(Record + 0x30, new byte[] { 21 });
                 WriteInt16s(fake, Record + 0x32, GlobalCounter + 5);
-                fake.WriteModuleBytes(Record + 0x34, new byte[] { 2, 0x4C, 4 });
+                fake.WriteModuleBytes(Record + 0x34, new byte[] { 0x82, 0x4C, 4 });
+                fake.WriteModuleBytes(Record + 0x39, new byte[] { 0x82, 0x80 });
+                WriteInt16s(fake, Record + 0xBE, 30);
 
                 Player player = LoadPlayer(fake, out _);
 
@@ -65,6 +68,10 @@ namespace A2G_Trainer.Tests
                 Assert.True(player.Vulnerable);
                 Assert.Equal((byte)5, player.VulnerableTicks);
                 Assert.Equal((byte)2, player.RedCardBannedMatches);
+                Assert.Equal((byte)0x82, player.LeagueBanState);
+                Assert.Equal((byte)0x80, player.LeagueBanReason);
+                Assert.Equal((ushort)30, player.LeagueBanEndDay);
+                Assert.Equal((byte)0x82, player.NextMatchBan);
                 Assert.True(player.Doped);
                 Assert.Equal((byte)0x4C, player.DopingState);
                 Assert.Equal((byte)4, player.YellowCardsSeason);
@@ -109,6 +116,8 @@ namespace A2G_Trainer.Tests
 
                 Assert.Equal(new short[] { GlobalCounter, 2002, 35 }, ReadInt16s(fake, Record + 0x2A, 3));
                 Assert.Equal((byte)12, fake.ReadModuleBytes(Record + 0x30, 1)[0]);
+                // The working copy too: the game shows the kind from there and writes it back over the record.
+                Assert.Equal((byte)12, fake.ReadDisplayCacheBytes(Own[PlayerEnums.AddressKey.INJURY], 1)[0]);
             }
         }
 
@@ -219,7 +228,71 @@ namespace A2G_Trainer.Tests
 
                 Assert.Equal(new short[] { 3, StartYear, 110 }, ReadInt16s(fake, Record + 0x2A, 3));
                 Assert.Equal((ushort)0x1234, BitConverter.ToUInt16(fake.ReadModuleBytes(Record + 0x32, 2), 0));
-                Assert.Equal((byte)3, fake.ReadModuleBytes(Record + 0x34, 1)[0]);
+                // A new red-card ban needs today's season day for its end, so it isn't written.
+                Assert.Equal(new byte[] { 0 }, fake.ReadModuleBytes(Record + 0x34, 1));
+                Assert.Equal(new byte[] { 0, 0 }, fake.ReadModuleBytes(Record + 0x39, 2));
+                Assert.Equal((byte)0, player.RedCardBannedMatches);
+            }
+        }
+
+        [Fact]
+        public void Save_NewBan_WritesARedCardBanWithItsEndDay_ToRecordAndWorkingCopy()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                SeedPlayerAndCalendar(fake);
+                Player player = LoadPlayer(fake, out PlayerController controller);
+                player.RedCardBannedMatches = 3;
+
+                controller.Save(player);
+
+                ushort endDay = (ushort)(GlobalCounter + 3 * 7 + 1);
+                Assert.Equal(new byte[] { 3 }, fake.ReadModuleBytes(Record + 0x34, 1));
+                Assert.Equal(new byte[] { 3, 0x80 }, fake.ReadModuleBytes(Record + 0x39, 2));
+                Assert.Equal(endDay, BitConverter.ToUInt16(fake.ReadModuleBytes(Record + 0xBE, 2), 0));
+                Assert.Equal(new byte[] { 3 }, fake.ReadDisplayCacheBytes(Own[PlayerEnums.AddressKey.BANNED_MATCHES], 1));
+                Assert.Equal(new byte[] { 3, 0x80 }, fake.ReadDisplayCacheBytes(Own[PlayerEnums.AddressKey.LEAGUE_BAN], 2));
+                Assert.Equal(endDay, BitConverter.ToUInt16(fake.ReadDisplayCacheBytes(Own[PlayerEnums.AddressKey.LEAGUE_BAN_END], 2), 0));
+            }
+        }
+
+        [Fact]
+        public void Save_BanSetToZero_ClearsBanReasonEndDayAndNextMatch()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                SeedPlayerAndCalendar(fake);
+                fake.WriteModuleBytes(Record + 0x34, new byte[] { 0x82 });
+                fake.WriteModuleBytes(Record + 0x39, new byte[] { 0x82, 0x80 });
+                WriteInt16s(fake, Record + 0xBE, 30);
+                Player player = LoadPlayer(fake, out PlayerController controller);
+                player.RedCardBannedMatches = 0;
+
+                controller.Save(player);
+
+                Assert.Equal(new byte[] { 0 }, fake.ReadModuleBytes(Record + 0x34, 1));
+                Assert.Equal(new byte[] { 0, 0 }, fake.ReadModuleBytes(Record + 0x39, 2));
+                Assert.Equal(new byte[] { 0, 0 }, fake.ReadModuleBytes(Record + 0xBE, 2));
+            }
+        }
+
+        [Fact]
+        public void Save_UnchangedBan_WritesTheBytesBackAsRead()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                SeedPlayerAndCalendar(fake);
+                // Not eligible for the next match (0x40) while a yellow-card ban of 2 matches runs.
+                fake.WriteModuleBytes(Record + 0x34, new byte[] { 0x40 });
+                fake.WriteModuleBytes(Record + 0x39, new byte[] { 0x22, 0x20 });
+                WriteInt16s(fake, Record + 0xBE, 0);
+                Player player = LoadPlayer(fake, out PlayerController controller);
+
+                controller.Save(player);
+
+                Assert.Equal(new byte[] { 0x40 }, fake.ReadModuleBytes(Record + 0x34, 1));
+                Assert.Equal(new byte[] { 0x22, 0x20 }, fake.ReadModuleBytes(Record + 0x39, 2));
+                Assert.Equal(new byte[] { 0, 0 }, fake.ReadModuleBytes(Record + 0xBE, 2));
             }
         }
 

@@ -107,6 +107,12 @@ namespace A2G_Trainer.Tests
                 Assert.Single(playerListView.SelectedItems);
                 var bindingSource = GetPrivateField<BindingSource>(trainer.PlayerView, "bindingSource");
                 Assert.Same(playerListView.Items[0].Tag, bindingSource.DataSource);
+
+                // The kind of injury is chosen by the game's names.
+                ComboBox injury = GetPrivateField<ComboBox>(trainer.PlayerView, "InjuryKindInput");
+                Assert.Equal(nameof(Player.InjuryKind), injury.DataBindings["SelectedValue"].BindingMemberInfo.BindingField);
+                Assert.Equal(Enum.GetValues(typeof(PlayerEnums.Injury)).Length, injury.Items.Count);
+                Assert.Equal("keine", injury.GetItemText(injury.Items[0]));
             }
         });
 
@@ -390,152 +396,6 @@ namespace A2G_Trainer.Tests
                 Exception thrown = Record.Exception(() => trainer.PlayerView.InitMainTabControl());
 
                 Assert.Null(thrown);
-            }
-        });
-
-        // RefreshPlayerListView's DYNAMIC branch scans every club in the league
-        // (ClubController's loadFullList: true path, GetEntityList) looking for the one whose
-        // Id/Country match the first dynamic-roster player's ClubId/ClubCountry
-        // (Club.IsClubMember) - see View/PlayerView.cs around the "Club dynamic = ..." line. The
-        // only previous test to reach this branch (TrainerAdditionalTests'
-        // DynamicTeamToolStripMenuItem_Click) self-attaches to the live test-host process and
-        // reads whatever happens to be in its real memory - whether a match is found there is
-        // essentially random. The two tests below make both outcomes deterministic instead.
-        //
-        // GetEntityList's club-scan region (Settings.AllClubInitialOffset, ~0x64FA8+) lives far
-        // past FakeModule's fixed 256KB display-cache block, so ClubAddress's pointer slot is
-        // routed here to a separate, purpose-sized block instead of fake.DisplayCacheBlock (which
-        // stays reserved for PlayerAddress, routed as usual - the dynamic player's fields land at
-        // small, offset-shifted addresses that fit it comfortably). The exact offset
-        // AddressPresets.DYNAMIC_PLAYERS ends up rebased to is computed here with the very same
-        // Tools.SumHex/AddressPresets.InitPreset calls PlayerController.InitOffsets uses in
-        // production, from the same own-club(0 players)/opponent-club(1 player) setup this test
-        // builds - so the player's ClubId/ClubCountry bytes below are written at the exact
-        // address production code will read, not a guessed one.
-        [Fact]
-        public void RefreshPlayerListView_ForDynamic_WithMatchingClubInFullList_AssignsTheScannedClub() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                fake.RoutePointerSlot(Settings.PlayerAddress[0]);
-
-                // ALL_CLUBS scan slot 0 sits at Settings.AllClubInitialOffset ("64FA8") plus a
-                // field offset up to "5BD" (AMATEUR_PLAYER_COUNT) - comfortably inside 0x70000,
-                // with room to spare.
-                const int clubBlockSize = 0x70000;
-                IntPtr clubBlock = Marshal.AllocHGlobal(clubBlockSize);
-                try
-                {
-                    byte[] zeros = new byte[clubBlockSize];
-                    Marshal.Copy(zeros, 0, clubBlock, clubBlockSize);
-                    uint clubPointerFieldAddress = fake.ModuleBase + Convert.ToUInt32(Settings.ClubAddress[0], 16);
-                    fake.Memory.WriteBytesAtAddress(clubPointerFieldAddress, BitConverter.GetBytes((uint)clubBlock.ToInt64()));
-
-                    void WriteClubField(string fieldOffset, string clubOffset, byte[] data)
-                    {
-                        uint address = Convert.ToUInt32(Tools.SumHex(new[] { fieldOffset, clubOffset }), 16);
-                        Marshal.Copy(data, 0, clubBlock + (int)address, data.Length);
-                    }
-
-                    const byte clubId = 42;
-                    const PlayerEnums.Country clubCountry = PlayerEnums.Country.England;
-
-                    // Direct-read dynamic club (DYNAMIC_CLUB == OPPONENT_CLUB, read at offset ""):
-                    // 1 player, so the roster read below yields a real firstPlayer instead of
-                    // null. This same address is also what InitOffsets' OPPONENT-typed counterpart
-                    // club read sees, so the offset math below ends up using 1 opponent player too.
-                    WriteClubField(AddressPresets.OPPONENT_CLUB[ClubEnums.AddressKey.PLAYER_COUNT], "", new byte[] { 1 });
-
-                    // The scanned club (ALL-clubs region, slot 0) that must match the dynamic
-                    // player written further below.
-                    string scannedClubOffset = Settings.AllClubInitialOffset.Key;
-                    WriteClubField(AddressPresets.ALL_CLUBS[ClubEnums.AddressKey.ID], scannedClubOffset, new byte[] { clubId });
-                    WriteClubField(AddressPresets.ALL_CLUBS[ClubEnums.AddressKey.COUNTRY], scannedClubOffset, new byte[] { (byte)clubCountry });
-                    WriteClubField(AddressPresets.ALL_CLUBS[ClubEnums.AddressKey.NAME], scannedClubOffset, Encoding.GetEncoding("iso-8859-1").GetBytes("Dynamo Test\0"));
-
-                    // Own club has 0 players (left at the block's zero default), so InitOffsets'
-                    // own-roster loop leaves its "last player" offset at "" - matching the setup
-                    // InitPreset/SumHex below replicate to land on the same DYNAMIC_PLAYERS base
-                    // PlayerController.InitOffsets will compute from this same memory.
-                    string otherOffset = Tools.SumHex(new[] { string.Empty, Settings.PlayerOffset });
-                    Addresses expectedDynamicPlayers = AddressPresets.InitPreset(otherOffset);
-
-                    fake.WriteDisplayCacheBytes(expectedDynamicPlayers[PlayerEnums.AddressKey.CLUB_ID], new byte[] { clubId });
-                    fake.WriteDisplayCacheBytes(expectedDynamicPlayers[PlayerEnums.AddressKey.CLUB_COUNTRY], new byte[] { (byte)clubCountry });
-
-                    Exception thrown = Record.Exception(() => trainer.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.DYNAMIC));
-
-                    Assert.Null(thrown);
-                    Assert.Equal(clubId, trainer.PlayerView.ClubController.Club.Id);
-                    Assert.Equal(clubCountry, trainer.PlayerView.ClubController.Club.Country);
-                    Assert.Equal("Dynamo Test", trainer.PlayerView.ClubController.Club.ClubName);
-                }
-                finally
-                {
-                    Marshal.FreeHGlobal(clubBlock);
-                }
-            }
-        });
-
-        // Counterpart to the "found" test above, covering IsClubMember's other outcome
-        // deterministically: with the direct-read dynamic club left at its default 0
-        // PlayerCount/AmateurPlayerCount, PlayerController's roster read yields an empty
-        // EntityList, so firstPlayer is null - Club.IsClubMember(null) is false for every
-        // candidate regardless of what (if anything) the unrouted, far-out club-scan region
-        // happens to contain, so "dynamic" resolves to null every time without needing any
-        // club-scan setup at all.
-        [Fact]
-        public void RefreshPlayerListView_ForDynamic_WithNoPlayersLoaded_KeepsTheDirectReadClub() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                fake.RoutePointerSlot(Settings.ClubAddress[0]);
-                fake.RoutePointerSlot(Settings.PlayerAddress[0]);
-                fake.WriteDisplayCacheBytes(AddressPresets.OPPONENT_CLUB[ClubEnums.AddressKey.NAME], Encoding.GetEncoding("iso-8859-1").GetBytes("Direct Read FC\0"));
-
-                Exception thrown = Record.Exception(() => trainer.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.DYNAMIC));
-
-                Assert.Null(thrown);
-                Assert.Empty(trainer.PlayerView.PlayerController.EntityList);
-                Assert.Equal("Direct Read FC", trainer.PlayerView.ClubController.Club.ClubName);
-            }
-        });
-
-        // Covers View/PlayerView.cs line 410's other branch: Club.IsClubMember(firstPlayer)
-        // returning true for a TRAINEE roster, which is what makes RefreshPlayerListView set
-        // ClubName to "Jugendspieler". TRAINEE reads the club directly as OWN (see the ternary at
-        // the top of RefreshPlayerListView) and reads the roster's first player from
-        // AddressPresets.DYNAMIC_PLAYERS after ProcessController.UpdatePlayerOffsets rebases it -
-        // with the own club carrying exactly one player and the opponent club left at its default
-        // 0, that rebases DYNAMIC_PLAYERS onto InitPreset(""), the same math the DYNAMIC test above
-        // uses for its own "own club has 0 players" case - so writing that one player's
-        // CLUB_ID/CLUB_COUNTRY to match the own club's own Id/Country makes IsClubMember true.
-        [Fact]
-        public void RefreshPlayerListView_ForTrainee_WithMatchingClub_SetsJugendspielerClubName() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                fake.RoutePointerSlot(Settings.ClubAddress[0]);
-                fake.RoutePointerSlot(Settings.PlayerAddress[0]);
-
-                Addresses own = AddressPresets.OWN_CLUB;
-                const byte clubId = 7;
-                const PlayerEnums.Country clubCountry = PlayerEnums.Country.Deutschland;
-                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.ID], new byte[] { clubId });
-                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.COUNTRY], new byte[] { (byte)clubCountry });
-                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.PLAYER_COUNT], new byte[] { 1 });
-
-                Addresses expectedDynamicPlayers = AddressPresets.InitPreset(string.Empty);
-                fake.WriteDisplayCacheBytes(expectedDynamicPlayers[PlayerEnums.AddressKey.CLUB_ID], new byte[] { clubId });
-                fake.WriteDisplayCacheBytes(expectedDynamicPlayers[PlayerEnums.AddressKey.CLUB_COUNTRY], new byte[] { (byte)clubCountry });
-
-                Exception thrown = Record.Exception(() => trainer.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.TRAINEE));
-
-                Assert.Null(thrown);
-                Assert.Equal("Jugendspieler", trainer.PlayerView.ClubController.Club.ClubName);
             }
         });
     }

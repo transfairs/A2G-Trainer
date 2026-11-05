@@ -174,6 +174,8 @@ namespace A2G_Trainer.View
             this.InjuryDays = new System.Windows.Forms.Label();
             this.InjuredLabel = new System.Windows.Forms.Label();
             this.InjuredDaysInput = new System.Windows.Forms.TextBox();
+            this.InjuryKindLabel = new System.Windows.Forms.Label();
+            this.InjuryKindInput = new System.Windows.Forms.ComboBox();
             this.HappyBox = new System.Windows.Forms.GroupBox();
             this.TollerTrainer = new System.Windows.Forms.CheckBox();
             this.TollerVertragDoppelt = new System.Windows.Forms.CheckBox();
@@ -200,6 +202,11 @@ namespace A2G_Trainer.View
             this.ContractTab = new System.Windows.Forms.TabPage();
             this.ContractBox = new System.Windows.Forms.GroupBox();
             this.Retires = new System.Windows.Forms.CheckBox();
+            this.TransferListed = new System.Windows.Forms.CheckBox();
+            this.NationalTeamBox = new System.Windows.Forms.GroupBox();
+            this.CapsLabel = new System.Windows.Forms.Label();
+            this.CapsInput = new System.Windows.Forms.TextBox();
+            this.NationalTeamRetired = new System.Windows.Forms.CheckBox();
             this.BuyPriceLabel = new System.Windows.Forms.Label();
             this.BuyPriceInput = new System.Windows.Forms.TextBox();
             this.DMLabel5 = new System.Windows.Forms.Label();
@@ -286,7 +293,8 @@ namespace A2G_Trainer.View
             this.PlayerListView = new System.Windows.Forms.ListView();
             this.ReloadBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
-            this.CurrentClubLabel = new System.Windows.Forms.Label();
+            this.ClubCountryInput = new System.Windows.Forms.ComboBox();
+            this.ClubInput = new System.Windows.Forms.ComboBox();
             this.MainTabControl.SuspendLayout();
             this.PersonalTab.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -317,6 +325,7 @@ namespace A2G_Trainer.View
             this.TransferTab.SuspendLayout();
             this.TransferBox.SuspendLayout();
             this.SeasonBox.SuspendLayout();
+            this.NationalTeamBox.SuspendLayout();
             this.TeamBus.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1832,7 +1841,7 @@ namespace A2G_Trainer.View
             this.CardBox.Controls.Add(this.RedCardsLabel);
             this.CardBox.Controls.Add(this.YellowCardsInput);
             this.CardBox.Controls.Add(this.YellowCardsLabel);
-            this.CardBox.Location = new System.Drawing.Point(4, 318);
+            this.CardBox.Location = new System.Drawing.Point(4, 345);
             this.CardBox.Name = "CardBox";
             this.CardBox.Size = new System.Drawing.Size(355, 45);
             this.CardBox.TabIndex = 30;
@@ -1889,9 +1898,11 @@ namespace A2G_Trainer.View
             this.InjuryBox.Controls.Add(this.InjuryDays);
             this.InjuryBox.Controls.Add(this.InjuredLabel);
             this.InjuryBox.Controls.Add(this.InjuredDaysInput);
+            this.InjuryBox.Controls.Add(this.InjuryKindLabel);
+            this.InjuryBox.Controls.Add(this.InjuryKindInput);
             this.InjuryBox.Location = new System.Drawing.Point(4, 273);
             this.InjuryBox.Name = "InjuryBox";
-            this.InjuryBox.Size = new System.Drawing.Size(355, 45);
+            this.InjuryBox.Size = new System.Drawing.Size(355, 72);
             this.InjuryBox.TabIndex = 29;
             this.InjuryBox.TabStop = false;
             this.InjuryBox.Text = "Verletzungen";
@@ -1943,6 +1954,23 @@ namespace A2G_Trainer.View
             this.InjuredDaysInput.Size = new System.Drawing.Size(40, 20);
             this.InjuredDaysInput.TabIndex = 22;
             this.InjuredDaysInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // InjuryKindLabel
+            //
+            this.InjuryKindLabel.AutoSize = true;
+            this.InjuryKindLabel.Location = new System.Drawing.Point(6, 47);
+            this.InjuryKindLabel.Name = "InjuryKindLabel";
+            this.InjuryKindLabel.Size = new System.Drawing.Size(24, 13);
+            this.InjuryKindLabel.TabIndex = 91;
+            this.InjuryKindLabel.Text = "Art";
+            //
+            // InjuryKindInput
+            //
+            this.InjuryKindInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.InjuryKindInput.Location = new System.Drawing.Point(58, 44);
+            this.InjuryKindInput.Name = "InjuryKindInput";
+            this.InjuryKindInput.Size = new System.Drawing.Size(269, 21);
+            this.InjuryKindInput.TabIndex = 25;
             // 
             // HappyBox
             // 
@@ -2228,6 +2256,7 @@ namespace A2G_Trainer.View
             // ContractBox
             // 
             this.ContractBox.Controls.Add(this.Retires);
+            this.ContractBox.Controls.Add(this.TransferListed);
             this.ContractBox.Controls.Add(this.BuyPriceLabel);
             this.ContractBox.Controls.Add(this.BuyPriceInput);
             this.ContractBox.Controls.Add(this.DMLabel5);
@@ -2375,7 +2404,7 @@ namespace A2G_Trainer.View
             // 
             // YearsInClubInput
             // 
-            this.YearsInClubInput.Location = new System.Drawing.Point(321, 208);
+            this.YearsInClubInput.Location = new System.Drawing.Point(321, 217);
             this.YearsInClubInput.Name = "YearsInClubInput";
             this.YearsInClubInput.Size = new System.Drawing.Size(46, 20);
             this.YearsInClubInput.TabIndex = 15;
@@ -2384,7 +2413,7 @@ namespace A2G_Trainer.View
             // YearsInClubLabel
             // 
             this.YearsInClubLabel.AutoSize = true;
-            this.YearsInClubLabel.Location = new System.Drawing.Point(6, 211);
+            this.YearsInClubLabel.Location = new System.Drawing.Point(6, 220);
             this.YearsInClubLabel.Name = "YearsInClubLabel";
             this.YearsInClubLabel.Size = new System.Drawing.Size(267, 13);
             this.YearsInClubLabel.TabIndex = 55;
@@ -2715,6 +2744,7 @@ namespace A2G_Trainer.View
             // StatisticsTab
             // 
             this.StatisticsTab.Controls.Add(this.SeasonBox);
+            this.StatisticsTab.Controls.Add(this.NationalTeamBox);
             this.StatisticsTab.Location = new System.Drawing.Point(4, 22);
             this.StatisticsTab.Name = "StatisticsTab";
             this.StatisticsTab.Size = new System.Drawing.Size(379, 349);
@@ -2910,6 +2940,54 @@ namespace A2G_Trainer.View
             this.UpgradeGoalsInput.Size = new System.Drawing.Size(43, 20);
             this.UpgradeGoalsInput.TabIndex = 9;
             this.UpgradeGoalsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // NationalTeamBox
+            //
+            this.NationalTeamBox.Controls.Add(this.CapsLabel);
+            this.NationalTeamBox.Controls.Add(this.CapsInput);
+            this.NationalTeamBox.Controls.Add(this.NationalTeamRetired);
+            this.NationalTeamBox.Location = new System.Drawing.Point(3, 163);
+            this.NationalTeamBox.Name = "NationalTeamBox";
+            this.NationalTeamBox.Size = new System.Drawing.Size(373, 50);
+            this.NationalTeamBox.TabIndex = 1;
+            this.NationalTeamBox.TabStop = false;
+            this.NationalTeamBox.Text = "Nationalmannschaft";
+            //
+            // CapsLabel
+            //
+            this.CapsLabel.AutoSize = true;
+            this.CapsLabel.Location = new System.Drawing.Point(6, 22);
+            this.CapsLabel.Name = "CapsLabel";
+            this.CapsLabel.TabIndex = 2;
+            this.CapsLabel.Text = "Länderspiele";
+            //
+            // CapsInput
+            //
+            this.CapsInput.Location = new System.Drawing.Point(137, 19);
+            this.CapsInput.Name = "CapsInput";
+            this.CapsInput.Size = new System.Drawing.Size(43, 20);
+            this.CapsInput.TabIndex = 0;
+            this.CapsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // NationalTeamRetired
+            //
+            this.NationalTeamRetired.CheckAlign = System.Drawing.ContentAlignment.TopRight;
+            this.NationalTeamRetired.Location = new System.Drawing.Point(208, 21);
+            this.NationalTeamRetired.Name = "NationalTeamRetired";
+            this.NationalTeamRetired.Size = new System.Drawing.Size(156, 17);
+            this.NationalTeamRetired.TabIndex = 1;
+            this.NationalTeamRetired.Text = "Zurückgetreten";
+            this.NationalTeamRetired.UseVisualStyleBackColor = true;
+            //
+            // TransferListed
+            //
+            this.TransferListed.CheckAlign = System.Drawing.ContentAlignment.TopRight;
+            this.TransferListed.Location = new System.Drawing.Point(4, 194);
+            this.TransferListed.Name = "TransferListed";
+            this.TransferListed.Size = new System.Drawing.Size(133, 17);
+            this.TransferListed.TabIndex = 14;
+            this.TransferListed.Text = "Auf der Transferliste";
+            this.TransferListed.UseVisualStyleBackColor = true;
             // 
             // OtherTab
             // 
@@ -3106,21 +3184,29 @@ namespace A2G_Trainer.View
             this.SaveBtn.UseVisualStyleBackColor = true;
             this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
             // 
-            // CurrentClubLabel
-            // 
-            this.CurrentClubLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.CurrentClubLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CurrentClubLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CurrentClubLabel.Location = new System.Drawing.Point(15, 13);
-            this.CurrentClubLabel.Name = "CurrentClubLabel";
-            this.CurrentClubLabel.Size = new System.Drawing.Size(201, 18);
-            this.CurrentClubLabel.TabIndex = 46;
-            this.CurrentClubLabel.Text = "Eigener Verein";
-            // 
+            // ClubCountryInput
+            //
+            this.ClubCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClubCountryInput.FormattingEnabled = true;
+            this.ClubCountryInput.Location = new System.Drawing.Point(15, 12);
+            this.ClubCountryInput.Name = "ClubCountryInput";
+            this.ClubCountryInput.Size = new System.Drawing.Size(78, 21);
+            this.ClubCountryInput.TabIndex = 46;
+            //
+            // ClubInput
+            //
+            this.ClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClubInput.FormattingEnabled = true;
+            this.ClubInput.Location = new System.Drawing.Point(97, 12);
+            this.ClubInput.Name = "ClubInput";
+            this.ClubInput.Size = new System.Drawing.Size(119, 21);
+            this.ClubInput.TabIndex = 47;
+            //
             // PlayerView
-            // 
+            //
             this.BackgroundImage = global::A2G_Trainer.Properties.Resources.TabControl;
-            this.Controls.Add(this.CurrentClubLabel);
+            this.Controls.Add(this.ClubCountryInput);
+            this.Controls.Add(this.ClubInput);
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.MainTabControl);
@@ -3175,6 +3261,8 @@ namespace A2G_Trainer.View
             this.TransferBox.PerformLayout();
             this.SeasonBox.ResumeLayout(false);
             this.SeasonBox.PerformLayout();
+            this.NationalTeamBox.ResumeLayout(false);
+            this.NationalTeamBox.PerformLayout();
             this.TeamBus.ResumeLayout(false);
             this.TeamBus.PerformLayout();
             this.ResumeLayout(false);
@@ -3325,6 +3413,8 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.Label InjuryDays;
         private System.Windows.Forms.Label InjuredLabel;
         private System.Windows.Forms.TextBox InjuredDaysInput;
+        private System.Windows.Forms.Label InjuryKindLabel;
+        private System.Windows.Forms.ComboBox InjuryKindInput;
         private System.Windows.Forms.GroupBox HappyBox;
         private System.Windows.Forms.CheckBox TollerTrainer;
         private System.Windows.Forms.CheckBox TollerVertragDoppelt;
@@ -3354,6 +3444,11 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.ComboBox HomeCountryInput;
         private System.Windows.Forms.ComboBox HomeClubInput;
         private System.Windows.Forms.CheckBox Retires;
+        private System.Windows.Forms.CheckBox TransferListed;
+        private System.Windows.Forms.GroupBox NationalTeamBox;
+        private System.Windows.Forms.Label CapsLabel;
+        private System.Windows.Forms.TextBox CapsInput;
+        private System.Windows.Forms.CheckBox NationalTeamRetired;
         private System.Windows.Forms.Label BuyPriceLabel;
         private System.Windows.Forms.TextBox BuyPriceInput;
         private System.Windows.Forms.Label DMLabel5;
@@ -3440,6 +3535,7 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.ListView PlayerListView;
         private System.Windows.Forms.Button ReloadBtn;
         private System.Windows.Forms.Button SaveBtn;
-        private System.Windows.Forms.Label CurrentClubLabel;
+        private System.Windows.Forms.ComboBox ClubCountryInput;
+        private System.Windows.Forms.ComboBox ClubInput;
     }
 }

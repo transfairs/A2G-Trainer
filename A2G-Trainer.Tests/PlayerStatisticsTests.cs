@@ -34,18 +34,19 @@ namespace A2G_Trainer.Tests
             Tuple.Create(PlayerEnums.AddressKey.SUBBED_IN, Settings.PlayerRecordSubbedInOffset, (byte)6),
             Tuple.Create(PlayerEnums.AddressKey.SUBBED_OUT, Settings.PlayerRecordSubbedOutOffset, (byte)7),
             Tuple.Create(PlayerEnums.AddressKey.UPGRADE_GOALS, Settings.PlayerRecordUpgradeGoalsOffset, (byte)19),
+            Tuple.Create(PlayerEnums.AddressKey.CAPS, Settings.PlayerRecordCapsOffset, (byte)44),
         };
 
         private static byte[] StatisticValues(Player p) => new[]
         {
-            p.RedCardsSeason, p.YellowRedCardsSeason, p.Goals, p.OwnGoals, p.Assists, p.JokerGoals, p.Appearances, p.SubbedIn, p.SubbedOut, p.UpgradeGoals
+            p.RedCardsSeason, p.YellowRedCardsSeason, p.Goals, p.OwnGoals, p.Assists, p.JokerGoals, p.Appearances, p.SubbedIn, p.SubbedOut, p.UpgradeGoals, p.Caps
         };
 
         private static void SetStatistics(Player p, byte add)
         {
             p.RedCardsSeason = (byte)(1 + add); p.YellowRedCardsSeason = (byte)(2 + add); p.Goals = (byte)(21 + add);
             p.OwnGoals = (byte)(3 + add); p.Assists = (byte)(9 + add); p.JokerGoals = (byte)(4 + add);
-            p.Appearances = (byte)(30 + add); p.SubbedIn = (byte)(6 + add); p.SubbedOut = (byte)(7 + add); p.UpgradeGoals = (byte)(19 + add);
+            p.Appearances = (byte)(30 + add); p.SubbedIn = (byte)(6 + add); p.SubbedOut = (byte)(7 + add); p.UpgradeGoals = (byte)(19 + add); p.Caps = (byte)(44 + add);
         }
 
         private static FakeModule NewFake()
@@ -120,14 +121,14 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void Save_ForTrainee_WritesTheStatisticsToTheRecordOnly()
+        public void Save_ForAYouthPlayerTheGameHoldsNoCopyOf_WritesTheStatisticsToTheRecordOnly()
         {
-            AddressPresets.InitDynamicTeam("0");
-
             using (FakeModule fake = NewFake())
             {
                 fake.WriteDisplayCacheBytes(Own[PlayerEnums.AddressKey.GOALS], new byte[] { 0x11 });
-                PlayerController controller = new PlayerController(fake.Memory, NewSinglePlayerClub(), isGog: false, PlayerEnums.AddressType.TRAINEE);
+                // Record index 0 has one A youth player, ID 0.
+                fake.WriteModuleBytes(Settings.YouthTableOffset, new byte[] { 0, 1, 0, 0, 0, 0 });
+                PlayerController controller = new PlayerController(fake.Memory, new ClubSquads.Entry { Name = "Verein" }, isGog: false, PlayerEnums.AddressType.TRAINEE);
                 Player player = controller.EntityList.Single();
                 SetStatistics(player, 10);
 
@@ -154,7 +155,7 @@ namespace A2G_Trainer.Tests
             {
                 nameof(Player.RedCardsSeason), nameof(Player.YellowRedCardsSeason), nameof(Player.Goals), nameof(Player.OwnGoals),
                 nameof(Player.Assists), nameof(Player.JokerGoals), nameof(Player.Appearances), nameof(Player.SubbedIn),
-                nameof(Player.SubbedOut), nameof(Player.UpgradeGoals), nameof(Player.BuyPrice)
+                nameof(Player.SubbedOut), nameof(Player.UpgradeGoals), nameof(Player.Caps), nameof(Player.BuyPrice)
             }, changed);
         }
 
@@ -204,6 +205,10 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(nameof(Player.UpgradeGoals), GetPrivateField<TextBox>(trainer.PlayerView, "UpgradeGoalsInput").DataBindings["Text"].BindingMemberInfo.BindingField);
                 Assert.Equal(nameof(Player.BuyPrice), GetPrivateField<TextBox>(trainer.PlayerView, "BuyPriceInput").DataBindings["Text"].BindingMemberInfo.BindingField);
                 Assert.Equal(nameof(Player.IsBuyOptionOnHold), GetPrivateField<CheckBox>(trainer.PlayerView, "BuyOptionOnHold").DataBindings["Checked"].BindingMemberInfo.BindingField);
+                Assert.Equal(nameof(Player.Caps), GetPrivateField<TextBox>(trainer.PlayerView, "CapsInput").DataBindings["Text"].BindingMemberInfo.BindingField);
+                Assert.Equal(nameof(Player.IsNationalTeamRetired), GetPrivateField<CheckBox>(trainer.PlayerView, "NationalTeamRetired").DataBindings["Checked"].BindingMemberInfo.BindingField);
+                CheckBox listed = GetPrivateField<CheckBox>(trainer.PlayerView, "TransferListed");
+                Assert.Equal(nameof(Player.IsTransferListed), listed.DataBindings["Checked"].BindingMemberInfo.BindingField);
             }
         });
     }

@@ -599,18 +599,15 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void SaveEntityList_ForTraineeWithUnverifiedLayout_ReportsThatNothingWasSaved()
+        public void RecordList_WithUnverifiedLayout_ListsNobody()
         {
-            AddressPresets.InitDynamicTeam("0");
             List<Player> roster = NewRoster();
             using (FakeModule fake = NewGogFake(roster))
             {
-                PlayerController controller = new PlayerController(fake.Memory, RosterClub(roster.Count), isGog: true, PlayerEnums.AddressType.TRAINEE);
+                ClubSquads.Entry club = new ClubSquads.Entry { Country = PlayerEnums.Country.Deutschland, Id = 1, Name = "Verein" };
 
-                List<string> warnings = controller.SaveEntityList();
-
-                Assert.Single(warnings);
-                Assert.Contains("Jugendspielern wurden NICHT gespeichert", warnings[0]);
+                Assert.Empty(new PlayerController(fake.Memory, club, isGog: true, PlayerEnums.AddressType.TRAINEE).EntityList);
+                Assert.Empty(new PlayerController(fake.Memory, club, isGog: true, PlayerEnums.AddressType.CLUB).EntityList);
             }
         }
 

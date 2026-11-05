@@ -274,17 +274,17 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void Save_ForTrainee_SkipsDisplayCacheWrites_ButStillWritesPersistentFields()
+        public void Save_ForAYouthPlayerTheGameHoldsNoCopyOf_SkipsDisplayCacheWrites_ButStillWritesPersistentFields()
         {
-            AddressPresets.InitDynamicTeam("0");
-
             using (FakeModule fake = new FakeModule())
             {
                 fake.RoutePointerSlot(Settings.PlayerAddress[0]);
                 SeedDisplayCache(fake);
                 fake.WriteModuleBytes(Settings.AgeReferenceYearOffset, BitConverter.GetBytes(CurrentYear));
+                // Record index 0 has one A youth player, ID 0.
+                fake.WriteModuleBytes(Settings.YouthTableOffset, new byte[] { 0, 1, 0, 0, 0, 0 });
 
-                PlayerController controller = new PlayerController(fake.Memory, NewSinglePlayerClub(), isGog: false, PlayerEnums.AddressType.TRAINEE);
+                PlayerController controller = new PlayerController(fake.Memory, new ClubSquads.Entry { Name = "Verein" }, isGog: false, PlayerEnums.AddressType.TRAINEE);
                 Player player = controller.EntityList.Single();
                 player.Level = 77;
                 player.Salary = 4321;

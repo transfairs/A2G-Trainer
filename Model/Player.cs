@@ -28,6 +28,13 @@ namespace A2G_Trainer.Model
         public PlayerEnums.Country ClubCountry { get => this.clubCountry; set { this.clubCountry = value; this.OnPropertyChanged(nameof(this.ClubCountry)); } }
         private PlayerEnums.Country clubCountry;
 
+        /// <summary>
+        /// Absolute address of the game's working copy of this player (laid out like
+        /// <see cref="Addresses"/>) for a player listed from the records, or null if the game holds
+        /// none or the player was read through the own/opponent roster pointer.
+        /// </summary>
+        internal uint? WorkingCopy { get; set; }
+
         /// <summary>Resolved memory addresses for this player's fields.</summary>
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
         private Addresses addresses;
@@ -283,6 +290,13 @@ namespace A2G_Trainer.Model
         public bool IsSeatedGuarantee { get => this.ContractDetails.HasFlag(PlayerEnums.Contract.Seated); set => this.Multiplex(PlayerEnums.Contract.Seated, value, nameof(this.IsSeatedGuarantee)); }
         /// <summary>Whether the player's <see cref="Career"/> flags include Retires.</summary>
         public bool IsRetires { get => this.Career.HasFlag(PlayerEnums.Career.Retires); set => this.Multiplex(PlayerEnums.Career.Retires, value, nameof(this.IsRetires)); }
+        /// <summary>Whether the player has retired from the national team; cleared, the player can be nominated again.</summary>
+        public bool IsNationalTeamRetired { get => this.Career.HasFlag(PlayerEnums.Career.NationalTeamRetired); set => this.Multiplex(PlayerEnums.Career.NationalTeamRetired, value, nameof(this.IsNationalTeamRetired)); }
+        /// <summary>Whether the player is on the transfer list; saving puts the player on or takes the player off (see PlayerController.Save).</summary>
+        public bool IsTransferListed { get => this.Career.HasFlag(PlayerEnums.Career.TransferListed); set => this.Multiplex(PlayerEnums.Career.TransferListed, value, nameof(this.IsTransferListed)); }
+        /// <summary>Whether the player was on the transfer list when read, so Save knows what changed.</summary>
+        public bool WasTransferListed { get => this.wasTransferListed; set { this.wasTransferListed = value; this.OnPropertyChanged(nameof(this.WasTransferListed)); } }
+        private bool wasTransferListed;
         #endregion
 
         #region Overview
@@ -362,8 +376,10 @@ namespace A2G_Trainer.Model
         /// <summary>Bitmask of the player's positive mood factors.</summary>
         public PlayerEnums.Happy Happy { get => this.happy; set => this.Setter(value); }
         private PlayerEnums.Happy happy = PlayerEnums.Happy.None;
-        /// <summary>Type/severity of the player's current injury.</summary>
-        public byte Injury { get => this.injury; set { this.injury = value; this.OnPropertyChanged(nameof(this.Injury)); } }
+        /// <summary>Kind of the player's current injury or illness as stored - see <see cref="InjuryKind"/>.</summary>
+        public byte Injury { get => this.injury; set { this.injury = value; this.OnPropertyChanged(nameof(this.Injury)); this.OnPropertyChanged(nameof(this.InjuryKind)); } }
+        /// <summary>Kind of the player's current injury or illness, as the game names it.</summary>
+        public PlayerEnums.Injury InjuryKind { get => (PlayerEnums.Injury)this.injury; set => this.Injury = (byte)value; }
         private byte injury = 0;
         /// <summary>Number of days remaining on the player's current injury.</summary>
         public ushort InjuredDays { get => this.injuredDays; set { this.injuredDays = value; this.OnPropertyChanged(nameof(this.InjuredDays)); } }
@@ -371,9 +387,81 @@ namespace A2G_Trainer.Model
         /// <summary>Whether the player is currently vulnerable to injury.</summary>
         public bool Vulnerable { get => this.vulnerable; set { this.vulnerable = value; this.OnPropertyChanged(nameof(this.Vulnerable)); } }
         private bool vulnerable = false;
-        /// <summary>Number of matches the player is banned for due to a red card.</summary>
+        /// <summary>League matches the player is still banned for (bits 0-4 of <see cref="LeagueBanState"/>, 0..31).</summary>
         public byte RedCardBannedMatches { get => this.redCardBannedMatches; set { this.redCardBannedMatches = value; this.OnPropertyChanged(nameof(this.RedCardBannedMatches)); } }
         private byte redCardBannedMatches = 0;
+
+        /// <summary>League ban as read: matches left in bits 0-4, flag bits 5-7 (AK +0x4D, record +0x39).</summary>
+        internal byte LeagueBanState { get; set; }
+        /// <summary>Reason of the league ban as read: bit 7 red card, bit 6 second yellow, bit 5 yellow cards (AK +0x4E, record +0x3A).</summary>
+        internal byte LeagueBanReason { get; set; }
+        /// <summary>Season day the league ban ends, 0 = none (AK +0x16C, record +0xBE).</summary>
+        internal ushort LeagueBanEndDay { get; set; }
+        /// <summary>"Banned for the next match" as read (AK +0x48, record +0x34); the game derives it from the ban before each match.</summary>
+        internal byte NextMatchBan { get; set; }
+
+        /// <summary>Matches-left mask of <see cref="LeagueBanState"/>; the game counts the ban in 5 bits (FUN_0061f460).</summary>
+        internal const byte LeagueBanCountMask = 0x1F;
+        /// <summary>Reason bit for a red card; such a ban needs an end day, or the game drops it when loading (FUN_00582a60).</summary>
+        internal const byte LeagueBanRedCard = 0x80;
+
+        /// <summary>Takes the league ban as read and shows its matches left.</summary>
+        internal void SetLeagueBan(byte state, byte reason, ushort endDay, byte nextMatchBan)
+        {
+            this.LeagueBanState = state;
+            this.LeagueBanReason = reason;
+            this.LeagueBanEndDay = endDay;
+            this.NextMatchBan = nextMatchBan;
+            this.RedCardBannedMatches = (byte)(state & LeagueBanCountMask);
+        }
+
+        /// <summary>
+        /// Turns an edited <see cref="RedCardBannedMatches"/> into the game's ban bytes, the way the game
+        /// itself sets and ends a ban. 0 clears ban, reason and end day (FUN_0061f6c0). Otherwise the
+        /// flag bits and an existing reason stay; a new ban counts as a red card (FUN_0061f460), and a
+        /// red-card ban ends on today + matches x 7 + 1 (FUN_005a34e0). "Banned for the next match"
+        /// follows the ban if it showed the ban before; otherwise it holds another competition's ban
+        /// and stays. Returns false and changes nothing if the count is unchanged, or if a red-card
+        /// ban needs an end day and <paramref name="today"/> (the season day) isn't known.
+        /// </summary>
+        internal bool ApplyLeagueBanChange(short? today)
+        {
+            byte count = (byte)Math.Min((int)this.RedCardBannedMatches, LeagueBanCountMask);
+            if (count == (this.LeagueBanState & LeagueBanCountMask))
+                return false;
+
+            byte state, reason;
+            ushort endDay;
+            if (count == 0)
+            {
+                state = 0;
+                reason = 0;
+                endDay = 0;
+            }
+            else
+            {
+                state = (byte)((this.LeagueBanState & ~LeagueBanCountMask) | count);
+                reason = this.LeagueBanReason != 0 ? this.LeagueBanReason : LeagueBanRedCard;
+                if ((reason & LeagueBanRedCard) != 0)
+                {
+                    if (!today.HasValue)
+                        return false;
+                    endDay = (ushort)(today.Value + count * 7 + 1);
+                }
+                else
+                {
+                    endDay = this.LeagueBanEndDay;
+                }
+            }
+
+            if (this.NextMatchBan == this.LeagueBanState)
+                this.NextMatchBan = state;
+            this.LeagueBanState = state;
+            this.LeagueBanReason = reason;
+            this.LeagueBanEndDay = endDay;
+            this.RedCardBannedMatches = count;
+            return true;
+        }
         /// <summary>Whether the player is currently doped.</summary>
         public bool Doped { get => this.doped; set { this.doped = value; this.OnPropertyChanged(nameof(this.Doped)); } }
         private bool doped = false;
@@ -475,6 +563,9 @@ namespace A2G_Trainer.Model
         /// <summary>League goals this season that count towards the season-end strength upgrade ("Tore bis Aufw.").</summary>
         public byte UpgradeGoals { get => this.upgradeGoals; set { this.upgradeGoals = value; this.OnPropertyChanged(nameof(this.UpgradeGoals)); } }
         private byte upgradeGoals;
+        /// <summary>Caps for the national team. The national coach can only naturalise a foreign player without any.</summary>
+        public byte Caps { get => this.caps; set { this.caps = value; this.OnPropertyChanged(nameof(this.Caps)); } }
+        private byte caps;
         #endregion
 
         #region NotImplemented

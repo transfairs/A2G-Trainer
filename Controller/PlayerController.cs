@@ -13,15 +13,17 @@ namespace A2G_Trainer.Controller
     /// addresses the rest of the project historically used) with the smaller set of fields
     /// confirmed to live in the permanent, PlayerId-keyed record (see ReadPersistentFields/
     /// WritePersistentXxx and PlayerRecordResolver) - the latter are authoritative where mapped.
+    /// The squad or youth of any club (CLUB, TRAINEE) is listed from the records alone, by the
+    /// player IDs ClubSquads finds; a player the game holds a working copy of gets that written too.
     /// </summary>
     public class PlayerController : EntityController<Player>
     {
         /// <summary>Roster-start offset of the opponent club's players, resolved once loading the user's own club.</summary>
         public String OpponentOffset { get => this.opponentOffset; set => opponentOffset = value; }
         private String opponentOffset;
-        /// <summary>Roster-start offset of the counterpart (opponent/own) club's players, resolved for the dynamic-team lookup.</summary>
-        public String OtherOffset { get => this.otherOffset; set => otherOffset = value; }
-        private String otherOffset;
+
+        /// <summary>The club whose squad or youth is listed from the records, or null for the own/opponent roster.</summary>
+        internal ClubSquads.Entry RecordClub { get; }
 
         /// <summary>Attaches to the game process and loads the full player roster for the given club.</summary>
         public PlayerController(ProcessMemory memory, Club club, bool isGog, PlayerEnums.AddressType type) : base(memory)
@@ -32,7 +34,46 @@ namespace A2G_Trainer.Controller
             this.RefreshPlayerList(club);
         }
 
-        /// <summary>Reloads the full player list for the given club and, for OWN/OPPONENT, refreshes the counterpart-roster offsets.</summary>
+        /// <summary>Lists the squad and amateurs (CLUB) or the youth players (TRAINEE) of <paramref name="club"/> from the player records; nothing without a club.</summary>
+        internal PlayerController(ProcessMemory memory, ClubSquads.Entry club, bool isGog, PlayerEnums.AddressType type) : base(memory)
+        {
+            this.isGog = isGog;
+            this.settings = Settings.PlayerAddress;
+            this.UpdateBaseAddress(type);
+            this.RecordClub = club;
+            this.EntityList = new BindingList<Player>();
+
+            // Without the record table there is nothing to read the players from.
+            FixedAddresses fixedAddresses = FixedAddresses.For(memory);
+            if (club == null || fixedAddresses == null || !new PlayerRecordResolver(memory).IsAvailable)
+                return;
+
+            List<ushort> ids = type == PlayerEnums.AddressType.TRAINEE
+                ? ClubSquads.YouthIds(memory, fixedAddresses, club)
+                : ClubSquads.SquadIds(memory, fixedAddresses, club);
+            Dictionary<ushort, uint> workingCopies = ClubSquads.PlayerWorkingCopies(memory, fixedAddresses);
+            foreach (ushort id in ids)
+                this.EntityList.Add(this.GetRecordEntity(id, workingCopies.TryGetValue(id, out uint copy) ? copy : (uint?)null));
+            Logger.Debug($"{club.Name} ({club.Country}/{club.Id}): {this.EntityList.Count} players from the records ({type}).");
+        }
+
+        private Player GetRecordEntity(ushort id, uint? workingCopy)
+        {
+            Player player = new Player
+            {
+                Addresses = AddressPresets.OWN_PLAYERS,
+                Id = id,
+                NameRecordId = id,
+                ClubId = this.RecordClub.Id,
+                ClubCountry = this.RecordClub.Country,
+                WorkingCopy = workingCopy
+            };
+            this.ReadPersistentName(player);
+            this.ReadPersistentFields(player);
+            return player;
+        }
+
+        /// <summary>Reloads the full player list for the given club and, for OWN, refreshes the opponent's roster offsets.</summary>
         internal void RefreshPlayerList(Club club)
         {
             this.EntityList = new BindingList<Player>();
@@ -51,8 +92,8 @@ namespace A2G_Trainer.Controller
 
             // While the layout is unverified, GetEntity's persistent reads were skipped, so the list
             // holds pure display-cache values - exactly the reference the calibrator needs. Only the
-            // own roster is trusted for that (Jugendspieler's display cache can be stale, see
-            // HelpView.cs). On success, re-read the persistent values the list is still missing.
+            // own roster is trusted for that. On success, re-read the persistent values the list is
+            // still missing.
             if (this.Type == PlayerEnums.AddressType.OWN && !this.memory.Layout.IsVerified && this.TryCalibrateLayout())
             {
                 foreach (Player player in this.EntityList)
@@ -62,7 +103,7 @@ namespace A2G_Trainer.Controller
                 }
             }
 
-            if (this.Type == PlayerEnums.AddressType.OWN || this.Type == PlayerEnums.AddressType.OPPONENT)
+            if (this.Type == PlayerEnums.AddressType.OWN)
             {
                 this.InitOffsets(offset);
             }
@@ -101,12 +142,6 @@ namespace A2G_Trainer.Controller
             {
                 warnings.AddRange(this.Save(p));
             }
-
-            // Jugendspieler have no display-cache fallback at all (see Save), so without a usable
-            // record table nothing was saved - say so once instead of failing silently.
-            if (this.Type == PlayerEnums.AddressType.TRAINEE && !new PlayerRecordResolver(this.memory).IsAvailable)
-                warnings.Add("Für diese Spielversion sind die dauerhaften Spielerdaten noch nicht ermittelt - Änderungen an Jugendspielern wurden NICHT gespeichert.");
-
             return warnings;
         }
 
@@ -164,7 +199,11 @@ namespace A2G_Trainer.Controller
             player.Injury               = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURY]));
             player.VulnerableTicks      = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE]));
             player.Vulnerable           = player.VulnerableTicks != 0;
-            player.RedCardBannedMatches = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES]));
+            player.SetLeagueBan(
+                (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEAGUE_BAN])),
+                (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEAGUE_BAN_REASON])),
+                this.memory.ReadUInt16(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEAGUE_BAN_END])),
+                (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES])));
             player.DopingState          = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED]));
             player.Doped                = IsDoped(player.DopingState);
             player.YellowCardsSeason    = (byte) this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YELLOW_CARDS]));
@@ -182,6 +221,7 @@ namespace A2G_Trainer.Controller
             player.ContractDetails  = (PlayerEnums.Contract)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]));
             player.YearsInClub      = (byte)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]));
             player.Career           = (PlayerEnums.Career)this.memory.ReadByte(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]));
+            player.WasTransferListed = player.IsTransferListed;
             #endregion
 
             #region Statistics
@@ -212,12 +252,9 @@ namespace A2G_Trainer.Controller
 
             // Overrides the fields above with their persistent, PlayerId-keyed values where known
             // (see WritePersistentLevel/Age/Position/Skills/Personality/Mood/Salary) - falls back to
-            // whatever the display-cache reads above already set if the record can't be read. This
-            // was the missing half of the picture: we were writing these fields persistently for
-            // Jugendspieler, but still always DISPLAYING/using the transient, shared "Dynamische
-            // Mannschaft" cache value - which for Jugendspieler can be stale or from the wrong
-            // context (see HelpView.cs). That mismatch is why the trainer could show a different Age
-            // than the game itself.
+            // whatever the display-cache reads above already set if the record can't be read. A
+            // display cache that is stale or from another context once made the trainer show a
+            // different Age than the game itself.
             this.ReadPersistentFields(player);
 
             return player;
@@ -235,14 +272,47 @@ namespace A2G_Trainer.Controller
             uint? firstnameAddress = namePool.ResolveFirstnameAddress(player.NameRecordId);
             player.Firstname = firstnameAddress.HasValue
                 ? this.memory.ReadStringAtAddress(firstnameAddress.Value, 32, encoding)
-                : this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: encoding);
+                : this.ReadCacheString(player, PlayerEnums.AddressKey.FIRSTNAME, 9, encoding);
 
             uint? lastnameAddress = namePool.ResolveLastnameAddress(player.NameRecordId);
             player.Lastname = lastnameAddress.HasValue
                 ? this.memory.ReadStringAtAddress(lastnameAddress.Value, 32, encoding)
-                : this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: encoding);
+                : this.ReadCacheString(player, PlayerEnums.AddressKey.LASTNAME, 15, encoding);
 
             Logger.Debug($"ReadPersistentName: NameRecordId={player.NameRecordId} (Id={player.Id}) -> Firstname=\"{player.Firstname}\" (addr={(firstnameAddress.HasValue ? "0x" + firstnameAddress.Value.ToString("X") : "fallback")}), Lastname=\"{player.Lastname}\" (addr={(lastnameAddress.HasValue ? "0x" + lastnameAddress.Value.ToString("X") : "fallback")}).");
+        }
+
+        // A display-cache string field: from the player's working copy, from the roster slot of the
+        // own/opponent list, or "" for a listed-from-the-records player the game holds no copy of.
+        private string ReadCacheString(Player player, PlayerEnums.AddressKey key, int length, Encoding encoding)
+        {
+            if (player.WorkingCopy.HasValue)
+                return this.memory.ReadStringAtAddress(player.WorkingCopy.Value + CacheOffset(player, key), length, encoding);
+            return this.RecordClub == null
+                ? this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[key]), length: length, stringEncoding: encoding)
+                : string.Empty;
+        }
+
+        // Writes a display-cache field into the player's working copy or roster slot.
+        private void WriteCache(Player player, PlayerEnums.AddressKey key, byte[] data)
+        {
+            if (player.WorkingCopy.HasValue)
+                this.memory.WriteBytesAtAddress(player.WorkingCopy.Value + CacheOffset(player, key), data);
+            else
+                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[key]), data);
+        }
+
+        private static uint CacheOffset(Player player, PlayerEnums.AddressKey key) => Convert.ToUInt32(player.Addresses[key], 16);
+
+        // Whether the player has display-cache fields to write: a working copy for a player listed
+        // from the records, the roster slot for the own/opponent roster.
+        private bool HasCacheCopy(Player player) => this.RecordClub == null || player.WorkingCopy.HasValue;
+
+        // The game may have fetched or freed the player since the list was read.
+        private void RefreshWorkingCopy(Player player)
+        {
+            if (this.RecordClub != null)
+                player.WorkingCopy = ClubSquads.PlayerWorkingCopy(this.memory, FixedAddresses.For(this.memory), player.NameRecordId);
         }
 
         // Counterpart to the WritePersistentXxx methods below: reads the same fields back out of
@@ -341,6 +411,7 @@ namespace A2G_Trainer.Controller
             byte[] careerByte = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordCareerOffset, 1);
             if (careerByte != null)
                 player.Career = (PlayerEnums.Career)careerByte[0];
+            player.WasTransferListed = player.IsTransferListed;
 
             this.ReadPersistentConstitution(player, baseAddress);
             this.ReadPersistentStatistics(player, baseAddress);
@@ -360,7 +431,10 @@ namespace A2G_Trainer.Controller
 
             int At(uint recordOffset) => (int)(recordOffset - Settings.PlayerRecordInjuryStartOffset);
             player.Injury = chunk[At(Settings.PlayerRecordInjuryOffset)];
-            player.RedCardBannedMatches = chunk[At(Settings.PlayerRecordBannedOffset)];
+            byte[] ban = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordLeagueBanOffset, 2);
+            byte[] banEnd = this.memory.ReadBytesAtAddress(baseAddress + Settings.PlayerRecordLeagueBanEndOffset, 2);
+            if (ban != null && banEnd != null)
+                player.SetLeagueBan(ban[0], ban[1], BitConverter.ToUInt16(banEnd, 0), chunk[At(Settings.PlayerRecordBannedOffset)]);
             player.DopingState = chunk[At(Settings.PlayerRecordBannedOffset + 1)];
             player.Doped = IsDoped(player.DopingState);
             player.YellowCardsSeason = chunk[At(Settings.PlayerRecordBannedOffset + 2)];
@@ -507,12 +581,10 @@ namespace A2G_Trainer.Controller
 
         // Writes Level ("Stärke") to the same persistent per-player record as the name pool anchor
         // (anstoss2.exe+516678 + PlayerId*0xC8, see PlayerRecordResolver), in addition to the
-        // display-cache write above. For club/dynamic-team players the display cache alone already
-        // persists correctly, so this is a harmless redundant write there - but for Jugendspieler,
-        // whose display cache is a transient, shared "Dynamische Mannschaft" buffer the game
-        // silently discards edits to (see HelpView.cs), this is the only write that actually
-        // sticks. Confirmed live: changing this byte survived both a Tagesabschluss and a full
-        // save-to-file + reload.
+        // display-cache write. The game packs a loaded player's working copy back over the record,
+        // so for the own/opponent roster both are needed; for a player the game holds no copy of
+        // (most youth players, other clubs) the record is the only write that sticks. Confirmed
+        // live: changing this byte survived both a Tagesabschluss and a full save-to-file + reload.
         private void WritePersistentLevel(Player player)
         {
             PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
@@ -733,7 +805,9 @@ namespace A2G_Trainer.Controller
             uint Address(uint recordOffset) => recordResolver.GetFieldAddress(player.NameRecordId, recordOffset);
 
             this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordInjuryOffset), new byte[] { player.Injury });
-            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordBannedOffset), new byte[] { player.RedCardBannedMatches, player.DopingStateToWrite, player.YellowCardsSeason });
+            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordBannedOffset), new byte[] { player.NextMatchBan, player.DopingStateToWrite, player.YellowCardsSeason });
+            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordLeagueBanOffset), new byte[] { player.LeagueBanState, player.LeagueBanReason });
+            this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordLeagueBanEndOffset), BitConverter.GetBytes(player.LeagueBanEndDay));
 
             GameCalendar calendar = GameCalendar.Read(this.memory);
             if (calendar == null)
@@ -770,7 +844,7 @@ namespace A2G_Trainer.Controller
             }
 
             this.memory.WriteBytesAtAddress(Address(Settings.PlayerRecordVulnerableOffset), BitConverter.GetBytes(calendar.VulnerableEndValueForTicks(player.VulnerableTicksToWrite)));
-            Logger.Debug($"Wrote persistent constitution for player NameRecordId={player.NameRecordId} (Id={player.Id}): Injury={player.Injury}, Days={player.InjuredDays}, Vulnerable={player.VulnerableTicksToWrite}, Banned={player.RedCardBannedMatches}, Doping=0x{player.DopingStateToWrite:X2}, Yellow={player.YellowCardsSeason}.");
+            Logger.Debug($"Wrote persistent constitution for player NameRecordId={player.NameRecordId} (Id={player.Id}): Injury={player.Injury}, Days={player.InjuredDays}, Vulnerable={player.VulnerableTicksToWrite}, Ban=0x{player.LeagueBanState:X2}/0x{player.LeagueBanReason:X2} until day {player.LeagueBanEndDay}, NextMatch=0x{player.NextMatchBan:X2}, Doping=0x{player.DopingStateToWrite:X2}, Yellow={player.YellowCardsSeason}.");
         }
 
         // ContractDuration/YearsInClub/ContractDetails and Career. The record stores the contract's
@@ -802,6 +876,20 @@ namespace A2G_Trainer.Controller
             Logger.Debug($"Wrote persistent contract terms for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{termsAddress:X}: Duration={player.ContractDuration}, YearsInClub={player.YearsInClub}, Details={player.ContractDetails}, Career={player.Career}.");
         }
 
+        // A ticked box puts the player on the transfer list (TransferList.Add, like the manager does
+        // in the game), an unticked one takes the player off (FUN_0062c0f0). Career bit 4 then goes
+        // out with every other save, as the game's FUN_0062c820/FUN_0062c910 set and clear it. If the
+        // list can't take the player (full, unreadable), the box is unticked again.
+        private void ApplyTransferListChange(Player player)
+        {
+            FixedAddresses fixedAddresses = FixedAddresses.For(this.memory);
+            if (player.IsTransferListed && !player.WasTransferListed && !TransferList.Add(this.memory, fixedAddresses, player))
+                player.IsTransferListed = false;
+            else if (player.WasTransferListed && !player.IsTransferListed)
+                TransferList.Remove(this.memory, fixedAddresses, player.NameRecordId);
+            player.WasTransferListed = player.IsTransferListed;
+        }
+
         // The season statistics (see Settings.PlayerRecordRedCardsOffset): one byte each, with its
         // display-cache key and its record offset.
         private sealed class StatisticField
@@ -824,6 +912,7 @@ namespace A2G_Trainer.Controller
             new StatisticField { Key = PlayerEnums.AddressKey.SUBBED_IN, RecordOffset = Settings.PlayerRecordSubbedInOffset, Get = p => p.SubbedIn, Set = (p, v) => p.SubbedIn = v },
             new StatisticField { Key = PlayerEnums.AddressKey.SUBBED_OUT, RecordOffset = Settings.PlayerRecordSubbedOutOffset, Get = p => p.SubbedOut, Set = (p, v) => p.SubbedOut = v },
             new StatisticField { Key = PlayerEnums.AddressKey.UPGRADE_GOALS, RecordOffset = Settings.PlayerRecordUpgradeGoalsOffset, Get = p => p.UpgradeGoals, Set = (p, v) => p.UpgradeGoals = v },
+            new StatisticField { Key = PlayerEnums.AddressKey.CAPS, RecordOffset = Settings.PlayerRecordCapsOffset, Get = p => p.Caps, Set = (p, v) => p.Caps = v },
         };
 
         // All statistics lie between the red cards and the upgrade goals - read in one call.
@@ -848,23 +937,48 @@ namespace A2G_Trainer.Controller
             Logger.Debug($"Wrote persistent statistics for player NameRecordId={player.NameRecordId} (Id={player.Id}): Goals={player.Goals}, Assists={player.Assists}, Appearances={player.Appearances}.");
         }
 
+        // An edited ban count becomes the game's ban bytes (see Player.ApplyLeagueBanChange). A new
+        // red-card ban needs today's season day for its end; without the calendar the ban stays as it
+        // was rather than being written without an end day, which the game would drop on loading.
+        private void ApplyLeagueBanChange(Player player)
+        {
+            if (player.RedCardBannedMatches == (player.LeagueBanState & Player.LeagueBanCountMask))
+                return;
+
+            byte requested = player.RedCardBannedMatches;
+            short? today = GameCalendar.Read(this.memory)?.GlobalCounter;
+            if (player.ApplyLeagueBanChange(today))
+            {
+                Logger.Debug($"League ban for player NameRecordId={player.NameRecordId} (Id={player.Id}) set to {requested} match(es): 0x{player.LeagueBanState:X2}/0x{player.LeagueBanReason:X2} until day {player.LeagueBanEndDay}.");
+            }
+            else
+            {
+                Logger.Warn($"League ban for player NameRecordId={player.NameRecordId} (Id={player.Id}) left at {player.LeagueBanState & Player.LeagueBanCountMask} match(es): the season day for its end isn't available (layout: {this.memory.Layout}).");
+                player.RedCardBannedMatches = (byte)(player.LeagueBanState & Player.LeagueBanCountMask);
+            }
+        }
+
         // Returns one warning per Firstname/Lastname that couldn't be permanently saved (see
         // WritePersistentName) - empty if everything went through.
         //
-        // The three persistent, PlayerId-keyed writes below (Name/Level/Age) always run, for every
-        // player type - they don't depend on which context is currently loaded. Everything else
-        // writes through the transient "display cache" address space instead, which for TRAINEE
-        // (Jugendspieler) is a shared buffer the game itself dynamically refills on navigation (see
-        // HelpView.cs): writing there can silently do nothing, or - if the buffer's since been
-        // reused for a different context - land in the wrong slot ("unvorhersehbares Verhalten").
-        // So for TRAINEE we skip that whole block and rely only on the persistent writes.
-        /// <summary>Writes a player's persistent fields (name/level/age/etc.) and, outside TRAINEE context, its full display-cache fields too. Returns any name-save warnings to surface to the user.</summary>
+        // The persistent, PlayerId-keyed writes below always run - they don't depend on which
+        // context is currently loaded. The display-cache fields go to the own/opponent roster slot,
+        // or for a player listed from the records to the working copy the game holds of him right
+        // now (looked up again, the game fetches and frees them all the time) - without one the
+        // record is all there is. The game packs a working copy back over the record, so a player
+        // it holds one of must get both.
+        /// <summary>Writes a player's persistent fields (name/level/age/etc.) and, where the game holds one, its display-cache copy too. Returns any name-save warnings to surface to the user.</summary>
         public List<string> Save(Player player)
         {
             List<string> nameWarnings = new List<string>();
+            this.RefreshWorkingCopy(player);
+            int? previousAge = this.RecordAge(player);
 
             // Never write through record-table anchors that aren't known/confirmed for the attached
             // build (see PersistentLayout) - a wrong guess would land in unrelated game memory.
+            this.ApplyTransferListChange(player);
+            this.ApplyLeagueBanChange(player);
+
             if (new PlayerRecordResolver(this.memory).IsAvailable)
             {
                 nameWarnings = this.WritePersistentName(player);
@@ -883,81 +997,89 @@ namespace A2G_Trainer.Controller
                 this.WritePersistentContractTerms(player);
                 this.WritePersistentConstitution(player);
                 this.WritePersistentStatistics(player);
+                if (this.Type == PlayerEnums.AddressType.TRAINEE && this.RecordClub != null && previousAge.HasValue)
+                    nameWarnings.AddRange(this.FileYouthByAge(player, previousAge.Value != player.Age));
             }
 
-            if (this.Type != PlayerEnums.AddressType.TRAINEE)
+            if (this.HasCacheCopy(player))
             {
                 nameWarnings.AddRange(this.GetDisplayCacheOnlyRenameWarnings(player));
 
                 #region Overview
-                this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), "string", player.Firstname.PadRight(9, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
-                this.memory.WriteMemory(GetAddress(this.memory, player,player.Addresses[PlayerEnums.AddressKey.LASTNAME]), "string", player.Lastname.PadRight(15, '\0'), stringEncoding: Encoding.GetEncoding("iso-8859-1"));
+                Encoding latin1 = Encoding.GetEncoding("iso-8859-1");
+                this.WriteCache(player, PlayerEnums.AddressKey.FIRSTNAME, latin1.GetBytes(player.Firstname.PadRight(9, '\0')));
+                this.WriteCache(player, PlayerEnums.AddressKey.LASTNAME, latin1.GetBytes(player.Lastname.PadRight(15, '\0')));
 
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKIN]), new byte[] { (byte) player.SkinColor });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAIR]), new byte[] { (byte) player.HairColor });
+                this.WriteCache(player, PlayerEnums.AddressKey.SKIN, new byte[] { (byte) player.SkinColor });
+                this.WriteCache(player, PlayerEnums.AddressKey.HAIR, new byte[] { (byte) player.HairColor });
 
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.AGE]), new byte[] { player.Age });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LEVEL]), new byte[] { player.Level });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FORM]), new byte[] { player.Form });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.JERSEY]), new byte[] { player.Jersey });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONDITION]), new byte[] { player.Condition });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FRESHNESS]), new byte[] { player.Freshness });
+                this.WriteCache(player, PlayerEnums.AddressKey.AGE, new byte[] { player.Age });
+                this.WriteCache(player, PlayerEnums.AddressKey.LEVEL, new byte[] { player.Level });
+                this.WriteCache(player, PlayerEnums.AddressKey.FORM, new byte[] { player.Form });
+                this.WriteCache(player, PlayerEnums.AddressKey.JERSEY, new byte[] { player.Jersey });
+                this.WriteCache(player, PlayerEnums.AddressKey.CONDITION, new byte[] { player.Condition });
+                this.WriteCache(player, PlayerEnums.AddressKey.FRESHNESS, new byte[] { player.Freshness });
 
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NATIONALITY]), new byte[] { (byte)player.Nationality });
+                this.WriteCache(player, PlayerEnums.AddressKey.NATIONALITY, new byte[] { (byte)player.Nationality });
                 #endregion
 
                 #region Positions
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.POSITION]), new byte[] { (byte)player.Position });
+                this.WriteCache(player, PlayerEnums.AddressKey.POSITION, new byte[] { (byte)player.Position });
                 if (player.SecondaryPositions.Count > 0)
                 {
-                    this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SECONDARY_1]), new byte[] { (byte)player.SecondaryPositions[0] });
+                    this.WriteCache(player, PlayerEnums.AddressKey.SECONDARY_1, new byte[] { (byte)player.SecondaryPositions[0] });
                     if (player.SecondaryPositions.Count > 1)
                     {
-                        this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SECONDARY_2]), new byte[] { (byte)player.SecondaryPositions[1] });
+                        this.WriteCache(player, PlayerEnums.AddressKey.SECONDARY_2, new byte[] { (byte)player.SecondaryPositions[1] });
                     }
                 }
                 #endregion
 
                 #region Skills
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SKILLS]), BitConverter.GetBytes((ushort)player.Skills));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.NEG_SKILLS]), BitConverter.GetBytes((ushort)player.NegativeSkills));
+                this.WriteCache(player, PlayerEnums.AddressKey.SKILLS, BitConverter.GetBytes((ushort)player.Skills));
+                this.WriteCache(player, PlayerEnums.AddressKey.NEG_SKILLS, BitConverter.GetBytes((ushort)player.NegativeSkills));
                 #endregion
 
                 #region Character
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.PERSONALITY]), BitConverter.GetBytes((ushort)player.Personality));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CHARACTER]), new byte[] { (byte)player.Character });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HEALTH]), new byte[] { (byte)player.Health });
+                this.WriteCache(player, PlayerEnums.AddressKey.PERSONALITY, BitConverter.GetBytes((ushort)player.Personality));
+                this.WriteCache(player, PlayerEnums.AddressKey.CHARACTER, new byte[] { (byte)player.Character });
+                this.WriteCache(player, PlayerEnums.AddressKey.HEALTH, new byte[] { (byte)player.Health });
                 #endregion
 
                 #region Constitution
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.UNHAPPY]), BitConverter.GetBytes((ushort)player.Unhappy));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HAPPY]), BitConverter.GetBytes((byte)player.Happy));
+                this.WriteCache(player, PlayerEnums.AddressKey.UNHAPPY, BitConverter.GetBytes((ushort)player.Unhappy));
+                this.WriteCache(player, PlayerEnums.AddressKey.HAPPY, BitConverter.GetBytes((byte)player.Happy));
 
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.INJURED_DAYS]), BitConverter.GetBytes(player.InjuredDays));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.VULNERABLE]), new byte[] { player.VulnerableTicksToWrite });
+                // The kind goes to the working copy too: the game shows it from there and writes it
+                // back over the record (FUN_00583120), so a record-only write was lost.
+                this.WriteCache(player, PlayerEnums.AddressKey.INJURY, new byte[] { player.Injury });
+                this.WriteCache(player, PlayerEnums.AddressKey.INJURED_DAYS, BitConverter.GetBytes(player.InjuredDays));
+                this.WriteCache(player, PlayerEnums.AddressKey.VULNERABLE, new byte[] { player.VulnerableTicksToWrite });
 
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BANNED_MATCHES]), new byte[] { (byte)player.RedCardBannedMatches });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.DOPED]), new byte[] { player.DopingStateToWrite });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YELLOW_CARDS]), new byte[] { (byte)player.YellowCardsSeason });
+                this.WriteCache(player, PlayerEnums.AddressKey.BANNED_MATCHES, new byte[] { player.NextMatchBan });
+                this.WriteCache(player, PlayerEnums.AddressKey.LEAGUE_BAN, new byte[] { player.LeagueBanState, player.LeagueBanReason });
+                this.WriteCache(player, PlayerEnums.AddressKey.LEAGUE_BAN_END, BitConverter.GetBytes(player.LeagueBanEndDay));
+                this.WriteCache(player, PlayerEnums.AddressKey.DOPED, new byte[] { player.DopingStateToWrite });
+                this.WriteCache(player, PlayerEnums.AddressKey.YELLOW_CARDS, new byte[] { (byte)player.YellowCardsSeason });
                 #endregion
 
                 #region Contract
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SALARY]), BitConverter.GetBytes(player.Salary));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.SHOWUP]), BitConverter.GetBytes(player.ShowUpBonus));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.GOALS_BONUS]), BitConverter.GetBytes(player.GoalsBonus));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.TRANSFER_FEE]), BitConverter.GetBytes(player.TransferFee));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.BUY_PRICE]), BitConverter.GetBytes(player.BuyPrice));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HOME_COUNTRY]), new byte[] { (byte)player.HomeCountry });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.HOME_CLUB]), BitConverter.GetBytes(player.HomeClubId));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DURATION]), new byte[] { (byte)player.ContractDuration });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CONTRACT_DETAILS]), BitConverter.GetBytes((byte)player.ContractDetails));
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.YEARS_IN_CLUB]), new byte[] { (byte)player.YearsInClub });
-                this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.CAREER]), BitConverter.GetBytes((byte)player.Career));
+                this.WriteCache(player, PlayerEnums.AddressKey.SALARY, BitConverter.GetBytes(player.Salary));
+                this.WriteCache(player, PlayerEnums.AddressKey.SHOWUP, BitConverter.GetBytes(player.ShowUpBonus));
+                this.WriteCache(player, PlayerEnums.AddressKey.GOALS_BONUS, BitConverter.GetBytes(player.GoalsBonus));
+                this.WriteCache(player, PlayerEnums.AddressKey.TRANSFER_FEE, BitConverter.GetBytes(player.TransferFee));
+                this.WriteCache(player, PlayerEnums.AddressKey.BUY_PRICE, BitConverter.GetBytes(player.BuyPrice));
+                this.WriteCache(player, PlayerEnums.AddressKey.HOME_COUNTRY, new byte[] { (byte)player.HomeCountry });
+                this.WriteCache(player, PlayerEnums.AddressKey.HOME_CLUB, BitConverter.GetBytes(player.HomeClubId));
+                this.WriteCache(player, PlayerEnums.AddressKey.CONTRACT_DURATION, new byte[] { (byte)player.ContractDuration });
+                this.WriteCache(player, PlayerEnums.AddressKey.CONTRACT_DETAILS, BitConverter.GetBytes((byte)player.ContractDetails));
+                this.WriteCache(player, PlayerEnums.AddressKey.YEARS_IN_CLUB, new byte[] { (byte)player.YearsInClub });
+                this.WriteCache(player, PlayerEnums.AddressKey.CAREER, BitConverter.GetBytes((byte)player.Career));
                 #endregion
 
                 #region Statistics
                 foreach (StatisticField field in StatisticFields)
-                    this.memory.WriteBytes(GetAddress(this.memory, player, player.Addresses[field.Key]), new byte[] { field.Get(player) });
+                    this.WriteCache(player, field.Key, new byte[] { field.Get(player) });
                 #endregion
 
                 #region Other
@@ -968,6 +1090,28 @@ namespace A2G_Trainer.Controller
             }
 
             return nameWarnings;
+        }
+
+        // Age as the record holds it now (birth year against the current year), or null if unknown.
+        private int? RecordAge(Player player)
+        {
+            PlayerRecordResolver recordResolver = new PlayerRecordResolver(this.memory);
+            int? currentYear = this.GetCurrentYear();
+            if (!recordResolver.IsAvailable || !currentYear.HasValue)
+                return null;
+            byte[] birthYear = this.memory.ReadBytesAtAddress(recordResolver.GetFieldAddress(player.NameRecordId, Settings.PlayerRecordAgeOffset), 2);
+            return birthYear == null ? (int?)null : currentYear.Value - BitConverter.ToUInt16(birthYear, 0);
+        }
+
+        // A youth player made older or younger has to change his youth group as well (see
+        // ClubSquads.MoveYouthToAgeGroup) - only from the A youth can he be signed by appointment.
+        private IEnumerable<string> FileYouthByAge(Player player, bool ageChanged)
+        {
+            ClubSquads.YouthMove move = ClubSquads.MoveYouthToAgeGroup(this.memory, FixedAddresses.For(this.memory), this.RecordClub, player.NameRecordId, player.Age, ageChanged, out int from, out int to);
+            Logger.Debug($"FileYouthByAge: player {player.NameRecordId}, age {player.Age}: {move} ({ClubSquads.YouthGroupNames[from]} -> {ClubSquads.YouthGroupNames[to]}).");
+            if (move == ClubSquads.YouthMove.GroupFull)
+                yield return $"{player}: Die {ClubSquads.YouthGroupNames[to]} ist voll, er bleibt in der {ClubSquads.YouthGroupNames[from]}."
+                    + (to == 0 ? " Verpflichten lässt er sich per Termin erst aus der A-Jugend." : "");
         }
 
         // Without a name pool for this build (see PersistentLayout), WritePersistentName skips every
@@ -982,8 +1126,8 @@ namespace A2G_Trainer.Controller
 
             Encoding encoding = Encoding.GetEncoding("iso-8859-1");
             string playerLabel = $"{player.Firstname} {player.Lastname}".Trim();
-            string currentFirstname = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.FIRSTNAME]), length: 9, stringEncoding: encoding);
-            string currentLastname = this.memory.ReadString(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.LASTNAME]), length: 15, stringEncoding: encoding);
+            string currentFirstname = this.ReadCacheString(player, PlayerEnums.AddressKey.FIRSTNAME, 9, encoding);
+            string currentLastname = this.ReadCacheString(player, PlayerEnums.AddressKey.LASTNAME, 15, encoding);
 
             if (player.Firstname != null && player.Firstname != currentFirstname)
                 warnings.Add($"{playerLabel}: Vorname - für diese Spielversion nur bis zum nächsten Laden gespeichert.");
@@ -992,61 +1136,49 @@ namespace A2G_Trainer.Controller
             return warnings;
         }
 
-        /// <summary>Writes only the given fields via the transient display-cache addresses (no persistent-record writes).</summary>
+        /// <summary>
+        /// Writes only the given fields (condition, freshness) via the display-cache addresses; for a
+        /// player listed from the records into his record and, if the game holds one, his working copy.
+        /// </summary>
         public void Save (Player player, List<PlayerEnums.AddressKey> fieldsToSave)
         {
-            foreach (var field in fieldsToSave) {
-                // Get the memory address for this specific property dynamically
-                string address = GetAddress(this.memory, player, player.Addresses[field]);
+            this.RefreshWorkingCopy(player);
+            if (this.RecordClub != null && new PlayerRecordResolver(this.memory).IsAvailable)
+                this.WritePersistentConditionFreshness(player);
+            if (!this.HasCacheCopy(player))
+                return;
 
+            foreach (var field in fieldsToSave) {
                 switch (field) {
                     case PlayerEnums.AddressKey.CONDITION:
-                        this.memory.WriteBytes(address, new byte[] { player.Condition });
+                        this.WriteCache(player, field, new byte[] { player.Condition });
                         break;
 
                     case PlayerEnums.AddressKey.FRESHNESS:
-                        this.memory.WriteBytes(address, new byte[] { player.Freshness });
+                        this.WriteCache(player, field, new byte[] { player.Freshness });
                         break;
                 }
             }
         }
 
-        /// <summary>True while the display-cache slot this player was read from still holds the same player.</summary>
+        /// <summary>True while the display-cache slot this player was read from still holds the same player; always for a player listed from the records.</summary>
         // The game reuses the OWN/OPPONENT slots for other clubs during a Wochenabschluss or a match
         // and packs the slot back into each player's record afterwards (FUN_00583120), so a write
         // into a slot that now holds someone else ends up permanently in that player's record.
+        // A record, and the working copy looked up by the player's ID, always belong to that player.
         internal bool IsStillLoaded(Player player)
         {
+            if (this.RecordClub != null)
+                return true;
             byte[] nameRecordIdBytes = this.memory.ReadBytes(GetAddress(this.memory, player, player.Addresses[PlayerEnums.AddressKey.ID]), 2);
             return nameRecordIdBytes != null && BitConverter.ToUInt16(nameRecordIdBytes, 0) == player.NameRecordId;
         }
 
+        // The opponent's players follow the own club's in the roster slots.
         private void InitOffsets(string offset)
         {
-            this.OtherOffset = offset;
-
-            PlayerEnums.AddressType counterpartType = this.Type == PlayerEnums.AddressType.OWN
-                ? PlayerEnums.AddressType.OPPONENT
-                : PlayerEnums.AddressType.OWN;
-
-            ClubController counterpart = new ClubController(this.memory, this.isGog, counterpartType);
-
-            int count = counterpart.Club.PlayerCount + counterpart.Club.AmateurPlayerCount;
-
-            for (int i = 0; i < count; i++)
-            {
-                this.OtherOffset = Tools.SumHex(
-                    new[] { this.OtherOffset, Settings.PlayerOffset }
-                );
-            }
-
-            if (this.Type == PlayerEnums.AddressType.OWN)
-            {
-                this.OpponentOffset = offset;
-                AddressPresets.InitOpponent(this.OpponentOffset);
-            }
-
-            AddressPresets.InitDynamicTeam(this.OtherOffset);
+            this.OpponentOffset = offset;
+            AddressPresets.InitOpponent(this.OpponentOffset);
         }
     }
 }
