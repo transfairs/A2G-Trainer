@@ -27,6 +27,11 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 <td align="center" width="33%"><img src="docs/Trainees.png" width="260"><br><sub><b>Youth players</b> — skills editor (Jugendspieler)</sub></td>
 <td align="center" width="33%"><img src="docs/CoachView.png" width="260"><br><sub><b>Coach view</b> — competencies &amp; difficulty</sub></td>
 </tr>
+<tr>
+<td align="center" width="33%"><img src="docs/ContractTab.png" width="260"><br><sub><b>Contract tab</b> — salary, bonuses, loan &amp; home club</sub></td>
+<td align="center" width="33%"><img src="docs/Spielmechaniken.png" width="260"><br><sub><b>Game mechanics</b> — quiz &amp; interview help, goal limits, job offers</sub></td>
+<td align="center" width="33%"><img src="docs/Help.png" width="260"><br><sub><b>Help</b> — built in, same content as the online help</sub></td>
+</tr>
 </table>
 </div>
 
