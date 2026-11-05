@@ -17,8 +17,18 @@ namespace A2G_Trainer.Tests
 
             stock.Shares = 42;
 
-            Assert.Equal((ushort)42, stock.Shares);
+            Assert.Equal(42, stock.Shares);
             Assert.Contains(nameof(Stock.Shares), raised);
+        }
+
+        [Theory]
+        [InlineData(PlayerEnums.Country.Deutschland, 1, true)]
+        [InlineData(PlayerEnums.Country.Deutschland, 0, false)]
+        [InlineData(PlayerEnums.Country.Deutschland, -5, false)]
+        [InlineData(PlayerEnums.Country.Sonstige, 10, false)]
+        public void HasPosition_NeedsACountryAndShares(PlayerEnums.Country country, int shares, bool expected)
+        {
+            Assert.Equal(expected, new Stock { Country = country, Shares = shares }.HasPosition);
         }
     }
 }

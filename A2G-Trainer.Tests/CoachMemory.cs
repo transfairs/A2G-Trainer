@@ -27,7 +27,10 @@ namespace A2G_Trainer.Tests
             if (slotOffset >= competencyStart)
                 return Settings.CoachCompetencyRecordOffset + Id(trainerSlot) * Settings.CoachCompetencyRecordStride + (slotOffset - competencyStart);
 
-            return Settings.CoachRecordTableOffset + Id(trainerSlot) * Settings.CoachRecordStride + slotOffset;
+            uint record = Settings.CoachRecordTableOffset + Id(trainerSlot) * Settings.CoachRecordStride;
+            if (slotOffset >= Settings.CoachSlotLevelBlockOffset && slotOffset < Settings.CoachSlotLevelBlockOffset + Settings.CoachLevelBlockLength)
+                return record + Settings.CoachRecordLevelBlockOffset + (slotOffset - Settings.CoachSlotLevelBlockOffset);
+            return record + slotOffset;
         }
 
         public static void WriteWorkingCopy(FakeModule fake, string presetOffset, byte[] data, int trainerSlot = 0) =>

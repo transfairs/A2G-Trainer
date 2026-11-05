@@ -24,7 +24,7 @@ namespace A2G_Trainer.Tests
         private static object InvokePrivate(object target, string methodName, params object[] args) =>
             target.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(target, args);
 
-        private static void SeedLeagueAndStock(FakeModule fake)
+        internal static void SeedLeagueAndStock(FakeModule fake)
         {
             fake.RoutePointerSlot(Settings.ClubAddress[0]);
             Addresses league = AddressPresets.LEAGUE_SETTINGS;
@@ -101,43 +101,6 @@ namespace A2G_Trainer.Tests
         });
 
         [Fact]
-        public void InitClubTabControl_EnablesJobOfferBoxForTheOriginalBuild() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                SeedLeagueAndStock(fake);
-                trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0);
-
-                trainer.CoachView.InitClubTabControl();
-
-                var box = (GroupBox)typeof(CoachView).GetField("JobOfferBox", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer.CoachView);
-                var countryInput = (ComboBox)typeof(CoachView).GetField("JobOfferCountryInput", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer.CoachView);
-                Assert.True(box.Enabled);
-                Assert.NotEmpty(((System.Collections.IEnumerable)countryInput.DataSource).Cast<object>());
-            }
-        });
-
-        [Theory]
-        [InlineData(JobOfferInjector.RequestResult.Requested, "Tagesabschluss")]
-        [InlineData(JobOfferInjector.RequestResult.NotEmployed, "vereinslos")]
-        [InlineData(JobOfferInjector.RequestResult.ChangePending, "Kein Wechsel")]
-        [InlineData(JobOfferInjector.RequestResult.SameClub, "aktuelle Verein")]
-        [InlineData(JobOfferInjector.RequestResult.NotSupported, "Spielversion")]
-        [InlineData(JobOfferInjector.RequestResult.HookFailed, "Logdatei")]
-        public void JobOfferMessage_ExplainsEveryResult(JobOfferInjector.RequestResult result, string expected)
-        {
-            Assert.Contains(expected, CoachView.JobOfferMessage(result, "Testverein"));
-        }
-
-        [Fact]
-        public void JobOfferMessage_MentionsTheClauseOnlyWhenItWasSet()
-        {
-            Assert.Contains("Freigabeklausel", CoachView.JobOfferMessage(JobOfferInjector.RequestResult.Requested, "Testverein", clauseSet: true));
-            Assert.DoesNotContain("Freigabeklausel", CoachView.JobOfferMessage(JobOfferInjector.RequestResult.Requested, "Testverein"));
-        }
-
-        [Fact]
         public void InitClubTabControl_WithoutCurrentClub_ShowsVereinslos() => StaThread.Run(() =>
         {
             using (Trainer trainer = new Trainer())
@@ -159,7 +122,7 @@ namespace A2G_Trainer.Tests
         private static void SetField(CoachView view, string name, object value) =>
             typeof(CoachView).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(view, value);
 
-        private static System.ComponentModel.BindingList<Club> TwoGermanClubs() => new System.ComponentModel.BindingList<Club>
+        internal static System.ComponentModel.BindingList<Club> TwoGermanClubs() => new System.ComponentModel.BindingList<Club>
         {
             new Club { Country = PlayerEnums.Country.Deutschland, Id = 1, ClubName = "Aachen" },
             new Club { Country = PlayerEnums.Country.Deutschland, Id = 2, ClubName = "Bremen" },
@@ -167,7 +130,7 @@ namespace A2G_Trainer.Tests
 
         // A build whose league tables aren't confirmed: every club passes the eligibility filter
         // (IsEligibleNextSeasonClub is null) and the job offer isn't supported.
-        private static readonly PersistentLayout UnconfirmedLayout = new PersistentLayout(null, null, null, null, isVerified: true);
+        internal static readonly PersistentLayout UnconfirmedLayout = new PersistentLayout(null, null, null, null, isVerified: true);
 
         [Fact]
         public void InitClubTabControl_WithACurrentClubMissingFromTheClubList_ShowsItsId() => StaThread.Run(() =>
@@ -191,68 +154,13 @@ namespace A2G_Trainer.Tests
             }
         });
 
-        [Fact]
-        public void RequestJobOffer_ShowsTheOutcomeInTheStatusLine() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                SeedLeagueAndStock(fake);
-                fake.Memory.Layout = UnconfirmedLayout;
-                trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0);
-                trainer.CoachView.InitClubTabControl();
-                SetField(trainer.CoachView, "allClubs", TwoGermanClubs());
-                InvokePrivate(trainer.CoachView, "PopulateJobOfferCountryCombo");
-
-                InvokePrivate(trainer.CoachView, "RequestJobOffer");
-
-                Assert.Equal(CoachView.JobOfferMessage(JobOfferInjector.RequestResult.NotSupported, "Aachen"), Field<Label>(trainer.CoachView, "JobOfferStatus").Text);
-            }
-        });
-
         // Germany's only league holds club 1 (Aachen) - club 2 (Bremen) isn't playing in any league.
-        private static void SeedGermanLeagueWithAachenOnly(FakeModule fake)
+        internal static void SeedGermanLeagueWithAachenOnly(FakeModule fake)
         {
             fake.WriteModuleBytes(Settings.LeagueRangeTableOffset, new byte[] { 0, 0, 1, 0 });
             fake.WriteModuleBytes(Settings.LeagueTableOffset, BitConverter.GetBytes((short)1));
             fake.WriteModuleBytes(Settings.LeagueTableOffset + Settings.LeagueClubIdsOffset, BitConverter.GetBytes((short)1));
         }
-
-        [Fact]
-        public void RequestJobOffer_WhenTheGameTakesTheRequest_SaysWhenTheOfferComes() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                SeedLeagueAndStock(fake);
-                SeedGermanLeagueWithAachenOnly(fake);
-                CoachMemory.WriteWorkingCopy(fake, AddressPresets.COACH[CoachEnums.AddressKey.COUNTRY], new byte[] { (byte)PlayerEnums.Country.Deutschland });
-                CoachMemory.WriteWorkingCopy(fake, AddressPresets.COACH[CoachEnums.AddressKey.CLUB], new byte[] { 55 });
-                // The game's unpatched CALL to its offer presentation.
-                uint callSite = fake.ModuleBase + Settings.JobOfferPresentCallSiteOffset;
-                int rel = unchecked((int)(fake.ModuleBase + Settings.JobOfferPresentFunctionOffset - (callSite + 5)));
-                fake.WriteModuleBytes(Settings.JobOfferPresentCallSiteOffset, new byte[] { 0xE8 }.Concat(BitConverter.GetBytes(rel)).ToArray());
-                trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0);
-                trainer.CoachView.InitClubTabControl();
-                SetField(trainer.CoachView, "allClubs", TwoGermanClubs());
-                InvokePrivate(trainer.CoachView, "PopulateJobOfferCountryCombo");
-
-                InvokePrivate(trainer.CoachView, "RequestJobOffer");
-
-                Assert.StartsWith("Aachen bietet beim nächsten Tagesabschluss", Field<Label>(trainer.CoachView, "JobOfferStatus").Text);
-            }
-        });
-
-        [Fact]
-        public void RequestJobOffer_WithoutCoach_LeavesTheStatusAlone() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            {
-                InvokePrivate(trainer.CoachView, "RequestJobOffer");
-
-                Assert.Equal("", Field<Label>(trainer.CoachView, "JobOfferStatus").Text);
-            }
-        });
 
         [Fact]
         public void PopulateNextSeasonClubCombo_DropsClubsTheSeasonChangeWouldRefuse() => StaThread.Run(() =>
@@ -299,43 +207,6 @@ namespace A2G_Trainer.Tests
                 ConvertEventArgs selected = new ConvertEventArgs(CoachEnums.SeasonGoal.Klassenerhalt, typeof(CoachEnums.SeasonGoal));
                 onParse.Invoke(binding, new object[] { selected });
                 Assert.Equal(CoachEnums.SeasonGoal.Klassenerhalt, selected.Value);
-            }
-        });
-
-        [Fact]
-        public void PopulateJobOfferCountryCombo_KeepsTheCountryChosenBefore() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                SeedLeagueAndStock(fake);
-                trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0);
-                trainer.CoachView.InitClubTabControl();
-                ComboBox countryInput = Field<ComboBox>(trainer.CoachView, "JobOfferCountryInput");
-                countryInput.SelectedValue = PlayerEnums.Country.England;
-
-                InvokePrivate(trainer.CoachView, "PopulateJobOfferCountryCombo");
-
-                Assert.Equal(PlayerEnums.Country.England, countryInput.SelectedValue);
-            }
-        });
-
-        [Fact]
-        public void PopulateJobOfferClubCombo_WithoutCoach_OffersEveryClubOfTheCountry() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
-            {
-                SeedLeagueAndStock(fake);
-                fake.Memory.Layout = UnconfirmedLayout;
-                trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0);
-                trainer.CoachView.InitClubTabControl();
-                SetField(trainer.CoachView, "allClubs", TwoGermanClubs());
-                SetField(trainer.CoachView, "coach", null);
-
-                InvokePrivate(trainer.CoachView, "PopulateJobOfferClubCombo");
-
-                Assert.Equal(2, ((List<Club>)Field<ComboBox>(trainer.CoachView, "JobOfferClubInput").DataSource).Count);
             }
         });
 
@@ -630,10 +501,10 @@ namespace A2G_Trainer.Tests
             }
         });
 
-        // A stock slot without shares holds leftover country/club data; it shows "–" in both combos
-        // and keeps the stored values untouched, while a real position still shows its country.
+        // A stock slot without shares holds no position: it shows "–", locks club, shares and price,
+        // and drops leftover country/club data. Picking a country opens it for a new position.
         [Fact]
-        public void StockSlotWithoutShares_ShowsPlaceholdersAndLeavesTheModelAlone() => StaThread.Run(() =>
+        public void StockSlotWithoutShares_ShowsADashAndTakesANewPosition() => StaThread.Run(() =>
         {
             using (Trainer trainer = new Trainer())
             using (FakeModule fake = new FakeModule(memory: trainer.Memory))
@@ -651,17 +522,61 @@ namespace A2G_Trainer.Tests
                 var clubCombos = (ComboBox[])typeof(CoachView).GetField("stockClubCombos", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer.CoachView);
                 var coach = (Coach)typeof(CoachView).GetField("coach", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer.CoachView);
 
-                Assert.Equal(CoachView.EmptyStockText, countryCombos[1].SelectedItem);
+                var sharesInputs = (TextBox[])typeof(CoachView).GetField("stockSharesInputs", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer.CoachView);
+
+                Assert.Equal(CoachView.EmptyStockText, countryCombos[1].Text);
+                Assert.Equal(PlayerEnums.Country.Sonstige, countryCombos[1].SelectedValue);
                 Assert.Equal(CoachView.EmptyStockText, clubCombos[1].SelectedItem);
-                Assert.Single(countryCombos[1].Items);
-                Assert.Equal(PlayerEnums.Country.Italien, coach.Stocks[1].Country);
-                Assert.Equal((byte)7, coach.Stocks[1].ClubId);
-                Assert.Null(countryCombos[1].DataSource);
-                Assert.NotNull(countryCombos[0].DataSource);
+                Assert.False(clubCombos[1].Enabled);
+                Assert.False(sharesInputs[1].Enabled);
+                Assert.Equal(PlayerEnums.Country.Sonstige, coach.Stocks[1].Country);
+                Assert.Equal((byte)0, coach.Stocks[1].ClubId);
+                // The held position (slot 0, Deutschland) stays as it is.
+                Assert.Equal(PlayerEnums.Country.Deutschland, countryCombos[0].SelectedValue);
+                Assert.True(sharesInputs[0].Enabled);
+
+                countryCombos[1].SelectedValue = PlayerEnums.Country.England;
+                Assert.Equal(PlayerEnums.Country.England, coach.Stocks[1].Country);
+                Assert.True(clubCombos[1].Enabled);
+                Assert.True(sharesInputs[1].Enabled);
+
+                countryCombos[1].SelectedValue = PlayerEnums.Country.Sonstige;
+                Assert.Equal(PlayerEnums.Country.Sonstige, coach.Stocks[1].Country);
+                Assert.False(sharesInputs[1].Enabled);
 
                 // Refreshing again must still work with the placeholder in place.
                 Assert.Null(Record.Exception(() => trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0)));
-                Assert.Equal(CoachView.EmptyStockText, countryCombos[1].SelectedItem);
+                Assert.Equal(CoachView.EmptyStockText, countryCombos[1].Text);
+
+                // The club choice only offers clubs listed on the stock market, plus the one held.
+                // (Same Trainer window: each one costs the x86 test host ~20 MB.)
+                // Germany: league system 0 with three club records, only 0 and 2 listed.
+                fake.WriteModuleBytes(Settings.LeagueSystemByCountryOffset + (uint)PlayerEnums.Country.Deutschland, new byte[] { 0 });
+                fake.WriteModuleBytes(Settings.LeagueClubCountTableOffset, BitConverter.GetBytes((short)3));
+                fake.WriteModuleBytes(Settings.LeagueBaseTableOffset, BitConverter.GetBytes((short)0));
+                foreach (byte listedId in new byte[] { 0, 2 })
+                    fake.WriteModuleBytes(Settings.ClubRecordTableOffset + listedId * Settings.ClubRecordStride + Settings.ClubRecordListedOffset, new byte[] { 1 });
+                typeof(CoachView).GetField("allClubs", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(trainer.CoachView, new System.ComponentModel.BindingList<Club>
+                {
+                    new Club { Id = 0, Country = PlayerEnums.Country.Deutschland, ClubName = "A" },
+                    new Club { Id = 1, Country = PlayerEnums.Country.Deutschland, ClubName = "B" },
+                    new Club { Id = 2, Country = PlayerEnums.Country.Deutschland, ClubName = "C" }
+                });
+                MethodInfo populate = typeof(CoachView).GetMethod("PopulateStockClubs", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                using (ComboBox combo = new ComboBox { BindingContext = new BindingContext() })
+                {
+                    populate.Invoke(trainer.CoachView, new object[] { combo, PlayerEnums.Country.Deutschland, (byte)2 });
+                    Assert.Equal(new byte[] { 0, 2 }, combo.Items.Cast<Club>().Select(c => c.Id));
+                    Assert.Equal((byte)2, ((Club)combo.SelectedItem).Id);
+
+                    populate.Invoke(trainer.CoachView, new object[] { combo, PlayerEnums.Country.Deutschland, (byte)1 });
+                    Assert.Equal(new byte[] { 0, 1, 2 }, combo.Items.Cast<Club>().Select(c => c.Id));
+
+                    // A new position (club 7 isn't offered) starts on the first club.
+                    populate.Invoke(trainer.CoachView, new object[] { combo, PlayerEnums.Country.Deutschland, (byte)7 });
+                    Assert.Equal((byte)0, ((Club)combo.SelectedItem).Id);
+                }
             }
         });
 

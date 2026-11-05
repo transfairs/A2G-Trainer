@@ -33,5 +33,16 @@ namespace A2G_Trainer.View
         }
 
         protected override string GameDisplayName => "Anstoss-2-Gold";
+
+        /// <summary>TextChanged handler that caps the text at Coach.MaxBoardTrust; the game ignores anything above it.</summary>
+        protected void BoardTrustMax_TextChanged(object sender, System.EventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            if (!string.IsNullOrEmpty(textBox.Text) && (!int.TryParse(textBox.Text, out int value) || value > Model.Coach.MaxBoardTrust))
+            {
+                textBox.Text = Model.Coach.MaxBoardTrust.ToString();
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
     }
 }

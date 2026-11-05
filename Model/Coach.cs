@@ -43,9 +43,51 @@ namespace A2G_Trainer.Model
         /// <summary>Coach's trainer level, expected to stay within <see cref="MinLevel"/>..<see cref="MaxLevel"/>.</summary>
         public byte Level { get => this.level; set { this.level = value; this.OnPropertyChanged(nameof(this.Level)); } }
         private byte level = 0;
+        /// <summary>The second level byte (+0x21), which the game keeps at most at <see cref="Level"/>; written together with it.</summary>
+        public byte LevelBase { get => this.levelBase; set { this.levelBase = value; this.OnPropertyChanged(nameof(this.LevelBase)); } }
+        private byte levelBase = 0;
         /// <summary>In-game difficulty setting associated with this coach.</summary>
         public CoachEnums.Difficulty Difficulty { get => this.difficulty; set { this.difficulty = value; this.OnPropertyChanged(nameof(this.Difficulty)); } }
         private CoachEnums.Difficulty difficulty = CoachEnums.Difficulty.Realistisch;
+        /// <summary>Bit 7 of the difficulty byte: the manager already changed it once this game, so the game's own choice is locked.</summary>
+        public bool DifficultyLocked { get => this.difficultyLocked; set { this.difficultyLocked = value; this.OnPropertyChanged(nameof(this.DifficultyLocked)); } }
+        private bool difficultyLocked;
+        /// <summary>Whether the next save clears <see cref="DifficultyLocked"/> ("Sperre aufheben").</summary>
+        public bool UnlockDifficulty { get => this.unlockDifficulty; set { this.unlockDifficulty = value; this.OnPropertyChanged(nameof(this.UnlockDifficulty)); } }
+        private bool unlockDifficulty;
+        /// <summary>The difficulty byte as it is to be stored: the level in bits 0-2, the lock in bit 7 unless lifted.</summary>
+        public byte DifficultyByte => (byte)(((byte)this.difficulty & 7) | (this.difficultyLocked && !this.unlockDifficulty ? 0x80 : 0));
+
+        /// <summary>How long the manager plays (see <see cref="CoachEnums.CareerMode"/>).</summary>
+        public CoachEnums.CareerMode CareerMode { get => this.careerMode; set { this.careerMode = value; this.OnPropertyChanged(nameof(this.CareerMode)); this.OnPropertyChanged(nameof(this.CareerEndYear)); } }
+        private CoachEnums.CareerMode careerMode = CoachEnums.CareerMode.Career;
+        /// <summary>Season index the career started in (1 = the savegame's first season); a fixed duration counts from here.</summary>
+        public short CareerStartSeason { get => this.careerStartSeason; set { this.careerStartSeason = value; this.OnPropertyChanged(nameof(this.CareerStartSeason)); this.OnPropertyChanged(nameof(this.CareerStartYear)); this.OnPropertyChanged(nameof(this.CareerEndYear)); } }
+        private short careerStartSeason = 1;
+        /// <summary>The current season index (0x826660), to turn <see cref="CareerStartSeason"/> into a year.</summary>
+        public short CurrentSeason { get; set; }
+        /// <summary>The current year (0x826662).</summary>
+        public short CurrentYear { get; set; }
+        /// <summary>The year the career started in; setting it moves <see cref="CareerStartSeason"/>.</summary>
+        public int CareerStartYear
+        {
+            get => this.CurrentYear - this.CurrentSeason + this.careerStartSeason;
+            set => this.CareerStartSeason = (short)(value - this.CurrentYear + this.CurrentSeason);
+        }
+        // Seasons of each fixed duration (table 0x6B7A30).
+        private static readonly short[] CareerYears = { 1, 2, 3, 4, 5, 10, 20, 50, 100 };
+        /// <summary>The year whose season is the last one of a fixed duration, null for a career or endless game.</summary>
+        public int? CareerEndYear => (int)this.careerMode >= 0 && (int)this.careerMode < CareerYears.Length ? this.CareerStartYear + CareerYears[(int)this.careerMode] - 1 : (int?)null;
+        /// <summary>Age the career ends at (Int16, starts at 80); only counts in <see cref="CoachEnums.CareerMode.Career"/>.</summary>
+        public short RetirementAge { get => this.retirementAge; set { this.retirementAge = value; this.OnPropertyChanged(nameof(this.RetirementAge)); } }
+        private short retirementAge = 80;
+        /// <summary>Result of this season's Managerfortbildung.</summary>
+        public CoachEnums.TrainingResult TrainingResult { get => this.trainingResult; set { this.trainingResult = value; this.OnPropertyChanged(nameof(this.TrainingResult)); } }
+        private CoachEnums.TrainingResult trainingResult;
+        /// <summary>Titles, setbacks and stations; null where the build has no known fixed addresses.</summary>
+        public CoachAchievements Achievements { get; set; }
+        /// <summary>Level evaluation, event flags and locks (see <see cref="CoachLevelState"/>).</summary>
+        public CoachLevelState LevelState { get; } = new CoachLevelState();
 
         /// <summary>Total number of matches this coach has managed.</summary>
         public ushort Games
@@ -151,6 +193,41 @@ namespace A2G_Trainer.Model
             get => this.boardRelease != 0;
             set => this.BoardRelease = value ? (this.boardRelease != 0 ? this.boardRelease : (byte)1) : (byte)0;
         }
+
+        /// <summary>Highest board trust the game uses; it caps the sum of base and bonus here (FUN_00639100).</summary>
+        public const byte MaxBoardTrust = 100;
+
+        /// <summary>Base value of the board's trust as stored (+0x94, Int16) - see <see cref="BoardTrust"/>.</summary>
+        public short BoardTrustBase
+        {
+            get => this.boardTrustBase;
+            set { this.boardTrustBase = value; this.OnPropertyChanged(nameof(this.BoardTrustBase)); this.OnPropertyChanged(nameof(this.BoardTrust)); }
+        }
+        private short boardTrustBase;
+        /// <summary>Sum of the four bytes the game adds to <see cref="BoardTrustBase"/> (+0x96..+0x99). Read-only in the Trainer.</summary>
+        public int BoardTrustBonus
+        {
+            get => this.boardTrustBonus;
+            set { this.boardTrustBonus = value; this.OnPropertyChanged(nameof(this.BoardTrustBonus)); this.OnPropertyChanged(nameof(this.BoardTrust)); }
+        }
+        private int boardTrustBonus;
+
+        /// <summary>
+        /// The board's trust in the manager ("Vertrauen des Vorstandes", 0..<see cref="MaxBoardTrust"/>)
+        /// the way the game computes it: base plus bonus, capped. Setting it adjusts only the base,
+        /// so the bonus bytes stay as the game left them.
+        /// </summary>
+        public byte BoardTrust
+        {
+            get => EffectiveBoardTrust(this.boardTrustBase, this.boardTrustBonus);
+            set => this.BoardTrustBase = BoardTrustBaseFor(value, this.boardTrustBonus);
+        }
+
+        /// <summary>Board trust the game derives from a base value and bonus sum: their sum, capped to 0..<see cref="MaxBoardTrust"/>.</summary>
+        public static byte EffectiveBoardTrust(short trustBase, int bonus) => (byte)Math.Max(0, Math.Min(MaxBoardTrust, trustBase + bonus));
+
+        /// <summary>Base value that gives <paramref name="trust"/> (capped to <see cref="MaxBoardTrust"/>) together with <paramref name="bonus"/>.</summary>
+        public static short BoardTrustBaseFor(int trust, int bonus) => (short)(Math.Min((int)MaxBoardTrust, Math.Max(0, trust)) - bonus);
 
         /// <summary>
         /// The club's option to extend the contract by a year, as stored (the game's offers use 0-2;
@@ -273,6 +350,67 @@ namespace A2G_Trainer.Model
                 ? (byte)(this.releaseClause | ReleaseClauseBit | ReleaseClausePublishedBit)
                 : (byte)(this.releaseClause & ~ReleaseClausePublishedBit);
         }
+
+        /// <summary>Highest value of the nerves and the three standings; the game clamps them to 0..100.</summary>
+        public const byte MaxStanding = 100;
+
+        /// <summary>"Nervenkostüm" (+0x28, Int16, 0..100): weekly board trust, results and events move it.</summary>
+        public byte Nerves { get => this.nerves; set { this.nerves = value; this.OnPropertyChanged(nameof(this.Nerves)); } }
+        private byte nerves;
+        /// <summary>Weeks counted into the season's nerves average (+0x2C); the sum (+0x2A) is written as Nerves times this.</summary>
+        public short NervesWeeks { get; set; }
+
+        /// <summary>Standing with the public ("Öffentlichkeit", +0x30, 0..100).</summary>
+        public byte PublicStanding { get => this.publicStanding; set { this.publicStanding = value; this.OnPropertyChanged(nameof(this.PublicStanding)); } }
+        private byte publicStanding;
+        /// <summary>Standing with the fans (+0x31, 0..100). A new club starts it at the public standing.</summary>
+        public byte FanStanding { get => this.fanStanding; set { this.fanStanding = value; this.OnPropertyChanged(nameof(this.FanStanding)); } }
+        private byte fanStanding;
+        /// <summary>The stored base of the media standing (+0x32) - see <see cref="MediaStanding"/>.</summary>
+        public byte MediaBase { get => this.mediaBase; set { this.mediaBase = value; this.OnPropertyChanged(nameof(this.MediaBase)); this.OnPropertyChanged(nameof(this.MediaStanding)); } }
+        private byte mediaBase;
+
+        // The game scales the stored media base by the charisma ("Ausstrahlung") of the current level
+        // (FUN_005bb0b0): (charisma + 20) * base * 4 / 100, clamped to 0..100.
+        private int MediaFactor => (this.CompetencyLevels[Math.Min(this.level, MaxLevel)].Get(CoachEnums.CompetencyKey.Ausstrahlung) + 20) * 4;
+
+        /// <summary>
+        /// Standing with the media as the game shows it. Setting it stores the smallest base that
+        /// gives at least that value (capped to the signed byte's 127).
+        /// </summary>
+        public byte MediaStanding
+        {
+            get => (byte)Math.Max(0, Math.Min(MaxStanding, this.MediaFactor * this.mediaBase / 100));
+            set => this.MediaBase = (byte)Math.Min(127, (Math.Min((int)value, MaxStanding) * 100 + this.MediaFactor - 1) / this.MediaFactor);
+        }
+
+        /// <summary>The national coach's three friendlies; empty unless national coach on a build with known fixed addresses.</summary>
+        public List<NationalFriendly> Friendlies { get; } = new List<NationalFriendly>();
+
+        /// <summary>The champion bets ("Meistertipp" in the Wettbüro), one per league country; empty without known fixed addresses.</summary>
+        public Dictionary<PlayerEnums.Country, ChampionTip> ChampionTips { get; } = new Dictionary<PlayerEnums.Country, ChampionTip>();
+
+        /// <summary>Country whose national team this coach trains; <see cref="PlayerEnums.Country.Sonstige"/> for none.</summary>
+        public PlayerEnums.Country NationalTeam
+        {
+            get => this.nationalTeam;
+            set { this.nationalTeam = value; this.OnPropertyChanged(nameof(this.NationalTeam)); this.OnPropertyChanged(nameof(this.IsNationalCoach)); }
+        }
+        private PlayerEnums.Country nationalTeam = PlayerEnums.Country.Sonstige;
+        /// <summary>Whether this coach trains a national team.</summary>
+        public bool IsNationalCoach => this.nationalTeam != PlayerEnums.Country.Sonstige;
+        /// <summary>Annual salary as national coach; the game pays a twelfth each month.</summary>
+        public int NationalSalary { get => this.nationalSalary; set { this.nationalSalary = value; this.OnPropertyChanged(nameof(this.NationalSalary)); } }
+        private int nationalSalary;
+        /// <summary>Bonus as national coach for every knockout round the team reaches at a EM/WM.</summary>
+        public int NationalRoundBonus { get => this.nationalRoundBonus; set { this.nationalRoundBonus = value; this.OnPropertyChanged(nameof(this.NationalRoundBonus)); } }
+        private int nationalRoundBonus;
+        /// <summary>Whether <see cref="NationalTeam"/> is a takeover the game carries out at the next daily processing (see NationalCoachInjector).</summary>
+        public bool IsNationalTeamPending { get => this.isNationalTeamPending; set { this.isNationalTeamPending = value; this.OnPropertyChanged(nameof(this.IsNationalTeamPending)); } }
+        private bool isNationalTeamPending;
+        /// <summary>Whether the national coach fields were read from the game: only builds with known fixed addresses (see FixedAddresses) have them.</summary>
+        public bool HasNationalTeam { get => this.hasNationalTeam; set { this.hasNationalTeam = value; this.OnPropertyChanged(nameof(this.HasNationalTeam)); } }
+        private bool hasNationalTeam;
 
         /// <summary>Resolved memory addresses for this coach slot's fields.</summary>
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }

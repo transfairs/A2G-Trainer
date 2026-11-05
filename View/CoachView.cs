@@ -90,7 +90,9 @@ namespace A2G_Trainer.View
         {
             InitializeComponent();
             this.BuildStockBoxes();
+            this.BuildFriendlyRows();
             this.BuildCompetencyBox();
+            this.BuildCareerTab();
         }
 
         // The game caps stock holdings at Coach.MaxStocks slots - built here in a loop instead of
@@ -345,14 +347,10 @@ namespace A2G_Trainer.View
             this.BoardReleaseInput.DataBindings.Add("Checked", this.bindingSource, nameof(Coach.HasBoardRelease), false, DataSourceUpdateMode.OnPropertyChanged);
 
             this.InitContractTab();
+            this.InitNationalTab();
+            this.InitStandingTab();
 
             this.UpdateCurrentClubDisplay();
-
-            // "Jobangebot anfordern": its own country/club choice, independent of the next-season
-            // fields (a pending next-season change would even keep the game from presenting it).
-            this.JobOfferCountryInput.SelectedIndexChanged += (s, e) => this.PopulateJobOfferClubCombo();
-            this.JobOfferButton.Click += (s, e) => this.RequestJobOffer();
-            this.PopulateJobOfferCountryCombo();
 
             for (int i = 0; i < Coach.MaxStocks; i++)
             {
@@ -372,8 +370,18 @@ namespace A2G_Trainer.View
                 {
                     if (this.coach != null && countryCombo.SelectedValue is PlayerEnums.Country country)
                     {
-                        this.coach.Stocks[slot].Country = country;
-                        this.PopulateStockClubCombo(clubCombo, country, this.coach.Stocks[slot].ClubId);
+                        Stock stock = this.coach.Stocks[slot];
+                        stock.Country = country;
+                        if (country == PlayerEnums.Country.Sonstige)
+                        {
+                            stock.ClubId = 0;
+                            ShowPlaceholder(clubCombo);
+                        }
+                        else
+                        {
+                            this.PopulateStockClubs(clubCombo, country, stock.ClubId);
+                        }
+                        this.UpdateStockSlotAvailability();
                     }
                 };
                 this.stockCountryChangedHandlers[i] = countryChanged;
@@ -391,7 +399,7 @@ namespace A2G_Trainer.View
 
                 this.stockSharesInputs[i].KeyPress += this.NumericOnly_KeyPress;
                 this.stockPriceInputs[i].KeyPress += this.NumericOnly_KeyPress;
-                this.stockSharesInputs[i].TextChanged += this.UshortMaxNumber_TextChanged;
+                this.stockSharesInputs[i].TextChanged += this.IntMaxNumber_TextChanged;
                 this.stockPriceInputs[i].TextChanged += this.UshortMaxNumber_TextChanged;
 
                 BindingSource stockSource = new BindingSource { DataSource = this.coach?.Stocks[i] };
@@ -401,9 +409,8 @@ namespace A2G_Trainer.View
                 this.stockPriceInputs[i].DataBindings.Add("Text", stockSource, "Price");
             }
 
-            // The game doesn't support creating a new stock position (or removing one) via a memory
-            // edit, only changing an existing one - so a slot with no shares (no position) is shown
-            // read-only rather than left editable but ineffective.
+            // A free slot gets a new position by picking a country and club; "–" (or 0 shares)
+            // clears it on save (see CoachController.Save).
             this.UpdateStockSlotAvailability();
 
             this.leagueBindingSource = new BindingSource { DataSource = this.league };
@@ -420,6 +427,7 @@ namespace A2G_Trainer.View
             // (set a few lines up) - this call covers the very first display, which would otherwise
             // stay empty until the next background reconnect refresh.
             this.RebuildBonusCountryControls();
+            this.InitCareerTab();
         }
 
         // "Vertrag" tab: the current contract's terms (see Coach.Salary .. Coach.Housing). The amounts
@@ -433,6 +441,8 @@ namespace A2G_Trainer.View
             }
             this.ContractYearsInput.KeyPress += this.NumericOnly_KeyPress;
             this.ContractYearsInput.TextChanged += this.UshortMaxNumber_TextChanged;
+            this.BoardTrustInput.KeyPress += this.NumericOnly_KeyPress;
+            this.BoardTrustInput.TextChanged += this.BoardTrustMax_TextChanged;
 
             this.SalaryInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.Salary));
             this.PointBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.PointBonus));
@@ -440,12 +450,248 @@ namespace A2G_Trainer.View
             this.TitleBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.TitleBonus));
             this.SeasonGoalBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.SeasonGoalBonus));
             this.ContractYearsInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.ContractYearsLeft));
+            this.BoardTrustInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.BoardTrust));
 
             BindEnumCombo<CoachEnums.SeasonGoal>(this.SeasonGoalInput, nameof(Coach.SeasonGoal));
             BindEnumCombo<CoachEnums.VehiclePerk>(this.VehiclePerkInput, nameof(Coach.Vehicle));
             BindEnumCombo<CoachEnums.HousingPerk>(this.HousingPerkInput, nameof(Coach.Housing));
 
             this.ExtensionOptionInput.DataBindings.Add("Checked", this.bindingSource, nameof(Coach.HasExtensionOption), false, DataSourceUpdateMode.OnPropertyChanged);
+        }
+
+        // "Ansehen" tab: nerves and the three standings (0..100 each, the game clamps them), and the
+        // champion bets of the Wettbüro, one per league country, edited one country at a time.
+        private BindingSource championTipBindingSource;
+
+        private void InitStandingTab()
+        {
+            foreach (TextBox input in new[] { this.NervesInput, this.PublicStandingInput, this.FanStandingInput, this.MediaStandingInput })
+            {
+                input.KeyPress += this.NumericOnly_KeyPress;
+                input.TextChanged += this.BoardTrustMax_TextChanged;
+            }
+            this.NervesInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.Nerves));
+            this.PublicStandingInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.PublicStanding));
+            this.FanStandingInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.FanStanding));
+            this.MediaStandingInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.MediaStanding));
+
+            this.TipStakeInput.KeyPress += this.NumericOnly_KeyPress;
+            this.TipStakeInput.TextChanged += this.IntMaxNumber_TextChanged;
+            this.TipOddsInput.KeyPress += this.NumericOnly_KeyPress;
+            this.championTipBindingSource = new BindingSource { DataSource = typeof(ChampionTip) };
+            this.TipStakeInput.DataBindings.Add("Text", this.championTipBindingSource, nameof(ChampionTip.Stake));
+            this.TipOddsInput.DataBindings.Add("Text", this.championTipBindingSource, nameof(ChampionTip.Odds));
+            this.TipCountryInput.SelectedIndexChanged += (s, e) => this.ShowChampionTip();
+            this.TipClubInput.SelectionChangeCommitted += (s, e) =>
+            {
+                if (this.championTipBindingSource.Current is ChampionTip tip && this.TipClubInput.SelectedValue is ushort club)
+                    tip.ClubId = club;
+            };
+            this.ShowChampionTips();
+        }
+
+        // The countries with a bet block (the league countries); without known fixed addresses none.
+        private void ShowChampionTips()
+        {
+            if (this.championTipBindingSource == null)
+                return;
+            PlayerEnums.Country? previous = this.TipCountryInput.SelectedValue as PlayerEnums.Country?;
+            List<PlayerEnums.Country> countries = this.coach?.ChampionTips.Keys.ToList() ?? new List<PlayerEnums.Country>();
+            this.TipCountryInput.DataSource = countries.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
+            this.TipCountryInput.DisplayMember = "Text";
+            this.TipCountryInput.ValueMember = "Value";
+            if (previous.HasValue && countries.Contains(previous.Value))
+                this.TipCountryInput.SelectedValue = previous.Value;
+            this.ChampionTipBox.Enabled = countries.Count > 0;
+            this.ShowChampionTip();
+        }
+
+        private void ShowChampionTip()
+        {
+            ChampionTip tip = this.coach != null && this.TipCountryInput.SelectedValue is PlayerEnums.Country country && this.coach.ChampionTips.TryGetValue(country, out ChampionTip found) ? found : null;
+            this.championTipBindingSource.DataSource = (object)tip ?? typeof(ChampionTip);
+            this.championTipBindingSource.ResetBindings(false);
+
+            // The tip's club among the country's clubs; a stored ID the list doesn't know stays selectable.
+            var clubs = (tip == null || this.allClubs == null ? new List<Club>() : this.allClubs.Where(c => c.Country == tip.Country).OrderBy(c => c.ClubName).ToList())
+                .Select(c => new { Value = (ushort)c.Id, Text = c.ClubName }).ToList();
+            if (tip != null && clubs.All(c => c.Value != tip.ClubId))
+                clubs.Insert(0, new { Value = tip.ClubId, Text = $"Verein {tip.ClubId}" });
+            this.TipClubInput.DataSource = clubs;
+            this.TipClubInput.DisplayMember = "Text";
+            this.TipClubInput.ValueMember = "Value";
+            if (tip != null)
+                this.TipClubInput.SelectedValue = tip.ClubId;
+        }
+
+        // "Nationalmannschaft" tab: which national team the coach trains and that contract. The
+        // country combo leaves out national teams other trainers already have, so it's rebuilt on
+        // every refresh and written directly, like the next-season country combo.
+        private void InitNationalTab()
+        {
+            foreach (TextBox amountInput in new[] { this.NationalSalaryInput, this.NationalRoundBonusInput })
+            {
+                amountInput.KeyPress += this.NumericOnly_KeyPress;
+                amountInput.TextChanged += this.IntMaxNumber_TextChanged;
+            }
+            this.NationalSalaryInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.NationalSalary));
+            this.NationalRoundBonusInput.DataBindings.Add("Text", this.bindingSource, nameof(Coach.NationalRoundBonus));
+
+            this.NationalTeamInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (this.coach != null && this.NationalTeamInput.SelectedValue is PlayerEnums.Country country)
+                {
+                    this.coach.NationalTeam = country;
+                    this.UpdateNationalContractAvailability();
+                }
+            };
+            this.PopulateNationalTeamCombo();
+            this.ShowFriendlies();
+            this.InitNationalSquadBox();
+        }
+
+        // "Nationalkader": the squad of any country, independent of the trainer slot - it starts on
+        // the coach's own national team. Changes stay in the lists until "Kader speichern".
+        private readonly BindingList<NationalSquads.Member> nationalSquad = new BindingList<NationalSquads.Member>();
+        private readonly BindingList<NationalSquads.Member> nationalCandidates = new BindingList<NationalSquads.Member>();
+
+        private void InitNationalSquadBox()
+        {
+            this.NationalSquadList.DataSource = this.nationalSquad;
+            this.NationalCandidatesList.DataSource = this.nationalCandidates;
+            this.nationalSquad.ListChanged += (s, e) => this.UpdateNationalSquadButtons();
+            this.nationalCandidates.ListChanged += (s, e) => this.UpdateNationalSquadButtons();
+
+            PlayerEnums.Country start = this.coach != null && this.coach.IsNationalCoach ? this.coach.NationalTeam : this.league?.MainCountry ?? PlayerEnums.Country.Deutschland;
+            this.NationalSquadCountryInput.DataSource = NationalTeamChoices(new PlayerEnums.Country[0]).Skip(1).Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
+            this.NationalSquadCountryInput.DisplayMember = "Text";
+            this.NationalSquadCountryInput.ValueMember = "Value";
+            this.NationalSquadCountryInput.SelectedValue = start;
+            this.NationalSquadCountryInput.SelectedIndexChanged += (s, e) => this.LoadNationalSquad();
+
+            this.NationalSquadAddBtn.Click += (s, e) => MoveSelected(this.NationalCandidatesList, this.nationalCandidates, this.nationalSquad, Settings.NationalTeamSquadCapacity);
+            this.NationalSquadRemoveBtn.Click += (s, e) => MoveSelected(this.NationalSquadList, this.nationalSquad, this.nationalCandidates);
+            this.NationalSquadSaveBtn.Click += (s, e) => this.SaveNationalSquad();
+            this.LoadNationalSquad();
+        }
+
+        private PlayerEnums.Country? NationalSquadCountry => this.NationalSquadCountryInput.SelectedValue as PlayerEnums.Country?;
+
+        private void LoadNationalSquad()
+        {
+            this.NationalSquadStatus.Text = "";
+
+            FixedAddresses fixedAddresses = this.coach != null && this.IsGameRunning() ? FixedAddresses.For(this.Memory) : null;
+            this.NationalSquadBox.Enabled = fixedAddresses != null;
+            List<NationalSquads.Member> squad = new List<NationalSquads.Member>();
+            List<NationalSquads.Member> candidates = new List<NationalSquads.Member>();
+            if (fixedAddresses != null && this.NationalSquadCountry is PlayerEnums.Country country)
+            {
+                List<ushort> ids = NationalSquads.SquadIds(this.Memory, fixedAddresses, country);
+                squad = NationalSquads.Members(this.Memory, fixedAddresses, ids);
+                HashSet<ushort> inSquad = new HashSet<ushort>(ids);
+                candidates = NationalSquads.PlayersOfNationality(this.Memory, fixedAddresses, country).Where(p => !inSquad.Contains(p.Id)).ToList();
+            }
+            Fill(this.nationalSquad, squad);
+            Fill(this.nationalCandidates, candidates);
+        }
+
+        // A big country has a few thousand players: one list update for all of them, not one per player.
+        private static void Fill(BindingList<NationalSquads.Member> list, IEnumerable<NationalSquads.Member> members)
+        {
+            list.RaiseListChangedEvents = false;
+            list.Clear();
+            foreach (NationalSquads.Member member in members)
+                list.Add(member);
+            list.RaiseListChangedEvents = true;
+            list.ResetBindings();
+        }
+
+        private static void MoveSelected(ListBox list, BindingList<NationalSquads.Member> from, BindingList<NationalSquads.Member> to, int capacity = int.MaxValue)
+        {
+            if (!(list.SelectedItem is NationalSquads.Member member) || to.Count >= capacity)
+                return;
+            from.Remove(member);
+            to.Add(member);
+        }
+
+        private void UpdateNationalSquadButtons()
+        {
+            this.NationalSquadLabel.Text = $"Kader ({this.nationalSquad.Count}/{Settings.NationalTeamSquadCapacity})";
+            this.NationalSquadAddBtn.Enabled = this.nationalCandidates.Count > 0 && this.nationalSquad.Count < Settings.NationalTeamSquadCapacity;
+            this.NationalSquadRemoveBtn.Enabled = this.nationalSquad.Count > 0;
+        }
+
+        private void SaveNationalSquad()
+        {
+            if (!(this.NationalSquadCountry is PlayerEnums.Country country) || !this.IsGameRunning())
+                return;
+
+            NationalSquads.WriteResult result = NationalSquads.Write(this.Memory, FixedAddresses.For(this.Memory), country, this.nationalSquad);
+            if (result == NationalSquads.WriteResult.Written)
+                this.LoadNationalSquad();
+            this.NationalSquadStatus.Text = NationalSquadMessage(result, PlayerEnums.GetDescription(country));
+        }
+
+        internal static string NationalSquadMessage(NationalSquads.WriteResult result, string country)
+        {
+            switch (result)
+            {
+                case NationalSquads.WriteResult.Written:
+                    return $"Kader von {country} gespeichert.";
+                case NationalSquads.WriteResult.Fetched:
+                    return "Das Spiel bearbeitet die Mannschaft gerade – später erneut speichern.";
+                case NationalSquads.WriteResult.TooMany:
+                    return $"Höchstens {Settings.NationalTeamSquadCapacity} Spieler.";
+                default:
+                    return "Für diese Spielversion nicht verfügbar.";
+            }
+        }
+
+        private void PopulateNationalTeamCombo()
+        {
+            List<PlayerEnums.Country> taken = this.coach == null ? new List<PlayerEnums.Country>() : CoachController.NationalTeamsOfOtherTrainers(this.Memory, this.trainerIndex);
+            // Assigning the DataSource selects its first entry, which the handler writes into the model.
+            PlayerEnums.Country selected = this.coach?.NationalTeam ?? PlayerEnums.Country.Sonstige;
+            this.NationalTeamInput.DataSource = NationalTeamChoices(taken).Select(c => new { Value = c, Text = c == PlayerEnums.Country.Sonstige ? "keine" : PlayerEnums.GetDescription(c) }).ToList();
+            this.NationalTeamInput.DisplayMember = "Text";
+            this.NationalTeamInput.ValueMember = "Value";
+            if (this.coach != null)
+            {
+                this.NationalTeamInput.SelectedValue = selected;
+                this.coach.NationalTeam = selected;
+            }
+
+            this.NationalCoachBox.Enabled = this.coach?.HasNationalTeam ?? false;
+            this.NationalCoachStatus.Text = NationalCoachMessage(this.coach);
+            this.UpdateNationalContractAvailability();
+        }
+
+        internal static string NationalCoachMessage(Coach coach)
+        {
+            if (coach == null || !coach.IsNationalTeamPending)
+                return "";
+            return coach.IsNationalCoach
+                ? $"Das Spiel übernimmt {PlayerEnums.GetDescription(coach.NationalTeam)} beim nächsten Tagesabschluss."
+                : "Das Spiel beendet das Amt beim nächsten Tagesabschluss.";
+        }
+
+        /// <summary>"keine" first, then every country with a national team (all but Sonstige) other trainers don't already train, alphabetically.</summary>
+        internal static List<PlayerEnums.Country> NationalTeamChoices(IEnumerable<PlayerEnums.Country> takenByOthers)
+        {
+            return new[] { PlayerEnums.Country.Sonstige }
+                .Concat(Enum.GetValues(typeof(PlayerEnums.Country)).Cast<PlayerEnums.Country>()
+                    .Where(c => c != PlayerEnums.Country.Sonstige && !takenByOthers.Contains(c))
+                    .OrderBy(c => PlayerEnums.GetDescription(c)))
+                .ToList();
+        }
+
+        // Without a national team there's no contract: saving clears salary and bonus.
+        private void UpdateNationalContractAvailability()
+        {
+            bool enabled = this.coach?.IsNationalCoach ?? false;
+            this.NationalSalaryInput.Enabled = enabled;
+            this.NationalRoundBonusInput.Enabled = enabled;
         }
 
         private void BindEnumCombo<T>(ComboBox combo, string property) where T : Enum
@@ -472,6 +718,27 @@ namespace A2G_Trainer.View
             clubCombo.SelectedValue = selectedClubId;
         }
 
+        // Clubs a stock slot offers: only those listed on the stock market (only they have shares),
+        // plus the one already held. Where the flag can't be read, every club stays.
+        private void PopulateStockClubs(ComboBox clubCombo, PlayerEnums.Country country, byte selectedClubId)
+        {
+            this.PopulateStockClubCombo(clubCombo, country, selectedClubId);
+            if (clubCombo.DataSource is List<Club> clubs)
+            {
+                FixedAddresses fixedAddresses = FixedAddresses.For(this.Memory);
+                List<Club> listed = clubs.Where(c => c.Id == selectedClubId || ClubRecords.IsListed(this.Memory, fixedAddresses, country, c.Id) != false).ToList();
+                if (listed.Count != clubs.Count)
+                {
+                    clubCombo.DataSource = listed;
+                    clubCombo.SelectedValue = selectedClubId;
+                }
+            }
+            // A new position starts on the first club offered, so the model never keeps a club the
+            // combo doesn't show.
+            if (clubCombo.SelectedIndex < 0 && clubCombo.Items.Count > 0)
+                clubCombo.SelectedIndex = 0;
+        }
+
         // Stocks can only be bought in clubs from the main country or one of the bonus countries
         // (League tab) - the stock country combo is restricted to that set instead of every country.
         private List<PlayerEnums.Country> GetAvailableStockCountries()
@@ -488,21 +755,16 @@ namespace A2G_Trainer.View
         private void PopulateStockCountryCombo(int slot, PlayerEnums.Country selectedCountry)
         {
             ComboBox countryCombo = this.stockCountryCombos[slot];
-            // A slot without shares holds no position; whatever its country/club fields contain is
-            // leftover data (country 0's club entries are unused slots with garbage names), so it
-            // shows a placeholder instead and never writes the model.
-            if (this.coach != null && this.coach.Stocks[slot].Shares == 0)
-            {
-                ShowPlaceholder(countryCombo);
-                ShowPlaceholder(this.stockClubCombos[slot]);
-                return;
-            }
+            // A slot without shares holds no position (the game clears it when the last share is
+            // sold); it shows "–" until a country is picked for a new one.
+            if (this.coach != null && this.coach.Stocks[slot].Shares <= 0)
+                selectedCountry = PlayerEnums.Country.Sonstige;
 
             List<PlayerEnums.Country> countries = this.GetAvailableStockCountries();
             // Keep an already-stored stock country selectable even if it's no longer part of the
             // active bonus countries (e.g. the league selection changed after the stock was bought) -
             // dropping it silently would corrupt the stock's Country on the next save.
-            if (!countries.Contains(selectedCountry))
+            if (selectedCountry != PlayerEnums.Country.Sonstige && !countries.Contains(selectedCountry))
                 countries.Add(selectedCountry);
 
             // Reassigning DataSource fires SelectedIndexChanged immediately for whatever ends up
@@ -512,7 +774,9 @@ namespace A2G_Trainer.View
             if (handler != null)
                 countryCombo.SelectedIndexChanged -= handler;
 
-            countryCombo.DataSource = countries.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
+            countryCombo.DataSource = new[] { new { Value = PlayerEnums.Country.Sonstige, Text = EmptyStockText } }
+                .Concat(countries.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }))
+                .ToList();
             countryCombo.DisplayMember = "Text";
             countryCombo.ValueMember = "Value";
             countryCombo.SelectedValue = selectedCountry;
@@ -563,74 +827,6 @@ namespace A2G_Trainer.View
             Club club = this.allClubs?.FirstOrDefault(c => c.Country == this.coach.CurrentCountry && c.Id == this.coach.CurrentClubId);
             string country = PlayerEnums.GetDescription(this.coach.CurrentCountry);
             this.CurrentClubValue.Text = club != null ? $"{club.ClubName} ({country})" : $"Verein {this.coach.CurrentClubId} ({country})";
-        }
-
-        // "Jobangebot anfordern" (see JobOfferInjector): countries are the main + bonus countries
-        // (the only ones the game makes offers from), keeping the previous choice across refreshes.
-        // The whole box is disabled where the injector isn't supported (other builds).
-        private void PopulateJobOfferCountryCombo()
-        {
-            PlayerEnums.Country? previous = this.JobOfferCountryInput.SelectedValue as PlayerEnums.Country?;
-            List<PlayerEnums.Country> countries = this.GetAvailableStockCountries();
-
-            this.JobOfferCountryInput.DataSource = countries.Select(c => new { Value = c, Text = PlayerEnums.GetDescription(c) }).ToList();
-            this.JobOfferCountryInput.DisplayMember = "Text";
-            this.JobOfferCountryInput.ValueMember = "Value";
-            if (previous.HasValue && countries.Contains(previous.Value))
-                this.JobOfferCountryInput.SelectedValue = previous.Value;
-
-            this.JobOfferBox.Enabled = this.coach != null && new JobOfferInjector(this.Memory).IsSupported;
-            this.PopulateJobOfferClubCombo();
-        }
-
-        // Same club eligibility as for next season (a club in that country's leagues, only the top
-        // league for a bonus country), minus the trainer's own current club.
-        private void PopulateJobOfferClubCombo()
-        {
-            PlayerEnums.Country? country = this.JobOfferCountryInput.SelectedValue as PlayerEnums.Country?;
-            List<Club> clubs = !country.HasValue || this.allClubs == null ? new List<Club>() : this.allClubs
-                .Where(c => c.Country == country.Value)
-                .Where(c => this.coach == null || !(c.Country == this.coach.CurrentCountry && c.Id == this.coach.CurrentClubId))
-                .Where(c => CoachController.IsEligibleNextSeasonClub(this.Memory, country.Value, c.Id) != false)
-                .OrderBy(c => c.ClubName)
-                .ToList();
-
-            this.JobOfferClubInput.DataSource = clubs;
-            this.JobOfferClubInput.DisplayMember = "ClubName";
-            this.JobOfferClubInput.ValueMember = "Id";
-        }
-
-        // No dialog: the outcome goes to the status line inside the box. If the offer could only be
-        // seen but not accepted (no clause, no board release, contract not running out), the release
-        // clause is set and written right away so the player can actually take the offer.
-        private void RequestJobOffer()
-        {
-            if (this.coach == null || !(this.JobOfferCountryInput.SelectedValue is PlayerEnums.Country country) || !(this.JobOfferClubInput.SelectedItem is Club club))
-                return;
-
-            JobOfferInjector.RequestResult result = new JobOfferInjector(this.Memory).Request(this.coach, this.trainerIndex, country, club.Id);
-            bool clauseSet = result == JobOfferInjector.RequestResult.Requested && this.coachController != null && this.coachController.EnsureCanNegotiateOffers();
-            this.JobOfferStatus.Text = JobOfferMessage(result, club.ClubName, clauseSet);
-        }
-
-        internal static string JobOfferMessage(JobOfferInjector.RequestResult result, string clubName, bool clauseSet = false)
-        {
-            switch (result)
-            {
-                case JobOfferInjector.RequestResult.Requested:
-                    return $"{clubName} bietet beim nächsten Tagesabschluss einen Job an."
-                        + (clauseSet ? " Freigabeklausel wurde dafür gesetzt." : "");
-                case JobOfferInjector.RequestResult.NotEmployed:
-                    return "Trainer ist vereinslos – das Spiel zeigt Angebote nur Trainern mit Verein.";
-                case JobOfferInjector.RequestResult.ChangePending:
-                    return "Wechsel zur nächsten Saison ist eingetragen – vorher „Kein Wechsel“ einstellen und speichern.";
-                case JobOfferInjector.RequestResult.SameClub:
-                    return "Das ist der aktuelle Verein des Trainers.";
-                case JobOfferInjector.RequestResult.NotSupported:
-                    return "Für diese Spielversion nicht verfügbar.";
-                default:
-                    return "Konnte im Spiel nicht vorbereitet werden, Details in der Logdatei.";
-            }
         }
 
         // Clubs offered for next season: everything the game's season change would actually accept
@@ -767,7 +963,12 @@ namespace A2G_Trainer.View
                 return;
 
             for (int i = 0; i < Coach.MaxStocks; i++)
-                this.stockBoxes[i].Enabled = this.coach.Stocks[i].Shares > 0;
+            {
+                bool hasClub = this.coach.Stocks[i].Country != PlayerEnums.Country.Sonstige;
+                this.stockClubCombos[i].Enabled = hasClub;
+                this.stockSharesInputs[i].Enabled = hasClub;
+                this.stockPriceInputs[i].Enabled = hasClub;
+            }
         }
 
         // Which of the up to Coach.MaxTrainers savegame slots is currently shown - preserved across
@@ -780,7 +981,8 @@ namespace A2G_Trainer.View
             if (this.IsGameRunning())
             {
                 this.trainerIndex = trainerIndex ?? this.trainerIndex;
-                this.ClearAllFields(this);
+                // The squad's country isn't the trainer's data - it stays on the country being edited.
+                this.ClearAllFields(this, new HashSet<Control> { this.NationalSquadCountryInput });
 
                 this.coachController = new CoachController(this.Memory, this.processController.IsGog, type, this.trainerIndex);
                 this.coach = this.CoachController.Coach;
@@ -806,7 +1008,11 @@ namespace A2G_Trainer.View
                     // combo cascades into the club combo too, same as PopulateStockCountryCombo below.
                     this.PopulateNextSeasonCountryCombo(this.coach.CountryNextSeason);
                     this.UpdateCurrentClubDisplay();
-                    this.PopulateJobOfferCountryCombo();
+                    this.PopulateNationalTeamCombo();
+                    this.ShowFriendlies();
+                    this.LoadNationalSquad();
+                    this.ShowChampionTips();
+                    this.ShowCareer();
 
                     for (int i = 0; i < Coach.MaxStocks; i++)
                     {

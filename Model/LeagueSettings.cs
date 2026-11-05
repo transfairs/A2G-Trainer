@@ -71,6 +71,10 @@ namespace A2G_Trainer.Model
         /// <summary>The countries currently marked active, in <see cref="BonusCountries"/> order.</summary>
         public IEnumerable<PlayerEnums.Country> ActiveBonusCountries => this.BonusCountries.Where(c => c.IsActive).Select(c => c.Country);
 
+        /// <summary>Whether the boards may fire human managers ("Mit Entlassungen", a new-game option).</summary>
+        public bool WithDismissals { get => this.withDismissals; set { this.withDismissals = value; this.OnPropertyChanged(nameof(this.WithDismissals)); } }
+        private bool withDismissals = true;
+
         /// <summary>Resolved memory addresses for this entity's fields.</summary>
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
         private Addresses addresses;

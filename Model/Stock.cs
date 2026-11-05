@@ -17,10 +17,12 @@ namespace A2G_Trainer.Model
         /// <summary>Club identifier the shares belong to.</summary>
         public byte ClubId { get => this.clubId; set { this.clubId = value; this.OnPropertyChanged(nameof(this.ClubId)); } }
         private byte clubId;
-        /// <summary>Number of shares held.</summary>
-        public ushort Shares { get => this.shares; set { this.shares = value; this.OnPropertyChanged(nameof(this.Shares)); } }
-        private ushort shares;
-        /// <summary>Current share price.</summary>
+        /// <summary>Number of shares held (Int32 in the game). Below 1 the slot holds no position.</summary>
+        public int Shares { get => this.shares; set { this.shares = value; this.OnPropertyChanged(nameof(this.Shares)); } }
+        private int shares;
+        /// <summary>Whether this slot holds a position: a club picked (country other than Sonstige) and at least one share.</summary>
+        public bool HasPosition => this.country != PlayerEnums.Country.Sonstige && this.shares > 0;
+        /// <summary>Average purchase price ("Kaufpreis") the game keeps for the position.</summary>
         public ushort Price { get => this.price; set { this.price = value; this.OnPropertyChanged(nameof(this.Price)); } }
         private ushort price;
     }

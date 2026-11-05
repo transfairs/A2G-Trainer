@@ -61,14 +61,26 @@ namespace A2G_Trainer.View
             this.ReleaseClauseInput = new System.Windows.Forms.CheckBox();
             this.ReleaseClausePublishedInput = new System.Windows.Forms.CheckBox();
             this.BoardReleaseInput = new System.Windows.Forms.CheckBox();
-            this.JobOfferBox = new System.Windows.Forms.GroupBox();
-            this.JobOfferCountryLabel = new System.Windows.Forms.Label();
-            this.JobOfferCountryInput = new System.Windows.Forms.ComboBox();
-            this.JobOfferClubLabel = new System.Windows.Forms.Label();
-            this.JobOfferClubInput = new System.Windows.Forms.ComboBox();
-            this.JobOfferButton = new System.Windows.Forms.Button();
-            this.JobOfferStatus = new System.Windows.Forms.Label();
             this.ContractTab = new System.Windows.Forms.TabPage();
+            this.StandingTab = new System.Windows.Forms.TabPage();
+            this.StandingBox = new System.Windows.Forms.GroupBox();
+            this.NervesLabel = new System.Windows.Forms.Label();
+            this.NervesInput = new System.Windows.Forms.TextBox();
+            this.PublicStandingLabel = new System.Windows.Forms.Label();
+            this.PublicStandingInput = new System.Windows.Forms.TextBox();
+            this.FanStandingLabel = new System.Windows.Forms.Label();
+            this.FanStandingInput = new System.Windows.Forms.TextBox();
+            this.MediaStandingLabel = new System.Windows.Forms.Label();
+            this.MediaStandingInput = new System.Windows.Forms.TextBox();
+            this.ChampionTipBox = new System.Windows.Forms.GroupBox();
+            this.TipCountryLabel = new System.Windows.Forms.Label();
+            this.TipCountryInput = new System.Windows.Forms.ComboBox();
+            this.TipClubLabel = new System.Windows.Forms.Label();
+            this.TipClubInput = new System.Windows.Forms.ComboBox();
+            this.TipStakeLabel = new System.Windows.Forms.Label();
+            this.TipStakeInput = new System.Windows.Forms.TextBox();
+            this.TipOddsLabel = new System.Windows.Forms.Label();
+            this.TipOddsInput = new System.Windows.Forms.TextBox();
             this.PayBox = new System.Windows.Forms.GroupBox();
             this.SalaryLabel = new System.Windows.Forms.Label();
             this.SalaryInput = new System.Windows.Forms.TextBox();
@@ -85,12 +97,34 @@ namespace A2G_Trainer.View
             this.TermsBox = new System.Windows.Forms.GroupBox();
             this.ContractYearsLabel = new System.Windows.Forms.Label();
             this.ContractYearsInput = new System.Windows.Forms.TextBox();
+            this.BoardTrustLabel = new System.Windows.Forms.Label();
+            this.BoardTrustInput = new System.Windows.Forms.TextBox();
             this.VehiclePerkLabel = new System.Windows.Forms.Label();
             this.VehiclePerkInput = new System.Windows.Forms.ComboBox();
             this.HousingPerkLabel = new System.Windows.Forms.Label();
             this.HousingPerkInput = new System.Windows.Forms.ComboBox();
             this.ExtensionOptionInput = new System.Windows.Forms.CheckBox();
             this.StocksTab = new System.Windows.Forms.TabPage();
+            this.NationalTab = new System.Windows.Forms.TabPage();
+            this.NationalCoachBox = new System.Windows.Forms.GroupBox();
+            this.NationalTeamLabel = new System.Windows.Forms.Label();
+            this.NationalTeamInput = new System.Windows.Forms.ComboBox();
+            this.NationalSalaryLabel = new System.Windows.Forms.Label();
+            this.NationalSalaryInput = new System.Windows.Forms.TextBox();
+            this.NationalRoundBonusLabel = new System.Windows.Forms.Label();
+            this.NationalRoundBonusInput = new System.Windows.Forms.TextBox();
+            this.NationalCoachStatus = new System.Windows.Forms.Label();
+            this.NationalSquadBox = new System.Windows.Forms.GroupBox();
+            this.NationalSquadCountryLabel = new System.Windows.Forms.Label();
+            this.NationalSquadCountryInput = new System.Windows.Forms.ComboBox();
+            this.NationalSquadLabel = new System.Windows.Forms.Label();
+            this.NationalSquadList = new System.Windows.Forms.ListBox();
+            this.NationalSquadAddBtn = new System.Windows.Forms.Button();
+            this.NationalSquadRemoveBtn = new System.Windows.Forms.Button();
+            this.NationalCandidatesLabel = new System.Windows.Forms.Label();
+            this.NationalCandidatesList = new System.Windows.Forms.ListBox();
+            this.NationalSquadStatus = new System.Windows.Forms.Label();
+            this.NationalSquadSaveBtn = new System.Windows.Forms.Button();
             this.LeagueTab = new System.Windows.Forms.TabPage();
             this.LeagueBox = new System.Windows.Forms.GroupBox();
             this.MainCountryLabel = new System.Windows.Forms.Label();
@@ -104,10 +138,15 @@ namespace A2G_Trainer.View
             this.CompetencyBox.SuspendLayout();
             this.ImageBox.SuspendLayout();
             this.ContractBox.SuspendLayout();
-            this.JobOfferBox.SuspendLayout();
             this.ContractTab.SuspendLayout();
+            this.StandingTab.SuspendLayout();
+            this.StandingBox.SuspendLayout();
+            this.ChampionTipBox.SuspendLayout();
             this.PayBox.SuspendLayout();
             this.TermsBox.SuspendLayout();
+            this.NationalTab.SuspendLayout();
+            this.NationalCoachBox.SuspendLayout();
+            this.NationalSquadBox.SuspendLayout();
             this.LeagueTab.SuspendLayout();
             this.LeagueBox.SuspendLayout();
             this.SuspendLayout();
@@ -116,7 +155,9 @@ namespace A2G_Trainer.View
             //
             this.ClubTabControl.Controls.Add(this.GeneralTab);
             this.ClubTabControl.Controls.Add(this.ContractTab);
+            this.ClubTabControl.Controls.Add(this.StandingTab);
             this.ClubTabControl.Controls.Add(this.StocksTab);
+            this.ClubTabControl.Controls.Add(this.NationalTab);
             this.ClubTabControl.Controls.Add(this.LeagueTab);
             this.ClubTabControl.Location = new System.Drawing.Point(20, 13);
             this.ClubTabControl.Name = "ClubTabControl";
@@ -158,7 +199,7 @@ namespace A2G_Trainer.View
             this.PersonalBox.Controls.Add(this.WinPercentageValue);
             this.PersonalBox.Location = new System.Drawing.Point(6, 6);
             this.PersonalBox.Name = "PersonalBox";
-            this.PersonalBox.Size = new System.Drawing.Size(220, 318);
+            this.PersonalBox.Size = new System.Drawing.Size(220, 334);
             this.PersonalBox.TabIndex = 41;
             this.PersonalBox.TabStop = false;
             this.PersonalBox.Text = "Persönliche Daten";
@@ -249,7 +290,7 @@ namespace A2G_Trainer.View
             // GamesLabel
             //
             this.GamesLabel.AutoSize = true;
-            this.GamesLabel.Location = new System.Drawing.Point(7, 227);
+            this.GamesLabel.Location = new System.Drawing.Point(7, 249);
             this.GamesLabel.Name = "GamesLabel";
             this.GamesLabel.Size = new System.Drawing.Size(36, 13);
             this.GamesLabel.TabIndex = 54;
@@ -257,7 +298,7 @@ namespace A2G_Trainer.View
             //
             // GamesInput
             //
-            this.GamesInput.Location = new System.Drawing.Point(90, 224);
+            this.GamesInput.Location = new System.Drawing.Point(90, 246);
             this.GamesInput.Name = "GamesInput";
             this.GamesInput.Size = new System.Drawing.Size(43, 20);
             this.GamesInput.TabIndex = 8;
@@ -266,7 +307,7 @@ namespace A2G_Trainer.View
             // WinsLabel
             //
             this.WinsLabel.AutoSize = true;
-            this.WinsLabel.Location = new System.Drawing.Point(7, 258);
+            this.WinsLabel.Location = new System.Drawing.Point(7, 277);
             this.WinsLabel.Name = "WinsLabel";
             this.WinsLabel.Size = new System.Drawing.Size(33, 13);
             this.WinsLabel.TabIndex = 55;
@@ -274,7 +315,7 @@ namespace A2G_Trainer.View
             //
             // WinsInput
             //
-            this.WinsInput.Location = new System.Drawing.Point(90, 255);
+            this.WinsInput.Location = new System.Drawing.Point(90, 274);
             this.WinsInput.Name = "WinsInput";
             this.WinsInput.Size = new System.Drawing.Size(43, 20);
             this.WinsInput.TabIndex = 9;
@@ -283,7 +324,7 @@ namespace A2G_Trainer.View
             // WinPercentageLabel
             //
             this.WinPercentageLabel.AutoSize = true;
-            this.WinPercentageLabel.Location = new System.Drawing.Point(7, 289);
+            this.WinPercentageLabel.Location = new System.Drawing.Point(7, 305);
             this.WinPercentageLabel.Name = "WinPercentageLabel";
             this.WinPercentageLabel.Size = new System.Drawing.Size(56, 13);
             this.WinPercentageLabel.TabIndex = 56;
@@ -292,7 +333,7 @@ namespace A2G_Trainer.View
             // WinPercentageValue
             //
             this.WinPercentageValue.AutoSize = true;
-            this.WinPercentageValue.Location = new System.Drawing.Point(90, 289);
+            this.WinPercentageValue.Location = new System.Drawing.Point(90, 305);
             this.WinPercentageValue.Name = "WinPercentageValue";
             this.WinPercentageValue.Size = new System.Drawing.Size(30, 13);
             this.WinPercentageValue.TabIndex = 57;
@@ -304,7 +345,6 @@ namespace A2G_Trainer.View
             this.ContractTab.Controls.Add(this.PayBox);
             this.ContractTab.Controls.Add(this.TermsBox);
             this.ContractTab.Controls.Add(this.ContractBox);
-            this.ContractTab.Controls.Add(this.JobOfferBox);
             this.ContractTab.Location = new System.Drawing.Point(4, 22);
             this.ContractTab.Name = "ContractTab";
             this.ContractTab.Padding = new System.Windows.Forms.Padding(3);
@@ -312,6 +352,180 @@ namespace A2G_Trainer.View
             this.ContractTab.TabIndex = 3;
             this.ContractTab.Text = "Vertrag";
             this.ContractTab.UseVisualStyleBackColor = true;
+            //
+            // StandingTab
+            //
+            this.StandingTab.Controls.Add(this.StandingBox);
+            this.StandingTab.Controls.Add(this.ChampionTipBox);
+            this.StandingTab.Location = new System.Drawing.Point(4, 22);
+            this.StandingTab.Name = "StandingTab";
+            this.StandingTab.Padding = new System.Windows.Forms.Padding(3);
+            this.StandingTab.Size = new System.Drawing.Size(586, 346);
+            this.StandingTab.TabIndex = 5;
+            this.StandingTab.Text = "Ansehen";
+            this.StandingTab.UseVisualStyleBackColor = true;
+            //
+            // StandingBox
+            //
+            this.StandingBox.Controls.Add(this.NervesLabel);
+            this.StandingBox.Controls.Add(this.NervesInput);
+            this.StandingBox.Controls.Add(this.PublicStandingLabel);
+            this.StandingBox.Controls.Add(this.PublicStandingInput);
+            this.StandingBox.Controls.Add(this.FanStandingLabel);
+            this.StandingBox.Controls.Add(this.FanStandingInput);
+            this.StandingBox.Controls.Add(this.MediaStandingLabel);
+            this.StandingBox.Controls.Add(this.MediaStandingInput);
+            this.StandingBox.Location = new System.Drawing.Point(6, 6);
+            this.StandingBox.Name = "StandingBox";
+            this.StandingBox.Size = new System.Drawing.Size(272, 135);
+            this.StandingBox.TabIndex = 0;
+            this.StandingBox.TabStop = false;
+            this.StandingBox.Text = "Nerven und Ansehen";
+            //
+            // NervesLabel
+            //
+            this.NervesLabel.AutoSize = true;
+            this.NervesLabel.Location = new System.Drawing.Point(7, 23);
+            this.NervesLabel.Name = "NervesLabel";
+            this.NervesLabel.TabIndex = 10;
+            this.NervesLabel.Text = "Nervenkostüm";
+            //
+            // NervesInput
+            //
+            this.NervesInput.Location = new System.Drawing.Point(150, 20);
+            this.NervesInput.Name = "NervesInput";
+            this.NervesInput.Size = new System.Drawing.Size(43, 20);
+            this.NervesInput.TabIndex = 0;
+            this.NervesInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // PublicStandingLabel
+            //
+            this.PublicStandingLabel.AutoSize = true;
+            this.PublicStandingLabel.Location = new System.Drawing.Point(7, 50);
+            this.PublicStandingLabel.Name = "PublicStandingLabel";
+            this.PublicStandingLabel.TabIndex = 11;
+            this.PublicStandingLabel.Text = "Ansehen Öffentlichkeit";
+            //
+            // PublicStandingInput
+            //
+            this.PublicStandingInput.Location = new System.Drawing.Point(150, 47);
+            this.PublicStandingInput.Name = "PublicStandingInput";
+            this.PublicStandingInput.Size = new System.Drawing.Size(43, 20);
+            this.PublicStandingInput.TabIndex = 1;
+            this.PublicStandingInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // FanStandingLabel
+            //
+            this.FanStandingLabel.AutoSize = true;
+            this.FanStandingLabel.Location = new System.Drawing.Point(7, 77);
+            this.FanStandingLabel.Name = "FanStandingLabel";
+            this.FanStandingLabel.TabIndex = 12;
+            this.FanStandingLabel.Text = "Ansehen Fans";
+            //
+            // FanStandingInput
+            //
+            this.FanStandingInput.Location = new System.Drawing.Point(150, 74);
+            this.FanStandingInput.Name = "FanStandingInput";
+            this.FanStandingInput.Size = new System.Drawing.Size(43, 20);
+            this.FanStandingInput.TabIndex = 2;
+            this.FanStandingInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // MediaStandingLabel
+            //
+            this.MediaStandingLabel.AutoSize = true;
+            this.MediaStandingLabel.Location = new System.Drawing.Point(7, 104);
+            this.MediaStandingLabel.Name = "MediaStandingLabel";
+            this.MediaStandingLabel.TabIndex = 13;
+            this.MediaStandingLabel.Text = "Ansehen Medien";
+            //
+            // MediaStandingInput
+            //
+            this.MediaStandingInput.Location = new System.Drawing.Point(150, 101);
+            this.MediaStandingInput.Name = "MediaStandingInput";
+            this.MediaStandingInput.Size = new System.Drawing.Size(43, 20);
+            this.MediaStandingInput.TabIndex = 3;
+            this.MediaStandingInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // ChampionTipBox
+            //
+            this.ChampionTipBox.Controls.Add(this.TipCountryLabel);
+            this.ChampionTipBox.Controls.Add(this.TipCountryInput);
+            this.ChampionTipBox.Controls.Add(this.TipClubLabel);
+            this.ChampionTipBox.Controls.Add(this.TipClubInput);
+            this.ChampionTipBox.Controls.Add(this.TipStakeLabel);
+            this.ChampionTipBox.Controls.Add(this.TipStakeInput);
+            this.ChampionTipBox.Controls.Add(this.TipOddsLabel);
+            this.ChampionTipBox.Controls.Add(this.TipOddsInput);
+            this.ChampionTipBox.Location = new System.Drawing.Point(284, 6);
+            this.ChampionTipBox.Name = "ChampionTipBox";
+            this.ChampionTipBox.Size = new System.Drawing.Size(272, 135);
+            this.ChampionTipBox.TabIndex = 1;
+            this.ChampionTipBox.TabStop = false;
+            this.ChampionTipBox.Text = "Wettbüro: Meistertipp";
+            //
+            // TipCountryLabel
+            //
+            this.TipCountryLabel.AutoSize = true;
+            this.TipCountryLabel.Location = new System.Drawing.Point(7, 23);
+            this.TipCountryLabel.Name = "TipCountryLabel";
+            this.TipCountryLabel.TabIndex = 10;
+            this.TipCountryLabel.Text = "Land";
+            //
+            // TipCountryInput
+            //
+            this.TipCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TipCountryInput.Location = new System.Drawing.Point(110, 20);
+            this.TipCountryInput.Name = "TipCountryInput";
+            this.TipCountryInput.Size = new System.Drawing.Size(152, 21);
+            this.TipCountryInput.TabIndex = 0;
+            //
+            // TipClubLabel
+            //
+            this.TipClubLabel.AutoSize = true;
+            this.TipClubLabel.Location = new System.Drawing.Point(7, 50);
+            this.TipClubLabel.Name = "TipClubLabel";
+            this.TipClubLabel.TabIndex = 11;
+            this.TipClubLabel.Text = "Meister";
+            //
+            // TipClubInput
+            //
+            this.TipClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TipClubInput.Location = new System.Drawing.Point(110, 47);
+            this.TipClubInput.Name = "TipClubInput";
+            this.TipClubInput.Size = new System.Drawing.Size(152, 21);
+            this.TipClubInput.TabIndex = 1;
+            //
+            // TipStakeLabel
+            //
+            this.TipStakeLabel.AutoSize = true;
+            this.TipStakeLabel.Location = new System.Drawing.Point(7, 77);
+            this.TipStakeLabel.Name = "TipStakeLabel";
+            this.TipStakeLabel.TabIndex = 12;
+            this.TipStakeLabel.Text = "Einsatz";
+            //
+            // TipStakeInput
+            //
+            this.TipStakeInput.Location = new System.Drawing.Point(150, 74);
+            this.TipStakeInput.Name = "TipStakeInput";
+            this.TipStakeInput.Size = new System.Drawing.Size(112, 20);
+            this.TipStakeInput.TabIndex = 2;
+            this.TipStakeInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // TipOddsLabel
+            //
+            this.TipOddsLabel.AutoSize = true;
+            this.TipOddsLabel.Location = new System.Drawing.Point(7, 104);
+            this.TipOddsLabel.Name = "TipOddsLabel";
+            this.TipOddsLabel.TabIndex = 13;
+            this.TipOddsLabel.Text = "Quote (je 10)";
+            //
+            // TipOddsInput
+            //
+            this.TipOddsInput.Location = new System.Drawing.Point(150, 101);
+            this.TipOddsInput.Name = "TipOddsInput";
+            this.TipOddsInput.Size = new System.Drawing.Size(60, 20);
+            this.TipOddsInput.TabIndex = 3;
+            this.TipOddsInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             //
             // PayBox
             //
@@ -445,6 +659,8 @@ namespace A2G_Trainer.View
             this.TermsBox.Controls.Add(this.HousingPerkLabel);
             this.TermsBox.Controls.Add(this.HousingPerkInput);
             this.TermsBox.Controls.Add(this.ExtensionOptionInput);
+            this.TermsBox.Controls.Add(this.BoardTrustLabel);
+            this.TermsBox.Controls.Add(this.BoardTrustInput);
             this.TermsBox.Location = new System.Drawing.Point(284, 6);
             this.TermsBox.Name = "TermsBox";
             this.TermsBox.Size = new System.Drawing.Size(272, 190);
@@ -513,6 +729,23 @@ namespace A2G_Trainer.View
             this.ExtensionOptionInput.Text = "Verlängerungsoption für den Verein";
             this.ExtensionOptionInput.UseVisualStyleBackColor = true;
             //
+            // BoardTrustLabel
+            //
+            this.BoardTrustLabel.AutoSize = true;
+            this.BoardTrustLabel.Location = new System.Drawing.Point(7, 135);
+            this.BoardTrustLabel.Name = "BoardTrustLabel";
+            this.BoardTrustLabel.Size = new System.Drawing.Size(129, 13);
+            this.BoardTrustLabel.TabIndex = 91;
+            this.BoardTrustLabel.Text = "Vertrauen des Vorstandes";
+            //
+            // BoardTrustInput
+            //
+            this.BoardTrustInput.Location = new System.Drawing.Point(150, 132);
+            this.BoardTrustInput.Name = "BoardTrustInput";
+            this.BoardTrustInput.Size = new System.Drawing.Size(43, 20);
+            this.BoardTrustInput.TabIndex = 30;
+            this.BoardTrustInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
             // StocksTab
             //
             this.StocksTab.AutoScroll = true;
@@ -523,6 +756,199 @@ namespace A2G_Trainer.View
             this.StocksTab.TabIndex = 1;
             this.StocksTab.Text = "Aktien";
             this.StocksTab.UseVisualStyleBackColor = true;
+            //
+            // NationalTab
+            //
+            this.NationalTab.AutoScroll = true;
+            this.NationalTab.Controls.Add(this.NationalCoachBox);
+            this.NationalTab.Controls.Add(this.NationalSquadBox);
+            this.NationalTab.Location = new System.Drawing.Point(4, 22);
+            this.NationalTab.Name = "NationalTab";
+            this.NationalTab.Padding = new System.Windows.Forms.Padding(3);
+            this.NationalTab.Size = new System.Drawing.Size(586, 346);
+            this.NationalTab.TabIndex = 4;
+            this.NationalTab.Text = "Nationalmannschaft";
+            this.NationalTab.UseVisualStyleBackColor = true;
+            //
+            // NationalCoachBox
+            //
+            this.NationalCoachBox.Controls.Add(this.NationalTeamLabel);
+            this.NationalCoachBox.Controls.Add(this.NationalTeamInput);
+            this.NationalCoachBox.Controls.Add(this.NationalSalaryLabel);
+            this.NationalCoachBox.Controls.Add(this.NationalSalaryInput);
+            this.NationalCoachBox.Controls.Add(this.NationalRoundBonusLabel);
+            this.NationalCoachBox.Controls.Add(this.NationalRoundBonusInput);
+            this.NationalCoachBox.Controls.Add(this.NationalCoachStatus);
+            this.NationalCoachBox.Location = new System.Drawing.Point(6, 6);
+            this.NationalCoachBox.Name = "NationalCoachBox";
+            this.NationalCoachBox.Size = new System.Drawing.Size(574, 125);
+            this.NationalCoachBox.TabIndex = 81;
+            this.NationalCoachBox.TabStop = false;
+            this.NationalCoachBox.Text = "Nationaltrainer";
+            //
+            // NationalTeamLabel
+            //
+            this.NationalTeamLabel.AutoSize = true;
+            this.NationalTeamLabel.Location = new System.Drawing.Point(7, 23);
+            this.NationalTeamLabel.Name = "NationalTeamLabel";
+            this.NationalTeamLabel.Size = new System.Drawing.Size(31, 13);
+            this.NationalTeamLabel.TabIndex = 82;
+            this.NationalTeamLabel.Text = "Land";
+            //
+            // NationalTeamInput
+            //
+            this.NationalTeamInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.NationalTeamInput.Location = new System.Drawing.Point(150, 20);
+            this.NationalTeamInput.Name = "NationalTeamInput";
+            this.NationalTeamInput.Size = new System.Drawing.Size(112, 21);
+            this.NationalTeamInput.TabIndex = 30;
+            //
+            // NationalSalaryLabel
+            //
+            this.NationalSalaryLabel.AutoSize = true;
+            this.NationalSalaryLabel.Location = new System.Drawing.Point(7, 50);
+            this.NationalSalaryLabel.Name = "NationalSalaryLabel";
+            this.NationalSalaryLabel.Size = new System.Drawing.Size(88, 13);
+            this.NationalSalaryLabel.TabIndex = 83;
+            this.NationalSalaryLabel.Text = "Gehalt (pro Jahr)";
+            //
+            // NationalSalaryInput
+            //
+            this.NationalSalaryInput.Location = new System.Drawing.Point(150, 47);
+            this.NationalSalaryInput.Name = "NationalSalaryInput";
+            this.NationalSalaryInput.Size = new System.Drawing.Size(112, 20);
+            this.NationalSalaryInput.TabIndex = 31;
+            this.NationalSalaryInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // NationalRoundBonusLabel
+            //
+            this.NationalRoundBonusLabel.AutoSize = true;
+            this.NationalRoundBonusLabel.Location = new System.Drawing.Point(7, 77);
+            this.NationalRoundBonusLabel.Name = "NationalRoundBonusLabel";
+            this.NationalRoundBonusLabel.Size = new System.Drawing.Size(112, 13);
+            this.NationalRoundBonusLabel.TabIndex = 84;
+            this.NationalRoundBonusLabel.Text = "Prämie je K.-o.-Runde";
+            //
+            // NationalRoundBonusInput
+            //
+            this.NationalRoundBonusInput.Location = new System.Drawing.Point(150, 74);
+            this.NationalRoundBonusInput.Name = "NationalRoundBonusInput";
+            this.NationalRoundBonusInput.Size = new System.Drawing.Size(112, 20);
+            this.NationalRoundBonusInput.TabIndex = 32;
+            this.NationalRoundBonusInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // NationalCoachStatus
+            //
+            this.NationalCoachStatus.AutoSize = true;
+            this.NationalCoachStatus.Location = new System.Drawing.Point(7, 102);
+            this.NationalCoachStatus.Name = "NationalCoachStatus";
+            this.NationalCoachStatus.Size = new System.Drawing.Size(0, 13);
+            this.NationalCoachStatus.TabIndex = 90;
+            this.NationalCoachStatus.Text = "";
+            //
+            // NationalSquadBox
+            //
+            this.NationalSquadBox.Controls.Add(this.NationalSquadCountryLabel);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadCountryInput);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadLabel);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadList);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadAddBtn);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadRemoveBtn);
+            this.NationalSquadBox.Controls.Add(this.NationalCandidatesLabel);
+            this.NationalSquadBox.Controls.Add(this.NationalCandidatesList);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadStatus);
+            this.NationalSquadBox.Controls.Add(this.NationalSquadSaveBtn);
+            this.NationalSquadBox.Location = new System.Drawing.Point(6, 137);
+            this.NationalSquadBox.Name = "NationalSquadBox";
+            this.NationalSquadBox.Size = new System.Drawing.Size(574, 205);
+            this.NationalSquadBox.TabIndex = 85;
+            this.NationalSquadBox.TabStop = false;
+            this.NationalSquadBox.Text = "Nationalkader";
+            //
+            // NationalSquadCountryLabel
+            //
+            this.NationalSquadCountryLabel.AutoSize = true;
+            this.NationalSquadCountryLabel.Location = new System.Drawing.Point(7, 23);
+            this.NationalSquadCountryLabel.Name = "NationalSquadCountryLabel";
+            this.NationalSquadCountryLabel.Size = new System.Drawing.Size(31, 13);
+            this.NationalSquadCountryLabel.TabIndex = 86;
+            this.NationalSquadCountryLabel.Text = "Land";
+            //
+            // NationalSquadCountryInput
+            //
+            this.NationalSquadCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.NationalSquadCountryInput.Location = new System.Drawing.Point(90, 20);
+            this.NationalSquadCountryInput.Name = "NationalSquadCountryInput";
+            this.NationalSquadCountryInput.Size = new System.Drawing.Size(150, 21);
+            this.NationalSquadCountryInput.TabIndex = 33;
+            //
+            // NationalSquadLabel
+            //
+            this.NationalSquadLabel.AutoSize = true;
+            this.NationalSquadLabel.Location = new System.Drawing.Point(7, 48);
+            this.NationalSquadLabel.Name = "NationalSquadLabel";
+            this.NationalSquadLabel.Size = new System.Drawing.Size(35, 13);
+            this.NationalSquadLabel.TabIndex = 87;
+            this.NationalSquadLabel.Text = "Kader";
+            //
+            // NationalSquadList
+            //
+            this.NationalSquadList.Location = new System.Drawing.Point(10, 64);
+            this.NationalSquadList.Name = "NationalSquadList";
+            this.NationalSquadList.Size = new System.Drawing.Size(230, 108);
+            this.NationalSquadList.TabIndex = 34;
+            //
+            // NationalSquadAddBtn
+            //
+            this.NationalSquadAddBtn.Location = new System.Drawing.Point(246, 82);
+            this.NationalSquadAddBtn.Name = "NationalSquadAddBtn";
+            this.NationalSquadAddBtn.Size = new System.Drawing.Size(82, 23);
+            this.NationalSquadAddBtn.TabIndex = 35;
+            this.NationalSquadAddBtn.Text = "◄ Aufnehmen";
+            this.NationalSquadAddBtn.UseVisualStyleBackColor = true;
+            //
+            // NationalSquadRemoveBtn
+            //
+            this.NationalSquadRemoveBtn.Location = new System.Drawing.Point(246, 111);
+            this.NationalSquadRemoveBtn.Name = "NationalSquadRemoveBtn";
+            this.NationalSquadRemoveBtn.Size = new System.Drawing.Size(82, 23);
+            this.NationalSquadRemoveBtn.TabIndex = 36;
+            this.NationalSquadRemoveBtn.Text = "Streichen ►";
+            this.NationalSquadRemoveBtn.UseVisualStyleBackColor = true;
+            //
+            // NationalCandidatesLabel
+            //
+            this.NationalCandidatesLabel.AutoSize = true;
+            this.NationalCandidatesLabel.Location = new System.Drawing.Point(331, 48);
+            this.NationalCandidatesLabel.Name = "NationalCandidatesLabel";
+            this.NationalCandidatesLabel.Size = new System.Drawing.Size(97, 13);
+            this.NationalCandidatesLabel.TabIndex = 88;
+            this.NationalCandidatesLabel.Text = "Spieler des Landes";
+            //
+            // NationalCandidatesList
+            //
+            this.NationalCandidatesList.Location = new System.Drawing.Point(334, 64);
+            this.NationalCandidatesList.Name = "NationalCandidatesList";
+            this.NationalCandidatesList.Size = new System.Drawing.Size(230, 108);
+            this.NationalCandidatesList.TabIndex = 37;
+            //
+            // NationalSquadStatus
+            //
+            this.NationalSquadStatus.AutoSize = true;
+            this.NationalSquadStatus.Location = new System.Drawing.Point(7, 181);
+            this.NationalSquadStatus.Name = "NationalSquadStatus";
+            this.NationalSquadStatus.Size = new System.Drawing.Size(0, 13);
+            this.NationalSquadStatus.TabIndex = 89;
+            this.NationalSquadStatus.Text = "";
+            //
+            // NationalSquadSaveBtn
+            //
+            this.NationalSquadSaveBtn.Location = new System.Drawing.Point(450, 176);
+            this.NationalSquadSaveBtn.Name = "NationalSquadSaveBtn";
+            this.NationalSquadSaveBtn.Size = new System.Drawing.Size(114, 23);
+            this.NationalSquadSaveBtn.TabIndex = 38;
+            this.NationalSquadSaveBtn.Text = "Kader speichern";
+            this.NationalSquadSaveBtn.UseVisualStyleBackColor = true;
             //
             // CompetencyBox
             //
@@ -656,74 +1082,6 @@ namespace A2G_Trainer.View
             this.BoardReleaseInput.Text = "Freigabe durch Vorstand";
             this.BoardReleaseInput.UseVisualStyleBackColor = true;
             //
-            // JobOfferBox
-            //
-            this.JobOfferBox.Controls.Add(this.JobOfferCountryLabel);
-            this.JobOfferBox.Controls.Add(this.JobOfferCountryInput);
-            this.JobOfferBox.Controls.Add(this.JobOfferClubLabel);
-            this.JobOfferBox.Controls.Add(this.JobOfferClubInput);
-            this.JobOfferBox.Controls.Add(this.JobOfferButton);
-            this.JobOfferBox.Controls.Add(this.JobOfferStatus);
-            this.JobOfferBox.Location = new System.Drawing.Point(284, 202);
-            this.JobOfferBox.Name = "JobOfferBox";
-            this.JobOfferBox.Size = new System.Drawing.Size(272, 155);
-            this.JobOfferBox.TabIndex = 64;
-            this.JobOfferBox.TabStop = false;
-            this.JobOfferBox.Text = "Jobangebot anfordern";
-            //
-            // JobOfferCountryLabel
-            //
-            this.JobOfferCountryLabel.AutoSize = true;
-            this.JobOfferCountryLabel.Location = new System.Drawing.Point(7, 23);
-            this.JobOfferCountryLabel.Name = "JobOfferCountryLabel";
-            this.JobOfferCountryLabel.Size = new System.Drawing.Size(31, 13);
-            this.JobOfferCountryLabel.TabIndex = 65;
-            this.JobOfferCountryLabel.Text = "Land";
-            //
-            // JobOfferCountryInput
-            //
-            this.JobOfferCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.JobOfferCountryInput.Location = new System.Drawing.Point(115, 20);
-            this.JobOfferCountryInput.Name = "JobOfferCountryInput";
-            this.JobOfferCountryInput.Size = new System.Drawing.Size(150, 21);
-            this.JobOfferCountryInput.TabIndex = 14;
-            //
-            // JobOfferClubLabel
-            //
-            this.JobOfferClubLabel.AutoSize = true;
-            this.JobOfferClubLabel.Location = new System.Drawing.Point(7, 50);
-            this.JobOfferClubLabel.Name = "JobOfferClubLabel";
-            this.JobOfferClubLabel.Size = new System.Drawing.Size(39, 13);
-            this.JobOfferClubLabel.TabIndex = 66;
-            this.JobOfferClubLabel.Text = "Verein";
-            //
-            // JobOfferClubInput
-            //
-            this.JobOfferClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
-            this.JobOfferClubInput.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.JobOfferClubInput.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.JobOfferClubInput.Location = new System.Drawing.Point(115, 47);
-            this.JobOfferClubInput.Name = "JobOfferClubInput";
-            this.JobOfferClubInput.Size = new System.Drawing.Size(150, 21);
-            this.JobOfferClubInput.TabIndex = 15;
-            //
-            // JobOfferButton
-            //
-            this.JobOfferButton.Location = new System.Drawing.Point(7, 75);
-            this.JobOfferButton.Name = "JobOfferButton";
-            this.JobOfferButton.Size = new System.Drawing.Size(258, 23);
-            this.JobOfferButton.TabIndex = 16;
-            this.JobOfferButton.Text = "Beim nächsten Tagesabschluss anbieten";
-            this.JobOfferButton.UseVisualStyleBackColor = true;
-            //
-            // JobOfferStatus
-            //
-            this.JobOfferStatus.Location = new System.Drawing.Point(7, 102);
-            this.JobOfferStatus.Name = "JobOfferStatus";
-            this.JobOfferStatus.Size = new System.Drawing.Size(258, 47);
-            this.JobOfferStatus.TabIndex = 67;
-            this.JobOfferStatus.Text = "";
-            //
             // LeagueTab
             //
             this.LeagueTab.Controls.Add(this.LeagueBox);
@@ -810,13 +1168,21 @@ namespace A2G_Trainer.View
             this.ImageBox.ResumeLayout(false);
             this.ContractBox.ResumeLayout(false);
             this.ContractBox.PerformLayout();
-            this.JobOfferBox.ResumeLayout(false);
-            this.JobOfferBox.PerformLayout();
             this.ContractTab.ResumeLayout(false);
+            this.StandingTab.ResumeLayout(false);
+            this.StandingBox.ResumeLayout(false);
+            this.StandingBox.PerformLayout();
+            this.ChampionTipBox.ResumeLayout(false);
+            this.ChampionTipBox.PerformLayout();
             this.PayBox.ResumeLayout(false);
             this.PayBox.PerformLayout();
             this.TermsBox.ResumeLayout(false);
             this.TermsBox.PerformLayout();
+            this.NationalTab.ResumeLayout(false);
+            this.NationalCoachBox.ResumeLayout(false);
+            this.NationalCoachBox.PerformLayout();
+            this.NationalSquadBox.ResumeLayout(false);
+            this.NationalSquadBox.PerformLayout();
             this.LeagueTab.ResumeLayout(false);
             this.LeagueBox.ResumeLayout(false);
             this.LeagueBox.PerformLayout();
@@ -860,14 +1226,26 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.CheckBox ReleaseClauseInput;
         private System.Windows.Forms.CheckBox ReleaseClausePublishedInput;
         private System.Windows.Forms.CheckBox BoardReleaseInput;
-        private System.Windows.Forms.GroupBox JobOfferBox;
-        private System.Windows.Forms.Label JobOfferCountryLabel;
-        private System.Windows.Forms.ComboBox JobOfferCountryInput;
-        private System.Windows.Forms.Label JobOfferClubLabel;
-        private System.Windows.Forms.ComboBox JobOfferClubInput;
-        private System.Windows.Forms.Button JobOfferButton;
-        private System.Windows.Forms.Label JobOfferStatus;
         private System.Windows.Forms.TabPage ContractTab;
+        private System.Windows.Forms.TabPage StandingTab;
+        private System.Windows.Forms.GroupBox StandingBox;
+        private System.Windows.Forms.Label NervesLabel;
+        private System.Windows.Forms.TextBox NervesInput;
+        private System.Windows.Forms.Label PublicStandingLabel;
+        private System.Windows.Forms.TextBox PublicStandingInput;
+        private System.Windows.Forms.Label FanStandingLabel;
+        private System.Windows.Forms.TextBox FanStandingInput;
+        private System.Windows.Forms.Label MediaStandingLabel;
+        private System.Windows.Forms.TextBox MediaStandingInput;
+        private System.Windows.Forms.GroupBox ChampionTipBox;
+        private System.Windows.Forms.Label TipCountryLabel;
+        private System.Windows.Forms.ComboBox TipCountryInput;
+        private System.Windows.Forms.Label TipClubLabel;
+        private System.Windows.Forms.ComboBox TipClubInput;
+        private System.Windows.Forms.Label TipStakeLabel;
+        private System.Windows.Forms.TextBox TipStakeInput;
+        private System.Windows.Forms.Label TipOddsLabel;
+        private System.Windows.Forms.TextBox TipOddsInput;
         private System.Windows.Forms.GroupBox PayBox;
         private System.Windows.Forms.Label SalaryLabel;
         private System.Windows.Forms.TextBox SalaryInput;
@@ -884,12 +1262,34 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.GroupBox TermsBox;
         private System.Windows.Forms.Label ContractYearsLabel;
         private System.Windows.Forms.TextBox ContractYearsInput;
+        private System.Windows.Forms.Label BoardTrustLabel;
+        private System.Windows.Forms.TextBox BoardTrustInput;
         private System.Windows.Forms.Label VehiclePerkLabel;
         private System.Windows.Forms.ComboBox VehiclePerkInput;
         private System.Windows.Forms.Label HousingPerkLabel;
         private System.Windows.Forms.ComboBox HousingPerkInput;
         private System.Windows.Forms.CheckBox ExtensionOptionInput;
         private System.Windows.Forms.TabPage StocksTab;
+        private System.Windows.Forms.TabPage NationalTab;
+        private System.Windows.Forms.GroupBox NationalCoachBox;
+        private System.Windows.Forms.Label NationalTeamLabel;
+        private System.Windows.Forms.ComboBox NationalTeamInput;
+        private System.Windows.Forms.Label NationalSalaryLabel;
+        private System.Windows.Forms.TextBox NationalSalaryInput;
+        private System.Windows.Forms.Label NationalRoundBonusLabel;
+        private System.Windows.Forms.TextBox NationalRoundBonusInput;
+        private System.Windows.Forms.Label NationalCoachStatus;
+        private System.Windows.Forms.GroupBox NationalSquadBox;
+        private System.Windows.Forms.Label NationalSquadCountryLabel;
+        private System.Windows.Forms.ComboBox NationalSquadCountryInput;
+        private System.Windows.Forms.Label NationalSquadLabel;
+        private System.Windows.Forms.ListBox NationalSquadList;
+        private System.Windows.Forms.Button NationalSquadAddBtn;
+        private System.Windows.Forms.Button NationalSquadRemoveBtn;
+        private System.Windows.Forms.Label NationalCandidatesLabel;
+        private System.Windows.Forms.ListBox NationalCandidatesList;
+        private System.Windows.Forms.Label NationalSquadStatus;
+        private System.Windows.Forms.Button NationalSquadSaveBtn;
         private System.Windows.Forms.TabPage LeagueTab;
         private System.Windows.Forms.GroupBox LeagueBox;
         private System.Windows.Forms.Label MainCountryLabel;

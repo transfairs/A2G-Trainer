@@ -263,6 +263,7 @@ namespace A2G_Trainer.Tests
             {
                 fake.RoutePointerSlot(Settings.ClubAddress[0]);
                 fake.WriteModuleBytes(WorkingCopy(0x48), LiveContract);
+                CoachCareerTests.SeedCareerTab(fake);
                 trainer.CoachView.RefreshValues(PlayerEnums.AddressType.OWN, trainerIndex: 0);
 
                 trainer.CoachView.InitClubTabControl();
@@ -280,9 +281,33 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(nameof(Coach.HasExtensionOption), Field<CheckBox>(view, "ExtensionOptionInput").DataBindings["Checked"].BindingMemberInfo.BindingField);
                 Assert.Equal(nameof(Coach.HasBoardRelease), Field<CheckBox>(view, "BoardReleaseInput").DataBindings["Checked"].BindingMemberInfo.BindingField);
 
+                // The board's trust is capped at 100 while typing (the game ignores anything above).
+                TextBox trust = Field<TextBox>(view, "BoardTrustInput");
+                Assert.Equal(nameof(Coach.BoardTrust), trust.DataBindings["Text"].BindingMemberInfo.BindingField);
+                foreach (var typed in new[] { Tuple.Create("150", "100"), Tuple.Create("99999999999", "100"), Tuple.Create("", ""), Tuple.Create("42", "42") })
+                {
+                    trust.Text = typed.Item1;
+                    Assert.Equal(typed.Item2, trust.Text);
+                }
+
+                // "Ansehen" tab (same window: each one costs the x86 test host ~20 MB).
+                Assert.Equal(nameof(Coach.Nerves), Field<TextBox>(view, "NervesInput").DataBindings["Text"].BindingMemberInfo.BindingField);
+                Assert.Equal(nameof(Coach.PublicStanding), Field<TextBox>(view, "PublicStandingInput").DataBindings["Text"].BindingMemberInfo.BindingField);
+                Assert.Equal(nameof(Coach.FanStanding), Field<TextBox>(view, "FanStandingInput").DataBindings["Text"].BindingMemberInfo.BindingField);
+                Assert.Equal(nameof(Coach.MediaStanding), Field<TextBox>(view, "MediaStandingInput").DataBindings["Text"].BindingMemberInfo.BindingField);
+                Assert.Equal(nameof(ChampionTip.Stake), Field<TextBox>(view, "TipStakeInput").DataBindings["Text"].BindingMemberInfo.BindingField);
+                // The test's league system table points Germany at system 0, so it has a bet block.
+                ComboBox tipCountry = Field<ComboBox>(view, "TipCountryInput");
+                Assert.Equal(LeagueSettings.LeagueCountries.Length, tipCountry.Items.Count);
+                tipCountry.SelectedIndex = 1;
+                Assert.Equal(PlayerEnums.Country.England, tipCountry.SelectedValue);
+
                 Assert.Equal(12, Field<ComboBox>(view, "SeasonGoalInput").Items.Count);
                 Assert.Equal(7, Field<ComboBox>(view, "VehiclePerkInput").Items.Count);
                 Assert.Equal(7, Field<ComboBox>(view, "HousingPerkInput").Items.Count);
+
+                // "Karriere" tab, same window.
+                CoachCareerTests.CheckCareerTab(view);
             }
         });
 

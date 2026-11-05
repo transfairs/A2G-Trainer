@@ -51,6 +51,7 @@ namespace A2G_Trainer.Controller
             if (this.memory.mProc.MainModule != null)
             {
                 league.MainCountry = (PlayerEnums.Country)this.memory.ReadByte(GetAddress(this.memory, league, league.Addresses[LeagueEnums.AddressKey.MAIN_COUNTRY]));
+                league.WithDismissals = this.memory.ReadByte(GetAddress(this.memory, league, league.Addresses[LeagueEnums.AddressKey.WITH_DISMISSALS])) != 0;
 
                 List<Coach> trainers = this.ReadTrainers(type);
                 int count = Math.Max(0, Math.Min(LeagueSettings.MaxBonusCountries, (int)(short)this.memory.ReadUInt16(GetAddress(this.memory, league, league.Addresses[LeagueEnums.AddressKey.BONUS_COUNTRY_COUNT]))));
@@ -80,6 +81,7 @@ namespace A2G_Trainer.Controller
         public List<PlayerEnums.Country> Save()
         {
             List<PlayerEnums.Country> skipped = new List<PlayerEnums.Country>();
+            this.memory.WriteBytes(GetAddress(this.memory, this.League, this.League.Addresses[LeagueEnums.AddressKey.WITH_DISMISSALS]), new[] { (byte)(this.League.WithDismissals ? 1 : 0) });
             if (this.League.BonusCountries.All(c => c.IsActive == c.WasActive))
                 return skipped;
 

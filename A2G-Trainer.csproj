@@ -90,6 +90,7 @@
     <Compile Include="Controller\GameCalendar.cs" />
     <Compile Include="Controller\JobOfferInjector.cs" />
     <Compile Include="Controller\LeagueController.cs" />
+    <Compile Include="Controller\NationalCoachInjector.cs" />
     <Compile Include="Controller\NationalSquads.cs" />
     <Compile Include="Controller\ProcessMemory.A2.cs" />
     <Compile Include="Controller\NamePoolResolver.cs" />
@@ -102,6 +103,10 @@
     <Compile Include="Model\AddressPresets.cs" />
     <Compile Include="Model\CoachEnums.cs" />
     <Compile Include="Model\Coach.cs" />
+    <Compile Include="Model\ChampionTip.cs" />
+    <Compile Include="Model\CoachCareer.cs" />
+    <Compile Include="Model\CoachLevelState.cs" />
+    <Compile Include="Model\NationalFriendly.cs" />
     <Compile Include="Model\ClubFinance.cs" />
     <Compile Include="Model\CoachCompetencyLevel.cs" />
     <Compile Include="Model\LeagueEnums.cs" />
@@ -148,12 +153,24 @@
     <Compile Include="View\ClubView.Designer.cs">
       <DependentUpon>ClubView.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\CoachView.Friendlies.cs">
+      <DependentUpon>CoachView.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="View\ClubView.Budget.cs">
       <DependentUpon>ClubView.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\ClubView.Association.cs">
       <DependentUpon>ClubView.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\CoachView.Career.cs">
+      <DependentUpon>CoachView.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\CoachView.Level.cs">
+      <DependentUpon>CoachView.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\EntityView.cs">

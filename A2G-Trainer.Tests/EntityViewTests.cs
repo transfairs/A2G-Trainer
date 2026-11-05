@@ -262,7 +262,7 @@ namespace A2G_Trainer.Tests
         {
             using (Trainer trainer = new Trainer())
             {
-                Exception thrown = Record.Exception(() => InvokePrivate(trainer.ClubView, "StartProcess", "a2g-trainer-xp-test-nonexistent-target.invalid"));
+                Exception thrown = Record.Exception(() => InvokePrivate(trainer.ClubView, "StartProcess", "a2g-trainer-test-nonexistent-target.invalid"));
 
                 Assert.NotNull(thrown);
             }
