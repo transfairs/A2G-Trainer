@@ -61,7 +61,7 @@ namespace A2G_Trainer.Tests
             Assert.Equal("34BCE", AddressPresets.COACH[CoachEnums.AddressKey.WINS]);
         }
 
-        // Robin found these live via Cheat Engine against Trainer slot 0: 0085783C/0085783E/00857864.
+        // Found live via Cheat Engine against Trainer slot 0: 0085783C/0085783E/00857864.
         // Same session/struct instance as the FIRSTNAME reference (0x857800 -> pointer value
         // 0x822D00, confirmed by 0x857800 - 0x822D00 == the already-live FIRSTNAME offset 34B00), so
         // subtracting that same 0x822D00 from each gives the offsets asserted here.

@@ -13,8 +13,8 @@ namespace A2G_Trainer.Tests
         private static Coach FillCoach(CoachController controller)
         {
             Coach coach = controller.Coach;
-            coach.Firstname = "Robin";
-            coach.Lastname = "Trauer";
+            coach.Firstname = "Erwin";
+            coach.Lastname = "Kramer";
             coach.Level = 9;
             coach.Age = 42;
             coach.Difficulty = CoachEnums.Difficulty.Realistisch;
@@ -45,8 +45,8 @@ namespace A2G_Trainer.Tests
             Addresses coachAddresses = AddressPresets.COACH;
             Encoding latin1 = Encoding.GetEncoding("iso-8859-1");
 
-            Assert.Equal("Robin", latin1.GetString(read(coachAddresses[CoachEnums.AddressKey.FIRSTNAME], 9)).Split('\0')[0]);
-            Assert.Equal("Trauer", latin1.GetString(read(coachAddresses[CoachEnums.AddressKey.LAST_NAME], 15)).Split('\0')[0]);
+            Assert.Equal("Erwin", latin1.GetString(read(coachAddresses[CoachEnums.AddressKey.FIRSTNAME], 9)).Split('\0')[0]);
+            Assert.Equal("Kramer", latin1.GetString(read(coachAddresses[CoachEnums.AddressKey.LAST_NAME], 15)).Split('\0')[0]);
             Assert.Equal((byte)9, read(coachAddresses[CoachEnums.AddressKey.LEVEL], 1)[0]);
             Assert.Equal((byte)42, read(coachAddresses[CoachEnums.AddressKey.AGE], 1)[0]);
             Assert.Equal((byte)CoachEnums.Difficulty.Realistisch, read(coachAddresses[CoachEnums.AddressKey.DIFFICULTY], 1)[0]);

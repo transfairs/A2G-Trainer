@@ -18,7 +18,7 @@ namespace A2G_Trainer.Tests
             using (MechanicsView view = new MechanicsView(new ProcessMemory(), null))
             {
                 ComboBox trainers = (ComboBox)typeof(MechanicsView).GetField("jobOfferTrainerInput", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(view);
-                KeyValuePair<int, Coach> first = new KeyValuePair<int, Coach>(0, new Coach { Firstname = "Robin", Lastname = "Trauer" });
+                KeyValuePair<int, Coach> first = new KeyValuePair<int, Coach>(0, new Coach { Firstname = "Erwin", Lastname = "Kramer" });
                 KeyValuePair<int, Coach> second = new KeyValuePair<int, Coach>(1, new Coach { Firstname = "Kai", Lastname = "Keller" });
 
                 view.SetTrainers(new List<KeyValuePair<int, Coach>> { first, second });

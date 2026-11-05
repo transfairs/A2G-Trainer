@@ -394,8 +394,8 @@ namespace A2G_Trainer.Tests
 
             Assert.Equal(2, editor.Coaches.Count);
             Assert.Equal("Manager 2", coach.ToString());
-            coach.Firstname = "Robin";
-            coach.Lastname = "Trauer";
+            coach.Firstname = "Erwin";
+            coach.Lastname = "Kramer";
             coach.Level = 3;
             coach.Salary = 700000;
             coach.Wealth = 123;
@@ -404,9 +404,9 @@ namespace A2G_Trainer.Tests
             coach.HasExtensionOption = true;
             coach.Vehicle = CoachEnums.VehiclePerk.Bahncard;
 
-            Assert.Equal("Robin Trauer", coach.ToString());
-            Assert.Equal("Robin", file.ReadString(record, 10));
-            Assert.Equal("Trauer", file.ReadString(record + 0xA, 16));
+            Assert.Equal("Erwin Kramer", coach.ToString());
+            Assert.Equal("Erwin", file.ReadString(record, 10));
+            Assert.Equal("Kramer", file.ReadString(record + 0xA, 16));
             Assert.Equal(3, file.ReadByte(record + 0x22));
             Assert.Equal(700000, file.ReadInt32(record + 0x48));
             Assert.Equal(123, file.ReadInt32(record + 0x90));

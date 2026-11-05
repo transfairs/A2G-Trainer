@@ -18,7 +18,7 @@ namespace A2G_Trainer.Controller
         // address already adds in - see GetAddress in EntityController.
         private const int TrainerSlotStride = 0x1958;
 
-        // Robin found the trainer-competency table directly: starting right after this coach slot's
+        // The trainer-competency table was found directly: starting right after this coach slot's
         // other fields, 16 levels (Coach.MinLevel..MaxLevel) x 6 competencies x 2 bytes (UInt16)
         // each, no padding, one level immediately after the other with no break. Level 0's first
         // competency (Verhandlungsgeschick) is at +36398; everything else is a fixed stride from
@@ -757,7 +757,7 @@ namespace A2G_Trainer.Controller
             this.WriteField(this.Coach, this.Coach.Addresses[CoachEnums.AddressKey.TRUST], BitConverter.GetBytes(this.Coach.BoardTrustBase));
         }
 
-        // Robin found anstoss2.exe+426666 - right next to the age-reference-year field (see
+        // anstoss2.exe+426666 was found directly - right next to the age-reference-year field (see
         // Settings.ActiveTrainerCountOffset) - holding a live byte with the exact number of active
         // human trainers/"Mitspieler" in the current savegame. Authoritative when readable and
         // plausible (0..MaxTrainers); returns null (falling back to the Firstname heuristic above)

@@ -29,7 +29,7 @@ namespace A2G_Trainer.Tests
             target.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(target, null);
 
         private static List<KeyValuePair<int, Coach>> OneTrainer() =>
-            new List<KeyValuePair<int, Coach>> { new KeyValuePair<int, Coach>(0, new Coach { Firstname = "Robin", Lastname = "Trauer" }) };
+            new List<KeyValuePair<int, Coach>> { new KeyValuePair<int, Coach>(0, new Coach { Firstname = "Erwin", Lastname = "Kramer" }) };
 
         [Theory]
         [InlineData(JobOfferInjector.RequestResult.Requested, "Tagesabschluss")]
@@ -70,7 +70,7 @@ namespace A2G_Trainer.Tests
                 Assert.EndsWith("Spielmechaniken", trainer.Text);
                 Assert.Equal("Diese Funktionen wirken nur, solange A2G-Trainer und Spiel laufen.", Field<Label>(view, "noticeLabel").Text);
                 ComboBox trainers = Field<ComboBox>(view, "jobOfferTrainerInput");
-                Assert.Equal("Robin Trauer", trainers.Text);
+                Assert.Equal("Erwin Kramer", trainers.Text);
                 Assert.True(Field<GroupBox>(view, "jobOfferBox").Enabled);
                 ComboBox countries = Field<ComboBox>(view, "jobOfferCountryInput");
                 Assert.NotEmpty(((System.Collections.IEnumerable)countries.DataSource).Cast<object>());

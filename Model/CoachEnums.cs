@@ -217,8 +217,8 @@ namespace A2G_Trainer.Model
         }
 
         /// <summary>
-        /// The six competencies a trainer level's 6 distributable points are spread across (Robin
-        /// found the memory layout directly: 16 levels x these 6 entries x 2 bytes each, no padding,
+        /// The six competencies a trainer level's 6 distributable points are spread across (the memory
+        /// layout was found directly: 16 levels x these 6 entries x 2 bytes each, no padding,
         /// in this exact order). Declaration order here must match the in-memory order.
         /// </summary>
         public enum CompetencyKey

@@ -32,7 +32,7 @@ namespace A2G_Trainer.Tests
         {
             HighscoreFiles files = HighscoreFiles.Load(this.folder);
             HighscoreEntry entry = files.Entries(9)[2];
-            entry.Firstname = "Robin";
+            entry.Firstname = "Erwin";
 
             entry.Firstname = null;
 
@@ -46,7 +46,7 @@ namespace A2G_Trainer.Tests
             HighscoreFiles files = HighscoreFiles.Load(this.folder);
             // Teuerster Verkauf: a four-byte value (+0x30).
             SeasonRecord record = files.SeasonRecords()[14];
-            record.Manager = "Trauer";
+            record.Manager = "Kramer";
 
             record.Value = 123456789;
             record.Manager = null;

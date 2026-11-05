@@ -362,8 +362,8 @@ namespace A2G_Trainer.Controller
                 player.Jersey = chunk[Settings.PlayerRecordJerseyOffset];
                 player.Condition = chunk[Settings.PlayerRecordConditionOffset];
                 player.Freshness = chunk[Settings.PlayerRecordFreshnessOffset];
-                // The Country ID only ever occupies the low 7 bits here - Robin found a Russian
-                // (Country=54=0x36) player encoded as 0xB6 (0x36 | 0x80). Masking off bit 7 handles
+                // The Country ID only ever occupies the low 7 bits here - a Russian (Country=54=0x36)
+                // player was found encoded as 0xB6 (0x36 | 0x80). Masking off bit 7 handles
                 // both that case and the plain, no-flag case (0x36) at once - see
                 // Settings.PlayerRecordNationalityOffset and WritePersistentNationality below for
                 // what happens to that bit on write.
@@ -632,7 +632,7 @@ namespace A2G_Trainer.Controller
 
         // Same rationale as WritePersistentLevel above, for Position. The main position and both
         // secondary positions are three contiguous bytes starting at Settings.PlayerRecordPositionOffset
-        // (found directly by Robin), so all three go out in a single write. Missing secondary slots
+        // (found directly), so all three go out in a single write. Missing secondary slots
         // are written as Position.None (0) rather than left untouched, so this record always reflects
         // exactly what's set in the UI.
         private void WritePersistentPosition(Player player)
@@ -716,7 +716,7 @@ namespace A2G_Trainer.Controller
             return null;
         }
 
-        // Robin found this one directly, isolated from the group above (+0x1E) - Form had been
+        // Found directly, isolated from the group above (+0x1E) - Form had been
         // assumed omitted like the other club-context fields (ClubId/ClubCountry), but it turns out
         // it isn't. The shirt number follows right after it (+0x1F, FUN_00582a60/FUN_00583120), so
         // both go in one write; the 3 bytes between Happy (+0x1A/+0x1B end) and Form stay untouched.
@@ -728,7 +728,7 @@ namespace A2G_Trainer.Controller
             Logger.Debug($"Wrote persistent Form/Jersey for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Form}/{player.Jersey}.");
         }
 
-        // Condition/Freshness, found directly by Robin at +0x21/+0x22 - contiguous with each other
+        // Condition/Freshness, found directly at +0x21/+0x22 - contiguous with each other
         // (unlike Form above), so written together, but 2 bytes past Form with unknown content in
         // between that this shouldn't touch either.
         private void WritePersistentConditionFreshness(Player player)
@@ -739,11 +739,11 @@ namespace A2G_Trainer.Controller
             Logger.Debug($"Wrote persistent Condition/Freshness for player NameRecordId={player.NameRecordId} (Id={player.Id}) at 0x{address:X}: {player.Condition}/{player.Freshness}.");
         }
 
-        // Nationality/"Land", found directly by Robin at +0x25 - isolated write, 2 bytes past
+        // Nationality/"Land", found directly at +0x25 - isolated write, 2 bytes past
         // Freshness with unknown content in between.
         //
-        // Bit 7 of this byte isn't part of the Country ID - Robin found a Russian player
-        // (Country=54=0x36) encoded as 0xB6 (0x36 | 0x80), and confirmed writing the plain 0x36
+        // Bit 7 of this byte isn't part of the Country ID - a Russian player
+        // (Country=54=0x36) was found encoded as 0xB6 (0x36 | 0x80), and confirmed writing the plain 0x36
         // still displays correctly in-game. What that bit actually means is unknown ("evtl. ist da
         // noch was anderes codiert"), so rather than guess at it (always clear it, or always set
         // it), this reads the byte currently there first and preserves whatever it already has -

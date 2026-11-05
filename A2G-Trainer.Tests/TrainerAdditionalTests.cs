@@ -79,12 +79,12 @@ namespace A2G_Trainer.Tests
             using (Trainer trainer = new Trainer())
             {
                 AttachSelf(trainer);
-                ToolStripMenuItem item = new ToolStripMenuItem("Robin Trauer") { Tag = 2 };
+                ToolStripMenuItem item = new ToolStripMenuItem("Erwin Kramer") { Tag = 2 };
 
                 Exception thrown = Record.Exception(() => InvokeHandler(trainer, "TrainerToolStripMenuItem_Click", item));
 
                 Assert.Null(thrown);
-                Assert.EndsWith("Robin Trauer", trainer.Text);
+                Assert.EndsWith("Erwin Kramer", trainer.Text);
 
                 // Back/forward history (same window: each one costs the x86 test host ~20 MB).
                 MenuStrip menu = (MenuStrip)typeof(Trainer).GetField("menuStrip", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer);
@@ -98,7 +98,7 @@ namespace A2G_Trainer.Tests
                 InvokeHandler(trainer, "HelpToolStripMenuItem_Click", null);
                 InvokeHandler(trainer, "HelpToolStripMenuItem_Click", null);
                 Assert.True(trainer.GoBack());
-                Assert.EndsWith("Robin Trauer", trainer.Text);
+                Assert.EndsWith("Erwin Kramer", trainer.Text);
                 Assert.True(trainer.GoBack());
                 Assert.EndsWith("Eigene Mannschaft", trainer.Text);
                 Assert.False(trainer.GoBack());
@@ -112,12 +112,12 @@ namespace A2G_Trainer.Tests
                         .Invoke(trainer, new object[] { msg, keys });
                 }
                 Assert.True(ProcessKey(Keys.Alt | Keys.Right));
-                Assert.EndsWith("Robin Trauer", trainer.Text);
+                Assert.EndsWith("Erwin Kramer", trainer.Text);
                 Assert.True(ProcessKey(Keys.Alt | Keys.Right));
                 Assert.EndsWith("Hilfe", trainer.Text);
                 Assert.False(trainer.GoForward());
                 Assert.True(ProcessKey(Keys.Alt | Keys.Left));
-                Assert.EndsWith("Robin Trauer", trainer.Text);
+                Assert.EndsWith("Erwin Kramer", trainer.Text);
 
                 // A club picked inside a view after going back drops what lay ahead and comes back with its club.
                 ClubSquads.Entry club = new ClubSquads.Entry { Name = "Testverein" };
@@ -261,7 +261,7 @@ namespace A2G_Trainer.Tests
                 List<KeyValuePair<int, Coach>> trainers = new List<KeyValuePair<int, Coach>>
                 {
                     new KeyValuePair<int, Coach>(0, new Coach { Firstname = "", Lastname = "" }),
-                    new KeyValuePair<int, Coach>(1, new Coach { Firstname = "Robin", Lastname = "Trauer" }),
+                    new KeyValuePair<int, Coach>(1, new Coach { Firstname = "Erwin", Lastname = "Kramer" }),
                 };
 
                 trainer.RefreshTrainerMenu(trainers);
@@ -270,7 +270,7 @@ namespace A2G_Trainer.Tests
                 ToolStripMenuItem menu = (ToolStripMenuItem)field.GetValue(trainer);
 
                 Assert.Equal("Trainer 1", menu.DropDownItems[0].Text);
-                Assert.Equal("Robin Trauer", menu.DropDownItems[1].Text);
+                Assert.Equal("Erwin Kramer", menu.DropDownItems[1].Text);
             }
         });
     }

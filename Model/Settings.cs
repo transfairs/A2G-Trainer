@@ -90,7 +90,7 @@ namespace A2G_Trainer.Controller
         // GetMitspieler/PutMitspieler pair, FUN_005b9df0/FUN_005ba2e0). Each Mitspieler ID (1-based,
         // so trainer slot N is ID N+1) has two copies at fixed module-relative addresses:
         //   coachSlotTableOffset + ID*coachSlotStride: the working copy the game (and the Trainer-Menü)
-        //     reads and edits. Robin's 0x857800 for slot 0 is exactly this for ID 1.
+        //     reads and edits. The 0x857800 found for slot 0 is exactly this for ID 1.
         //   coachRecordTableOffset + ID*coachRecordStride: the saved record - the only copy written to
         //     the savegame file. GetMitspieler refreshes the working copy from it whenever the game
         //     starts using a trainer again, and PutMitspieler copies the working copy back when it's

@@ -221,7 +221,7 @@ namespace A2G_Trainer.Model
             // keeps further state for the current club that a plain write wouldn't update.
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.COUNTRY, "34B1C"),
             new KeyValuePair<Enum, string>(CoachEnums.AddressKey.CLUB, "34B1E"),
-            // COUNTRY_NEXT_SEASON/CLUB_NEXT_SEASON/RELEASE_CLAUSE: Robin found these live via Cheat
+            // COUNTRY_NEXT_SEASON/CLUB_NEXT_SEASON/RELEASE_CLAUSE: found live via Cheat
             // Engine against Trainer slot 0 (0085783C/0085783E/00857864). Same session, same struct
             // instance as the FIRSTNAME reference below (0x857800 -> pointer value 0x822D00), so the
             // offset from that pointer is address-0x822D00: 34B3C/34B3E/34B64 respectively.

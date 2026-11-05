@@ -137,7 +137,7 @@ namespace A2G_Trainer.Tests
             fake.WriteModuleBytes(Settings.ActiveTrainerCountOffset, new[] { (byte)clubIds.Length });
             for (int slot = 0; slot < clubIds.Length; slot++)
             {
-                CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.FIRSTNAME], Encoding.ASCII.GetBytes("Robin"), slot);
+                CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.FIRSTNAME], Encoding.ASCII.GetBytes("Erwin"), slot);
                 CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.COUNTRY], new[] { (byte)PlayerEnums.Country.Deutschland }, slot);
                 CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.CLUB], new[] { clubIds[slot] }, slot);
             }

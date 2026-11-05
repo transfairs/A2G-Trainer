@@ -63,7 +63,7 @@ namespace A2G_Trainer.Tests
                 file.WriteUInt16(PlayerRecord(id), (ushort)file.AddName(players[id - 1][0]));
                 file.WriteUInt16(PlayerRecord(id) + 2, (ushort)file.AddName(players[id - 1][1]));
             }
-            file.WriteString(Base + Settings.CoachRecordTableOffset + Settings.CoachRecordStride, "Robin", 10);
+            file.WriteString(Base + Settings.CoachRecordTableOffset + Settings.CoachRecordStride, "Erwin", 10);
 
             string path = Path.Combine(this.directory, "Test.gld");
             File.WriteAllBytes(path, file.Serialize());
@@ -95,7 +95,7 @@ namespace A2G_Trainer.Tests
             {
                 TreeView tree = view.Tree;
                 Assert.Equal(new[] { "Spielstand", "Manager", "Deutschland" }, tree.Nodes.Cast<TreeNode>().Select(n => n.Text));
-                Assert.Equal(new[] { "Robin" }, Node(tree.Nodes, "Manager").Nodes.Cast<TreeNode>().Select(n => n.Text));
+                Assert.Equal(new[] { "Erwin" }, Node(tree.Nodes, "Manager").Nodes.Cast<TreeNode>().Select(n => n.Text));
                 Assert.Equal(new[] { "Bayern München", "Werder Bremen" }, Node(tree.Nodes, "Deutschland").Nodes.Cast<TreeNode>().Select(n => n.Text));
                 Assert.IsType<SaveGameOverview>(view.SelectedEntry);
             }

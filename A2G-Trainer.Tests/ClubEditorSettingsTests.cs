@@ -626,8 +626,8 @@ namespace A2G_Trainer.Tests
         {
             Addresses coach = AddressPresets.COACH;
             fake.WriteModuleBytes(Settings.ActiveTrainerCountOffset, new byte[] { 1 });
-            CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.FIRSTNAME], Latin1.GetBytes("Robin\0"));
-            CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.LAST_NAME], Latin1.GetBytes("Trauer\0"));
+            CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.FIRSTNAME], Latin1.GetBytes("Erwin\0"));
+            CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.LAST_NAME], Latin1.GetBytes("Kramer\0"));
             CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.COUNTRY], new[] { (byte)Country });
             CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.CLUB], new[] { OwnId });
             CoachMemory.WriteWorkingCopy(fake, coach[CoachEnums.AddressKey.TRUST], BitConverter.GetBytes((short)60));
@@ -665,7 +665,7 @@ namespace A2G_Trainer.Tests
             Assert.Equal(ClubEnums.Board.Pulverfass, ShownClub(view).Board);
 
             TextBox trust = Field<TextBox>(view, "BoardTrustInput");
-            Assert.Equal("Robin Trauer", Field<Label>(view, "ManagerValue").Text);
+            Assert.Equal("Erwin Kramer", Field<Label>(view, "ManagerValue").Text);
             Assert.Equal("65", trust.Text);
             Assert.True(trust.Enabled);
 

@@ -43,12 +43,12 @@ namespace A2G_Trainer.Tests
             {
                 fake.RoutePointerSlot(Settings.ClubAddress[0]);
                 fake.WriteModuleBytes(Settings.ActiveTrainerCountOffset, new byte[] { 250 });
-                WriteCoachFirstname(fake, trainerSlot: 0, "Robin");
+                WriteCoachFirstname(fake, trainerSlot: 0, "Erwin");
 
                 List<KeyValuePair<int, Coach>> trainers = CoachController.GetActiveTrainers(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN);
 
                 Assert.Equal(new[] { 0 }, trainers.Select(kv => kv.Key));
-                Assert.Equal("Robin", trainers[0].Value.Firstname);
+                Assert.Equal("Erwin", trainers[0].Value.Firstname);
             }
         }
 
@@ -60,7 +60,7 @@ namespace A2G_Trainer.Tests
                 fake.RoutePointerSlot(Settings.ClubAddress[0]);
                 // A plausible count at the original offset must not be trusted for an unverified build.
                 fake.WriteModuleBytes(Settings.ActiveTrainerCountOffset, new byte[] { 2 });
-                WriteCoachFirstname(fake, trainerSlot: 0, "Robin");
+                WriteCoachFirstname(fake, trainerSlot: 0, "Erwin");
                 fake.Memory.Layout = new PersistentLayout(null, null, null, Settings.ActiveTrainerCountOffset, isVerified: false);
 
                 List<KeyValuePair<int, Coach>> trainers = CoachController.GetActiveTrainers(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN);

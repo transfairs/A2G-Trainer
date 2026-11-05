@@ -26,12 +26,12 @@ namespace A2G_Trainer.Tests
             Directory.Delete(this.folder, true);
         }
 
-        // A career list with one entry: Robin Trauer, age 45, 20 seasons, 12345 points, level 9, 1.11.2026.
+        // A career list with one entry: Erwin Kramer, age 45, 20 seasons, 12345 points, level 9, 1.11.2026.
         private void WriteCareerList()
         {
             byte[] data = new byte[5 * HighscoreEntry.Size];
-            Encoding.ASCII.GetBytes("Robin").CopyTo(data, 0);
-            Encoding.ASCII.GetBytes("Trauer").CopyTo(data, 0x0A);
+            Encoding.ASCII.GetBytes("Erwin").CopyTo(data, 0);
+            Encoding.ASCII.GetBytes("Kramer").CopyTo(data, 0x0A);
             BitConverter.GetBytes((short)45).CopyTo(data, 0x1A);
             BitConverter.GetBytes(20).CopyTo(data, 0x1C);
             BitConverter.GetBytes(12345).CopyTo(data, 0x20);
@@ -52,8 +52,8 @@ namespace A2G_Trainer.Tests
 
             HighscoreEntry first = files.Entries(9)[0];
             Assert.Equal(5, files.Entries(9).Count);
-            Assert.Equal("Robin", first.Firstname);
-            Assert.Equal("Trauer", first.Lastname);
+            Assert.Equal("Erwin", first.Firstname);
+            Assert.Equal("Kramer", first.Lastname);
             Assert.Equal((short)45, first.Years);
             Assert.Equal(20, first.Seasons);
             Assert.Equal(12345, first.Points);
@@ -103,13 +103,13 @@ namespace A2G_Trainer.Tests
         public void SeasonRecords_ReadAndWriteTheirValues()
         {
             byte[] data = new byte[HighscoreFiles.RecordsFileSize];
-            // Höchster Heimsieg 7:1, Beste Serie 21 Punkte aus 7 Spielen, Teuerster Verkauf 100 Mio. by "Trauer".
+            // Höchster Heimsieg 7:1, Beste Serie 21 Punkte aus 7 Spielen, Teuerster Verkauf 100 Mio. by "Kramer".
             BitConverter.GetBytes((short)7).CopyTo(data, 0x30);
             BitConverter.GetBytes((short)1).CopyTo(data, 0x32);
             data[0x0E8 + 0x2C] = 21;
             data[0x0E8 + 0x2D] = 7;
             BitConverter.GetBytes(100000000).CopyTo(data, 0x2C8 + 0x30);
-            Encoding.ASCII.GetBytes("Trauer").CopyTo(data, 0x2C8 + 0x1C);
+            Encoding.ASCII.GetBytes("Kramer").CopyTo(data, 0x2C8 + 0x1C);
             File.WriteAllBytes(Path.Combine(this.folder, HighscoreFiles.RecordsFileName), data);
 
             HighscoreFiles files = HighscoreFiles.Load(this.folder);
@@ -121,7 +121,7 @@ namespace A2G_Trainer.Tests
             Assert.Equal(21, records[4].Value);
             Assert.Equal(7, records[4].SecondValue);
             Assert.Equal(100000000, records[14].Value);
-            Assert.Equal("Trauer", records[14].Manager);
+            Assert.Equal("Kramer", records[14].Manager);
             Assert.False(records[6].HasSecondValue);
             Assert.Equal(0, records[6].SecondValue);
 
@@ -171,7 +171,7 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(9, lists.SelectedIndex);
                 Assert.Equal(5, grid.Rows.Count);
                 Assert.Contains(grid.Columns.Cast<DataGridViewColumn>(), c => c.HeaderText == "Alter");
-                Assert.Equal("Robin", grid.Rows[0].Cells[1].Value);
+                Assert.Equal("Erwin", grid.Rows[0].Cells[1].Value);
 
                 lists.SelectedIndex = 0;
                 Assert.Single(grid.Rows.Cast<DataGridViewRow>());
