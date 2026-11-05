@@ -210,6 +210,7 @@
     <Compile Include="View\HelpView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\HelpDocument.cs" />
     <Compile Include="View\HelpView.Designer.cs">
       <DependentUpon>HelpView.cs</DependentUpon>
     </Compile>

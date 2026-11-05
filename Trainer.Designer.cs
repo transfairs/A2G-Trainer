@@ -43,8 +43,14 @@ namespace A2G_Trainer
             this.jugendspielerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.ausAnderemVereinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dynamischesTeamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.andererVereinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trainerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spielstandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spielstandOeffnenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spielstandSpeichernToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spielstandSpeichernUnterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.spielstandSchliessenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ansichtToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.überToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +69,7 @@ namespace A2G_Trainer
             this.ansichtToolStripMenuItem,
             this.alleVereineToolStripMenuItem,
             this.trainerToolStripMenuItem,
+            this.spielstandToolStripMenuItem,
             this.ansichtToolStripMenuItem1});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -96,9 +103,8 @@ namespace A2G_Trainer
             // 
             this.spielerToolStripMenuItem.Name = "spielerToolStripMenuItem";
             this.spielerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.spielerToolStripMenuItem.Text = "Alle (kommt später)";
-            this.spielerToolStripMenuItem.Visible = false;
-            this.spielerToolStripMenuItem.Click += new System.EventHandler(this.AllClubsToolStripMenuItem_Click);
+            this.spielerToolStripMenuItem.Text = "Anderer";
+            this.spielerToolStripMenuItem.Click += new System.EventHandler(this.OtherClubDataToolStripMenuItem_Click);
             // 
             // alleVereineToolStripMenuItem
             // 
@@ -107,7 +113,7 @@ namespace A2G_Trainer
             this.jugendspielerToolStripMenuItem,
             this.toolStripSeparator2,
             this.ausAnderemVereinToolStripMenuItem,
-            this.dynamischesTeamToolStripMenuItem});
+            this.andererVereinToolStripMenuItem});
             this.alleVereineToolStripMenuItem.Name = "alleVereineToolStripMenuItem";
             this.alleVereineToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.alleVereineToolStripMenuItem.Text = "Spieler";
@@ -138,18 +144,66 @@ namespace A2G_Trainer
             this.ausAnderemVereinToolStripMenuItem.Text = "Nächster Gegner";
             this.ausAnderemVereinToolStripMenuItem.Click += new System.EventHandler(this.OpponentToolStripMenuItem_Click);
             // 
-            // dynamischesTeamToolStripMenuItem
+            // andererVereinToolStripMenuItem
             // 
-            this.dynamischesTeamToolStripMenuItem.Name = "dynamischesTeamToolStripMenuItem";
-            this.dynamischesTeamToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.dynamischesTeamToolStripMenuItem.Text = "Dynamisches Team";
-            this.dynamischesTeamToolStripMenuItem.Click += new System.EventHandler(this.DynamicTeamToolStripMenuItem_Click);
+            this.andererVereinToolStripMenuItem.Name = "andererVereinToolStripMenuItem";
+            this.andererVereinToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.andererVereinToolStripMenuItem.Text = "Anderer Verein";
+            this.andererVereinToolStripMenuItem.Click += new System.EventHandler(this.OtherClubToolStripMenuItem_Click);
             //
             // trainerToolStripMenuItem
             //
             this.trainerToolStripMenuItem.Name = "trainerToolStripMenuItem";
             this.trainerToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.trainerToolStripMenuItem.Text = "Trainer";
+            // 
+            // spielstandToolStripMenuItem
+            // 
+            this.spielstandToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.spielstandOeffnenToolStripMenuItem,
+            this.spielstandSpeichernToolStripMenuItem,
+            this.spielstandSpeichernUnterToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.spielstandSchliessenToolStripMenuItem});
+            this.spielstandToolStripMenuItem.Name = "spielstandToolStripMenuItem";
+            this.spielstandToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.spielstandToolStripMenuItem.Text = "Spielstand";
+            this.spielstandToolStripMenuItem.DropDownOpening += new System.EventHandler(this.SaveGameToolStripMenuItem_DropDownOpening);
+            // 
+            // spielstandOeffnenToolStripMenuItem
+            // 
+            this.spielstandOeffnenToolStripMenuItem.Name = "spielstandOeffnenToolStripMenuItem";
+            this.spielstandOeffnenToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.spielstandOeffnenToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spielstandOeffnenToolStripMenuItem.Text = "Öffnen …";
+            this.spielstandOeffnenToolStripMenuItem.Click += new System.EventHandler(this.OpenSaveGameToolStripMenuItem_Click);
+            // 
+            // spielstandSpeichernToolStripMenuItem
+            // 
+            this.spielstandSpeichernToolStripMenuItem.Name = "spielstandSpeichernToolStripMenuItem";
+            this.spielstandSpeichernToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.spielstandSpeichernToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spielstandSpeichernToolStripMenuItem.Text = "Speichern";
+            this.spielstandSpeichernToolStripMenuItem.Click += new System.EventHandler(this.SaveSaveGameToolStripMenuItem_Click);
+            // 
+            // spielstandSpeichernUnterToolStripMenuItem
+            // 
+            this.spielstandSpeichernUnterToolStripMenuItem.Name = "spielstandSpeichernUnterToolStripMenuItem";
+            this.spielstandSpeichernUnterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spielstandSpeichernUnterToolStripMenuItem.Text = "Speichern unter …";
+            this.spielstandSpeichernUnterToolStripMenuItem.Click += new System.EventHandler(this.SaveSaveGameAsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // spielstandSchliessenToolStripMenuItem
+            // 
+            this.spielstandSchliessenToolStripMenuItem.Name = "spielstandSchliessenToolStripMenuItem";
+            this.spielstandSchliessenToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spielstandSchliessenToolStripMenuItem.Text = "Schließen";
+            this.spielstandSchliessenToolStripMenuItem.Click += new System.EventHandler(this.CloseSaveGameToolStripMenuItem_Click);
             //
             // ansichtToolStripMenuItem1
             // 
@@ -171,7 +225,7 @@ namespace A2G_Trainer
             // 
             this.überToolStripMenuItem.Name = "überToolStripMenuItem";
             this.überToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
-            this.überToolStripMenuItem.Text = "Über";
+            this.überToolStripMenuItem.Text = "Über …";
             this.überToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // ContentPanel
@@ -218,9 +272,15 @@ namespace A2G_Trainer
         private System.Windows.Forms.ToolStripMenuItem ansichtToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hilfeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem überToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dynamischesTeamToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem andererVereinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem jugendspielerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem trainerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spielstandToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spielstandOeffnenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spielstandSpeichernToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spielstandSpeichernUnterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem spielstandSchliessenToolStripMenuItem;
     }
 }
 

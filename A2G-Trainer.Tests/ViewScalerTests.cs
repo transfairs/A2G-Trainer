@@ -74,6 +74,42 @@ namespace A2G_Trainer.Tests
         });
 
         [Fact]
+        public void ScaleTo_WithADesignScale_StretchesBoundsFullyButFontsOnlyBeyondIt() => StaThread.Run(() =>
+        {
+            using (UserControl root = NewRoot())
+            {
+                Label label = new Label { Bounds = new Rectangle(8, 8, 40, 20) };
+                root.Controls.Add(label);
+
+                using (ViewScaler scaler = new ViewScaler(root, new SizeF(1.25f, 1.25f)))
+                {
+                    scaler.ScaleTo(new Size(250, 125));
+
+                    Assert.Equal(new Rectangle(10, 10, 50, 25), label.Bounds);
+                    Assert.Equal(1f, scaler.FontScale);
+                    Assert.Equal(8f, root.Font.Size);
+
+                    scaler.ScaleTo(new Size(500, 250));
+
+                    Assert.Equal(2f, scaler.FontScale);
+                    Assert.Equal(16f, root.Font.Size);
+                }
+            }
+        });
+
+        [Fact]
+        public void Constructor_WithAnEmptyDesignScale_FallsBackToNone() => StaThread.Run(() =>
+        {
+            using (UserControl root = NewRoot())
+            using (ViewScaler scaler = new ViewScaler(root, SizeF.Empty))
+            {
+                scaler.ScaleTo(new Size(400, 200));
+
+                Assert.Equal(2f, scaler.FontScale);
+            }
+        });
+
+        [Fact]
         public void ScaleTo_BackToTheDesignSize_RestoresTheOriginalBoundsAndFonts() => StaThread.Run(() =>
         {
             using (UserControl root = NewRoot())

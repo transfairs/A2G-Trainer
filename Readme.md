@@ -19,11 +19,11 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 <table>
 <tr>
 <td align="center" width="33%"><img src="docs/screenshot_main.png" width="260"><br><sub><b>Main view</b> — squad list &amp; player details</sub></td>
-<td align="center" width="33%"><img src="docs/TeamChoice.png" width="260"><br><sub><b>Team choice</b> — own squad, next opponent, dynamic team</sub></td>
-<td align="center" width="33%"><img src="docs/ClubView.png" width="260"><br><sub><b>Club view</b> — finances &amp; stadium block overview</sub></td>
+<td align="center" width="33%"><img src="docs/TeamChoice.png" width="260"><br><sub><b>Team choice</b> — own squad, next opponent, any other club</sub></td>
+<td align="center" width="33%"><img src="docs/ClubView.png" width="260"><br><sub><b>Club view</b> — general data, finances &amp; team values</sub></td>
 </tr>
 <tr>
-<td align="center" width="33%"><img src="docs/Stadium.png" width="260"><br><sub><b>Stadium editor</b> — seats, roof, construction time</sub></td>
+<td align="center" width="33%"><img src="docs/Stadium.png" width="260"><br><sub><b>Stadium editor</b> — top-down plan, seats, roof, construction time</sub></td>
 <td align="center" width="33%"><img src="docs/Trainees.png" width="260"><br><sub><b>Youth players</b> — skills editor (Jugendspieler)</sub></td>
 <td align="center" width="33%"><img src="docs/CoachView.png" width="260"><br><sub><b>Coach view</b> — competencies &amp; difficulty</sub></td>
 </tr>
@@ -32,21 +32,26 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 
 ## 🛠 Features
 - ✅ Live memory editing of *Anstoss 2 Gold*
-- ✅ **Edit all players** and **amateurs** of **any club**
+- ✅ **Edit all players** and **amateurs** of **any club**: pick country and club above the player list, no need to open the club in the game first
 - ✅ Edit player attributes, positions and skills
 - ✅ Supports multiplexed bitfields (skills etc.)
-- ✅ **Edit your youth players (Jugendspieler)**
+- ✅ **Edit the youth players (Jugendspieler)** of your own or any other club, without opening them in the game first
 - ✅ **Player renames persist permanently**, in any length up to 9 (first name) / 15 (last name) characters (see Tips below)
-- ✅ **Contract, injury and suspension values persist** in the savegame: contract term, injury days and type, injury-prone, banned matches, doping, yellow cards
+- ✅ **Contract, injury and suspension values persist** in the savegame: contract term, injury days and type (with the game's names), injury-prone, banned matches, doping, yellow cards, national caps and retirement from the national team; buy price and home club of loaned players; season statistics; put players of any club on the transfer list or take them off
+- ✅ **Player transfers**: move a player to another club as a transfer, loan or loan with purchase option, carried out by the game's own transfer functions at the next Tagesabschluss
 - ✅ Runs on **Windows XP** (built against `.NET Framework 4.0`)
 - ✅ **Resizable window**: drag it larger or maximize it, and all content (fields, lists, fonts, help) grows with it
-- ✅ **Club editing** (name, finances, stadium details)  
-- ✅ **Stadium editor** with up to 2 × 32,767 seats per block  
+- ✅ **Club editing** (name, finances, stadium details, board, standing with the association and the public, the budget screen's settings incl. law firms, slush fund, loans, investments, share price, overdraft limit, the association's requirements, the licence and the club's locks (bribery, short camp, sponsor, scouts), and the savegame's interest rates, investment indices and costs) for your own and **any other club**: pick country and club below the tabs  
+- ✅ **Live match**: bench, substitutions made, attitude, hardness and effort while the game plays the own club's match
+- ✅ **Club identity, jersey sets and map**: short name, chant, fan name, city, article/preposition, fan base, fan type, board, arch rival and fan friendship; both jersey sets as in the game's data editor; the club's position on a map of its country, which decides how many (away) fans come to a match  
+- ✅ **Stadium editor** with up to 2 × 32,767 seats per block, a top-down plan of all twelve blocks, and the town's construction grant  
 - ✅ **Freeze condition & freshness** in the Team tab so they stay fixed while you play  
 - ✅ **Multi-trainer (hot-seat) support**
-- ✅ **Coach editing** (level, age, difficulty, and stocks)
-- ✅ **Coach contract**: salary and bonuses, season goal, extras, release clause, and a club for next season that the game's season change actually accepts
-- ✅ **Request a job offer** from any club of the main or a bonus country; the game makes it at the next Tagesabschluss
+- ✅ **Coach editing** (manager image, level, age, difficulty incl. lifting the game's once-per-game lock, nerves, standing with public, fans and media, the champion bet, the national team's friendlies, and stocks, including new positions in clubs listed on the stock market)
+- ✅ **Career**: game mode (fixed years, career, endless), start year, retirement age, the Managerfortbildung result, titles and setbacks, the manager's event flags and locks (money taken, sabotage, naturalisation), the weekly level evaluation with a one-click level-up; and the new-game option "Mit Entlassungen"
+- ✅ **Coach contract**: salary and bonuses, season goal, extras, release clause, the board's trust (0–100), and a club for next season that the game's season change actually accepts
+- ✅ **Game mechanics** (own menu, active only while trainer and game run, nothing of it goes into a savegame): a quiz help that marks the right answer with a green tick and the wrong ones with a red cross; interview helps (show each answer's effects in the game; make the answers take effect, which the game itself never does); goal limits lifted (up to 15 goals per team instead of 6 by half-time and 10 at full time, no halved chances from 7 goals); and a job offer requested from any club of the main or a bonus country, which the game makes at the next Tagesabschluss
+- ✅ **National coach**: take over or leave any national team, edit that contract (salary, bonus per knockout round), and edit the **national squad** of any country
 - ✅ **Switch bonus countries on and off** during a career (up to 4 besides the main country)  
 - ✅ **Automatic reconnect & turn-handoff detection:** It detects a game restart, a different savegame being loaded, or a hot-seat turn passing
 - ✅ **Help section** integrated into the UI, also available as the [online Projektseite](https://transfairs.github.io/A2G-Trainer/)  
@@ -72,10 +77,10 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 3. Use the **Tool Strip** to switch to the club view (finances, stadium, etc.) or edit other teams.
 
 ## 💡 Tips & Hints
-- To assign a **negative number of seats** to a stadium block, enter any value **greater than 32,767**.  
-- After editing a stadium block, **Block A is automatically set to one week construction time** to ensure all changes are persisted.  
+- Stadium blocks also take a **negative number of seats** (down to −32,768); the game counts them as they are, so the capacity drops accordingly.  
+- The game itself only recounts the stadium **capacity** when a construction finishes or a new season starts; the trainer recounts it on every save the same way the game does.  
 - A player rename survives a save/reload in any length up to 9/15 characters: a name the savegame already has is reused, a new one is added the way the game adds names, and other players with the old name keep it. Only on a version whose addresses the trainer can't confirm does the old rule apply (the new name must already exist in the savegame, or have **exactly as many characters** as the old one); otherwise the name only lasts until the next Tagesabschluss/load and you get a warning naming the player. Details land in `%LocalAppData%\A2G-Trainer\trainer.log`.  
-- On the **GOG version** (and the 2007 CD release), the trainer checks where the permanently saved player data lives the first time it loads your own team. If it can't find it, it falls back to the in-memory display values as before: Jugendspieler then can't be changed permanently, and renames only last until the next load. The result is logged to `%LocalAppData%\A2G-Trainer\trainer.log`; please attach it when reporting a problem.  
+- On the **GOG version** (and the 2007 CD release), the trainer checks where the permanently saved player data lives the first time it loads your own team. If it can't find it, it falls back to the in-memory display values as before: other clubs and Jugendspieler then can't be listed, and renames only last until the next load. The result is logged to `%LocalAppData%\A2G-Trainer\trainer.log`; please attach it when reporting a problem.  
 
 ## 🔧 Build Instructions
 1. Open the solution in **Visual Studio 2019**  
@@ -90,7 +95,7 @@ This trainer shares its foundation with the [A3-Trainer](https://github.com/tran
 - **`Shared/`** is a git submodule pointing at [Anstoss-Trainer-Shared](https://github.com/transfairs/Anstoss-Trainer-Shared). It holds a Visual Studio *shared project* (`AnstossTrainer.Shared.projitems`: process memory access, logger, main-window base `TrainerShell`, view base `TrainerView`, game observer loop `GameObserver`, view scaler) whose code is compiled into each trainer, so every trainer stays a single exe. It also holds the app manifest, the STA test helper, the online help's stylesheet and script (copied next to `help/` on deploy) and the changelog scripts used by the release workflow.
 - Clone with submodules: `git clone --recursive https://github.com/transfairs/A2G-Trainer.git` (or run `git submodule update --init` in an existing clone).
 - Game-specific additions to shared classes live in the trainer as `partial` parts, e.g. `Controller/ProcessMemory.A2.cs` (build and persistent layout) and `Controller/Logger.A2.cs` (log folder, debug switch).
-- **Shared changes arrive automatically:** the Shared repository's CI builds and tests both trainers with every change. After a green push to its master, [`shared-update.yml`](.github/workflows/shared-update.yml) moves `Shared/` to the new commit, runs this trainer's tests and commits the update to master (or opens a pull request if the tests fail). It also runs daily and can be started by hand.
+- **Shared changes arrive automatically:** the Shared repository's CI builds and tests both trainers with every change. After a green push to its main branch, [`shared-update.yml`](.github/workflows/shared-update.yml) moves `Shared/` to the new commit, runs this trainer's tests and commits the update to master (or opens a pull request if the tests fail). It also runs daily and can be started by hand.
 
 ## 🧪 Testing
 The **A2G-Trainer.Tests** project (xUnit) covers the memory-reading/writing logic and, for the WinForms views, the actual controls. None of it needs the game running.

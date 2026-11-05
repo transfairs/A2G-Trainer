@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using AnstossTrainer.Shared;
@@ -24,8 +25,7 @@ namespace A2G_Trainer.Tests
             }
 
             internal void Placeholder(Control placeholder, string title = null) => this.ShowPlaceholder(placeholder, title);
-            internal void Screen(UserControl view, string title = null) => this.ShowScreen(view, title);
-        }
+            internal void Screen(UserControl view, string title = null) => this.ShowScreen(view, title);        }
 
         private sealed class TestView : TrainerView
         {
@@ -52,6 +52,24 @@ namespace A2G_Trainer.Tests
                 // The placeholder cleared the current view, so showing the same view again puts it back.
                 shell.Screen(view, "Kader");
                 Assert.Same(view, Assert.Single(shell.Host.Controls.Cast<Control>()));
+            }
+        });
+
+        [Fact]
+        public void DesignScale_IsTheWindowsScaleForAnInheritingView_AndNoneForASelfScalingOne() => StaThread.Run(() =>
+        {
+            using (TestShell shell = new TestShell())
+            using (UserControl inheriting = new UserControl())
+            using (UserControl selfScaling = new UserControl { AutoScaleMode = AutoScaleMode.Font })
+            {
+                Assert.Equal(new SizeF(1f, 1f), shell.DesignScale(inheriting));
+
+                // As the DPI auto-scaling at 125 % would, applied twice.
+                shell.Scale(new SizeF(1.25f, 1.25f));
+                shell.Scale(new SizeF(2f, 2f));
+
+                Assert.Equal(new SizeF(2.5f, 2.5f), shell.DesignScale(inheriting));
+                Assert.Equal(new SizeF(1f, 1f), shell.DesignScale(selfScaling));
             }
         });
 

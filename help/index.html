@@ -40,6 +40,7 @@
           <li><a href="#spieler" data-target="spieler">Spieler</a></li>
           <li><a href="#jugend" data-target="jugend">Jugendspieler</a></li>
           <li><a href="#trainer" data-target="trainer">Trainer &amp; Liga</a></li>
+          <li><a href="#mechaniken" data-target="mechaniken">Spielmechaniken</a></li>
           <li><a href="#tipps" data-target="tipps">Tipps &amp; Tricks</a></li>
           <li><a href="#faq" data-target="faq">Fehlerbehebung / FAQ</a></li>
           <li><a href="#changelog" data-target="changelog">Changelog</a></li>
@@ -72,7 +73,7 @@
             <ol>
               <li>Starten Sie <strong>Anstoss 2 Gold</strong> und laden Sie einen Spielstand.</li>
               <li>Starten Sie <strong>A2G-Trainer</strong>. Die Reihenfolge spielt keine Rolle, der Trainer erkennt das laufende Spiel automatisch.</li>
-              <li>Wechseln Sie über die Menüleiste zur gewünschten Ansicht, zum Beispiel <span class="menu-path">Verein → Eigener</span> oder <span class="menu-path">Spieler → Eigener Kader</span>.</li>
+              <li>Wechseln Sie über die Menüleiste zur gewünschten Ansicht, zum Beispiel <span class="menu-path">Verein → Eigener</span> oder <span class="menu-path">Spieler → Eigener Kader</span>. Mit den Pfeilen <span class="btn-tag">◀</span> und <span class="btn-tag">▶</span> links in der Menüleiste (oder <kbd>Alt</kbd>+<kbd>←</kbd> / <kbd>Alt</kbd>+<kbd>→</kbd>) geht es zur vorigen bzw. nächsten Ansicht zurück, samt dem dort gewählten Verein.</li>
               <li>Bearbeiten Sie die gewünschten Werte und klicken Sie auf <span class="btn-tag">Speichern</span>.</li>
             </ol>
           </fieldset>
@@ -84,7 +85,7 @@
 
           <div class="callout warn">
             <strong class="label">Wichtig, damit Änderungen ankommen</strong>
-            Speichern Sie nach dem Editieren das Spiel in <em>Anstoss 2 Gold</em> und laden Sie den Spielstand anschließend neu. Erst dann werden die Änderungen dauerhaft übernommen. Bei Vereinsdaten hilft es manchmal zusätzlich, im <strong>Transfermarkt</strong> unter <strong>Vereine absuchen</strong> den Verein noch einmal explizit aufzurufen.
+            Speichern Sie nach dem Editieren das Spiel in <em>Anstoss 2 Gold</em> und laden Sie den Spielstand anschließend neu. Erst dann werden die Änderungen dauerhaft übernommen.
           </div>
 
           <fieldset class="groupbox">
@@ -105,10 +106,11 @@
 
           <div class="toc-grid">
             <a class="toc-card" href="#verein" data-jump="verein"><h3>Verein</h3><p>Vereinsname, Stadion, Finanzen, Fans, Trikots und Landkarte bearbeiten.</p></a>
-            <a class="toc-card" href="#spieler" data-jump="spieler"><h3>Spieler</h3><p>Kader, Gegner und dynamisches Team editieren: Fähigkeiten, Vertrag, Verfassung.</p></a>
-            <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Was bei Nachwuchsspielern dauerhaft gespeichert wird und was nicht.</p></a>
-            <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
-            <a class="toc-card" href="#tipps" data-jump="tipps"><h3>Tipps &amp; Tricks</h3><p>Kleine Kniffe, die vielen Nutzern Zeit sparen.</p></a>
+            <a class="toc-card" href="#spieler" data-jump="spieler"><h3>Spieler</h3><p>Kader, Gegner und jeden anderen Verein editieren: Fähigkeiten, Vertrag, Verfassung.</p></a>
+            <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Die Jugend jedes Vereins, ohne Umweg über das Spiel.</p></a>
+            <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Nationalmannschaft, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
+            <a class="toc-card" href="#mechaniken" data-jump="mechaniken"><h3>Spielmechaniken</h3><p>Quiz- und Interviewhilfe, Torgrenzen und Jobangebote, direkt im laufenden Spiel.</p></a>
+            <a class="toc-card" href="#tipps" data-jump="tipps"><h3>Tipps &amp; Tricks</h3><p>Kleine Kniffe, die Zeit sparen.</p></a>
             <a class="toc-card" href="#faq" data-jump="faq"><h3>Fehlerbehebung</h3><p>Häufige Fragen und Lösungen, inklusive Logdatei.</p></a>
             <a class="toc-card" href="#changelog" data-jump="changelog"><h3>Changelog</h3><p>Was sich von Version zu Version geändert hat.</p></a>
           </div>
@@ -119,14 +121,24 @@
       <section class="panel" id="panel-verein">
         <div class="panel-header">
           <h1>Verein</h1>
-          <p class="lead">Erreichbar über <span class="menu-path">Verein → Eigener</span>. Die Vereinsansicht öffnet sich in einem eigenen Fenster mit fünf Registerkarten.</p>
+          <p class="lead">Erreichbar über <span class="menu-path">Verein → Eigener</span>. Die Vereinsansicht öffnet sich im Hauptfenster mit zehn Registerkarten.</p>
         </div>
+
+        <fieldset class="groupbox">
+          <legend>Jeder Verein</legend>
+          <p>Unter den Registerkarten wählen Sie Land und Verein; die Ansicht zeigt dann dessen Daten, im Spiel müssen Sie den Verein dafür nicht aufrufen. <span class="menu-path">Verein → Anderer</span> öffnet den zuletzt gewählten Verein. Der Trainer liest einen fremden Verein aus seinem gespeicherten Vereinsdatensatz bzw. aus der Arbeitskopie, die das Spiel gerade von ihm hat, und schreibt beim Speichern in beide. Computer-Vereine verwaltet das Spiel selbst; geänderte Finanzen oder ein umgebautes Stadion kann es später wieder anpassen.</p>
+        </fieldset>
         <div class="subtabs">
           <button data-sub="allgemein" class="active">Allgemein</button>
+          <button data-sub="taktik">Taktik</button>
           <button data-sub="stadion">Stadion</button>
           <button data-sub="identitaet">Identität</button>
           <button data-sub="trikots">Trikotsätze</button>
           <button data-sub="landkarte">Landkarte</button>
+          <button data-sub="kalkulation">Kalkulation</button>
+          <button data-sub="bank">Bank &amp; Börse</button>
+          <button data-sub="verband">Verband</button>
+          <button data-sub="live">Live-Spiel</button>
         </div>
 
         <div class="subpanel active" data-sub="allgemein">
@@ -165,10 +177,35 @@
           <img class="screenshot" src="img/ClubView.png" alt="Vereinsansicht, Registerkarte Allgemein" style="max-width:420px">
         </div>
 
+        <div class="subpanel" data-sub="taktik">
+          <fieldset class="groupbox">
+            <legend>Taktische Fähigkeiten</legend>
+            <p>Was die Mannschaft im Training lernt. Vor einer Partie vergleicht das Spiel diese Werte mit denen des nächsten Gegners.</p>
+            <dl class="field-list">
+              <dt>Abseitsfalle (x10)</dt><dd>Im Spiel greift die Abseitsfalle erst bei einem Wert über 100 und nur, wenn sie in der Aufstellung eingeschaltet ist. Eine gute Anti-Abseitsfalle des Gegners kann sie trotzdem aushebeln.</dd>
+              <dt>Anti-Abseitsfalle</dt><dd>0 bis 5. Hilft gegen die Abseitsfalle des Gegners.</dd>
+              <dt>Pressing</dt><dd>0 bis 5.</dd>
+              <dt>Miese Tricks</dt><dd>0 bis 5. Steigt mit Schwalben, absichtlichem Handspiel, versteckten Fouls und Reklamieren im Training. Wie viel sie bringen, hängt auch vom Schiedsrichter ab.</dd>
+              <dt>Einwürfe, Freistöße, Ecken</dt><dd>Je 0 bis 5. Standardsituationen.</dd>
+            </dl>
+          </fieldset>
+          <p>Der Trainer schreibt die Werte in den Vereinsdatensatz und in jede Kopie, die das Spiel gerade geladen hat.</p>
+          <fieldset class="groupbox">
+            <legend>Trainerstab</legend>
+            <p>Co-Trainer und Torwarttrainer des Vereins. Wen der Verein angestellt hat, bestimmt weiterhin das Spiel; ohne Co- oder Torwarttrainer ist die jeweilige Spalte gesperrt.</p>
+            <dl class="field-list">
+              <dt>Vorname, Nachname</dt><dd>Ein neuer Name gilt nur für diesen Trainer, andere Personen mit demselben Namen behalten ihren. Ein leeres Feld lässt den Namen unverändert.</dd>
+              <dt>Kompetenz</dt><dd>0 bis 15. Sie ist die Chance bei den Trainingsereignissen: Beim Co-Trainer gewinnt ein zufälliger Feldspieler einen Punkt Kondition (Kompetenz x 7&nbsp;%), beim Torwarttrainer ein zufälliger Torwart einen Punkt Form ((Kompetenz x 3 + 16) von 60, höchstens bis Form 20). Bei 15 klappt beides jedes Mal, höhere Werte bringen nichts mehr. Ein Co-Trainer kann im Lauf der Zeit auch selbst dazulernen, höchstens bis zur Stufe des Cheftrainers, oder nachlassen.</dd>
+              <dt>Vertrag (Jahre)</dt><dd>Restlaufzeit. Das Spiel zählt sie zum Saisonwechsel herunter und trennt sich bei 0 vom Trainer.</dd>
+              <dt>Gehalt pro Jahr</dt><dd>In DM.</dd>
+            </dl>
+          </fieldset>
+        </div>
+
         <div class="subpanel" data-sub="stadion">
           <fieldset class="groupbox">
             <legend>Stadionplan</legend>
-            <p>Der Plan zeigt das Stadion von oben wie die Stadionansicht im Spiel: das Spielfeld mit den zwölf Blöcken drumherum (oben F, E, D, rechts B, unten J, K, L, links H, in den Ecken G, C, I und A). Jeder Block zeigt zum Spielfeld hin seine Steh- bzw. Logenplätze und dahinter die Sitzplätze, in den Farben der Legende, dunkler wenn überdacht. Ein Block im Bau ist schraffiert und zeigt seine Bauwochen. Ein Klick wählt einen Block aus.</p>
+            <p>Der Plan zeigt das Stadion von oben wie die Stadionansicht im Spiel: das Spielfeld mit den zwölf Blöcken drumherum (oben F, E, D, rechts B, unten J, K, L, links H, in den Ecken G, C, I und A). Jeder Block füllt sich vom Spielfeld aus nach außen, voll bei 32.767 Plätzen: zuerst die Steh- bzw. Logenplätze, dahinter die Sitzplätze, in den Farben der Legende, dunkler wenn überdacht. Negative Plätze füllen ihn gelb vom äußeren Rand her. Ein Block im Bau ist schraffiert und zeigt seine Bauwochen. Ein Klick wählt einen Block aus.</p>
           </fieldset>
 
           <fieldset class="groupbox">
@@ -223,10 +260,19 @@
           </fieldset>
 
           <fieldset class="groupbox">
-            <legend>Fans und Vorstand</legend>
+            <legend>Vorstand</legend>
+            <dl class="field-list">
+              <dt>Art des Vorstands</dt><dd>Von „Pulverfaß“ bis „treu“. Je ruhiger der Vorstand, desto seltener werden Sie entlassen. Das Spiel ändert den Wert im Lauf der Zeit um jeweils eine Stufe.</dd>
+              <dt>Ansehen Verband</dt><dd>Von „verzockt“ bis „ausgezeichnet“, im Spiel unter „Beliebtheit“ als „Image Ihres Vereins beim Verband“. Das Spiel zählt dafür Vergehen des Vereins; die Stufe wirkt bei Gerichts- und Lizenzentscheidungen. Eine gewählte Stufe setzt den Zähler auf deren untersten Wert.</dd>
+              <dt>Ansehen Öffentlichkeit</dt><dd>Wie der Verein in der Öffentlichkeit dasteht, von „vollkommen verhaßt“ bis „sehr beliebt“. Das Spiel führt dafür einen Wert von 10 bis 50, den Siege, Niederlagen und Ereignisse verschieben; eine gewählte Stufe setzt einen Wert aus ihrer Mitte. Es wirkt unter anderem auf Angebote an den Verein.</dd>
+              <dt>Manager</dt><dd>Der menschliche Manager, der den Verein gerade trainiert, oder „–“.</dd>
+              <dt>Vertrauen</dt><dd>Das Vertrauen des Vorstandes in diesen Manager, von 0 bis 100. Derselbe Wert steht unter Trainer → Vertrag; es gilt, was zuletzt gespeichert wurde. Ohne menschlichen Manager ist das Feld gesperrt.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Fans</legend>
             <dl class="field-list">
               <dt>Fanaufkommen</dt><dd>Von „wahre Horden“ bis „ärmlich“ und „Fans?“. Je mehr Fans, desto mehr nimmt der Verein ein. Das Spiel verändert den Wert im Lauf der Saison selbst.</dd>
-              <dt>Vorstand</dt><dd>Von „Pulverfaß“ bis „treu“. Je ruhiger der Vorstand, desto seltener werden Sie entlassen. Auch dieser Wert ändert sich im Spiel.</dd>
               <dt>Erzrivale</dt><dd>Ein Verein desselben Landes, gegen den es ein Derby ist; „–“ heißt keiner.</dd>
               <dt>Fanfreundschaft mit</dt><dd>Ein Verein desselben Landes, mit dessen Fans sich Ihre Fans verstehen; „–“ heißt keiner.</dd>
               <dt>Art der Fans</dt><dd>Normal, lautstark, verwöhnt, anspruchsvoll, treu, erfolgshungrig, frustriert oder euphorisch. Sie beeinflusst, wie viele Zuschauer kommen. Das Spiel bestimmt sie nach jedem Spiel neu, unter anderem nach Stadion, Ergebnissen und Titeln; eine Änderung gilt also nur bis zum nächsten Spiel.</dd>
@@ -252,10 +298,117 @@
           </fieldset>
         </div>
 
+        <div class="subpanel" data-sub="kalkulation">
+          <fieldset class="groupbox">
+            <legend>Kalkulation</legend>
+            <dl class="field-list">
+              <dt>Stehplatz / Sitzplatz (DM)</dt><dd>Die Eintrittspreise. Überdachte Plätze und Logen rechnet das Spiel daraus hoch.</dd>
+              <dt>Dauerkarten-Rabatt / -Kontingent (%)</dt><dd>Rabatt auf Dauerkarten (bis 50 %) und Anteil der Plätze, die als Dauerkarten verkauft werden.</dd>
+              <dt>Sicherheit (%)</dt><dd>Ausgaben für die Sicherheit, 1 bis 5 %.</dd>
+              <dt>Rechtsanwälte</dt><dd>Die Kanzlei, von „Norbert Nöler“ (billigste) bis „Reinhard Rundball“ (teuerste). Wie gut eine Kanzlei ist, legt das Spiel zu Beginn einer Karriere zufällig fest.</dd>
+              <dt>Anwaltskosten der Saison (DM)</dt><dd>Was der Verein in dieser Saison schon an Anwaltshonoraren bezahlt hat. Mit 0 bekommt er sie zurück; das Spiel zieht sie erst mit dem Saisonergebnis ab.</dd>
+              <dt>Statistikabteilung / Computerabteilung</dt><dd>Wie in der Kalkulation des Spiels („Rentner mit PC“, „Chefstatistiker mit Großrechner“, „NORACSA“). Der Trainer setzt die Werte für die laufende und die nächste Saison.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Schwarze Kasse</legend>
+            <dl class="field-list">
+              <dt>Stand</dt><dd>Das Geld in der schwarzen Kasse des Vereins.</dd>
+              <dt>Abzweigung (Promille)</dt><dd>Anteil jeder Heimspieleinnahme, der in die schwarze Kasse geht, 0 bis 30 (also bis 3 %).</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Kosten für alle Vereine (bis Spielneustart)</legend>
+            <p>Was das Spiel jedem Verein berechnet: das Honorar jeder Kanzlei je rote Karte und je sonstigem Verfahren sowie die Kosten der Statistik- und Computerabteilung je Saison. Mit 0 sind Anwälte bzw. Abteilungen kostenlos. Diese Preise stehen im Programm des Spiels, nicht im Spielstand: Nach einem Neustart des Spiels gelten wieder die üblichen Preise, dann einfach erneut speichern. Alle Preise stehen in DM. Das Spiel speichert sie aber nur in ganzen Einheiten: Anwälte in 1.000 DM, die Statistikabteilung in 10.000 DM, die Computerabteilung in 100.000 DM. Der Trainer rundet deshalb auf die nächste Einheit und zeigt gleich den Wert, den das Spiel bekommt; 500 DM je rote Karte werden also 1.000 DM, 400 DM werden 0.</p>
+            <p>In allen Tabellen dieser Registerkarten gilt: Eine Zahl, die für das Feld zu groß ist, wird zum größten möglichen Wert, eine zu kleine zum kleinsten; Text, der keine Zahl ist, setzt das Feld auf den alten Wert zurück.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="bank">
+          <fieldset class="groupbox">
+            <legend>Kredite</legend>
+            <dl class="field-list">
+              <dt>Betrag</dt><dd>Die Kreditsumme. Das Spiel rechnet Kredite zum verfügbaren Geld hinzu; ein höherer Betrag ist also sofort Geld auf dem Konto. Die Zinsen berechnet es vierteljährlich vom Betrag.</dd>
+              <dt>Laufzeit</dt><dd>1, 2 oder 5 Jahre; danach ist der Kredit fällig.</dd>
+              <dt>Zins (%)</dt><dd>Der Zinssatz der gewählten Laufzeit.</dd>
+              <dt>Kündbar</dt><dd>Ob der Verein den Kredit vorzeitig zurückzahlen darf.</dd>
+            </dl>
+            <p><strong>Neuer Kredit</strong> legt einen Kredit an (bis zu acht), wie im Spiel: 1 Mio. DM für ein Jahr, kündbar, zum aktuellen Kreditzins; Betrag, Laufzeit, Zins und Kündbarkeit lassen sich danach ändern. <strong>Kredit tilgen</strong> entfernt den gewählten Kredit; damit fehlt der Betrag auch wieder auf dem Konto. Ein festes Kreditlimit gibt es nicht: Das Spiel rechnet den Höchstbetrag eines neuen Kredits jedes Mal aus Liga, Fanaufkommen, Vermögen, Saisonergebnis und Spielerverträgen aus.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Geldanlagen</legend>
+            <dl class="field-list">
+              <dt>Art</dt><dd>Tagesgeld oder einer der vier Anlageberater (Kostol &amp; Any, Windig &amp; Schnellweg, Dipl. Kfm. Sorglos, Mme Véronique). Eine geänderte Art behält den aktuellen Wert.</dd>
+              <dt>Einlage</dt><dd>Der eingezahlte Betrag. Beim Auflösen im Spiel bucht das Spiel Wert minus Einlage als Gewinn oder Verlust.</dd>
+              <dt>Wert</dt><dd>Der aktuelle Wert der Anlage.</dd>
+            </dl>
+            <p><strong>Neue Anlage</strong> legt eine Anlage an (bis zu sechs), wie im Spiel zum aktuellen Stand des Anbieters; vom Konto bucht der Trainer dabei nichts ab. <strong>Anlage auflösen</strong> entfernt die gewählte Anlage, ohne Gewinn oder Verlust zu buchen. Zum Saisonwechsel setzt das Spiel alle Anlagen auf ihren Wert und die Indizes auf 1000 zurück.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Zinssätze und Anlage-Anbieter (alle Vereine)</legend>
+            <p>Die Zinssätze gelten im ganzen Spielstand, für alle Vereine: Guthaben, Dispo, Überziehung über den Dispo, Kredite (Grundzins; die Angebote liegen je nach Laufzeit und Kündbarkeit bis 2 Punkte darunter) und Tagesgeld. Das Spiel verschiebt sie jedes Quartal um bis zu 0,25 Punkte. Dazu die Körperschaftsteuer in Prozent. Eine Mehrwertsteuer gibt es im Spiel nicht als einstellbaren Wert: Von den Eintrittseinnahmen behält es fest 87 % ein.</p>
+            <p>Unter <strong>Anlage-Anbieter</strong> steht der aktuelle Index jedes Anbieters (zum Saisonstart 1000). Alle Anlagen eines Anbieters sind Wert × Index / Index beim Kauf wert; ein höherer Index macht also alle seine Anlagen sofort mehr wert. Wie wahrscheinlich ein Anbieter wöchentlich gewinnt oder verliert, steht fest im Programmcode und lässt sich nicht ändern: Kostol &amp; Any gewinnt meist leicht, Mme Véronique schwankt am stärksten (±25 %). Den versprochenen Bonus ab 5 Mio. DM gibt es im Spiel nicht.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Börse und Dispo</legend>
+            <dl class="field-list">
+              <dt>Aktienkurs (DM)</dt><dd>Nur für Vereine an der Börse. Das Spiel bewegt den Kurs jede Woche zum großen Teil auf sein Kursziel zu (200 bis 800 DM, aus Tabellenplatz, Vermögen und Form); ein weit entfernter Kurs fällt also schnell zurück. Der Trainer setzt auch den Kursverlauf der letzten zehn Wochen, damit das Diagramm nicht springt.</dd>
+              <dt>Ausgegebene Aktien</dt><dd>Nur zur Ansicht.</dd>
+              <dt>Dispo (× 100.000 DM)</dt><dd>Der Überziehungsrahmen. Bis dahin gilt der Dispozins, darüber der höhere Überziehungszins; er begrenzt auch, wie viel Sie anlegen können. Das Spiel setzt ihn zu jedem Saisonwechsel neu (10 % des Kaderwerts).</dd>
+            </dl>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="verband">
+          <fieldset class="groupbox">
+            <legend>Auflagen</legend>
+            <p>Am Saisonende prüft der Verband das Vermögen jedes Vereins und erteilt einem verschuldeten Verein Auflagen. Jede Auflage hat ein eigenes Häkchen, die mit einem Wert haben ein Feld daneben, das nur bei gesetztem Häkchen bearbeitet werden kann:</p>
+            <dl class="field-list">
+              <dt>Stadionausbau verboten</dt><dd>Der Verein darf sein Stadion nicht ausbauen.</dd>
+              <dt>Trainingslager verboten</dt><dd>Der Verein darf in dieser Saison kein Trainingslager veranstalten.</dd>
+              <dt>Zuschauer begrenzt (× 1.000)</dt><dd>Höchstzahl der kalkulierten Zuschauer.</dd>
+              <dt>Schulden begrenzt (× 1 Mio. DM)</dt><dd>Höchstens so viel Schulden.</dd>
+              <dt>Transferüberschuss / Transferausgaben begrenzt (× 100.000 DM)</dt><dd>Entweder muss der Verein mit Transfers mindestens diesen Überschuss erzielen, oder er darf höchstens so viel ausgeben. Beides teilt sich einen Wert; das Spiel vergibt immer nur eine der beiden Auflagen.</dd>
+              <dt>Gehälter begrenzt (× 100.000 DM)</dt><dd>Obergrenze für die Gehälter. Ohne Häkchen setzt der Trainer den Wert auf 0, weil das Spiel die Grenze sonst weiter prüft.</dd>
+            </dl>
+            <p>Ein Häkchen zu entfernen hebt die Auflage sofort auf. Zum nächsten Saisonende vergibt das Spiel die Auflagen neu.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Lizenz</legend>
+            <p><strong>Lizenz verweigert</strong> zeigt, dass der Verband dem Verein die Lizenz für die neue Saison verweigert hat. Ohne Häkchen gilt sie als erteilt, wie beim Lizenzverfahren des Spiels.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Sperren</legend>
+            <dl class="field-list">
+              <dt>Schiri-Bestechung versucht / Gegner-Bestechung angefragt / Gegner bezahlt</dt><dd>Aus der Schwarzen Kasse lässt sich vor jedem Ligaspiel einmal der Schiedsrichter und einmal der Gegner bestechen. Das Spiel löscht diese Merker nach jedem Ligaspiel; ohne Häkchen geht es sofort noch einmal.</dd>
+              <dt>Kurztrainingslager gebucht / Kurztrainingslager Saison</dt><dd>Ein Kurztrainingslager vor dem nächsten Pflichtspiel und die Zahl der Lager in dieser Saison (0 bis 2). Das erste Lager der Saison bringt jedem Spieler einen Punkt (bis 20), das zweite nur noch mit halber Chance, ab dem dritten gibt es einen Abzug. Mit 0 wirkt das nächste Lager wieder voll.</dd>
+              <dt>Bitten an den Sponsor</dt><dd>Nur auf die erste Bitte um Geld zahlt der Sponsor: in der 1. Liga 180.000 bis 220.000 DM, in der 2. Liga 130.000 bis 170.000 DM, darunter 80.000 bis 120.000 DM. Voraussetzung ist ein Sponsor und ein Vermögen über −1 Mio. DM. Sonst wirkt die Bitte nicht, auch nicht auf den Sponsorvertrag oder das Ansehen. Zum Saisonende setzt das Spiel den Zähler zurück; mit 0 lässt sich der Sponsor sofort noch einmal bitten.</dd>
+              <dt>Spielerbeobachter (DM)</dt><dd>In dieser Saison für Spielerbeobachter ausgegeben; ab 2 Mio. DM lässt das Spiel keine weiteren zu.</dd>
+            </dl>
+            <p>Die Sabotage gegen einen Mitspieler und die abgelehnten Einbürgerungen stehen beim Manager, siehe <a href="#trainer" data-jump="trainer:karriere">Trainer → Karriere</a>.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="live">
+          <fieldset class="groupbox">
+            <legend>Live-Spiel</legend>
+            <p>Während das Spiel ein Spiel des angezeigten Vereins mit menschlicher Beteiligung austrägt, zeigt der Tab Minute, Spielstand und Gegner. „Werte neuladen“ liest den Stand neu, „Speichern“ schreibt, was Sie auf diesem Tab geändert haben, und nur das: Das Spiel läuft weiter, ein unverändertes Feld würde sonst einen inzwischen neueren Stand überschreiben.</p>
+            <dl class="field-list">
+              <dt>Einstellung / Härte / Einsatz</dt><dd>Die Taktik in diesem Spiel; das Spiel übernimmt sie ab der nächsten Minute. Der Computer ändert sie danach für diesen Verein nicht mehr.</dd>
+              <dt>Wechsel bisher</dt><dd>Wie oft schon gewechselt wurde (höchstens 3). Mit 0 dürfen Sie wieder dreimal wechseln.</dd>
+              <dt>Ersatzbank</dt><dd>Die sieben Plätze der Bank. Zur Auswahl stehen Spieler des Kaders, die nicht in der Aufstellung stehen und in diesem Spiel nicht vom Platz gestellt wurden, auch bereits ausgewechselte Spieler; wer schon auf einem anderen Platz sitzt, fehlt in der Liste. „–“ lässt den Platz leer.</dd>
+            </dl>
+          </fieldset>
+          <div class="callout warn">
+            <strong class="label">Taktikdialog des Spiels geschlossen halten</strong>
+            Der Taktikdialog im laufenden Spiel merkt sich Bank und Wechsel beim Öffnen und schreibt sie beim Schließen zurück. Erst den Dialog schließen, dann im Trainer speichern.
+          </div>
+        </div>
+
         <div class="subpanel" data-sub="landkarte">
           <fieldset class="groupbox">
             <legend>Landkarte</legend>
-            <p>Die Karte zeigt das Land Ihres Vereins mit seinen Nachbarn und inneren Grenzen: Bundesländer in Deutschland, Regionen und Counties in England, Régions und Départements in Frankreich, Regioni und Provinzen in Italien, Comunidades und Provinzen in Spanien. Sie ist genau auf die Landkarte des Editors ausgerichtet, also liegen alle Vereine des Landes als Punkte dort, wo der Editor sie zeigt. Ihr Verein ist blau, der Erzrivale rot und der Verein mit Fanfreundschaft grün umrandet. Fährt die Maus über einen Punkt, erscheint der Vereinsname. Ein Klick versetzt Ihren Verein an diese Stelle; <strong>X</strong> und <strong>Y</strong> lassen sich auch direkt eintragen.</p>
+            <p>Die Karte zeigt das Land des gezeigten Vereins mit seinen Nachbarn und inneren Grenzen: Bundesländer in Deutschland, Regionen und Counties in England, Régions und Départements in Frankreich, Regioni und Provinzen in Italien, Comunidades und Provinzen in Spanien. Sie ist genau auf die Landkarte des Editors ausgerichtet, also liegen alle Vereine des Landes als Punkte dort, wo der Editor sie zeigt. Der gezeigte Verein ist blau, der Erzrivale rot und der Verein mit Fanfreundschaft grün umrandet. Fährt die Maus über einen Punkt, erscheint der Vereinsname. Ein Klick versetzt den gezeigten Verein an diese Stelle; <strong>X</strong> und <strong>Y</strong> lassen sich auch direkt eintragen.</p>
             <p>Das Spiel nutzt die Position nur über die Entfernung zwischen zwei Vereinen. Sie bestimmt, wie viele Fans zu einem Spiel kommen, vor allem Gästefans: Je näher die Vereine, desto mehr. Das Spiel rechnet mit einem Faktor von 3 unter 3 Einheiten Entfernung, 2,5 unter 10, 2 unter 25, 0,8 unter 50, 0,4 unter 100, 0,2 unter 250 und 0,125 darüber oder bei Vereinen aus verschiedenen Ländern. Bei den Gästefans gilt der Faktor immer, bei den Heimfans nur, wenn er über 1 liegt. Die gestrichelten Kreise zeigen 25, 50, 100 und 250 Einheiten. Bei wenigen Ereignissen spielt die Entfernung ebenfalls eine Rolle, etwa bei einem Lokalderby.</p>
             <p>Kartendaten: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (gemeinfrei).</p>
           </fieldset>
@@ -266,7 +419,7 @@
       <section class="panel" id="panel-spieler">
         <div class="panel-header">
           <h1>Spieler</h1>
-          <p class="lead">Erreichbar über das Menü <span class="menu-path">Spieler</span>. Für jeden Spieler öffnet sich eine Detailansicht mit sieben Registerkarten.</p>
+          <p class="lead">Erreichbar über das Menü <span class="menu-path">Spieler</span>. Für jeden Spieler öffnet sich eine Detailansicht mit neun Registerkarten.</p>
         </div>
         <div class="subtabs">
           <button data-sub="uebersicht" class="active">Übersicht</button>
@@ -287,17 +440,17 @@
             <dl class="field-list">
               <dt>Eigener Kader</dt><dd>Alle Spieler und Amateure Ihres eigenen Vereins. Menü: <span class="menu-path">Spieler → Eigener Kader</span>.</dd>
               <dt>Nächster Gegner</dt><dd>Der Kader Ihres nächsten Gegners. Menü: <span class="menu-path">Spieler → Nächster Gegner</span>.</dd>
-              <dt>Dynamisches Team</dt><dd>Zeigt den zuletzt im Spiel über den Transfermarkt aufgerufenen Verein. Menü: <span class="menu-path">Spieler → Dynamisches Team</span>.</dd>
-              <dt>Jugendspieler</dt><dd>Eigene eigene Ansicht, siehe <a href="#jugend" data-jump="jugend">Abschnitt Jugendspieler</a>.</dd>
+              <dt>Jeder andere Verein</dt><dd>Über der Spielerliste wählen Sie Land und Verein; die Liste zeigt dann dessen Kader samt Amateuren. Im Spiel müssen Sie den Verein dafür nicht aufrufen. Menü: <span class="menu-path">Spieler → Anderer Verein</span> öffnet den zuletzt gewählten Verein.</dd>
+              <dt>Jugendspieler</dt><dd>Die Jugend Ihres Vereins oder, über die Auswahl über der Liste, jedes anderen Vereins, siehe <a href="#jugend" data-jump="jugend">Abschnitt Jugendspieler</a>.</dd>
             </dl>
           </fieldset>
 
-          <div class="callout warn">
-            <strong class="label">Nur ganze Vereine bearbeiten</strong>
-            Es lassen sich zuverlässig <strong>nur ganze Vereine</strong> bearbeiten. Rufen Sie im Spiel dazu im <strong>Transfermarkt</strong> die Funktion <strong>Vereine absuchen</strong> auf und wählen Sie den gewünschten Verein aus. Spieler, die Sie stattdessen über die <em>Spielersuche</em> (NORACSA) gefunden haben, werden im Trainer zwar angezeigt, lassen sich aber <strong>nicht zuverlässig bearbeiten</strong>. Das kann im Spiel zu unvorhersehbarem Verhalten führen.
-          </div>
+          <fieldset class="groupbox">
+            <legend>Spieler anderer Vereine</legend>
+            <p>Zur Auswahl stehen die Vereine aller Länder, die beim Karrierestart gewählt wurden. Der Trainer liest ihre Spieler aus den gespeicherten Spielerdatensätzen und schreibt auch dorthin. Hat das Spiel einen Spieler gerade geladen, etwa im eigenen Kader oder beim nächsten Gegner, schreibt er zusätzlich in diese Arbeitskopie, sonst würde das Spiel die Änderung beim Zurücklegen wieder überschreiben.</p>
+          </fieldset>
 
-          <img class="screenshot" src="img/TeamChoice.png" alt="Das Spieler-Menü mit den vier Ansichten" style="max-width:280px">
+          <img class="screenshot" src="img/TeamChoice.png" alt="Das Spieler-Menü" style="max-width:280px">
         </div>
 
         <div class="subpanel" data-sub="persoenlich">
@@ -308,7 +461,7 @@
               <dt>Stärke</dt><dd>Die Gesamtstärke des Spielers.</dd>
               <dt>Alter</dt><dd>Alter des Spielers in Jahren.</dd>
               <dt>Nationalität</dt><dd>Auswahlliste mit allen Nationalitäten des Spiels.</dd>
-              <dt>Kondition / Frische / Form</dt><dd>Aktuelle Werte. Kondition und Frische lassen sich zusätzlich dauerhaft <a href="#spieler" data-jump="spieler:team">einfrieren</a>.</dd>
+              <dt>Kondition / Frische / Form</dt><dd>Aktuelle Werte. Kondition und Frische gehen von 0 bis 100, mehr nimmt das Spiel nicht an. Beide lassen sich zusätzlich dauerhaft <a href="#spieler" data-jump="spieler:team">einfrieren</a>.</dd>
               <dt>Rückennr. (Rückennummer)</dt><dd>1 bis 99, wie im Spiel jede Nummer nur einmal pro Kader. Ist eine Nummer doppelt vergeben oder größer als 99, speichert der Trainer nicht und meldet den betroffenen Spieler. 0 heißt „noch keine Nummer“ (z. B. direkt nach einem Wechsel), das Spiel vergibt dann selbst eine.</dd>
               <dt>Hautfarbe</dt><dd>hell / dunkel / schwarz (Auswahlschalter).</dd>
               <dt>Haarfarbe</dt><dd>hellblond / blond / braun / rot / schwarz / Glatze (Auswahlschalter).</dd>
@@ -406,6 +559,7 @@
             <legend>Verletzungen</legend>
             <dl class="field-list">
               <dt>Fällt aus</dt><dd>Anzahl Tage, die der Spieler ausfällt.</dd>
+              <dt>Art</dt><dd>Die Verletzung oder Krankheit mit den Namen des Spiels, von „Achillessehnenanriß“ bis „Rückenprellung“ bzw. von „Angina“ bis „Sonnenstich“. Bei Verletzungen zählt das Spiel die Ausfallzeit in Wochen, bei Krankheiten in Tagen.</dd>
               <dt>Angeschlagen</dt><dd>Kontrollkästchen. Das Spiel führt dazu eine Restdauer; ein bereits angeschlagener Spieler behält sie, neu angehakt bekommt er die übliche Dauer des Spiels (7).</dd>
               <dt>Gedopt</dt><dd>Kontrollkästchen. Setzt bzw. entfernt nur das Doping selbst; weitere Doping-Kennzeichen des Spiels bleiben unverändert.</dd>
             </dl>
@@ -413,7 +567,7 @@
           <fieldset class="groupbox">
             <legend>Karten</legend>
             <dl class="field-list">
-              <dt>Sperre</dt><dd>Anzahl Spiele Rotsperre.</dd>
+              <dt>Sperre</dt><dd>Restliche Spiele der Ligasperre, höchstens 31; das Spiel zählt nicht weiter. 0 hebt die Sperre auf. Eine neue Sperre gilt als Rotsperre und läuft nach so vielen Spielwochen ab; bei einer laufenden Sperre bleibt ihr Grund (Rot, Gelb-Rot, Gelbsperre) erhalten. Pokal- und Länderspielsperren sind davon getrennt.</dd>
               <dt>Gelb</dt><dd>Anzahl gelber Karten.</dd>
             </dl>
           </fieldset>
@@ -429,7 +583,8 @@
               <dt>Fixe Ablöse</dt><dd>Angabe x 10.000 DM.</dd>
               <dt>Vertragslaufzeit</dt><dd>Restlaufzeit in Jahren.</dd>
               <dt>Stammplatz</dt><dd>Kontrollkästchen.</dd>
-              <dt>Beendet Karriere</dt><dd>Kontrollkästchen.</dd>
+              <dt>Beendet Karriere</dt><dd>Kontrollkästchen. Angehakt hört der Spieler am Saisonende auf; vorher lässt sich das noch zurücknehmen.</dd>
+              <dt>Auf der Transferliste</dt><dd>Spieler jedes Vereins: Haken setzen und speichern stellt den Spieler zum Verkauf auf die Transferliste, so wie Sie es im Spiel tun (mit heutigem Datum, im Spiel wieder herunternehmbar). Haken entfernen nimmt ihn herunter. Die Liste fasst höchstens 250 Spieler; ist sie voll, bleibt der Haken nach dem Speichern leer. Spieler, die am Saisonende aufhören, nimmt das Spiel selbst wieder herunter.</dd>
               <dt>Verliehen</dt><dd>Kontrollkästchen.</dd>
               <dt>mit Kaufoption</dt><dd>Kontrollkästchen.</dd>
               <dt>Kaufoption ausgesetzt</dt><dd>Kontrollkästchen. Am Saisonende entscheidet das Spiel für jeden geliehenen Spieler mit Kaufoption, ob der Verein ihn kauft oder ob er zurückgeht. Ist dieses Kästchen angehakt, überspringt das Spiel diese Entscheidung, der Spieler bleibt also vorerst geliehen. Das Spiel selbst setzt es nie.</dd>
@@ -458,14 +613,21 @@
               <dt>Eigentore</dt><dd>Eigentore in dieser Saison.</dd>
               <dt>Tore für Aufwertung</dt><dd>Ligatore, mit denen das Spiel am Saisonende die Aufwertung prüft. Das Spiel zählt sie zusammen mit den Toren hoch, wertet aber nur diesen Zähler aus; geänderte „Tore“ allein bringen also keine Aufwertung. Ein Feldspieler unter 34 Jahren mit Stärke unter 7 wird in der Regel um eine Stufe aufgewertet, wenn der Wert die Schwelle erreicht. In einer Liga mit 18 Vereinen liegt sie bei Stärke 1/2/3/4/5/6 bei 4/7/11/16/21/26 Toren, in größeren Ligen etwas höher. „Tore bis Aufw.“ in den Spielertrends zeigt, wie viele noch fehlen.</dd>
             </dl>
-            <p>Die Statistik-Bildschirme des Spiels (Torjäger, Scorer, Einsätze, Joker, Eigentore, Fair-Play) rechnen direkt mit diesen Werten. Die „ewigen“ Ranglisten und die Noten der einzelnen Spiele führt das Spiel getrennt, sie ändern sich dadurch nicht. Auch bei Jugendspielern werden die Werte dauerhaft gespeichert.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Nationalmannschaft</legend>
+            <dl class="field-list">
+              <dt>Länderspiele</dt><dd>Anzahl der Länderspiele. Als Nationaltrainer können Sie nur Ausländer einbürgern, die noch kein Länderspiel haben; mit 0 erscheint ein Spieler wieder in der Liste „Spieler einbürgern“.</dd>
+              <dt>Zurückgetreten</dt><dd>Der Spieler ist aus der Nationalmannschaft zurückgetreten und wird nicht mehr berufen. Haken entfernen, und er steht wieder zur Wahl. Das Spiel prüft den Rücktritt alle zwei Jahre neu nach Alter und Stärke; ein älterer Spieler kann also wieder zurücktreten.</dd>
+            </dl>
+            <p>Die Statistik-Bildschirme des Spiels (Torjäger, Scorer, Einsätze, Joker, Eigentore, Fair-Play) rechnen direkt mit den Saisonwerten. Die „ewigen“ Ranglisten und die Noten der einzelnen Spiele führt das Spiel getrennt, sie ändern sich dadurch nicht.</p>
           </fieldset>
         </div>
 
         <div class="subpanel" data-sub="wechsel">
           <fieldset class="groupbox">
             <legend>Wechsel</legend>
-            <p>Schickt den Spieler zu einem anderen Verein, als Wechsel, Leihe oder Leihe mit Kaufoption. Das geht in beide Richtungen: einen eigenen Spieler abgeben oder in der <em>Dynamischen Mannschaft</em> einen Spieler eines anderen Vereins wählen und den eigenen Verein als Ziel nehmen. Das Spiel führt den Wechsel mit seinen eigenen Funktionen aus, also mit Kader, Aufstellung, Geld, Transferhistorie, Meldung und bei einer Leihe dem Stammverein.</p>
+            <p>Schickt den Spieler zu einem anderen Verein, als Wechsel, Leihe oder Leihe mit Kaufoption. Das geht in beide Richtungen: einen eigenen Spieler abgeben oder über die Vereinsauswahl über der Liste einen Spieler eines anderen Vereins wählen und den eigenen Verein als Ziel nehmen. Das Spiel führt den Wechsel mit seinen eigenen Funktionen aus, also mit Kader, Aufstellung, Geld, Transferhistorie, Meldung und bei einer Leihe dem Stammverein.</p>
             <dl class="field-list">
               <dt>Land / Verein</dt><dd>Der neue Verein. Der aktuelle Verein des Spielers wird nicht angeboten.</dd>
               <dt>Art</dt><dd>Wechsel, Leihe oder Leihe mit Kaufoption.</dd>
@@ -499,14 +661,14 @@
         </div>
         <div class="subpanel active" data-sub="only">
 
-          <div class="callout warn">
-            <strong class="label">Erst im Spiel besuchen, dann im Trainer neu laden</strong>
-            Um eine vollständige Liste der Jugendspieler zu erhalten, navigieren Sie im Spiel zunächst auf den <strong>Transfermarkt</strong> und klicken dann auf <strong>Jugendspieler</strong>. Wechseln Sie anschließend im Trainer über <span class="menu-path">Spieler → Jugendspieler</span> hierher oder klicken Sie auf <span class="btn-tag">Team neu laden</span>.
-          </div>
+          <fieldset class="groupbox">
+            <legend>Jugend jedes Vereins</legend>
+            <p>Die Liste zeigt die A-, B- und C-Jugend Ihres Vereins, ohne dass Sie sie vorher im Spiel aufrufen müssen. Über die Auswahl von Land und Verein über der Liste sehen Sie die Jugendspieler jedes anderen Vereins.</p>
+          </fieldset>
 
           <fieldset class="groupbox">
             <legend>Was dauerhaft übernommen wird</legend>
-            <p>Folgende Felder werden bei Jugendspielern dauerhaft gespeichert, da sie über einen anderen, spielerbezogenen Speicherbereich geschrieben werden:</p>
+            <p>Folgende Felder werden bei Jugendspielern dauerhaft in den spielerbezogenen Datensatz geschrieben; hat das Spiel einen Jugendspieler gerade geladen, zusätzlich in diese Arbeitskopie:</p>
             <p>
               <span class="chip">Name</span><span class="chip">Stärke</span><span class="chip">Alter</span>
               <span class="chip">Haupt- &amp; Nebenpositionen</span><span class="chip">Fähigkeiten / Negative Fähigkeiten</span>
@@ -517,19 +679,18 @@
               <span class="chip">Vertragsdetails</span><span class="chip">Karriere</span>
               <span class="chip">Verletzung / Verletzungstage</span><span class="chip">Verletzungsanfällig</span>
               <span class="chip">Gesperrte Spiele</span><span class="chip">Gedopt</span><span class="chip">Gelbe Karten</span>
-              <span class="chip">Statistik</span>
             </p>
             <p>Für Namenswechsel gelten dieselben Regeln wie beim Kader, siehe <a href="#tipps" data-jump="tipps">Tipps &amp; Tricks</a>.</p>
           </fieldset>
 
           <div class="callout warn">
-            <strong class="label">Was weiterhin ignoriert wird</strong>
-            Die Registerkarte „Team“ wird bei Jugendspielern weiterhin ignoriert.
+            <strong class="label">Gesperrt</strong>
+            Die Registerkarte „Statistik“ ist bei Jugendspielern gesperrt, sie bestreiten keine Spiele. Wechseln lassen sich Jugendspieler nicht.
           </div>
 
           <fieldset class="groupbox">
-            <legend>Gemeinsamer Speicherbereich mit dem dynamischen Team</legend>
-            <p>Jugendspieler teilen sich denselben Adressbereich im Speicher wie das <strong>Dynamische Team</strong>. Haben Sie zuletzt im Spiel auf einen Verein geklickt, können dessen Spieler hier ebenfalls kurzzeitig erscheinen. Da dieser Bereich vom Spiel dynamisch befüllt wird, achten Sie immer auf den richtigen Kontext und laden Sie die Liste im Zweifel über <span class="btn-tag">Team neu laden</span> neu.</p>
+            <legend>Alter und Jugendgruppe</legend>
+            <p>Ändern Sie das Alter, setzt der Trainer den Spieler in die passende Jugend: ab 17 Jahren A-Jugend, mit 15 und 16 B-Jugend, darunter C-Jugend. Per Termin verpflichten lässt sich ein Jugendspieler nur aus der A-Jugend; ein älter gemachter Spieler, der noch in der B- oder C-Jugend steht, rückt beim nächsten Speichern auf. Ist die Ziel-Jugend voll (A und B je 4, C 3 Plätze), bleibt er, wo er ist, und der Trainer sagt es.</p>
           </fieldset>
 
           <img class="screenshot" src="img/Trainees.png" alt="Jugendspieler-Ansicht mit Fähigkeiten-Editor" style="max-width:460px">
@@ -545,8 +706,12 @@
         <div class="subtabs">
           <button data-sub="allgemein" class="active">Allgemein</button>
           <button data-sub="trainervertrag">Vertrag</button>
+          <button data-sub="ansehen">Ansehen</button>
           <button data-sub="aktien">Aktien</button>
+          <button data-sub="nationalteam">Nationalmannschaft</button>
           <button data-sub="liga">Länderauswahl</button>
+          <button data-sub="karriere">Karriere</button>
+          <button data-sub="levelwertung">Levelwertung</button>
           <button data-sub="hotseat">Mehrspieler / Hot-Seat</button>
         </div>
 
@@ -558,6 +723,7 @@
               <dt>Alter</dt><dd>Alter des Managers in Jahren.</dd>
               <dt>Vermögen</dt><dd>Verfügbares Vermögen des Managers.</dd>
               <dt>Schwierigkeit</dt><dd>Schwierigkeitsgrad des Managers (Auswahlliste, fünf Stufen von „Leicht &amp; Locker“ bis „Ultra Violence“).</dd>
+              <dt>Sperre aufheben</dt><dd>Im Spiel lässt sich der Schwierigkeitsgrad nur einmal pro Spiel ändern, danach ist die Auswahl gesperrt. Das Häkchen ist nur bei gesperrter Auswahl verfügbar; beim Speichern hebt der Trainer die Sperre auf, und Sie können den Grad im Spiel noch einmal ändern. Ohne Häkchen bleibt die Sperre erhalten, auch wenn Sie den Grad hier ändern.</dd>
             </dl>
           </fieldset>
 
@@ -569,6 +735,7 @@
               <span class="chip">Autorität</span><span class="chip">Fremdsprachenkenntnisse</span><span class="chip">Ausstrahlung</span>
             </p>
             <p>Pro erreichtem Level stehen 6 Punkte zur Verfügung (Level&nbsp;1 &rarr; 6 Punkte, Level&nbsp;15 &rarr; 90 Punkte); eine Anzeige unterhalb der Felder zeigt die aktuell verteilte Summe im Verhältnis zur erwarteten Gesamtsumme.</p>
+            <p>Das Spiel führt das Level an zwei Stellen und gleicht sie bei jedem Levelwechsel auf den kleineren Wert an. Der Trainer schreibt beide, damit ein geändertes Level dabei nicht zurückfällt.</p>
           </fieldset>
 
           <fieldset class="groupbox">
@@ -607,6 +774,7 @@
               <dt>Restlaufzeit (in Jahren)</dt><dd>Bei weniger als zwei Jahren darf der Manager auch ohne Freigabe mit anderen Vereinen verhandeln.</dd>
               <dt>Fahrzeug / Wohnung</dt><dd>Die Extras des Vertrags, von „Bahncard“ bis „RR mit Chauffeur“ bzw. von „kostenlose Untermiete“ bis „Palast“. Jede Wohnung senkt die monatlichen Lebenshaltungskosten auf 80 %, jedes Fahrzeug außer der Bahncard um weitere 20 Prozentpunkte.</dd>
               <dt>Verlängerungsoption für den Verein</dt><dd>Im letzten Vertragsjahr kann der Verein den Vertrag damit um ein Jahr verlängern. Die Option ist danach verbraucht.</dd>
+              <dt>Vertrauen des Vorstandes</dt><dd>Von 0 bis 100, im Spiel beim Präsidenten unter „Vorstandsvertrauen“. Mehr als 100 rechnet das Spiel nicht. Unter 60 verlängert der Vorstand den Vertrag nicht, je näher an 100, desto lieber verlängert er. Siege, Titel und lange Vereinszugehörigkeit erhöhen das Vertrauen, gescheiterte Verhandlungen und die Bitte um Freigabe senken es. Bei einem neuen Verein beginnt es wieder zwischen 65 und 100.</dd>
             </dl>
           </fieldset>
 
@@ -627,34 +795,81 @@
             </dl>
           </fieldset>
 
-          <fieldset class="groupbox">
-            <legend>Jobangebot anfordern</legend>
-            <p>Land und Verein wählen und auf <span class="btn-tag">Beim nächsten Tagesabschluss anbieten</span> klicken: Beim nächsten Tagesabschluss erhält der Manager im Spiel ein ganz normales Jobangebot dieses Vereins. Er kann es mit „Sofort“ oder „Saisonende“ annehmen oder ablehnen – den Wechsel führt dann das Spiel selbst durch, genau wie bei einem Angebot, das es von sich aus macht.</p>
-            <p>Voraussetzungen, damit das Spiel das Angebot anzeigt: Der Manager hat gerade einen Verein, und für die nächste Saison ist kein Wechsel eingetragen („Kein Wechsel“). Angeboten werden nur Vereine aus dem Hauptland (jede Liga) und den Zusatzländern (1. Liga). In der Original- und der GOG-Version; bei anderen Versionen (z. B. der 2007er-CD), sobald der Trainer beim Verbinden ihre Adressen bestätigen konnte.</p>
-            <p>Annehmen kann der Manager ein Angebot nur, wenn er eine Freigabeklausel hat, der Vorstand ihn freigegeben hat oder sein Vertrag ausläuft. Trifft nichts davon zu, setzt der Trainer beim Anfordern automatisch die Freigabeklausel. Ob und warum etwas nicht geklappt hat, steht direkt unter dem Knopf.</p>
-            <p>Technisch leitet der Trainer dafür im laufenden Spiel einen einzigen Programmaufruf über ein kleines Zusatzprogramm um; an den Spieldateien ändert sich nichts. Nach einem Neustart des Spiels ist die Umleitung wieder weg und wird beim nächsten Anfordern neu gesetzt. Speichern Sie vor dem ersten Ausprobieren.</p>
-          </fieldset>
-
           <div class="callout">
             <strong class="label">Vereinswechsel</strong>
             Der Wechsel findet erst beim <strong>Saisonwechsel</strong> statt, nicht sofort. Dann übernimmt der Manager den eingetragenen Verein mit den Vertragsbedingungen für die nächste Saison. Hat er noch keine ausgehandelt, übernimmt der Trainer beim Speichern die Bedingungen des aktuellen Vertrags. Wird der Verein in keiner passenden Liga gefunden, verwirft das Spiel den Wechsel stillschweigend.
           </div>
         </div>
 
+        <div class="subpanel" data-sub="nationalteam">
+          <fieldset class="groupbox">
+            <legend>Nationaltrainer</legend>
+            <dl class="field-list">
+              <dt>Land</dt><dd>Nationalmannschaft, die der Manager trainiert, oder „keine“. Nach dem Speichern übernimmt das Spiel beim <strong>nächsten Tagesabschluss</strong> selbst, genau wie nach einem angenommenen Angebot des Verbands: Es stellt Aufstellung und Taktik auf und lässt den Verband Gegner für die drei Freundschaftsspiel-Termine aussuchen. Bis dahin steht der Hinweis darauf unter den Feldern. Mit „keine“ tritt der Manager zurück. Länder, die schon ein anderer Mitspieler trainiert, stehen nicht zur Wahl. Fehlen einem Nationaltrainer die Gegner für die Freundschaftsspiele (im Spiel steht dann nur „Ausland“), genügt einmal Speichern und ein Tagesabschluss.</dd>
+              <dt>Gehalt (pro Jahr)</dt><dd>Jahresgehalt als Nationaltrainer, zusätzlich zum Vereinsgehalt; das Spiel zahlt jeden Monat ein Zwölftel aus.</dd>
+              <dt>Prämie je K.-o.-Runde</dt><dd>Wird bei einer EM oder WM für jede K.-o.-Runde gezahlt, die die Mannschaft erreicht.</dd>
+              <dt>Freundschaftsspiel 1 bis 3</dt><dd>Gegner und Spielort („Heim“) der drei Freundschaftsspiele der Saison, an den Saisontagen 101, 164 und 220 (etwa Oktober, Dezember und Februar). Anders als im Spiel lässt sich jedes Land wählen, nicht nur die drei ausgelosten; „–“ heißt kein Spiel. Gespielte Begegnungen und solche in weniger als fünf Tagen sind gesperrt, weil das Spiel die Kader drei Tage vorher beruft. Länder anderer menschlicher Nationaltrainer stehen nicht zur Wahl.</dd>
+            </dl>
+            <p>Ohne Nationalmannschaft gibt es keinen Vertrag: Beim Speichern mit „keine“ setzt der Trainer Gehalt und Prämie auf 0, wie das Spiel beim Rücktritt. Bei der Neuauslosung der Freundschaftsspiel-Gegner bekommen auch andere menschliche Nationaltrainer neue Gegner zur Auswahl; schon fest vereinbarte Spiele bleiben.</p>
+            <p>Bei Spielversionen, deren Programmcode der Trainer nicht sicher erkennt, trägt er das Land direkt ein. Aufstellung, Taktik und Freundschaftsspiel-Gegner richtet das Spiel dann erst zur nächsten Saison ein.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Nationalkader</legend>
+            <p>Der Kader einer beliebigen Nationalmannschaft, unabhängig vom gewählten Manager. Zu Beginn steht das eigene Nationalteam da.</p>
+            <dl class="field-list">
+              <dt>Land</dt><dd>Nationalmannschaft, deren Kader angezeigt wird.</dd>
+              <dt>Kader</dt><dd>Die Spieler im Kader (höchstens 22) mit Position, Stärke und Alter.</dd>
+              <dt>Spieler des Landes</dt><dd>Alle übrigen Spieler mit dieser Nationalität, die stärksten zuerst. Für das Spiel ist ein Spieler nur dann Nationalspieler, wenn er im Kader seines eigenen Landes steht.</dd>
+            </dl>
+            <p>Mit <span class="btn-tag">◄ Aufnehmen</span> und <span class="btn-tag">Streichen ►</span> wechseln Spieler zwischen den Listen, <span class="btn-tag">Kader speichern</span> schreibt den Kader ins Spiel, nach Positionen sortiert wie im Spiel. Der Knopf <span class="btn-tag">Speichern</span> unten betrifft nur den Manager, nicht den Kader.</p>
+            <p>Hat das Spiel die Mannschaft gerade in Bearbeitung (etwa während eines Länderspiels), speichert der Trainer nicht, weil das Spiel den Kader gleich danach mit seinem eigenen überschreiben würde. Dann später erneut speichern.</p>
+          </fieldset>
+
+          <div class="callout">
+            <strong class="label">Computer-Nationaltrainer</strong>
+            Den Kader einer Mannschaft ohne menschlichen Nationaltrainer stellt das Spiel vor jedem Länderspiel neu auf. Änderungen daran halten deshalb nur bis dahin. Den Kader des eigenen Nationalteams lässt das Spiel unangetastet.
+          </div>
+
+          <p>Nationaltrainer und Nationalkader gibt es in der Originalversion sowie in GOG und 2007er-CD, sobald der Trainer deren Adressen bestätigt hat.</p>
+        </div>
+
+        <div class="subpanel" data-sub="ansehen">
+          <fieldset class="groupbox">
+            <legend>Nerven und Ansehen</legend>
+            <dl class="field-list">
+              <dt>Nervenkostüm</dt><dd>Von 0 bis 100. Das Spiel ändert es jede Woche nach dem Vertrauen des Vorstandes, nach Siegen und Niederlagen und bei Ereignissen; zum Saisonende geht es auf 96 bis 100 zurück. Der Saisonschnitt der Nerven bestimmt, wie lange der Manager seine Karriere durchhält. Eine Änderung zieht diesen Schnitt mit.</dd>
+              <dt>Ansehen Öffentlichkeit / Fans</dt><dd>Von 0 bis 100, im Spiel unter „Beliebtheit“ (von „Feindbild“ bis „Gottstatus“). Bei einem neuen Verein beginnt das Ansehen bei den Fans mit dem Wert der Öffentlichkeit.</dd>
+              <dt>Ansehen Medien</dt><dd>Von 0 bis 100, wie das Spiel es anzeigt. Das Spiel rechnet es aus einem gespeicherten Wert und der Ausstrahlung der aktuellen Trainerstufe; ändern Sie die Ausstrahlung, ändert sich auch dieses Ansehen.</dd>
+            </dl>
+            <p>Werte über 100 bringen nichts: Das Spiel setzt Nerven und Ansehen bei der nächsten Änderung wieder auf höchstens 100, die Stufen enden bei „Gottstatus“ (über 95), und bei genau 100 Ansehen bei den Fans gibt es ein Ereignis, das darüber ausbliebe. Der Trainer lässt deshalb nur 0 bis 100 zu; dasselbe gilt für das Vertrauen des Vorstandes.</p>
+            <p>Das Ansehen beim Verband gehört zum Verein und steht unter Verein → Identität → Vorstand.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Wettbüro: Meistertipp</legend>
+            <dl class="field-list">
+              <dt>Land</dt><dd>Je Land mit Ligabetrieb gibt es einen eigenen Tipp.</dd>
+              <dt>Meister</dt><dd>Der getippte Verein. Steht er am Saisonende an der Spitze der 1. Liga, zahlt das Spiel Einsatz × Quote / 10 aus.</dd>
+              <dt>Einsatz</dt><dd>0 heißt: kein Tipp. Den Einsatz hat das Spiel beim Tippen vom Privatvermögen abgezogen; eine Änderung hier bucht nichts nach.</dd>
+              <dt>Quote (je 10)</dt><dd>Auszahlung je 10 DM Einsatz. Das Spiel vergibt beim Saisonstart Quoten von 10 (Favorit) bis 2000; 500 ist nur eine Stufe seiner Formel, keine Grenze. Höhere Quoten zahlt es genauso aus. Mehr als 32.767 geht nicht, und Einsatz × Quote sollte unter rund 2 Milliarden bleiben, sonst rechnet das Spiel falsch. Das Spiel zahlt mit der gespeicherten Quote, auch wenn Sie den Verein ändern.</dd>
+            </dl>
+          </fieldset>
+        </div>
+
         <div class="subpanel" data-sub="aktien">
           <fieldset class="groupbox">
             <legend>Bis zu sechs Aktienpositionen</legend>
-            <p>Jeder Manager kann bis zu sechs Aktienpakete gleichzeitig halten. Für jede belegte Position lassen sich folgende Werte bearbeiten:</p>
+            <p>Jeder Manager kann bis zu sechs Aktienpakete gleichzeitig halten. Für jede Position lassen sich folgende Werte bearbeiten:</p>
             <dl class="field-list">
-              <dt>Land</dt><dd>Land des börsennotierten Vereins, wählbar sind nur das Hauptland und die aktiven Bonusländer aus der Länderauswahl.</dd>
-              <dt>Verein</dt><dd>Verein innerhalb des gewählten Landes (durchsuchbare Auswahlliste).</dd>
+              <dt>Land</dt><dd>Land des börsennotierten Vereins, wählbar sind nur das Hauptland und die aktiven Bonusländer aus der Länderauswahl. „–“ heißt: keine Position.</dd>
+              <dt>Verein</dt><dd>Verein innerhalb des gewählten Landes (durchsuchbare Auswahlliste). Angeboten werden nur Vereine, die an der Börse sind; nur sie haben Aktien.</dd>
               <dt>Anzahl Aktien</dt><dd>Gehaltene Stückzahl.</dd>
               <dt>Kaufpreis</dt><dd>Einstandspreis der Aktien.</dd>
             </dl>
           </fieldset>
-          <div class="callout warn">
-            <strong class="label">Neue Positionen lassen sich nicht anlegen</strong>
-            Das Spiel unterstützt das Anlegen oder Löschen einer Aktienposition nicht über einen Speicher-Edit. Nur bereits vorhandene Positionen lassen sich verändern. Ein Feld ohne gehaltene Stückzahl wird deshalb im Trainer deaktiviert angezeigt, Land und Verein stehen dann auf „–“.
+          <div class="callout tip">
+            <strong class="label">Neue Position anlegen</strong>
+            In einem freien Feld (Land „–“) Land und Verein wählen, Stückzahl und Kaufpreis eintragen und speichern. Das Spiel legt Käufe genauso an: im ersten freien Feld. Mit Land „–“ oder 0 Aktien wird eine Position beim Speichern gelöscht, wie beim Verkauf der letzten Aktie. Der Trainer ändert nur das Depot, nicht das Aktienangebot an der Börse.
           </div>
         </div>
 
@@ -662,6 +877,7 @@
           <fieldset class="groupbox">
             <legend>Hauptland</legend>
             <p>Das Hauptland der Karriere wird nur angezeigt. Das Spiel lädt dessen Ligen beim Start der Karriere, ein Wechsel mitten im Spiel ist deshalb nicht möglich.</p>
+            <p><strong>Mit Entlassungen</strong> entspricht der Einstellung beim Start eines neuen Spiels: Ohne Häkchen entlässt kein Vorstand einen menschlichen Manager. Im Spiel selbst lässt sich das später nicht mehr ändern; die Einstellung gilt für alle Mitspieler.</p>
           </fieldset>
           <fieldset class="groupbox">
             <legend>Bonusländer</legend>
@@ -679,10 +895,106 @@
           </div>
         </div>
 
+        <div class="subpanel" data-sub="karriere">
+          <fieldset class="groupbox">
+            <legend>Spieldauer</legend>
+            <dl class="field-list">
+              <dt>Modus</dt><dd>Wie lange der Manager spielt: eine feste Zahl von Jahren (1 bis 100), „Karriere bis zum Ruhestand“ oder „Endlos“. Wie beim Start des Spiels gewählt; „Endlos“ entspricht dem Endlosmodus nach Spielende.</dd>
+              <dt>Beginn (Jahr)</dt><dd>Das Jahr, in dem die Karriere begann. Bei fester Spieldauer zählen die Jahre von hier an.</dd>
+              <dt>Letzte Saison</dt><dd>Bei fester Spieldauer die letzte Saison, berechnet aus Beginn und Modus.</dd>
+              <dt>Rentenalter</dt><dd>Mit diesem Alter endet die Karriere (nur im Modus „Karriere bis zum Ruhestand“). Das Spiel beginnt bei 80 und senkt den Wert jedes Jahr je nach Nervenkostüm.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Fortbildung</legend>
+            <dl class="field-list">
+              <dt>Ergebnis</dt><dd>Ergebnis der Managerfortbildung dieser Saison: nicht bestanden, bestanden oder fehlerfrei. Der Saisonwechsel setzt es auf „nicht bestanden“ zurück. Es wirkt in der zweiten Saisonhälfte: Bei „nicht bestanden“ muss der Manager montags zur Nachhilfe und kann das Image „Ahnungsloser“ bekommen, bei „fehlerfrei“ das Image „Streber“. „bestanden“ wirkt für sich nur über die Levelwertung: Ändern Sie das Ergebnis, setzt der Trainer beim Speichern die Marke „Fortbildung bestanden“ (bestanden oder fehlerfrei) oder löscht sie (nicht bestanden). Die Marke zählt auf Level 1 bis 4 als Grund für einen Aufstieg, wird dabei verbraucht und im Januar gelöscht. Ein unverändertes Ergebnis lässt die Marke, wie sie ist. Die Quiz-Hilfe steht unter <a href="#mechaniken" data-jump="mechaniken">Spielmechaniken</a>.</dd>
+              <dt>Spielertrainer</dt><dd>Kein eigenes Feld: Ob das Spiel „Spielertrainer werden“ anbietet, hängt am Alter des Managers (unter 43, siehe <a href="#trainer" data-jump="trainer:allgemein">Allgemein</a>) und an einem Kader mit weniger als 30 Spielern. Ab 44 beendet das Spiel die Zeit als Spielertrainer selbst; vorher beenden Sie sie im Spiel mit „Rücktritt“.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Erfolge</legend>
+            <p>Die Zähler aus „Stationen und Erfolge“ des Spiels: Meistertitel, UEFA-Cup-Teilnahmen, Auf- und Abstiege, Pokalsiege und verlorene Pokalfinale, Europapokale, Supercups, Welt- und Europameistertitel und die Zahl der Entlassungen. Sie gehen auch in die Highscore-Wertung ein.</p>
+            <p>Die Erfolge gibt es nur in der Originalversion sowie in GOG und 2007er-CD, sobald der Trainer deren Adressen bestätigt hat.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Merker und Sperren</legend>
+            <dl class="field-list">
+              <dt>Schiri-Ausraster</dt><dd>Zähler für Auftritte gegen Schiedsrichter. Ab 3 rügt der Vorstand den Manager einmal pro Saison öffentlich (Ansehen −12). Das Spiel selbst erhöht den Zähler nie.</dd>
+              <dt>Schiri-Rüge diese Saison erhalten</dt><dd>Die Rüge kam in dieser Saison schon; zum Saisonwechsel löscht das Spiel den Merker.</dd>
+              <dt>Staatsorden erhalten</dt><dd>Gesetzt verhindert der Merker den Staatsorden. Den Orden vergibt das Spiel als Zufallsereignis ab 10 Meistertiteln in der 1. Liga (Ansehen in der Öffentlichkeit +10, bei den Medien +5, Nervenkostüm +5); gezielt auslösen lässt er sich nicht. Das Spiel setzt den Merker nie, der Orden kann also mehrfach kommen.</dd>
+              <dt>Stadion-Meldung ausstehend</dt><dd>Die Meldung „Ein Teil Ihres Stadions wurde fertiggestellt“ kommt noch; in dieser Woche ersetzt sie das Zufallsereignis. Sonst keine Wirkung.</dd>
+              <dt>Kassengriff diesen Monat</dt><dd>Geld wurde diesen Monat aus der Kasse in die eigene Tasche gesteckt; bis Monatsende lässt der Präsident das nicht noch einmal zu. Ohne Häkchen geht es sofort wieder.</dd>
+              <dt>Sabotage gegen ihn beenden</dt><dd>Nur verfügbar, wenn ein anderer Mitspieler diesen Manager sabotiert. Beim Speichern endet jede laufende Sabotage gegen ihn.</dd>
+              <dt>Einbürgerung zurücksetzen</dt><dd>Betrifft diesen Manager als Nationaltrainer („Spieler einbürgern“): Daneben stehen seine Einbürgerungsgespräche dieser Saison und die Zahl der Spieler, die einen Wechsel der Staatsangehörigkeit abgelehnt haben (eine Ablehnung hält etwa zehn Saisons, mehr als zehn Gespräche lässt der Verband nicht zu). Beim Speichern setzt der Trainer den Zähler auf 0 und hebt alle Ablehnungen auf.</dd>
+            </dl>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="levelwertung">
+          <fieldset class="groupbox">
+            <legend>So wertet das Spiel</legend>
+            <p>Das Spiel prüft das Level jede Woche. Zuerst prüft es einen Abstieg: zwei Entlassungen, drei Rücktritte oder ein Abstiegsgrund kosten ein Level. Sonst prüft es einen Aufstieg; der ist frühestens acht Wochen nach der letzten Leveländerung möglich, und ab Level 4 muss der Verein im Soll liegen. Je Level genügt eine der Bedingungen, etwa eine Siegesserie, Wochen im Amt, Erfolge der letzten Jahre oder eine der Marken.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Aufstieg</legend>
+            <dl class="field-list">
+              <dt>Siegesserie (x2)</dt><dd>Zwei Punkte je Sieg, ein Remis oder eine Niederlage setzt sie auf 0. Level 0 bis 8 verlangen 6 bis 24.</dd>
+              <dt>Wochen im Amt / Ungeschlagen (Spiele)</dt><dd>Wochen beim aktuellen Verein; Spiele ohne Niederlage (Level 9 und 10 verlangen 37).</dd>
+              <dt>Platz Vorsaison / Aufstiege in Folge / Große Titel (Karriere)</dt><dd>Tabellenplatz am Ende der Vorsaison, Aufstiege hintereinander, Meisterschaften, Pokale und Europapokale der Karriere (Level 11 bis 14 verlangen 15 bis 50).</dd>
+              <dt>Gutschrift / Serie (Punkte)</dt><dd>Zählt nur für Level 9; Serie: Sieg +2, Remis +1, Niederlagen −2 je Spiel.</dd>
+              <dt>Marken</dt><dd>Europapokal-Viertelfinale, Finanzen saniert, Halbfinale, Turniersieg sowie Aufstieg und Meister der Saison. Die Marke „Fortbildung bestanden“ folgt dem Ergebnis der Fortbildung auf dem Tab <a href="#trainer" data-jump="trainer:karriere">Karriere</a>. Eine Marke wird beim Aufstieg verbraucht. Im Januar löscht das Spiel einige davon.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Abstieg und letzte Leveländerung</legend>
+            <p>Die Abstiegsgründe (Saisonziel verfehlt, Abstiegsplatz, Lizenzstrafe, Schulden) vergibt das Spiel am Saisonende; jeder kostet bei der nächsten Wertung ein Level und wird dabei gelöscht. Entlassungen und Rücktritte zählt es für die Saison und die Vorsaison. „Saison (Index)“ und „Halbwoche“ der letzten Leveländerung bestimmen die Wartezeit von acht Wochen.</p>
+            <p><strong>Aufstieg vorbereiten</strong> löscht alle Abstiegsgründe, Entlassungen und Rücktritte, legt die letzte Leveländerung in die Vorsaison, setzt die Marke „Turniersieg“ und füllt Sieges- und Ungeschlagen-Serie. Nach dem Speichern steigt der Manager bei der nächsten wöchentlichen Wertung auf, ab Level 4 nur, wenn sein Verein im Soll liegt. Das Spiel vergibt danach wie gewohnt die neuen Kompetenzpunkte.</p>
+          </fieldset>
+        </div>
+
         <div class="subpanel" data-sub="hotseat">
           <fieldset class="groupbox">
             <legend>Mehrere menschliche Manager im selben Spielstand</legend>
             <p>Enthält der geladene Spielstand mehr als einen aktiven menschlichen Manager (Hot-Seat-Modus), erscheint im Menü <span class="menu-path">Trainer</span> für jeden davon ein eigener Eintrag. Jeder Manager hat dabei seinen eigenen Verein und sein eigenes Aktienportfolio.</p>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- ===================== SPIELMECHANIKEN ===================== -->
+      <section class="panel" id="panel-mechaniken">
+        <div class="panel-header">
+          <h1>Spielmechaniken</h1>
+          <p class="lead">Erreichbar über <span class="menu-path">Spielmechaniken</span>. Diese Funktionen ändern nicht die Daten des Spielstands, sondern das laufende Spiel selbst; im Spielstand lässt sich davon nichts speichern. Die Häkchen wirken nur, solange Trainer und Spiel laufen: Beim Beenden des Trainers stellt er den Originalcode wieder her, nach einem Neustart des Spiels sind sie aus. „Werte neuladen“ liest den Stand des Spiels neu, etwa nach einem Neustart des Spiels.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Fortbildung</legend>
+            <dl class="field-list">
+              <dt>Quiz: richtige Antwort markieren</dt><dd>Solange das Häkchen gesetzt ist, steht bei der Managerfortbildung im Spiel vor der richtigen Antwort ein grüner Haken und vor den beiden falschen ein rotes Kreuz. Alle drei Antworten bleiben lesbar und anklickbar. Die Zeichen erscheinen nur, solange das Spiel im Vordergrund ist. Das gilt auch für die erste Frage, die das Spiel aus dem eigenen Verein erzeugt.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Interviews</legend>
+            <p>Zu jeder Interviewfrage hat das Spiel vier Antworten (drei davon zeigt es an), und jede Antwort hat eigene Wirkungen auf Fans, Öffentlichkeit, Medien, Vorstand und andere. Wegen eines Fehlers im Spiel kommen diese Wirkungen aber nie an: Was Sie antworten, ändert nichts. Das gilt für die Originalversion wie für GOG und die 2007er-CD.</p>
+            <dl class="field-list">
+              <dt>Wirkung der Antworten anzeigen</dt><dd>Hängt an jede Antwort im Interview an, was sie bewirkt, zum Beispiel „[Fans -3, Vorstand -3]“. „Moral“ ändert die Stimmung der Mannschaft auf der Skala des Spiels (0,0 bis 20,0), „Strafe“ ist eine Geldstrafe des Verbands, „Reporter“ ändert die Laune des Reporters und damit, welche Fragen er beim nächsten Mal stellt, „Schiri“ löscht beim Schiedsrichter des Spiels einen Eintrag zu Ihrem Verein (welche Bedeutung er hat, ist nicht geklärt), „Form -1“ die Form aller Spieler im Kader, „Abbruch“ beendet das Interview. „[keine Wirkung]“ steht bei Antworten, deren Werte das Spiel nicht auswertet. Das Spiel lädt die Fragen erst beim ersten Interview nach dem Start; die erste Frage dieses Interviews erscheint deshalb noch ohne Angabe. Die Anzeige wirkt unabhängig vom zweiten Häkchen, ohne dieses bleibt es aber bei der Anzeige.</dd>
+              <dt>Wirkung der Antworten anwenden</dt><dd>Behebt den Fehler im Spiel: Solange das Häkchen gesetzt ist, wirken die Antworten so, wie das Spiel es vorsieht. Dabei setzt der Trainer zwei Wirkungen so um, wie es die Antworttexte meinen, nicht wie der Spielcode sie liest: Die Stimmung der Mannschaft („Moral“), die das Spiel sonst gar nicht auswertet, und die Geldstrafe für einen Bestechungs- oder Dopingvorwurf („Strafe“), die das Spiel sonst als Moralwert läse. Die Strafe bucht der Trainer wie das Spiel seine eigenen Strafen auf die sonstigen Kosten des Vereins; eine Meldung dazu gibt es nicht. Lässt sich das Häkchen nicht setzen, erkennt der Trainer den Spielcode dieser Version nicht.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Spielengine</legend>
+            <dl class="field-list">
+              <dt>Torgrenzen aufheben</dt><dd>Das Spiel lässt eine Mannschaft bis zur 45. Minute nur treffen, solange sie weniger als 6 Tore hat, danach weniger als 10. Ab 7 Toren halbiert es außerdem ihre Torchancen. Mit dem Häkchen fallen die Halbierung weg und die Grenze steigt auf 15 Tore, für alle Vereine. Mehr kann das Spiel nicht speichern: Aus 16 Toren würde in Tabelle und Statistik eine 0. Der Trainer ändert dafür den Programmcode des laufenden Spiels; ohne Häkchen und beim Schließen des Trainers stellt er den Originalcode wieder her. Nach einem Neustart des Spiels gelten die Grenzen wieder. Wie oft eine Mannschaft zu Chancen kommt, entscheidet weiter ihre Stärke. Dauerhaft und ohne Trainer hebt das eigenständige Programm <strong>A2G-Patch</strong> die Grenzen auf; dann ist das Häkchen schon gesetzt, und das Schließen des Trainers lässt die Grenzen aufgehoben.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Jobangebot anfordern</legend>
+            <p>Trainer, Land und Verein wählen und auf <span class="btn-tag">Beim nächsten Tagesabschluss anbieten</span> klicken: Beim nächsten Tagesabschluss erhält der Manager im Spiel ein ganz normales Jobangebot dieses Vereins. Er kann es mit „Sofort“ oder „Saisonende“ annehmen oder ablehnen – den Wechsel führt dann das Spiel selbst durch, genau wie bei einem Angebot, das es von sich aus macht.</p>
+            <p>Voraussetzungen, damit das Spiel das Angebot anzeigt: Der Manager hat gerade einen Verein, und für die nächste Saison ist kein Wechsel eingetragen („Kein Wechsel“). Angeboten werden nur Vereine aus dem Hauptland (jede Liga) und den Zusatzländern (1. Liga). In der Original- und der GOG-Version; bei anderen Versionen (z. B. der 2007er-CD), sobald der Trainer beim Verbinden ihre Adressen bestätigen konnte.</p>
+            <p>Annehmen kann der Manager ein Angebot nur, wenn er eine Freigabeklausel hat, der Vorstand ihn freigegeben hat oder sein Vertrag ausläuft. Trifft nichts davon zu, setzt der Trainer beim Anfordern automatisch die Freigabeklausel. Ob und warum etwas nicht geklappt hat, steht direkt unter dem Knopf.</p>
+            <p>Technisch leitet der Trainer dafür im laufenden Spiel einen einzigen Programmaufruf über ein kleines Zusatzprogramm um; an den Spieldateien ändert sich nichts. Nach einem Neustart des Spiels ist die Umleitung wieder weg und wird beim nächsten Anfordern neu gesetzt. Speichern Sie vor dem ersten Ausprobieren. Bis zum nächsten Tagesabschluss muss das Spiel weiterlaufen, sonst kommt das Angebot nicht.</p>
           </fieldset>
         </div>
       </section>
@@ -717,7 +1029,7 @@
 
           <div class="callout tip">
             <strong class="label">Wenn Änderungen nicht ankommen</strong>
-            Speichern Sie zunächst im Spiel und laden Sie den Spielstand neu. Hilft das bei Vereinsdaten nicht, rufen Sie den Verein zusätzlich noch einmal explizit über <strong>Transfermarkt → Vereine absuchen</strong> auf.
+            Speichern Sie zunächst im Spiel und laden Sie den Spielstand neu.
           </div>
 
         </div>
@@ -738,7 +1050,7 @@
 
           <fieldset class="groupbox">
             <legend>Meine Änderungen erscheinen nicht im Spiel</legend>
-            <p>Speichern Sie nach dem Editieren im Spiel und laden Sie den Spielstand neu. Bei Vereinsdaten hilft zusätzlich <strong>Transfermarkt → Vereine absuchen</strong>.</p>
+            <p>Speichern Sie nach dem Editieren im Spiel und laden Sie den Spielstand neu.</p>
           </fieldset>
 
           <fieldset class="groupbox">
@@ -747,8 +1059,8 @@
           </fieldset>
 
           <fieldset class="groupbox">
-            <legend>Über die Spielersuche gefundene Spieler lassen sich nicht speichern</legend>
-            <p>Nur ganze, über <strong>Vereine absuchen</strong> geladene Vereine sind zuverlässig editierbar. Über die Spielersuche (NORACSA) gefundene Einzelspieler werden zwar angezeigt, ein Speichern kann jedoch zu unvorhersehbarem Verhalten im Spiel führen.</p>
+            <legend>Ein Verein fehlt in der Vereinsauswahl</legend>
+            <p>Angeboten werden die Vereine aller Länder, die beim Karrierestart gewählt wurden. Vereine anderer Länder hat das Spiel nicht geladen.</p>
           </fieldset>
 
           <fieldset class="groupbox">
@@ -765,7 +1077,7 @@
           <fieldset class="groupbox">
             <legend>Werden Original-CD, GOG-Version und 2007er-CD unterstützt?</legend>
             <p>Ja, alle drei Versionen werden erkannt und unterstützt, mit derselben <code>A2G-Trainer.exe</code>. Eine eigene Trainer-Datei für die 2007er-CD gibt es nicht mehr.</p>
-            <p>Bei der GOG-Version (und der 2007er-CD) sucht der Trainer beim ersten Laden des eigenen Teams selbst, wo die dauerhaft gespeicherten Spielerdaten liegen. Findet er sie nicht, liest und speichert er die Werte wie früher nur über den Anzeigespeicher. Jugendspieler lassen sich dann nicht dauerhaft ändern, und Namensänderungen gelten nur bis zum nächsten Laden. Das Ergebnis steht in der Log-Datei <code>%LocalAppData%\A2G-Trainer\trainer.log</code>. Bei Problemen bitte mitschicken.</p>
+            <p>Bei der GOG-Version (und der 2007er-CD) sucht der Trainer beim ersten Laden des eigenen Teams selbst, wo die dauerhaft gespeicherten Spielerdaten liegen. Findet er sie nicht, liest und speichert er die Werte wie früher nur über den Anzeigespeicher. Andere Vereine und Jugendspieler lassen sich dann nicht anzeigen, und Namensänderungen gelten nur bis zum nächsten Laden. Das Ergebnis steht in der Log-Datei <code>%LocalAppData%\A2G-Trainer\trainer.log</code>. Bei Problemen bitte mitschicken.</p>
           </fieldset>
 
         </div>

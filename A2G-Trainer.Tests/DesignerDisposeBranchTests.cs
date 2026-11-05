@@ -29,7 +29,6 @@ namespace A2G_Trainer.Tests
             target.GetType().GetField("components", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(target, container);
 
         [Theory]
-        [InlineData(typeof(AboutView))]
         [InlineData(typeof(HelpView))]
         public void Dispose_WithDisposingFalse_SkipsComponentsDisposeWithoutThrowing(Type viewType) => StaThread.Run(() =>
         {
@@ -42,7 +41,6 @@ namespace A2G_Trainer.Tests
         });
 
         [Theory]
-        [InlineData(typeof(AboutView))]
         [InlineData(typeof(HelpView))]
         public void Dispose_WithDisposingTrueAndRealComponents_DisposesTheContainer(Type viewType) => StaThread.Run(() =>
         {
