@@ -149,7 +149,7 @@ namespace A2G_Trainer.Controller
                                 // view (e.g. an unmapped field) must not stop the others from ever
                                 // getting their data or their one-time bindings wired up.
                                 this.RefreshView("PlayerView", () => this.trainer.PlayerView.RefreshPlayerListView(this.trainer.PlayerView.PlayerController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type));
-                                this.RefreshView("ClubView", () => this.trainer.ClubView.RefreshValues(this.trainer.ClubView.ClubController == null ? PlayerEnums.AddressType.OWN : this.trainer.PlayerView.PlayerController.Type));
+                                this.RefreshView("ClubView", () => this.trainer.ClubView.RefreshValues(this.trainer.ClubView.ClubController == null ? PlayerEnums.AddressType.OWN : this.trainer.ClubView.ClubController.Type));
                                 this.RefreshView("CoachView", () =>
                                 {
                                     var activeTrainers = CoachController.GetActiveTrainers(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN);
@@ -216,6 +216,13 @@ namespace A2G_Trainer.Controller
                 return false;
             }
 
+            // During a match the engine points the own-club slot at whichever club it handles, the
+            // opponent included (and clears it in between); only a club a human manages is a reload
+            // or a handoff.
+            bool changed = !this.lastOwnClubId.HasValue || this.lastOwnClubId.Value != own.Id || this.lastOwnClubCountry.Value != own.Country;
+            if ((changed || this.sawInvalidClubState) && CoachController.ForClub(this.trainer.Memory, this.IsGog, own.Country, own.Id) == null)
+                return false;
+
             bool justRecovered = this.sawInvalidClubState;
             this.sawInvalidClubState = false;
 
@@ -232,7 +239,7 @@ namespace A2G_Trainer.Controller
             return justRecovered || handoffDetected;
         }
 
-        /// <summary>Re-resolves the opponent/dynamic-team roster offsets from the current own club.</summary>
+        /// <summary>Re-resolves the opponent's roster offsets from the current own club (and calibrates the layout on first use).</summary>
         public void UpdatePlayerOffsets()
         {
             Club own = new ClubController(this.trainer.Memory, this.IsGog, PlayerEnums.AddressType.OWN).Club;

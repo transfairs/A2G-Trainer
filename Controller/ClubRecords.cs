@@ -80,6 +80,116 @@ namespace A2G_Trainer.Controller
             return copies;
         }
 
+        /// <summary>A stretch of the working copy the game fills from the record when it fetches a club.</summary>
+        internal sealed class Segment
+        {
+            /// <summary>Offset in the working copy (AddressPresets.OWN_CLUB layout).</summary>
+            public uint Working { get; }
+            /// <summary>Offset in the record.</summary>
+            public uint Record { get; }
+            /// <summary>Length in bytes.</summary>
+            public int Length { get; }
+            /// <summary>The part of the club it belongs to (fetch flag, kept in the cache slot's mask); 0 if always fetched.</summary>
+            public ushort Part { get; }
+
+            internal Segment(uint working, uint record, int length, ushort part)
+            {
+                this.Working = working;
+                this.Record = record;
+                this.Length = length;
+                this.Part = part;
+            }
+        }
+
+        /// <summary>Size of a working copy (FUN_00584ad0 allocates 0x14E0 bytes).</summary>
+        internal const int WorkingCopyLength = 0x14E0;
+
+        // From the fetch FUN_00585ff0, which copies record -> working copy by part: 0x200 the name,
+        // 0x100 co-/goalkeeper trainer, morale, tactics, fans, editor settings, finances, team cohesion, tickets and map position,
+        // 0x80 the stadium (with the town). Squad count, amateurs, ID and country always.
+        internal static readonly Segment[] Segments =
+        {
+            new Segment(0x000, 0x000, 0x14, 0x200),
+            new Segment(0x082, 0x082, 4, 0x100),
+            new Segment(0x08E, 0x094, 2, 0x100),
+            new Segment(0x09A, 0x0A0, 2, 0x100),
+            new Segment(0x09C, 0x0A2, 9, 0x100),
+            new Segment(0x0E6, 0x0DE, 2, 0),
+            new Segment(0x0E8, 0x0E0, 0x12, 0x100),
+            new Segment(0x102, 0x0F4, 1, 0),
+            new Segment(0x0FF, 0x0F5, 3, 0x100),
+            new Segment(0x10E, 0x103, 1, 0x100),
+            new Segment(0x103, 0x0F8, 1, 0),
+            new Segment(0x144, 0x138, 0x10, 0x100),
+            new Segment(0x154, 0x1A4, 0x348, 0x100),
+            new Segment(0x814, 0x5D4, 4, 0x100),
+            new Segment(0x81C, 0x4EC, 0x84, 0x80),
+            new Segment(0x8FC, 0x148, 0x5C, 0x100),
+            new Segment(0xA19, 0x5BD, 1, 0),
+            new Segment(0x1074, 0x6FC, 4, 0x100),
+            new Segment(0x1438, 0x702, 4, 0x100),
+        };
+
+        /// <summary>Record address of the working-copy field at <paramref name="working"/>, or null if the record doesn't keep it.</summary>
+        internal static uint? RecordField(uint record, uint working, int length)
+        {
+            Segment segment = Segments.FirstOrDefault(s => working >= s.Working && working + length <= s.Working + s.Length);
+            return segment == null ? (uint?)null : record + segment.Record + (working - segment.Working);
+        }
+
+        /// <summary>
+        /// The club as the game sees it, in the working copy's layout: each part from the cached working
+        /// copy that has it fetched (the game works on that one), the rest from the record. Fields the
+        /// record doesn't keep stay 0.
+        /// </summary>
+        internal static byte[] Image(ProcessMemory memory, FixedAddresses fixedAddresses, int index, PlayerEnums.Country country, int clubId)
+        {
+            byte[] image = new byte[WorkingCopyLength];
+            if (fixedAddresses == null)
+                return image;
+
+            uint record = fixedAddresses.Runtime(memory, Settings.ClubRecordTableOffset) + (uint)index * Settings.ClubRecordStride;
+            uint copy = 0;
+            ushort parts = 0;
+            uint cache = fixedAddresses.Runtime(memory, Settings.ClubCacheTableOffset);
+            for (int slot = 0; slot < Settings.ClubCacheSlots && copy == 0; slot++)
+            {
+                byte[] entry = memory.ReadBytesAtAddress(cache + (uint)slot * Settings.ClubCacheStride, (int)Settings.ClubCacheStride);
+                if (entry == null || entry[0] == 0 || entry[1] != (byte)country || entry[2] != clubId)
+                    continue;
+                copy = BitConverter.ToUInt32(entry, (int)Settings.ClubCachePointerOffset);
+                parts = BitConverter.ToUInt16(entry, (int)Settings.ClubCachePartsOffset);
+            }
+
+            foreach (Segment segment in Segments)
+            {
+                bool fromCopy = copy != 0 && segment.Part != 0 && (parts & segment.Part) == segment.Part;
+                byte[] bytes = memory.ReadBytesAtAddress(fromCopy ? copy + segment.Working : record + segment.Record, segment.Length);
+                if (bytes != null)
+                    Array.Copy(bytes, 0, image, segment.Working, segment.Length);
+            }
+            return image;
+        }
+
+        /// <summary>
+        /// Whether the club is listed on the stock market, i.e. has shares: from a working copy in the
+        /// game's cache if there is one (it may be newer), else from the record. Null if unknown.
+        /// </summary>
+        internal static bool? IsListed(ProcessMemory memory, FixedAddresses fixedAddresses, PlayerEnums.Country country, int clubId)
+        {
+            uint? record = RecordAddress(memory, fixedAddresses, country, clubId);
+            if (record == null)
+                return null;
+            foreach (uint workingCopy in WorkingCopies(memory, fixedAddresses, country, clubId))
+            {
+                byte[] working = memory.ReadBytesAtAddress(workingCopy + Settings.ClubListedOffset, 1);
+                if (working != null)
+                    return working[0] != 0;
+            }
+            byte[] listed = memory.ReadBytesAtAddress(record.Value + Settings.ClubRecordListedOffset, 1);
+            return listed == null ? (bool?)null : listed[0] != 0;
+        }
+
         /// <summary>All clubs of the country with their map positions, by ID; empty if the country has no records.</summary>
         internal static List<Entry> CountryClubs(ProcessMemory memory, FixedAddresses fixedAddresses, PlayerEnums.Country country)
         {

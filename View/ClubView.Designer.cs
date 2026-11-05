@@ -75,11 +75,22 @@ namespace A2G_Trainer.View
             this.LegendBoxesSwatch = new System.Windows.Forms.Panel();
             this.LegendBoxesLabel = new System.Windows.Forms.Label();
             this.LegendBoxesValue = new System.Windows.Forms.Label();
+            this.LegendNegativeSwatch = new System.Windows.Forms.Panel();
+            this.LegendNegativeLabel = new System.Windows.Forms.Label();
             this.CapacityLabel = new System.Windows.Forms.Label();
             this.CapacityValue = new System.Windows.Forms.Label();
             this.RunningTrackCheckBox = new System.Windows.Forms.CheckBox();
             this.UpperSeatsCheckBox = new System.Windows.Forms.CheckBox();
             this.IdentityTab = new System.Windows.Forms.TabPage();
+            this.BoardBox = new System.Windows.Forms.GroupBox();
+            this.AssociationLabel = new System.Windows.Forms.Label();
+            this.AssociationInput = new System.Windows.Forms.ComboBox();
+            this.PublicImageLabel = new System.Windows.Forms.Label();
+            this.PublicImageInput = new System.Windows.Forms.ComboBox();
+            this.ManagerLabel = new System.Windows.Forms.Label();
+            this.ManagerValue = new System.Windows.Forms.Label();
+            this.BoardTrustLabel = new System.Windows.Forms.Label();
+            this.BoardTrustInput = new System.Windows.Forms.TextBox();
             this.MapTab = new System.Windows.Forms.TabPage();
             this.ClubMapView = new A2G_Trainer.View.ClubMap();
             this.JerseyTab = new System.Windows.Forms.TabPage();
@@ -126,10 +137,45 @@ namespace A2G_Trainer.View
             this.GrantRateInput = new System.Windows.Forms.TextBox();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.ReloadBtn = new System.Windows.Forms.Button();
-            this.ClubSelect = new System.Windows.Forms.ComboBox();
+            this.ClubCountryInput = new System.Windows.Forms.ComboBox();
+            this.ClubInput = new System.Windows.Forms.ComboBox();
             this.WealthInput = new System.Windows.Forms.TextBox();
             this.label36 = new System.Windows.Forms.Label();
             this.TeamValuesBox = new System.Windows.Forms.GroupBox();
+            this.TacticsTab = new System.Windows.Forms.TabPage();
+            this.TacticsBox = new System.Windows.Forms.GroupBox();
+            this.OffsideTrapLabel = new System.Windows.Forms.Label();
+            this.OffsideTrapInput = new System.Windows.Forms.TextBox();
+            this.AntiOffsideTrapLabel = new System.Windows.Forms.Label();
+            this.AntiOffsideTrapInput = new System.Windows.Forms.ComboBox();
+            this.PressingLabel = new System.Windows.Forms.Label();
+            this.PressingInput = new System.Windows.Forms.ComboBox();
+            this.DirtyTricksLabel = new System.Windows.Forms.Label();
+            this.DirtyTricksInput = new System.Windows.Forms.ComboBox();
+            this.ThrowInsLabel = new System.Windows.Forms.Label();
+            this.ThrowInsInput = new System.Windows.Forms.ComboBox();
+            this.FreeKicksLabel = new System.Windows.Forms.Label();
+            this.FreeKicksInput = new System.Windows.Forms.ComboBox();
+            this.CornersLabel = new System.Windows.Forms.Label();
+            this.CornersInput = new System.Windows.Forms.ComboBox();
+            this.StaffBox = new System.Windows.Forms.GroupBox();
+            this.CoTrainerHeader = new System.Windows.Forms.Label();
+            this.GoalkeeperCoachHeader = new System.Windows.Forms.Label();
+            this.StaffNameLabel = new System.Windows.Forms.Label();
+            this.CoTrainerFirstnameInput = new System.Windows.Forms.TextBox();
+            this.GoalkeeperCoachFirstnameInput = new System.Windows.Forms.TextBox();
+            this.StaffLastnameLabel = new System.Windows.Forms.Label();
+            this.CoTrainerLastnameInput = new System.Windows.Forms.TextBox();
+            this.GoalkeeperCoachLastnameInput = new System.Windows.Forms.TextBox();
+            this.StaffCompetenceLabel = new System.Windows.Forms.Label();
+            this.CoTrainerCompetenceInput = new System.Windows.Forms.ComboBox();
+            this.GoalkeeperCoachCompetenceInput = new System.Windows.Forms.ComboBox();
+            this.StaffContractLabel = new System.Windows.Forms.Label();
+            this.CoTrainerContractInput = new System.Windows.Forms.TextBox();
+            this.GoalkeeperCoachContractInput = new System.Windows.Forms.TextBox();
+            this.StaffSalaryLabel = new System.Windows.Forms.Label();
+            this.CoTrainerSalaryInput = new System.Windows.Forms.TextBox();
+            this.GoalkeeperCoachSalaryInput = new System.Windows.Forms.TextBox();
             this.label37 = new System.Windows.Forms.Label();
             this.TeamCohesionInput = new System.Windows.Forms.TextBox();
             this.label38 = new System.Windows.Forms.Label();
@@ -152,6 +198,7 @@ namespace A2G_Trainer.View
             this.ClubGeneralBox.SuspendLayout();
             this.StadiumTab.SuspendLayout();
             this.IdentityTab.SuspendLayout();
+            this.BoardBox.SuspendLayout();
             this.MapTab.SuspendLayout();
             this.JerseyTab.SuspendLayout();
             this.ClubIdentityBox.SuspendLayout();
@@ -161,11 +208,15 @@ namespace A2G_Trainer.View
             this.LegendBox.SuspendLayout();
             this.GrantBox.SuspendLayout();
             this.TeamValuesBox.SuspendLayout();
+            this.TacticsTab.SuspendLayout();
+            this.TacticsBox.SuspendLayout();
+            this.StaffBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // ClubTabControl
             // 
             this.ClubTabControl.Controls.Add(this.GeneralTab);
+            this.ClubTabControl.Controls.Add(this.TacticsTab);
             this.ClubTabControl.Controls.Add(this.StadiumTab);
             this.ClubTabControl.Controls.Add(this.IdentityTab);
             this.ClubTabControl.Controls.Add(this.JerseyTab);
@@ -403,16 +454,23 @@ namespace A2G_Trainer.View
             this.ReloadBtn.UseVisualStyleBackColor = true;
             this.ReloadBtn.Click += new System.EventHandler(this.ReloadBtn_Click);
             // 
-            // ClubSelect
+            // ClubCountryInput
             // 
-            this.ClubSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ClubSelect.FormattingEnabled = true;
-            this.ClubSelect.Location = new System.Drawing.Point(140, 393);
-            this.ClubSelect.Name = "ClubSelect";
-            this.ClubSelect.Size = new System.Drawing.Size(354, 21);
-            this.ClubSelect.TabIndex = 46;
-            this.ClubSelect.Visible = false;
-            this.ClubSelect.SelectedIndexChanged += new System.EventHandler(this.ClubSelect_SelectedIndexChanged);
+            this.ClubCountryInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClubCountryInput.FormattingEnabled = true;
+            this.ClubCountryInput.Location = new System.Drawing.Point(140, 393);
+            this.ClubCountryInput.Name = "ClubCountryInput";
+            this.ClubCountryInput.Size = new System.Drawing.Size(110, 21);
+            this.ClubCountryInput.TabIndex = 46;
+            // 
+            // ClubInput
+            // 
+            this.ClubInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClubInput.FormattingEnabled = true;
+            this.ClubInput.Location = new System.Drawing.Point(256, 393);
+            this.ClubInput.Name = "ClubInput";
+            this.ClubInput.Size = new System.Drawing.Size(238, 21);
+            this.ClubInput.TabIndex = 47;
             // 
             // WealthInput
             // 
@@ -527,11 +585,13 @@ namespace A2G_Trainer.View
             this.LegendBox.Controls.Add(this.LegendBoxesSwatch);
             this.LegendBox.Controls.Add(this.LegendBoxesLabel);
             this.LegendBox.Controls.Add(this.LegendBoxesValue);
+            this.LegendBox.Controls.Add(this.LegendNegativeSwatch);
+            this.LegendBox.Controls.Add(this.LegendNegativeLabel);
             this.LegendBox.Controls.Add(this.CapacityLabel);
             this.LegendBox.Controls.Add(this.CapacityValue);
             this.LegendBox.Location = new System.Drawing.Point(342, 134);
             this.LegendBox.Name = "LegendBox";
-            this.LegendBox.Size = new System.Drawing.Size(238, 152);
+            this.LegendBox.Size = new System.Drawing.Size(238, 172);
             this.LegendBox.TabIndex = 2;
             this.LegendBox.TabStop = false;
             this.LegendBox.Text = "Legende";
@@ -660,11 +720,28 @@ namespace A2G_Trainer.View
             this.LegendBoxesValue.Size = new System.Drawing.Size(78, 13);
             this.LegendBoxesValue.TabIndex = 14;
             this.LegendBoxesValue.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
+            //
+            // LegendNegativeSwatch
+            //
+            this.LegendNegativeSwatch.BackColor = A2G_Trainer.View.StadiumPlan.Negative;
+            this.LegendNegativeSwatch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LegendNegativeSwatch.Location = new System.Drawing.Point(10, 121);
+            this.LegendNegativeSwatch.Name = "LegendNegativeSwatch";
+            this.LegendNegativeSwatch.Size = new System.Drawing.Size(12, 12);
+            this.LegendNegativeSwatch.TabIndex = 17;
+            //
+            // LegendNegativeLabel
+            //
+            this.LegendNegativeLabel.AutoSize = true;
+            this.LegendNegativeLabel.Location = new System.Drawing.Point(28, 120);
+            this.LegendNegativeLabel.Name = "LegendNegativeLabel";
+            this.LegendNegativeLabel.TabIndex = 18;
+            this.LegendNegativeLabel.Text = "Negative Plätze";
+            //
             // CapacityLabel
-            // 
+            //
             this.CapacityLabel.AutoSize = true;
-            this.CapacityLabel.Location = new System.Drawing.Point(28, 128);
+            this.CapacityLabel.Location = new System.Drawing.Point(28, 148);
             this.CapacityLabel.Name = "CapacityLabel";
             this.CapacityLabel.TabIndex = 15;
             this.CapacityLabel.Text = "Kapazität";
@@ -672,7 +749,7 @@ namespace A2G_Trainer.View
             // CapacityValue
             // 
             this.CapacityValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.CapacityValue.Location = new System.Drawing.Point(150, 128);
+            this.CapacityValue.Location = new System.Drawing.Point(150, 148);
             this.CapacityValue.Name = "CapacityValue";
             this.CapacityValue.Size = new System.Drawing.Size(78, 13);
             this.CapacityValue.TabIndex = 16;
@@ -681,7 +758,7 @@ namespace A2G_Trainer.View
             // RunningTrackCheckBox
             // 
             this.RunningTrackCheckBox.AutoSize = true;
-            this.RunningTrackCheckBox.Location = new System.Drawing.Point(352, 296);
+            this.RunningTrackCheckBox.Location = new System.Drawing.Point(352, 314);
             this.RunningTrackCheckBox.Name = "RunningTrackCheckBox";
             this.RunningTrackCheckBox.TabIndex = 3;
             this.RunningTrackCheckBox.Text = "Tartanbahn";
@@ -690,15 +767,347 @@ namespace A2G_Trainer.View
             // UpperSeatsCheckBox
             // 
             this.UpperSeatsCheckBox.AutoSize = true;
-            this.UpperSeatsCheckBox.Location = new System.Drawing.Point(462, 296);
+            this.UpperSeatsCheckBox.Location = new System.Drawing.Point(462, 314);
             this.UpperSeatsCheckBox.Name = "UpperSeatsCheckBox";
             this.UpperSeatsCheckBox.TabIndex = 4;
             this.UpperSeatsCheckBox.Text = "Sitzplätze oben";
             this.UpperSeatsCheckBox.UseVisualStyleBackColor = true;
-            // 
+            //
+            // TacticsTab
+            //
+            this.TacticsTab.Controls.Add(this.TacticsBox);
+            this.TacticsTab.Controls.Add(this.StaffBox);
+            this.TacticsTab.Location = new System.Drawing.Point(4, 22);
+            this.TacticsTab.Name = "TacticsTab";
+            this.TacticsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.TacticsTab.Size = new System.Drawing.Size(586, 346);
+            this.TacticsTab.TabIndex = 5;
+            this.TacticsTab.Text = "Taktik";
+            this.TacticsTab.UseVisualStyleBackColor = true;
+            //
+            // TacticsBox
+            //
+            this.TacticsBox.Controls.Add(this.OffsideTrapLabel);
+            this.TacticsBox.Controls.Add(this.OffsideTrapInput);
+            this.TacticsBox.Controls.Add(this.AntiOffsideTrapLabel);
+            this.TacticsBox.Controls.Add(this.AntiOffsideTrapInput);
+            this.TacticsBox.Controls.Add(this.PressingLabel);
+            this.TacticsBox.Controls.Add(this.PressingInput);
+            this.TacticsBox.Controls.Add(this.DirtyTricksLabel);
+            this.TacticsBox.Controls.Add(this.DirtyTricksInput);
+            this.TacticsBox.Controls.Add(this.ThrowInsLabel);
+            this.TacticsBox.Controls.Add(this.ThrowInsInput);
+            this.TacticsBox.Controls.Add(this.FreeKicksLabel);
+            this.TacticsBox.Controls.Add(this.FreeKicksInput);
+            this.TacticsBox.Controls.Add(this.CornersLabel);
+            this.TacticsBox.Controls.Add(this.CornersInput);
+            this.TacticsBox.Location = new System.Drawing.Point(6, 6);
+            this.TacticsBox.Name = "TacticsBox";
+            this.TacticsBox.Size = new System.Drawing.Size(418, 130);
+            this.TacticsBox.TabIndex = 0;
+            this.TacticsBox.TabStop = false;
+            this.TacticsBox.Text = "Taktische Fähigkeiten";
+            //
+            // OffsideTrapLabel
+            //
+            this.OffsideTrapLabel.AutoSize = true;
+            this.OffsideTrapLabel.Location = new System.Drawing.Point(7, 26);
+            this.OffsideTrapLabel.Name = "OffsideTrapLabel";
+            this.OffsideTrapLabel.Size = new System.Drawing.Size(95, 13);
+            this.OffsideTrapLabel.TabIndex = 0;
+            this.OffsideTrapLabel.Text = "Abseitsfalle (x10)";
+            //
+            // OffsideTrapInput
+            //
+            this.OffsideTrapInput.Location = new System.Drawing.Point(115, 23);
+            this.OffsideTrapInput.Name = "OffsideTrapInput";
+            this.OffsideTrapInput.Size = new System.Drawing.Size(85, 20);
+            this.OffsideTrapInput.TabIndex = 1;
+            this.OffsideTrapInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // AntiOffsideTrapLabel
+            //
+            this.AntiOffsideTrapLabel.AutoSize = true;
+            this.AntiOffsideTrapLabel.Location = new System.Drawing.Point(7, 52);
+            this.AntiOffsideTrapLabel.Name = "AntiOffsideTrapLabel";
+            this.AntiOffsideTrapLabel.Size = new System.Drawing.Size(91, 13);
+            this.AntiOffsideTrapLabel.TabIndex = 2;
+            this.AntiOffsideTrapLabel.Text = "Anti-Abseitsfalle";
+            //
+            // AntiOffsideTrapInput
+            //
+            this.AntiOffsideTrapInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.AntiOffsideTrapInput.FormattingEnabled = true;
+            this.AntiOffsideTrapInput.Location = new System.Drawing.Point(115, 49);
+            this.AntiOffsideTrapInput.Name = "AntiOffsideTrapInput";
+            this.AntiOffsideTrapInput.Size = new System.Drawing.Size(85, 21);
+            this.AntiOffsideTrapInput.TabIndex = 3;
+            //
+            // PressingLabel
+            //
+            this.PressingLabel.AutoSize = true;
+            this.PressingLabel.Location = new System.Drawing.Point(7, 79);
+            this.PressingLabel.Name = "PressingLabel";
+            this.PressingLabel.Size = new System.Drawing.Size(48, 13);
+            this.PressingLabel.TabIndex = 4;
+            this.PressingLabel.Text = "Pressing";
+            //
+            // PressingInput
+            //
+            this.PressingInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PressingInput.FormattingEnabled = true;
+            this.PressingInput.Location = new System.Drawing.Point(115, 76);
+            this.PressingInput.Name = "PressingInput";
+            this.PressingInput.Size = new System.Drawing.Size(85, 21);
+            this.PressingInput.TabIndex = 5;
+            //
+            // DirtyTricksLabel
+            //
+            this.DirtyTricksLabel.AutoSize = true;
+            this.DirtyTricksLabel.Location = new System.Drawing.Point(7, 106);
+            this.DirtyTricksLabel.Name = "DirtyTricksLabel";
+            this.DirtyTricksLabel.Size = new System.Drawing.Size(67, 13);
+            this.DirtyTricksLabel.TabIndex = 6;
+            this.DirtyTricksLabel.Text = "Miese Tricks";
+            //
+            // DirtyTricksInput
+            //
+            this.DirtyTricksInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DirtyTricksInput.FormattingEnabled = true;
+            this.DirtyTricksInput.Location = new System.Drawing.Point(115, 103);
+            this.DirtyTricksInput.Name = "DirtyTricksInput";
+            this.DirtyTricksInput.Size = new System.Drawing.Size(85, 21);
+            this.DirtyTricksInput.TabIndex = 7;
+            //
+            // ThrowInsLabel
+            //
+            this.ThrowInsLabel.AutoSize = true;
+            this.ThrowInsLabel.Location = new System.Drawing.Point(219, 26);
+            this.ThrowInsLabel.Name = "ThrowInsLabel";
+            this.ThrowInsLabel.Size = new System.Drawing.Size(51, 13);
+            this.ThrowInsLabel.TabIndex = 8;
+            this.ThrowInsLabel.Text = "Einwürfe";
+            //
+            // ThrowInsInput
+            //
+            this.ThrowInsInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ThrowInsInput.FormattingEnabled = true;
+            this.ThrowInsInput.Location = new System.Drawing.Point(327, 23);
+            this.ThrowInsInput.Name = "ThrowInsInput";
+            this.ThrowInsInput.Size = new System.Drawing.Size(85, 21);
+            this.ThrowInsInput.TabIndex = 9;
+            //
+            // FreeKicksLabel
+            //
+            this.FreeKicksLabel.AutoSize = true;
+            this.FreeKicksLabel.Location = new System.Drawing.Point(219, 52);
+            this.FreeKicksLabel.Name = "FreeKicksLabel";
+            this.FreeKicksLabel.Size = new System.Drawing.Size(51, 13);
+            this.FreeKicksLabel.TabIndex = 10;
+            this.FreeKicksLabel.Text = "Freistöße";
+            //
+            // FreeKicksInput
+            //
+            this.FreeKicksInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.FreeKicksInput.FormattingEnabled = true;
+            this.FreeKicksInput.Location = new System.Drawing.Point(327, 49);
+            this.FreeKicksInput.Name = "FreeKicksInput";
+            this.FreeKicksInput.Size = new System.Drawing.Size(85, 21);
+            this.FreeKicksInput.TabIndex = 11;
+            //
+            // CornersLabel
+            //
+            this.CornersLabel.AutoSize = true;
+            this.CornersLabel.Location = new System.Drawing.Point(219, 79);
+            this.CornersLabel.Name = "CornersLabel";
+            this.CornersLabel.Size = new System.Drawing.Size(34, 13);
+            this.CornersLabel.TabIndex = 12;
+            this.CornersLabel.Text = "Ecken";
+            //
+            // CornersInput
+            //
+            this.CornersInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CornersInput.FormattingEnabled = true;
+            this.CornersInput.Location = new System.Drawing.Point(327, 76);
+            this.CornersInput.Name = "CornersInput";
+            this.CornersInput.Size = new System.Drawing.Size(85, 21);
+            this.CornersInput.TabIndex = 13;
+            //
+            // StaffBox
+            //
+            this.StaffBox.Controls.Add(this.CoTrainerHeader);
+            this.StaffBox.Controls.Add(this.GoalkeeperCoachHeader);
+            this.StaffBox.Controls.Add(this.StaffNameLabel);
+            this.StaffBox.Controls.Add(this.CoTrainerFirstnameInput);
+            this.StaffBox.Controls.Add(this.GoalkeeperCoachFirstnameInput);
+            this.StaffBox.Controls.Add(this.StaffLastnameLabel);
+            this.StaffBox.Controls.Add(this.CoTrainerLastnameInput);
+            this.StaffBox.Controls.Add(this.GoalkeeperCoachLastnameInput);
+            this.StaffBox.Controls.Add(this.StaffCompetenceLabel);
+            this.StaffBox.Controls.Add(this.CoTrainerCompetenceInput);
+            this.StaffBox.Controls.Add(this.GoalkeeperCoachCompetenceInput);
+            this.StaffBox.Controls.Add(this.StaffContractLabel);
+            this.StaffBox.Controls.Add(this.CoTrainerContractInput);
+            this.StaffBox.Controls.Add(this.GoalkeeperCoachContractInput);
+            this.StaffBox.Controls.Add(this.StaffSalaryLabel);
+            this.StaffBox.Controls.Add(this.CoTrainerSalaryInput);
+            this.StaffBox.Controls.Add(this.GoalkeeperCoachSalaryInput);
+            this.StaffBox.Location = new System.Drawing.Point(6, 142);
+            this.StaffBox.Name = "StaffBox";
+            this.StaffBox.Size = new System.Drawing.Size(418, 174);
+            this.StaffBox.TabIndex = 1;
+            this.StaffBox.TabStop = false;
+            this.StaffBox.Text = "Trainerstab";
+            //
+            // CoTrainerHeader
+            //
+            this.CoTrainerHeader.AutoSize = true;
+            this.CoTrainerHeader.Location = new System.Drawing.Point(112, 20);
+            this.CoTrainerHeader.Name = "CoTrainerHeader";
+            this.CoTrainerHeader.Size = new System.Drawing.Size(57, 13);
+            this.CoTrainerHeader.TabIndex = 0;
+            this.CoTrainerHeader.Text = "Co-Trainer";
+            //
+            // GoalkeeperCoachHeader
+            //
+            this.GoalkeeperCoachHeader.AutoSize = true;
+            this.GoalkeeperCoachHeader.Location = new System.Drawing.Point(262, 20);
+            this.GoalkeeperCoachHeader.Name = "GoalkeeperCoachHeader";
+            this.GoalkeeperCoachHeader.Size = new System.Drawing.Size(77, 13);
+            this.GoalkeeperCoachHeader.TabIndex = 1;
+            this.GoalkeeperCoachHeader.Text = "Torwarttrainer";
+            //
+            // StaffNameLabel
+            //
+            this.StaffNameLabel.AutoSize = true;
+            this.StaffNameLabel.Location = new System.Drawing.Point(7, 42);
+            this.StaffNameLabel.Name = "StaffNameLabel";
+            this.StaffNameLabel.Size = new System.Drawing.Size(35, 13);
+            this.StaffNameLabel.TabIndex = 2;
+            this.StaffNameLabel.Text = "Vorname";
+            //
+            // CoTrainerFirstnameInput
+            //
+            this.CoTrainerFirstnameInput.Location = new System.Drawing.Point(115, 39);
+            this.CoTrainerFirstnameInput.Name = "CoTrainerFirstnameInput";
+            this.CoTrainerFirstnameInput.Size = new System.Drawing.Size(140, 20);
+            this.CoTrainerFirstnameInput.TabIndex = 3;
+            this.CoTrainerFirstnameInput.MaxLength = 15;
+            //
+            // GoalkeeperCoachFirstnameInput
+            //
+            this.GoalkeeperCoachFirstnameInput.Location = new System.Drawing.Point(265, 39);
+            this.GoalkeeperCoachFirstnameInput.Name = "GoalkeeperCoachFirstnameInput";
+            this.GoalkeeperCoachFirstnameInput.Size = new System.Drawing.Size(140, 20);
+            this.GoalkeeperCoachFirstnameInput.TabIndex = 4;
+            this.GoalkeeperCoachFirstnameInput.MaxLength = 15;
+            //
+            // StaffLastnameLabel
+            //
+            this.StaffLastnameLabel.AutoSize = true;
+            this.StaffLastnameLabel.Location = new System.Drawing.Point(7, 68);
+            this.StaffLastnameLabel.Name = "StaffLastnameLabel";
+            this.StaffLastnameLabel.Size = new System.Drawing.Size(59, 13);
+            this.StaffLastnameLabel.TabIndex = 14;
+            this.StaffLastnameLabel.Text = "Nachname";
+            //
+            // CoTrainerLastnameInput
+            //
+            this.CoTrainerLastnameInput.Location = new System.Drawing.Point(115, 65);
+            this.CoTrainerLastnameInput.MaxLength = 15;
+            this.CoTrainerLastnameInput.Name = "CoTrainerLastnameInput";
+            this.CoTrainerLastnameInput.Size = new System.Drawing.Size(140, 20);
+            this.CoTrainerLastnameInput.TabIndex = 15;
+            //
+            // GoalkeeperCoachLastnameInput
+            //
+            this.GoalkeeperCoachLastnameInput.Location = new System.Drawing.Point(265, 65);
+            this.GoalkeeperCoachLastnameInput.MaxLength = 15;
+            this.GoalkeeperCoachLastnameInput.Name = "GoalkeeperCoachLastnameInput";
+            this.GoalkeeperCoachLastnameInput.Size = new System.Drawing.Size(140, 20);
+            this.GoalkeeperCoachLastnameInput.TabIndex = 16;
+            //
+            // StaffCompetenceLabel
+            //
+            this.StaffCompetenceLabel.AutoSize = true;
+            this.StaffCompetenceLabel.Location = new System.Drawing.Point(7, 94);
+            this.StaffCompetenceLabel.Name = "StaffCompetenceLabel";
+            this.StaffCompetenceLabel.Size = new System.Drawing.Size(61, 13);
+            this.StaffCompetenceLabel.TabIndex = 5;
+            this.StaffCompetenceLabel.Text = "Kompetenz";
+            //
+            // CoTrainerCompetenceInput
+            //
+            this.CoTrainerCompetenceInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CoTrainerCompetenceInput.FormattingEnabled = true;
+            this.CoTrainerCompetenceInput.Location = new System.Drawing.Point(115, 91);
+            this.CoTrainerCompetenceInput.Name = "CoTrainerCompetenceInput";
+            this.CoTrainerCompetenceInput.Size = new System.Drawing.Size(85, 21);
+            this.CoTrainerCompetenceInput.TabIndex = 6;
+            //
+            // GoalkeeperCoachCompetenceInput
+            //
+            this.GoalkeeperCoachCompetenceInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.GoalkeeperCoachCompetenceInput.FormattingEnabled = true;
+            this.GoalkeeperCoachCompetenceInput.Location = new System.Drawing.Point(265, 91);
+            this.GoalkeeperCoachCompetenceInput.Name = "GoalkeeperCoachCompetenceInput";
+            this.GoalkeeperCoachCompetenceInput.Size = new System.Drawing.Size(85, 21);
+            this.GoalkeeperCoachCompetenceInput.TabIndex = 7;
+            //
+            // StaffContractLabel
+            //
+            this.StaffContractLabel.AutoSize = true;
+            this.StaffContractLabel.Location = new System.Drawing.Point(7, 121);
+            this.StaffContractLabel.Name = "StaffContractLabel";
+            this.StaffContractLabel.Size = new System.Drawing.Size(84, 13);
+            this.StaffContractLabel.TabIndex = 8;
+            this.StaffContractLabel.Text = "Vertrag (Jahre)";
+            //
+            // CoTrainerContractInput
+            //
+            this.CoTrainerContractInput.Location = new System.Drawing.Point(115, 118);
+            this.CoTrainerContractInput.Name = "CoTrainerContractInput";
+            this.CoTrainerContractInput.Size = new System.Drawing.Size(85, 20);
+            this.CoTrainerContractInput.TabIndex = 9;
+            this.CoTrainerContractInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // GoalkeeperCoachContractInput
+            //
+            this.GoalkeeperCoachContractInput.Location = new System.Drawing.Point(265, 118);
+            this.GoalkeeperCoachContractInput.Name = "GoalkeeperCoachContractInput";
+            this.GoalkeeperCoachContractInput.Size = new System.Drawing.Size(85, 20);
+            this.GoalkeeperCoachContractInput.TabIndex = 10;
+            this.GoalkeeperCoachContractInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // StaffSalaryLabel
+            //
+            this.StaffSalaryLabel.AutoSize = true;
+            this.StaffSalaryLabel.Location = new System.Drawing.Point(7, 147);
+            this.StaffSalaryLabel.Name = "StaffSalaryLabel";
+            this.StaffSalaryLabel.Size = new System.Drawing.Size(97, 13);
+            this.StaffSalaryLabel.TabIndex = 11;
+            this.StaffSalaryLabel.Text = "Gehalt pro Jahr";
+            //
+            // CoTrainerSalaryInput
+            //
+            this.CoTrainerSalaryInput.Location = new System.Drawing.Point(115, 144);
+            this.CoTrainerSalaryInput.Name = "CoTrainerSalaryInput";
+            this.CoTrainerSalaryInput.Size = new System.Drawing.Size(85, 20);
+            this.CoTrainerSalaryInput.TabIndex = 12;
+            this.CoTrainerSalaryInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // GoalkeeperCoachSalaryInput
+            //
+            this.GoalkeeperCoachSalaryInput.Location = new System.Drawing.Point(265, 144);
+            this.GoalkeeperCoachSalaryInput.Name = "GoalkeeperCoachSalaryInput";
+            this.GoalkeeperCoachSalaryInput.Size = new System.Drawing.Size(85, 20);
+            this.GoalkeeperCoachSalaryInput.TabIndex = 13;
+            this.GoalkeeperCoachSalaryInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
             // IdentityTab
-            // 
+            //
             this.IdentityTab.Controls.Add(this.ClubIdentityBox);
+            this.IdentityTab.Controls.Add(this.BoardBox);
             this.IdentityTab.Controls.Add(this.FansBox);
             this.IdentityTab.Location = new System.Drawing.Point(4, 22);
             this.IdentityTab.Name = "IdentityTab";
@@ -707,6 +1116,92 @@ namespace A2G_Trainer.View
             this.IdentityTab.TabIndex = 2;
             this.IdentityTab.Text = "Identität";
             this.IdentityTab.UseVisualStyleBackColor = true;
+            //
+            // BoardBox
+            //
+            this.BoardBox.Controls.Add(this.BoardLabel);
+            this.BoardBox.Controls.Add(this.BoardInput);
+            this.BoardBox.Controls.Add(this.AssociationLabel);
+            this.BoardBox.Controls.Add(this.AssociationInput);
+            this.BoardBox.Controls.Add(this.PublicImageLabel);
+            this.BoardBox.Controls.Add(this.PublicImageInput);
+            this.BoardBox.Controls.Add(this.ManagerLabel);
+            this.BoardBox.Controls.Add(this.ManagerValue);
+            this.BoardBox.Controls.Add(this.BoardTrustLabel);
+            this.BoardBox.Controls.Add(this.BoardTrustInput);
+            this.BoardBox.Location = new System.Drawing.Point(292, 6);
+            this.BoardBox.Name = "BoardBox";
+            this.BoardBox.Size = new System.Drawing.Size(288, 145);
+            this.BoardBox.TabIndex = 1;
+            this.BoardBox.TabStop = false;
+            this.BoardBox.Text = "Vorstand";
+            //
+            // AssociationLabel
+            //
+            this.AssociationLabel.AutoSize = true;
+            this.AssociationLabel.Location = new System.Drawing.Point(6, 61);
+            this.AssociationLabel.Name = "AssociationLabel";
+            this.AssociationLabel.TabIndex = 15;
+            this.AssociationLabel.Text = "Ansehen Verband";
+            //
+            // AssociationInput
+            //
+            this.AssociationInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.AssociationInput.FormattingEnabled = true;
+            this.AssociationInput.Location = new System.Drawing.Point(9, 77);
+            this.AssociationInput.Name = "AssociationInput";
+            this.AssociationInput.Size = new System.Drawing.Size(130, 21);
+            this.AssociationInput.TabIndex = 1;
+            //
+            // PublicImageLabel
+            //
+            this.PublicImageLabel.AutoSize = true;
+            this.PublicImageLabel.Location = new System.Drawing.Point(145, 61);
+            this.PublicImageLabel.Name = "PublicImageLabel";
+            this.PublicImageLabel.TabIndex = 16;
+            this.PublicImageLabel.Text = "Ansehen Öffentlichkeit";
+            //
+            // PublicImageInput
+            //
+            this.PublicImageInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PublicImageInput.FormattingEnabled = true;
+            this.PublicImageInput.Location = new System.Drawing.Point(148, 77);
+            this.PublicImageInput.Name = "PublicImageInput";
+            this.PublicImageInput.Size = new System.Drawing.Size(131, 21);
+            this.PublicImageInput.TabIndex = 2;
+            //
+            // ManagerLabel
+            //
+            this.ManagerLabel.AutoSize = true;
+            this.ManagerLabel.Location = new System.Drawing.Point(6, 103);
+            this.ManagerLabel.Name = "ManagerLabel";
+            this.ManagerLabel.TabIndex = 12;
+            this.ManagerLabel.Text = "Manager";
+            //
+            // ManagerValue
+            //
+            this.ManagerValue.AutoEllipsis = true;
+            this.ManagerValue.Location = new System.Drawing.Point(9, 122);
+            this.ManagerValue.Name = "ManagerValue";
+            this.ManagerValue.Size = new System.Drawing.Size(175, 13);
+            this.ManagerValue.TabIndex = 13;
+            this.ManagerValue.Text = "-";
+            //
+            // BoardTrustLabel
+            //
+            this.BoardTrustLabel.AutoSize = true;
+            this.BoardTrustLabel.Location = new System.Drawing.Point(190, 103);
+            this.BoardTrustLabel.Name = "BoardTrustLabel";
+            this.BoardTrustLabel.TabIndex = 14;
+            this.BoardTrustLabel.Text = "Vertrauen";
+            //
+            // BoardTrustInput
+            //
+            this.BoardTrustInput.Location = new System.Drawing.Point(193, 119);
+            this.BoardTrustInput.Name = "BoardTrustInput";
+            this.BoardTrustInput.Size = new System.Drawing.Size(43, 20);
+            this.BoardTrustInput.TabIndex = 3;
+            this.BoardTrustInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // MapTab
             // 
@@ -745,7 +1240,7 @@ namespace A2G_Trainer.View
             // FanTypeLabel
             // 
             this.FanTypeLabel.AutoSize = true;
-            this.FanTypeLabel.Location = new System.Drawing.Point(6, 187);
+            this.FanTypeLabel.Location = new System.Drawing.Point(6, 145);
             this.FanTypeLabel.Name = "FanTypeLabel";
             this.FanTypeLabel.TabIndex = 14;
             this.FanTypeLabel.Text = "Art der Fans";
@@ -754,10 +1249,10 @@ namespace A2G_Trainer.View
             // 
             this.FanTypeInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.FanTypeInput.FormattingEnabled = true;
-            this.FanTypeInput.Location = new System.Drawing.Point(9, 203);
+            this.FanTypeInput.Location = new System.Drawing.Point(9, 161);
             this.FanTypeInput.Name = "FanTypeInput";
             this.FanTypeInput.Size = new System.Drawing.Size(270, 21);
-            this.FanTypeInput.TabIndex = 4;
+            this.FanTypeInput.TabIndex = 3;
             // 
             // ClubMapView
             // 
@@ -905,24 +1400,24 @@ namespace A2G_Trainer.View
             // BoardLabel
             // 
             this.BoardLabel.AutoSize = true;
-            this.BoardLabel.Location = new System.Drawing.Point(6, 61);
+            this.BoardLabel.Location = new System.Drawing.Point(6, 19);
             this.BoardLabel.Name = "BoardLabel";
             this.BoardLabel.TabIndex = 11;
-            this.BoardLabel.Text = "Vorstand";
+            this.BoardLabel.Text = "Art des Vorstands";
             // 
             // BoardInput
             // 
             this.BoardInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BoardInput.FormattingEnabled = true;
-            this.BoardInput.Location = new System.Drawing.Point(9, 77);
+            this.BoardInput.Location = new System.Drawing.Point(9, 35);
             this.BoardInput.Name = "BoardInput";
             this.BoardInput.Size = new System.Drawing.Size(270, 21);
-            this.BoardInput.TabIndex = 1;
+            this.BoardInput.TabIndex = 0;
             // 
             // ArchRivalLabel
             // 
             this.ArchRivalLabel.AutoSize = true;
-            this.ArchRivalLabel.Location = new System.Drawing.Point(6, 103);
+            this.ArchRivalLabel.Location = new System.Drawing.Point(6, 61);
             this.ArchRivalLabel.Name = "ArchRivalLabel";
             this.ArchRivalLabel.TabIndex = 12;
             this.ArchRivalLabel.Text = "Erzrivale";
@@ -931,15 +1426,15 @@ namespace A2G_Trainer.View
             // 
             this.ArchRivalInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ArchRivalInput.FormattingEnabled = true;
-            this.ArchRivalInput.Location = new System.Drawing.Point(9, 119);
+            this.ArchRivalInput.Location = new System.Drawing.Point(9, 77);
             this.ArchRivalInput.Name = "ArchRivalInput";
             this.ArchRivalInput.Size = new System.Drawing.Size(270, 21);
-            this.ArchRivalInput.TabIndex = 2;
+            this.ArchRivalInput.TabIndex = 1;
             // 
             // FanFriendshipLabel
             // 
             this.FanFriendshipLabel.AutoSize = true;
-            this.FanFriendshipLabel.Location = new System.Drawing.Point(6, 145);
+            this.FanFriendshipLabel.Location = new System.Drawing.Point(6, 103);
             this.FanFriendshipLabel.Name = "FanFriendshipLabel";
             this.FanFriendshipLabel.TabIndex = 13;
             this.FanFriendshipLabel.Text = "Fanfreundschaft mit";
@@ -948,29 +1443,27 @@ namespace A2G_Trainer.View
             // 
             this.FanFriendshipInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.FanFriendshipInput.FormattingEnabled = true;
-            this.FanFriendshipInput.Location = new System.Drawing.Point(9, 161);
+            this.FanFriendshipInput.Location = new System.Drawing.Point(9, 119);
             this.FanFriendshipInput.Name = "FanFriendshipInput";
             this.FanFriendshipInput.Size = new System.Drawing.Size(270, 21);
-            this.FanFriendshipInput.TabIndex = 3;
+            this.FanFriendshipInput.TabIndex = 2;
             // 
             // FansBox
             // 
             this.FansBox.Controls.Add(this.FanTurnoutLabel);
             this.FansBox.Controls.Add(this.FanTurnoutInput);
-            this.FansBox.Controls.Add(this.BoardLabel);
-            this.FansBox.Controls.Add(this.BoardInput);
             this.FansBox.Controls.Add(this.ArchRivalLabel);
             this.FansBox.Controls.Add(this.ArchRivalInput);
             this.FansBox.Controls.Add(this.FanFriendshipLabel);
             this.FansBox.Controls.Add(this.FanFriendshipInput);
             this.FansBox.Controls.Add(this.FanTypeLabel);
             this.FansBox.Controls.Add(this.FanTypeInput);
-            this.FansBox.Location = new System.Drawing.Point(292, 6);
+            this.FansBox.Location = new System.Drawing.Point(292, 155);
             this.FansBox.Name = "FansBox";
-            this.FansBox.Size = new System.Drawing.Size(288, 334);
-            this.FansBox.TabIndex = 1;
+            this.FansBox.Size = new System.Drawing.Size(288, 188);
+            this.FansBox.TabIndex = 2;
             this.FansBox.TabStop = false;
-            this.FansBox.Text = "Fans und Vorstand";
+            this.FansBox.Text = "Fans";
             // 
             // MapXLabel
             // 
@@ -1073,7 +1566,7 @@ namespace A2G_Trainer.View
             this.GrantBox.Controls.Add(this.GrantRateInput);
             this.GrantBox.Location = new System.Drawing.Point(430, 6);
             this.GrantBox.Name = "GrantBox";
-            this.GrantBox.Size = new System.Drawing.Size(150, 100);
+            this.GrantBox.Size = new System.Drawing.Size(150, 110);
             this.GrantBox.TabIndex = 3;
             this.GrantBox.TabStop = false;
             this.GrantBox.Text = "Stadtzuschuss";
@@ -1270,7 +1763,8 @@ namespace A2G_Trainer.View
             // ClubView
             // 
             this.BackgroundImage = global::A2G_Trainer.Properties.Resources.TabControl;
-            this.Controls.Add(this.ClubSelect);
+            this.Controls.Add(this.ClubCountryInput);
+            this.Controls.Add(this.ClubInput);
             this.Controls.Add(this.ReloadBtn);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.ClubTabControl);
@@ -1284,6 +1778,8 @@ namespace A2G_Trainer.View
             this.ClubGeneralBox.PerformLayout();
             this.StadiumTab.ResumeLayout(false);
             this.IdentityTab.ResumeLayout(false);
+            this.BoardBox.ResumeLayout(false);
+            this.BoardBox.PerformLayout();
             this.MapTab.ResumeLayout(false);
             this.MapTab.PerformLayout();
             this.JerseyTab.ResumeLayout(false);
@@ -1301,6 +1797,11 @@ namespace A2G_Trainer.View
             this.GrantBox.PerformLayout();
             this.TeamValuesBox.ResumeLayout(false);
             this.TeamValuesBox.PerformLayout();
+            this.TacticsTab.ResumeLayout(false);
+            this.TacticsBox.ResumeLayout(false);
+            this.TacticsBox.PerformLayout();
+            this.StaffBox.ResumeLayout(false);
+            this.StaffBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1355,6 +1856,15 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.ComboBox FanTurnoutInput;
         private System.Windows.Forms.Label BoardLabel;
         private System.Windows.Forms.ComboBox BoardInput;
+        private System.Windows.Forms.GroupBox BoardBox;
+        private System.Windows.Forms.Label AssociationLabel;
+        private System.Windows.Forms.ComboBox AssociationInput;
+        private System.Windows.Forms.Label PublicImageLabel;
+        private System.Windows.Forms.ComboBox PublicImageInput;
+        private System.Windows.Forms.Label ManagerLabel;
+        private System.Windows.Forms.Label ManagerValue;
+        private System.Windows.Forms.Label BoardTrustLabel;
+        private System.Windows.Forms.TextBox BoardTrustInput;
         private System.Windows.Forms.Label ArchRivalLabel;
         private System.Windows.Forms.ComboBox ArchRivalInput;
         private System.Windows.Forms.Label FanFriendshipLabel;
@@ -1395,6 +1905,8 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.Panel LegendBoxesSwatch;
         private System.Windows.Forms.Label LegendBoxesLabel;
         private System.Windows.Forms.Label LegendBoxesValue;
+        private System.Windows.Forms.Panel LegendNegativeSwatch;
+        private System.Windows.Forms.Label LegendNegativeLabel;
         private System.Windows.Forms.Label CapacityLabel;
         private System.Windows.Forms.Label CapacityValue;
         private System.Windows.Forms.CheckBox RunningTrackCheckBox;
@@ -1404,7 +1916,8 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.TextBox GrantPotInput;
         private System.Windows.Forms.Label GrantRateLabel;
         private System.Windows.Forms.TextBox GrantRateInput;
-        private System.Windows.Forms.ComboBox ClubSelect;
+        private System.Windows.Forms.ComboBox ClubCountryInput;
+        private System.Windows.Forms.ComboBox ClubInput;
         private System.Windows.Forms.GroupBox TeamValuesBox;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.TextBox SpiritInput;
@@ -1424,5 +1937,39 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.TextBox SponsorPeriod;
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.TextBox SponsorInput;
+        private System.Windows.Forms.TabPage TacticsTab;
+        private System.Windows.Forms.GroupBox TacticsBox;
+        private System.Windows.Forms.Label OffsideTrapLabel;
+        private System.Windows.Forms.TextBox OffsideTrapInput;
+        private System.Windows.Forms.Label AntiOffsideTrapLabel;
+        private System.Windows.Forms.ComboBox AntiOffsideTrapInput;
+        private System.Windows.Forms.Label PressingLabel;
+        private System.Windows.Forms.ComboBox PressingInput;
+        private System.Windows.Forms.Label DirtyTricksLabel;
+        private System.Windows.Forms.ComboBox DirtyTricksInput;
+        private System.Windows.Forms.Label ThrowInsLabel;
+        private System.Windows.Forms.ComboBox ThrowInsInput;
+        private System.Windows.Forms.Label FreeKicksLabel;
+        private System.Windows.Forms.ComboBox FreeKicksInput;
+        private System.Windows.Forms.Label CornersLabel;
+        private System.Windows.Forms.ComboBox CornersInput;
+        private System.Windows.Forms.GroupBox StaffBox;
+        private System.Windows.Forms.Label CoTrainerHeader;
+        private System.Windows.Forms.Label GoalkeeperCoachHeader;
+        private System.Windows.Forms.Label StaffNameLabel;
+        private System.Windows.Forms.TextBox CoTrainerFirstnameInput;
+        private System.Windows.Forms.TextBox GoalkeeperCoachFirstnameInput;
+        private System.Windows.Forms.Label StaffLastnameLabel;
+        private System.Windows.Forms.TextBox CoTrainerLastnameInput;
+        private System.Windows.Forms.TextBox GoalkeeperCoachLastnameInput;
+        private System.Windows.Forms.Label StaffCompetenceLabel;
+        private System.Windows.Forms.ComboBox CoTrainerCompetenceInput;
+        private System.Windows.Forms.ComboBox GoalkeeperCoachCompetenceInput;
+        private System.Windows.Forms.Label StaffContractLabel;
+        private System.Windows.Forms.TextBox CoTrainerContractInput;
+        private System.Windows.Forms.TextBox GoalkeeperCoachContractInput;
+        private System.Windows.Forms.Label StaffSalaryLabel;
+        private System.Windows.Forms.TextBox CoTrainerSalaryInput;
+        private System.Windows.Forms.TextBox GoalkeeperCoachSalaryInput;
     }
 }

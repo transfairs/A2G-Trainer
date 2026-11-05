@@ -1,18 +1,29 @@
 ﻿using A2G_Trainer.Controller;
 using A2G_Trainer.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using AnstossTrainer.Shared;
 
 namespace A2G_Trainer.View
 {
-    /// <summary>Tab for the user's own club: identity, stadium, and finances.</summary>
+    /// <summary>Tab for a club - the own one or any other picked below: identity, stadium, and finances.</summary>
     public partial class ClubView : EntityView
     {
         private Club club;
+        // Country and club choice; the club picked last ("Verein -> Anderer").
+        private ClubSelection clubSelection;
+        private ClubSquads.Entry chosenClub;
+
+        /// <summary>Raised when the user picks a club below the tabs; the view already shows it.</summary>
+        internal event Action<ClubSquads.Entry> ClubChosen;
         // Set while the block inputs are filled from the club, so their change handlers don't write back.
         private bool showingBlock;
+        // The human manager training the club shown, if any: the board's trust belongs to the manager, not the club.
+        private CoachController boardCoachController;
+        // The human manager's club the own-club slot held last (see HumanClubInstead).
+        private KeyValuePair<PlayerEnums.Country, byte>? lastHumanClub;
 
         /// <summary>Creates the club tab view bound to the given memory accessor and process controller.</summary>
         public ClubView(ProcessMemory memory, ProcessController controller) : base(memory, controller)
@@ -20,13 +31,17 @@ namespace A2G_Trainer.View
             InitializeComponent();
             this.InitStadium();
             this.InitEditorSettings();
+            this.BuildBudgetTab();
+            this.BuildAssociationTab();
+            this.BuildLiveMatchTab();
+            this.clubSelection = new ClubSelection(this.ClubCountryInput, this.ClubInput);
+            this.clubSelection.Picked += this.ClubPicked;
+            this.BoardTrustInput.KeyPress += this.NumericOnly_KeyPress;
+            this.BoardTrustInput.TextChanged += this.BoardTrustMax_TextChanged;
         }
 
         internal void InitClubTabControl()
         {
-            this.ClubSelect.DataSource = this.clubController.EntityList;
-            this.ClubSelect.DisplayMember = "ClubName";
-
             this.DisplayUnit.DataSource = Enum.GetValues(typeof(ClubEnums.DisplayUnit)).Cast<ClubEnums.DisplayUnit>().Select(c => new { Value = c, Text = ClubEnums.GetDescription(c) }).ToList();
             this.DisplayUnit.DisplayMember = "Text";
             this.DisplayUnit.ValueMember = "Value";
@@ -99,6 +114,32 @@ namespace A2G_Trainer.View
             this.Will2WinInput.DataBindings.Add("Text", this.bindingSource, "Will2Win");
             this.TeamCohesionInput.DataBindings.Add("Text", this.bindingSource, "TeamCohesion");
 
+            this.OffsideTrapInput.KeyPress += this.NumericOnly_KeyPress;
+            this.OffsideTrapInput.TextChanged += this.ByteMax255_TextChanged;
+            this.OffsideTrapInput.DataBindings.Add("Text", this.bindingSource, nameof(Club.OffsideTrap));
+            this.BindTeamSkill(this.AntiOffsideTrapInput, nameof(Club.AntiOffsideTrap));
+            this.BindTeamSkill(this.PressingInput, nameof(Club.Pressing));
+            this.BindTeamSkill(this.DirtyTricksInput, nameof(Club.DirtyTricks));
+            this.BindTeamSkill(this.ThrowInsInput, nameof(Club.ThrowIns));
+            this.BindTeamSkill(this.FreeKicksInput, nameof(Club.FreeKicks));
+            this.BindTeamSkill(this.CornersInput, nameof(Club.Corners));
+
+            this.CoTrainerFirstnameInput.DataBindings.Add("Text", this.bindingSource, nameof(Club.CoTrainerFirstname));
+            this.CoTrainerLastnameInput.DataBindings.Add("Text", this.bindingSource, nameof(Club.CoTrainerLastname));
+            this.BindLevels(this.CoTrainerCompetenceInput, nameof(Club.CoTrainerCompetence), Settings.MaxStaffCompetence);
+            this.BindStaffNumber(this.CoTrainerContractInput, nameof(Club.CoTrainerContract), this.ByteMax255_TextChanged);
+            this.BindStaffNumber(this.CoTrainerSalaryInput, nameof(Club.CoTrainerSalary), this.IntMaxNumber_TextChanged);
+            this.GoalkeeperCoachFirstnameInput.DataBindings.Add("Text", this.bindingSource, nameof(Club.GoalkeeperCoachFirstname));
+            this.GoalkeeperCoachLastnameInput.DataBindings.Add("Text", this.bindingSource, nameof(Club.GoalkeeperCoachLastname));
+            this.BindLevels(this.GoalkeeperCoachCompetenceInput, nameof(Club.GoalkeeperCoachCompetence), Settings.MaxStaffCompetence);
+            this.BindStaffNumber(this.GoalkeeperCoachContractInput, nameof(Club.GoalkeeperCoachContract), this.ByteMax255_TextChanged);
+            this.BindStaffNumber(this.GoalkeeperCoachSalaryInput, nameof(Club.GoalkeeperCoachSalary), this.IntMaxNumber_TextChanged);
+            // Without a co-/goalkeeper trainer there's no entry to edit.
+            foreach (Control input in new Control[] { this.CoTrainerFirstnameInput, this.CoTrainerLastnameInput, this.CoTrainerCompetenceInput, this.CoTrainerContractInput, this.CoTrainerSalaryInput })
+                input.DataBindings.Add("Enabled", this.bindingSource, nameof(Club.HasCoTrainer));
+            foreach (Control input in new Control[] { this.GoalkeeperCoachFirstnameInput, this.GoalkeeperCoachLastnameInput, this.GoalkeeperCoachCompetenceInput, this.GoalkeeperCoachContractInput, this.GoalkeeperCoachSalaryInput })
+                input.DataBindings.Add("Enabled", this.bindingSource, nameof(Club.HasGoalkeeperCoach));
+
             this.FreeTicketsInput.DataBindings.Add("Text", this.bindingSource, "FreeTickets");
             this.RoadGameSupportInput.DataBindings.Add("Text", this.bindingSource, "RoadGameSupport");
 
@@ -111,9 +152,31 @@ namespace A2G_Trainer.View
             this.FanTurnoutInput.DataBindings.Add("SelectedValue", this.bindingSource, nameof(Club.FanTurnout));
             this.FanTypeInput.DataBindings.Add("SelectedValue", this.bindingSource, nameof(Club.FanType));
             this.BoardInput.DataBindings.Add("SelectedValue", this.bindingSource, nameof(Club.Board));
+            this.AssociationInput.DataBindings.Add("SelectedValue", this.bindingSource, nameof(Club.AssociationImage));
+            this.PublicImageInput.DataBindings.Add("SelectedValue", this.bindingSource, nameof(Club.PublicImageStage));
 
             this.ShowStadium();
             this.ShowEditorSettings();
+            this.BindBudget();
+            this.BindAssociation();
+        }
+
+        private void BindTeamSkill(ComboBox input, string property) => this.BindLevels(input, property, Club.MaxTeamSkill);
+
+        // Levels 0..max as a drop-down; each one needs its own list, a shared one would sync them.
+        private void BindLevels(ComboBox input, string property, byte max)
+        {
+            input.DataSource = Enumerable.Range(0, max + 1).Select(i => new { Value = (byte)i, Text = i.ToString() }).ToList();
+            input.DisplayMember = "Text";
+            input.ValueMember = "Value";
+            input.DataBindings.Add("SelectedValue", this.bindingSource, property);
+        }
+
+        private void BindStaffNumber(TextBox input, string property, EventHandler limit)
+        {
+            input.KeyPress += this.NumericOnly_KeyPress;
+            input.TextChanged += limit;
+            input.DataBindings.Add("Text", this.bindingSource, property);
         }
 
         #region Stadium
@@ -239,6 +302,8 @@ namespace A2G_Trainer.View
             FillEnum<ClubEnums.FanTurnout>(this.FanTurnoutInput);
             FillEnum<ClubEnums.FanType>(this.FanTypeInput);
             FillEnum<ClubEnums.Board>(this.BoardInput);
+            FillEnum<ClubEnums.AssociationImage>(this.AssociationInput);
+            FillEnum<ClubEnums.PublicImage>(this.PublicImageInput);
 
             this.ArchRivalInput.SelectionChangeCommitted += (o, e) => this.EditClubChoice(id => this.club.ArchRivalId = id, this.ArchRivalInput);
             this.FanFriendshipInput.SelectionChangeCommitted += (o, e) => this.EditClubChoice(id => this.club.FanFriendshipId = id, this.FanFriendshipInput);
@@ -333,6 +398,10 @@ namespace A2G_Trainer.View
         }
         #endregion
 
+        /// <summary>
+        /// Shows the own club (OWN), or the club picked last or else the own club from its record (CLUB);
+        /// <paramref name="club"/> re-displays the object just saved instead of reading it again.
+        /// </summary>
         internal void RefreshValues(PlayerEnums.AddressType type, Club club = null)
         {
             if (this.IsGameRunning())
@@ -348,8 +417,21 @@ namespace A2G_Trainer.View
                     this.showingBlock = false;
                 }
 
-                this.clubController = new ClubController(this.Memory, this.processController.IsGog, type,
-                    loadFullList: type == PlayerEnums.AddressType.ALL);
+                this.clubSelection.Clubs = ClubSquads.Clubs(this.Memory, FixedAddresses.For(this.Memory));
+                ClubSquads.Entry entry = null;
+                if (type == PlayerEnums.AddressType.CLUB || type == PlayerEnums.AddressType.OWN)
+                {
+                    Club own = new ClubController(this.Memory, this.processController.IsGog, PlayerEnums.AddressType.OWN).Club;
+                    ClubSquads.Entry human = this.HumanClubInstead(own);
+                    entry = type == PlayerEnums.AddressType.OWN ? human
+                        : (this.chosenClub == null ? null : this.clubSelection.Find(this.chosenClub.Country, this.chosenClub.Id))
+                            ?? human ?? this.clubSelection.Find(own.Country, own.Id);
+                }
+                // Without records (or a savegame) "Anderer" falls back to the own club.
+                this.clubController = entry != null
+                    ? new ClubController(this.Memory, this.processController.IsGog, entry)
+                    : new ClubController(this.Memory, this.processController.IsGog, type == PlayerEnums.AddressType.CLUB ? PlayerEnums.AddressType.OWN : type,
+                        loadFullList: type == PlayerEnums.AddressType.ALL);
                 this.club = club ?? this.clubController.Club;
                 // Keep the controller pointed at the exact object the UI is bound to - otherwise a
                 // caller-supplied club (e.g. SaveBtn_Click re-displaying what it just saved) leaves
@@ -363,8 +445,68 @@ namespace A2G_Trainer.View
                 }
                 this.ShowStadium();
                 this.ShowEditorSettings();
+                this.ShowBoard();
+                this.ShowBudget();
+                this.ShowRequirements();
+                this.ShowLiveMatch();
+                this.clubSelection.Show(this.clubController.RecordClub
+                    ?? (string.IsNullOrEmpty(this.club.ClubName) ? null : this.clubSelection.Find(this.club.Country, this.club.Id)));
             }
         }
+
+        // During a match the game points the own-club slot at whichever club its engine handles, the
+        // opponent included, or nowhere. Returns the record of the human manager's club to show
+        // instead (the one shown last if several play), or null if the slot holds a human's club.
+        private ClubSquads.Entry HumanClubInstead(Club own)
+        {
+            bool gog = this.processController.IsGog;
+            if (own.PlayerCount > 0 && CoachController.ForClub(this.Memory, gog, own.Country, own.Id) != null)
+            {
+                this.lastHumanClub = new KeyValuePair<PlayerEnums.Country, byte>(own.Country, own.Id);
+                return null;
+            }
+            List<Coach> managers = CoachController.GetActiveTrainers(this.Memory, gog, PlayerEnums.AddressType.OWN).Select(t => t.Value).ToList();
+            Coach manager = managers.FirstOrDefault(c => this.lastHumanClub.HasValue && c.CurrentCountry == this.lastHumanClub.Value.Key && c.CurrentClubId == this.lastHumanClub.Value.Value)
+                ?? managers.FirstOrDefault();
+            return manager == null ? null : this.clubSelection.Find(manager.CurrentCountry, manager.CurrentClubId);
+        }
+
+        // "Vorstand" box on the "Identität" tab: the board's trust in the manager of the club shown, editable only if a human
+        // manager trains it. The same value is on Trainer -> Vertrag; whichever view saves last wins.
+        private void ShowBoard()
+        {
+            this.boardCoachController = this.club == null ? null : CoachController.ForClub(this.Memory, this.processController.IsGog, this.club.Country, this.club.Id);
+            Coach manager = this.boardCoachController?.Coach;
+            this.ManagerValue.Text = manager == null ? "–" : $"{manager.Firstname} {manager.Lastname}".Trim();
+            this.BoardTrustInput.Text = manager?.BoardTrust.ToString() ?? "";
+            this.BoardTrustInput.Enabled = manager != null;
+        }
+
+        private void SaveBoardTrust()
+        {
+            if (this.boardCoachController != null && byte.TryParse(this.BoardTrustInput.Text, out byte trust))
+            {
+                this.boardCoachController.Coach.BoardTrust = trust;
+                this.boardCoachController.SaveBoardTrust();
+            }
+        }
+
+        private void ClubPicked(ClubSquads.Entry club)
+        {
+            this.ShowClub(club);
+            this.ClubChosen?.Invoke(club);
+        }
+
+        /// <summary>The club picked last ("Verein -> Anderer"), or null.</summary>
+        internal ClubSquads.Entry ChosenClub => this.chosenClub;
+
+        /// <summary>Shows <paramref name="club"/> and makes it the club picked last, as picking it below the tabs does - without raising ClubChosen.</summary>
+        internal void ShowClub(ClubSquads.Entry club)
+        {
+            this.chosenClub = club;
+            this.RefreshValues(PlayerEnums.AddressType.CLUB);
+        }
+
         private void ReloadBtn_Click(object sender, System.EventArgs e)
         {
             this.RefreshValues(this.clubController.Type);
@@ -374,17 +516,11 @@ namespace A2G_Trainer.View
         {
             if (this.IsGameRunning())
             {
+                this.ApplyLiveMatch();
                 this.clubController.Save();
+                this.SaveBoardTrust();
+                this.SaveRates();
                 this.RefreshValues(this.clubController.Type, this.club);
-            }
-        }
-
-        private void ClubSelect_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (this.IsGameRunning())
-            {
-                Club club = this.ClubSelect.SelectedItem as Club;
-                this.RefreshValues(this.clubController.Type, club);
             }
         }
     }

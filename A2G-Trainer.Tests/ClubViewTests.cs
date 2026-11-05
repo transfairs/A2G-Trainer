@@ -56,20 +56,5 @@ namespace A2G_Trainer.Tests
                 Assert.Null(thrown);
             }
         });
-
-        [Fact]
-        public void ClubSelectSelectedIndexChanged_WithNoSelection_RefreshesWithoutThrowing() => StaThread.Run(() =>
-        {
-            using (Trainer trainer = new Trainer())
-            {
-                trainer.Memory.OpenProcess(Process.GetCurrentProcess().Id);
-                trainer.ClubView.RefreshValues(PlayerEnums.AddressType.OWN);
-                trainer.ClubView.InitClubTabControl();
-
-                Exception thrown = Record.Exception(() => InvokePrivate(trainer.ClubView, "ClubSelect_SelectedIndexChanged", null, EventArgs.Empty));
-
-                Assert.Null(thrown);
-            }
-        });
     }
 }

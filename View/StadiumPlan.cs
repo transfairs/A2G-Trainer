@@ -9,9 +9,10 @@ namespace A2G_Trainer.View
     /// <summary>
     /// Top view of the stadium like the game's "Stadionausbau" screen: the pitch with the twelve
     /// blocks around it (F E D above, B to the right, J K L below, H to the left, the corners G, C, I
-    /// and A). Each block shows its standing places (block K: boxes) towards the pitch and its seats
-    /// behind them in the game's legend colours, darker with a roof, hatched while under
-    /// construction. Clicking a block selects it.
+    /// and A). Each block fills from the pitch outwards by its share of <see cref="FullBlock"/>:
+    /// standing places (block K: boxes) first, the seats behind them, in the game's legend colours,
+    /// darker with a roof. Negative places fill in from the outer edge in <see cref="Negative"/>.
+    /// Blocks under construction are hatched. Clicking a block selects it.
     /// </summary>
     public class StadiumPlan : Control
     {
@@ -25,6 +26,10 @@ namespace A2G_Trainer.View
         public static readonly Color SeatsRoofed = Color.FromArgb(30, 30, 220);
         /// <summary>Boxes (block K's standing places).</summary>
         public static readonly Color Boxes = Color.FromArgb(150, 110, 135);
+        /// <summary>Negative places (the "negative places" trick), filled in from the outer edge.</summary>
+        public static readonly Color Negative = Color.FromArgb(240, 200, 0);
+        /// <summary>Places that fill a block completely (the Int16 limit of a block's fields).</summary>
+        public const int FullBlock = short.MaxValue;
         private static readonly Color EmptyBlock = Color.FromArgb(205, 205, 205);
         private static readonly Color Pitch = Color.FromArgb(40, 150, 40);
 
@@ -182,34 +187,36 @@ namespace A2G_Trainer.View
         private void PaintBlock(Graphics g, int block)
         {
             PointF[] outline = this.BlockOutline(block);
-            int standing = 0, seats = 0;
+            int standing = 0, seats = 0, negative = 0;
             bool roofed = false;
             byte weeks = 0;
             if (this.club != null)
             {
-                standing = Math.Max((short)0, this.club.GetStandings(block));
-                seats = Math.Max((short)0, this.club.GetSeats(block));
+                short s = this.club.GetStandings(block), t = this.club.GetSeats(block);
+                standing = Math.Max((short)0, s);
+                seats = Math.Max((short)0, t);
+                negative = -Math.Min(0, (int)s) - Math.Min(0, (int)t);
                 roofed = this.club.HasRoof(block);
                 weeks = this.club.GetWeeks(block);
             }
 
             Color standingColor = block == Club.BoxBlock ? Boxes : roofed ? StandingRoofed : StandingOpen;
             Color seatsColor = roofed ? SeatsRoofed : SeatsOpen;
-            int total = standing + seats;
 
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddPolygon(outline);
-                using (Brush brush = new SolidBrush(total == 0 ? EmptyBlock : seatsColor))
+                Region clip = g.Clip;
+                g.SetClip(path, CombineMode.Intersect);
+                // Painted from the outside in, each band covering the one before: negative places at
+                // the outer edge, the empty rest, then the seats and the standing places at the pitch.
+                using (Brush brush = new SolidBrush(negative > 0 ? Negative : EmptyBlock))
                     g.FillPath(brush, path);
-                if (standing > 0)
-                {
-                    Region clip = g.Clip;
-                    g.SetClip(path, CombineMode.Intersect);
-                    using (Brush brush = new SolidBrush(standingColor))
-                        g.FillRectangle(brush, this.InnerBand(block, (float)standing / total));
-                    g.Clip = clip;
-                }
+                if (negative > 0)
+                    this.FillBand(g, block, 1 - Share(negative), EmptyBlock);
+                this.FillBand(g, block, Share(standing + seats), seatsColor);
+                this.FillBand(g, block, Share(standing), standingColor);
+                g.Clip = clip;
                 if (weeks > 0)
                 {
                     using (Brush hatch = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(160, Color.Black), Color.Transparent))
@@ -232,6 +239,17 @@ namespace A2G_Trainer.View
                 g.DrawString(text, font, Brushes.Black, bounds, format);
             }
         }
+
+        private void FillBand(Graphics g, int block, float share, Color color)
+        {
+            if (share <= 0)
+                return;
+            using (Brush brush = new SolidBrush(color))
+                g.FillRectangle(brush, this.InnerBand(block, share));
+        }
+
+        // A number of places as a share of a full block's depth.
+        private static float Share(int places) => Math.Min(1f, (float)places / FullBlock);
 
         // Signed, so the "negative places" trick shows as such.
         private string PlacesText(int block) => (this.club.GetStandings(block) + this.club.GetSeats(block)).ToString("N0");

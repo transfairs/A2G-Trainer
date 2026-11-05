@@ -185,6 +185,25 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
+        public void Plan_FillsBlocksByTheirShareOfAFullBlock()
+        {
+            using (StadiumPlan plan = new StadiumPlan { Size = new Size(330, 334) })
+            using (Bitmap bitmap = new Bitmap(330, 334))
+            {
+                // B (right, pitch edge at x 262, outer edge at 326): 3000 standing, then seats up to half.
+                // H (left, outer edge at x 4, pitch edge at 68): half a block negative.
+                plan.Club = new Club { BlockBStandings = 3000, BlockBSeats = StadiumPlan.FullBlock / 2 - 3000, BlockHSeats = -(StadiumPlan.FullBlock / 2) };
+                plan.DrawToBitmap(bitmap, new Rectangle(Point.Empty, plan.Size));
+
+                Assert.Equal(StadiumPlan.StandingOpen.ToArgb(), bitmap.GetPixel(264, 100).ToArgb());
+                Assert.Equal(StadiumPlan.SeatsOpen.ToArgb(), bitmap.GetPixel(285, 100).ToArgb());
+                Assert.Equal(Color.FromArgb(205, 205, 205).ToArgb(), bitmap.GetPixel(310, 100).ToArgb());
+                Assert.Equal(StadiumPlan.Negative.ToArgb(), bitmap.GetPixel(15, 100).ToArgb());
+                Assert.Equal(Color.FromArgb(205, 205, 205).ToArgb(), bitmap.GetPixel(55, 100).ToArgb());
+            }
+        }
+
+        [Fact]
         public void Plan_SelectsByClick_ClampsAndReportsChanges()
         {
             using (StadiumPlan plan = new StadiumPlan { Size = new Size(330, 334) })

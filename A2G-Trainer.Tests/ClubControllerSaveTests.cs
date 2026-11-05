@@ -56,6 +56,37 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
+        public void Save_WritesTheTactics_AndKeepsTheHiddenSkillBits()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                fake.RoutePointerSlot(Settings.ClubAddress[0]);
+                Addresses own = AddressPresets.OWN_CLUB;
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.PLAYER_COUNT], new byte[] { 15 });
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.TeamSkills], BitConverter.GetBytes((ushort)(4 << 9 | 0x8000)));
+
+                ClubController controller = new ClubController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN);
+                Club club = controller.Club;
+                club.ClubName = "X";
+                club.StadiumName = "Y";
+                club.Spirit = 62;
+                club.Pressing = 5;
+                club.OffsideTrap = 180;
+                club.AntiOffsideTrap = 4;
+                club.FreeKicks = 1;
+                club.Corners = 2;
+                club.ThrowIns = 3;
+                club.DirtyTricks = 9;
+
+                controller.Save();
+
+                Assert.Equal(new byte[] { 62, 5, 180, 4 }, fake.ReadDisplayCacheBytes(own[ClubEnums.AddressKey.Spirit], 4));
+                // Dirty tricks capped at 5; bits 9-11 and 15 as the game left them.
+                Assert.Equal((ushort)(1 | 2 << 3 | 3 << 6 | 4 << 9 | 5 << 12 | 0x8000), BitConverter.ToUInt16(fake.ReadDisplayCacheBytes(own[ClubEnums.AddressKey.TeamSkills], 2), 0));
+            }
+        }
+
+        [Fact]
         public void Save_WritesIdentityFinancesAndStadiumFieldsBackToMemory()
         {
             using (FakeModule fake = new FakeModule())

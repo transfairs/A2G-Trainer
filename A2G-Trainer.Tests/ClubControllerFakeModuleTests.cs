@@ -36,6 +36,11 @@ namespace A2G_Trainer.Tests
                 fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.Spirit], new byte[] { 62 });
                 fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.Will2Win], new byte[] { 63 });
                 fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.TeamCohesion], new byte[] { 64 });
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.Pressing], new byte[] { 3 });
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.OffsideTrap], new byte[] { 120 });
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.AntiOffsideTrap], new byte[] { 2 });
+                // Free kicks 1, corners 2, throw-ins 3, the hidden value 4, dirty tricks 5.
+                fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.TeamSkills], BitConverter.GetBytes((ushort)(1 | 2 << 3 | 3 << 6 | 4 << 9 | 5 << 12)));
 
                 fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.FreeTickets], BitConverter.GetBytes((ushort)7001));
                 fake.WriteDisplayCacheBytes(own[ClubEnums.AddressKey.RoadGameSupport], BitConverter.GetBytes((ushort)7002));
@@ -79,6 +84,13 @@ namespace A2G_Trainer.Tests
                 Assert.Equal((byte)62, club.Spirit);
                 Assert.Equal((byte)63, club.Will2Win);
                 Assert.Equal((byte)64, club.TeamCohesion);
+                Assert.Equal((byte)3, club.Pressing);
+                Assert.Equal((byte)120, club.OffsideTrap);
+                Assert.Equal((byte)2, club.AntiOffsideTrap);
+                Assert.Equal((byte)1, club.FreeKicks);
+                Assert.Equal((byte)2, club.Corners);
+                Assert.Equal((byte)3, club.ThrowIns);
+                Assert.Equal((byte)5, club.DirtyTricks);
 
                 Assert.Equal((ushort)7001, club.FreeTickets);
                 Assert.Equal((ushort)7002, club.RoadGameSupport);

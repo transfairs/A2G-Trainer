@@ -336,6 +336,94 @@ namespace A2G_Trainer.Model
         public byte TeamCohesion { get => this.teamCohesion; set { this.teamCohesion = value; this.OnPropertyChanged(nameof(this.TeamCohesion)); } }
         private byte teamCohesion;
 
+        #region Tactics
+        /// <summary>Highest level of the trained team skills (all but <see cref="OffsideTrap"/>).</summary>
+        public const byte MaxTeamSkill = 5;
+
+        /// <summary>Offside trap (x10 scale; in a match the game springs it only above 100).</summary>
+        public byte OffsideTrap { get => this.offsideTrap; set { this.offsideTrap = value; this.OnPropertyChanged(nameof(this.OffsideTrap)); } }
+        private byte offsideTrap;
+        /// <summary>Anti-offside trap (0-5).</summary>
+        public byte AntiOffsideTrap { get => this.antiOffsideTrap; set { this.antiOffsideTrap = value; this.OnPropertyChanged(nameof(this.AntiOffsideTrap)); } }
+        private byte antiOffsideTrap;
+        /// <summary>Pressing (0-5).</summary>
+        public byte Pressing { get => this.pressing; set { this.pressing = value; this.OnPropertyChanged(nameof(this.Pressing)); } }
+        private byte pressing;
+
+        /// <summary>
+        /// The packed skills (working copy +0xA0), 3 bits each: free kicks (bits 0-2), corners (3-5),
+        /// throw-ins (6-8), a value the game doesn't show (9-11) and dirty tricks (12-14).
+        /// </summary>
+        public ushort TeamSkills { get => this.teamSkills; set { this.teamSkills = value; this.OnPropertyChanged(nameof(this.TeamSkills)); } }
+        private ushort teamSkills;
+        /// <summary>Free kicks (0-5), bits 0-2 of <see cref="TeamSkills"/>.</summary>
+        public byte FreeKicks { get => this.Skill(0); set => this.SetSkill(0, value, nameof(this.FreeKicks)); }
+        /// <summary>Corners (0-5), bits 3-5 of <see cref="TeamSkills"/>.</summary>
+        public byte Corners { get => this.Skill(3); set => this.SetSkill(3, value, nameof(this.Corners)); }
+        /// <summary>Throw-ins (0-5), bits 6-8 of <see cref="TeamSkills"/>.</summary>
+        public byte ThrowIns { get => this.Skill(6); set => this.SetSkill(6, value, nameof(this.ThrowIns)); }
+        /// <summary>Dirty tricks (0-5), bits 12-14 of <see cref="TeamSkills"/>.</summary>
+        public byte DirtyTricks { get => this.Skill(12); set => this.SetSkill(12, value, nameof(this.DirtyTricks)); }
+
+        private byte Skill(int shift) => (byte)((this.teamSkills >> shift) & 7);
+
+        private void SetSkill(int shift, byte value, string name)
+        {
+            this.teamSkills = (ushort)((this.teamSkills & ~(7 << shift)) | (Math.Min(value, MaxTeamSkill) << shift));
+            this.OnPropertyChanged(name);
+        }
+        #endregion
+
+        #region Coaching staff
+        // The co-trainer (trainer pool) and goalkeeper trainer (own table) the club employs; ID 0 = none.
+        // Competence, contract and salary belong to the person's entry, not to the club.
+
+        /// <summary>The co-trainer's ID in the trainer pool, 0 if the club has none.</summary>
+        public ushort CoTrainerId { get => this.coTrainerId; set { this.coTrainerId = value; this.OnPropertyChanged(nameof(this.CoTrainerId)); this.OnPropertyChanged(nameof(this.HasCoTrainer)); } }
+        private ushort coTrainerId;
+        /// <summary>Whether the club employs a co-trainer.</summary>
+        public bool HasCoTrainer => this.coTrainerId != 0;
+        /// <summary>Longest first or last name of a co-/goalkeeper trainer the trainer accepts (as for players).</summary>
+        public const int StaffNameLength = 15;
+
+        /// <summary>The co-trainer's first name ("keiner" without one).</summary>
+        public string CoTrainerFirstname { get => this.coTrainerFirstname; set { this.coTrainerFirstname = value; this.OnPropertyChanged(nameof(this.CoTrainerFirstname)); } }
+        private string coTrainerFirstname = "";
+        /// <summary>The co-trainer's last name.</summary>
+        public string CoTrainerLastname { get => this.coTrainerLastname; set { this.coTrainerLastname = value; this.OnPropertyChanged(nameof(this.CoTrainerLastname)); } }
+        private string coTrainerLastname = "";
+        /// <summary>The co-trainer's competence (1-15).</summary>
+        public byte CoTrainerCompetence { get => this.coTrainerCompetence; set { this.coTrainerCompetence = value; this.OnPropertyChanged(nameof(this.CoTrainerCompetence)); } }
+        private byte coTrainerCompetence;
+        /// <summary>The co-trainer's remaining contract years; at 0 the game ends the contract at the season change.</summary>
+        public byte CoTrainerContract { get => this.coTrainerContract; set { this.coTrainerContract = value; this.OnPropertyChanged(nameof(this.CoTrainerContract)); } }
+        private byte coTrainerContract;
+        /// <summary>The co-trainer's salary per year (DM).</summary>
+        public int CoTrainerSalary { get => this.coTrainerSalary; set { this.coTrainerSalary = value; this.OnPropertyChanged(nameof(this.CoTrainerSalary)); } }
+        private int coTrainerSalary;
+
+        /// <summary>The goalkeeper trainer's ID in the goalkeeper trainer table, 0 if the club has none.</summary>
+        public ushort GoalkeeperCoachId { get => this.goalkeeperCoachId; set { this.goalkeeperCoachId = value; this.OnPropertyChanged(nameof(this.GoalkeeperCoachId)); this.OnPropertyChanged(nameof(this.HasGoalkeeperCoach)); } }
+        private ushort goalkeeperCoachId;
+        /// <summary>Whether the club employs a goalkeeper trainer.</summary>
+        public bool HasGoalkeeperCoach => this.goalkeeperCoachId != 0;
+        /// <summary>The goalkeeper trainer's first name ("keiner" without one).</summary>
+        public string GoalkeeperCoachFirstname { get => this.goalkeeperCoachFirstname; set { this.goalkeeperCoachFirstname = value; this.OnPropertyChanged(nameof(this.GoalkeeperCoachFirstname)); } }
+        private string goalkeeperCoachFirstname = "";
+        /// <summary>The goalkeeper trainer's last name.</summary>
+        public string GoalkeeperCoachLastname { get => this.goalkeeperCoachLastname; set { this.goalkeeperCoachLastname = value; this.OnPropertyChanged(nameof(this.GoalkeeperCoachLastname)); } }
+        private string goalkeeperCoachLastname = "";
+        /// <summary>The goalkeeper trainer's competence (1-15).</summary>
+        public byte GoalkeeperCoachCompetence { get => this.goalkeeperCoachCompetence; set { this.goalkeeperCoachCompetence = value; this.OnPropertyChanged(nameof(this.GoalkeeperCoachCompetence)); } }
+        private byte goalkeeperCoachCompetence;
+        /// <summary>The goalkeeper trainer's remaining contract years.</summary>
+        public byte GoalkeeperCoachContract { get => this.goalkeeperCoachContract; set { this.goalkeeperCoachContract = value; this.OnPropertyChanged(nameof(this.GoalkeeperCoachContract)); } }
+        private byte goalkeeperCoachContract;
+        /// <summary>The goalkeeper trainer's salary per year (DM).</summary>
+        public int GoalkeeperCoachSalary { get => this.goalkeeperCoachSalary; set { this.goalkeeperCoachSalary = value; this.OnPropertyChanged(nameof(this.GoalkeeperCoachSalary)); } }
+        private int goalkeeperCoachSalary;
+        #endregion
+
         #region Editor settings
         /// <summary>Max length of <see cref="Chant"/> and <see cref="FanName"/>: the game copies them unchecked into its texts (the original data uses up to 18).</summary>
         public const int FanTextLength = 20;
@@ -385,6 +473,183 @@ namespace A2G_Trainer.Model
         /// <summary>"Vorstand" (+0xF5); the game moves it during the season.</summary>
         public ClubEnums.Board Board { get => this.board; set { this.board = value; this.OnPropertyChanged(nameof(this.Board)); } }
         private ClubEnums.Board board;
+
+        #region Kalkulation, slush fund, loans and investments (club finance block)
+        /// <summary>Standing ticket price in DM (+0x272, Int16).</summary>
+        public short StandingPrice { get => this.standingPrice; set { this.standingPrice = value; this.OnPropertyChanged(nameof(this.StandingPrice)); } }
+        private short standingPrice;
+        /// <summary>Seat ticket price in DM (+0x274, Int16); boxes and covered seats are priced from it.</summary>
+        public short SeatPrice { get => this.seatPrice; set { this.seatPrice = value; this.OnPropertyChanged(nameof(this.SeatPrice)); } }
+        private short seatPrice;
+        /// <summary>Season ticket discount in percent (+0x270, 0..50).</summary>
+        public byte SeasonTicketDiscount { get => this.seasonTicketDiscount; set { this.seasonTicketDiscount = value; this.OnPropertyChanged(nameof(this.SeasonTicketDiscount)); } }
+        private byte seasonTicketDiscount;
+        /// <summary>Season ticket quota in percent of the capacity (+0x271).</summary>
+        public byte SeasonTicketQuota { get => this.seasonTicketQuota; set { this.seasonTicketQuota = value; this.OnPropertyChanged(nameof(this.SeasonTicketQuota)); } }
+        private byte seasonTicketQuota;
+        /// <summary>Spending on security in percent (+0x2AC, Int16, 1..5).</summary>
+        public short Security { get => this.security; set { this.security = value; this.OnPropertyChanged(nameof(this.Security)); } }
+        private short security;
+        /// <summary>The law firm, 0 (cheapest) .. 4 (+0x373 current, +0x370 planned).</summary>
+        public byte LawFirm { get => this.lawFirm; set { this.lawFirm = value; this.OnPropertyChanged(nameof(this.LawFirm)); } }
+        private byte lawFirm;
+        /// <summary>Statistics department 0..2 (+0x374 in effect, +0x371 planned): none, 20,000 or 200,000 DM.</summary>
+        public byte StatisticsDepartment { get => this.statisticsDepartment; set { this.statisticsDepartment = value; this.OnPropertyChanged(nameof(this.StatisticsDepartment)); } }
+        private byte statisticsDepartment;
+        /// <summary>Computer department (+0x375 in effect, +0x372 planned), 200,000 DM.</summary>
+        public bool HasComputerDepartment { get => this.hasComputerDepartment; set { this.hasComputerDepartment = value; this.OnPropertyChanged(nameof(this.HasComputerDepartment)); } }
+        private bool hasComputerDepartment;
+        /// <summary>Slush fund ("Schwarze Kasse", +0x144, Int32).</summary>
+        public int SlushFund { get => this.slushFund; set { this.slushFund = value; this.OnPropertyChanged(nameof(this.SlushFund)); } }
+        private int slushFund;
+        /// <summary>Share of each home match's income going to the slush fund, in per mille (+0x148, 0..30).</summary>
+        public short SlushFundRate { get => this.slushFundRate; set { this.slushFundRate = value; this.OnPropertyChanged(nameof(this.SlushFundRate)); } }
+        private short slushFundRate;
+        /// <summary>Legal fees booked this season (+0x384, Int32); 0 refunds them.</summary>
+        public int LegalCosts { get => this.legalCosts; set { this.legalCosts = value; this.OnPropertyChanged(nameof(this.LegalCosts)); } }
+        private int legalCosts;
+        /// <summary>Overdraft limit ("Dispo", +0x39C, Int16) in units of 100,000 DM; the game sets it at the season change.</summary>
+        public short OverdraftLimit { get => this.overdraftLimit; set { this.overdraftLimit = value; this.OnPropertyChanged(nameof(this.OverdraftLimit)); } }
+        private short overdraftLimit;
+        /// <summary>Whether the club is listed on the stock market (only then it has a share price).</summary>
+        public bool IsListed { get => this.isListed; set { this.isListed = value; this.OnPropertyChanged(nameof(this.IsListed)); } }
+        private bool isListed;
+        /// <summary>Share price (record stock block +4, Int16); the game moves it towards its target every week.</summary>
+        public short SharePrice { get => this.sharePrice; set { this.sharePrice = value; this.OnPropertyChanged(nameof(this.SharePrice)); } }
+        private short sharePrice;
+        /// <summary>Shares issued (record stock block +0, Int32). Read-only.</summary>
+        public int IssuedShares { get => this.issuedShares; set { this.issuedShares = value; this.OnPropertyChanged(nameof(this.IssuedShares)); } }
+        private int issuedShares;
+
+        /// <summary>The club's active loans.</summary>
+        public System.ComponentModel.BindingList<ClubLoan> Loans { get; } = new System.ComponentModel.BindingList<ClubLoan>();
+        /// <summary>The current index of each kind of investment, shared by <see cref="Investments"/>.</summary>
+        public int[] InvestmentIndices { get; set; } = new int[ClubInvestment.KindNames.Length];
+        /// <summary>The club's active investments.</summary>
+        public System.ComponentModel.BindingList<ClubInvestment> Investments { get; } = new System.ComponentModel.BindingList<ClubInvestment>();
+        #endregion
+
+        /// <summary>
+        /// The association byte (+0x101) as stored: bits 0-4 count offences, bits 5/6 cost one stage,
+        /// bit 7 belongs to the licence procedure - see <see cref="AssociationImage"/>.
+        /// </summary>
+        public byte Association
+        {
+            get => this.association;
+            set { this.association = value; this.OnPropertyChanged(nameof(this.Association)); this.OnPropertyChanged(nameof(this.AssociationImage)); }
+        }
+        private byte association;
+
+        /// <summary>The licence byte (+0xFF) as stored; bit 7 means the licence for the new season was refused.</summary>
+        public byte Licence
+        {
+            get => this.licence;
+            set { this.licence = value; this.OnPropertyChanged(nameof(this.Licence)); this.OnPropertyChanged(nameof(this.LicenceRefused)); }
+        }
+        private byte licence;
+
+        /// <summary>Whether the licence for the new season was refused (bit 7 of <see cref="Licence"/>).</summary>
+        public bool LicenceRefused
+        {
+            get => (this.licence & 0x80) != 0;
+            set => this.Licence = (byte)(value ? this.licence | 0x80 : this.licence & 0x7F);
+        }
+
+        /// <summary>
+        /// The association's requirements (+0x100), one bit each (FUN_005b5820, texts 2445-2450, 5565):
+        /// see <see cref="ClubEnums.Requirement"/>. The season end sets them anew.
+        /// </summary>
+        public byte Requirements
+        {
+            get => this.requirements;
+            set { this.requirements = value; this.OnPropertyChanged(nameof(this.Requirements)); }
+        }
+        private byte requirements;
+
+        /// <summary>Whether the association imposes <paramref name="requirement"/>.</summary>
+        public bool HasRequirement(ClubEnums.Requirement requirement) => (this.requirements & (byte)requirement) != 0;
+
+        /// <summary>Imposes or lifts <paramref name="requirement"/>; the two transfer requirements exclude each other.</summary>
+        public void SetRequirement(ClubEnums.Requirement requirement, bool on)
+        {
+            byte value = (byte)(on ? this.requirements | (byte)requirement : this.requirements & ~(byte)requirement);
+            if (on && requirement == ClubEnums.Requirement.TransferSurplus)
+                value &= unchecked((byte)~(byte)ClubEnums.Requirement.TransferLimit);
+            if (on && requirement == ClubEnums.Requirement.TransferLimit)
+                value &= unchecked((byte)~(byte)ClubEnums.Requirement.TransferSurplus);
+            this.Requirements = value;
+        }
+
+        /// <summary>Maximum debt under the requirement (+0x494, x 1,000,000 DM).</summary>
+        public byte DebtLimit { get => this.debtLimit; set { this.debtLimit = value; this.OnPropertyChanged(nameof(this.DebtLimit)); } }
+        private byte debtLimit;
+        /// <summary>Maximum calculated spectators under the requirement (+0x495, x 1,000).</summary>
+        public byte SpectatorLimit { get => this.spectatorLimit; set { this.spectatorLimit = value; this.OnPropertyChanged(nameof(this.SpectatorLimit)); } }
+        private byte spectatorLimit;
+        /// <summary>Maximum salaries under the requirement (+0x496, x 100,000 DM); the game imposes it whenever it isn't 0.</summary>
+        public ushort SalaryLimit { get => this.salaryLimit; set { this.salaryLimit = value; this.OnPropertyChanged(nameof(this.SalaryLimit)); } }
+        private ushort salaryLimit;
+        /// <summary>Transfer surplus to reach or transfer spending allowed (+0x498, x 100,000 DM).</summary>
+        public short TransferLimit { get => this.transferLimit; set { this.transferLimit = value; this.OnPropertyChanged(nameof(this.TransferLimit)); } }
+        private short transferLimit;
+
+        /// <summary>The bribery byte (+0x14A): bit 7 referee bribe tried, bit 5 opponent asked, bit 4 opponent paid; the game clears them after every league match.</summary>
+        public byte Bribery { get => this.bribery; set { this.bribery = value; this.OnPropertyChanged(nameof(this.Bribery)); } }
+        private byte bribery;
+        /// <summary>The short training camp (+0x1074): bit 0x800 booked for the next match, bits 8-9 camps this season.</summary>
+        public uint ShortCamp { get => this.shortCamp; set { this.shortCamp = value; this.OnPropertyChanged(nameof(this.ShortCamp)); this.OnPropertyChanged(nameof(this.ShortCampsThisSeason)); } }
+        private uint shortCamp;
+        /// <summary>Short camps this season (0..2): the first adds 1 to every player, the second with a 50 % chance, from the third on a malus.</summary>
+        public byte ShortCampsThisSeason
+        {
+            get => (byte)((this.shortCamp >> 8) & 3);
+            set => this.ShortCamp = (this.shortCamp & ~0x300u) | ((uint)Math.Min(value, (byte)2) << 8);
+        }
+        /// <summary>Requests to the sponsor for money (+0xFC); only while it is 0 does he pay.</summary>
+        public byte SponsorRequests { get => this.sponsorRequests; set { this.sponsorRequests = value; this.OnPropertyChanged(nameof(this.SponsorRequests)); } }
+        private byte sponsorRequests;
+        /// <summary>Spent on scouts this season (+0x2FC); from 2 Mio. DM the game refuses more.</summary>
+        public int ScoutSpending { get => this.scoutSpending; set { this.scoutSpending = value; this.OnPropertyChanged(nameof(this.ScoutSpending)); } }
+        private int scoutSpending;
+
+        /// <summary>The club's image with the public (+0x10E, 10..50, FUN_005b7950 clamps) - see <see cref="PublicImageStage"/>.</summary>
+        public byte PublicImage
+        {
+            get => this.publicImage;
+            set { this.publicImage = value; this.OnPropertyChanged(nameof(this.PublicImage)); this.OnPropertyChanged(nameof(this.PublicImageStage)); }
+        }
+        private byte publicImage;
+
+        // A value inside each stage (FUN_00469d90: above 44/34/24/14).
+        private static readonly byte[] PublicImageStageValues = { 0, 10, 20, 30, 40, 50 };
+
+        /// <summary>The club's image with the public as the game names it; setting it stores a value of that stage.</summary>
+        public ClubEnums.PublicImage PublicImageStage
+        {
+            get => this.publicImage > 44 ? ClubEnums.PublicImage.SehrBeliebt : this.publicImage > 34 ? ClubEnums.PublicImage.RechtAngesehen
+                : this.publicImage > 24 ? ClubEnums.PublicImage.Neutral : this.publicImage > 14 ? ClubEnums.PublicImage.WenigAngesehen : ClubEnums.PublicImage.VollkommenVerhasst;
+            set => this.PublicImage = PublicImageStageValues[(int)value];
+        }
+
+        // Lowest offence count of each stage (FUN_005b5c30: below 2 -> 5, below 5 -> 4, below 9 -> 3, below 23 -> 2).
+        private static readonly byte[] AssociationStageCounts = { 0, 23, 9, 5, 2, 0 };
+
+        /// <summary>
+        /// The club's standing with the association, as the game shows it (FUN_005b5c30). Setting it
+        /// stores that stage's lowest offence count and clears bits 5/6; bit 7 stays.
+        /// </summary>
+        public ClubEnums.AssociationImage AssociationImage
+        {
+            get
+            {
+                int count = this.association & 0x1F;
+                int stage = count < 2 ? 5 : count < 5 ? 4 : count < 9 ? 3 : count < 23 ? 2 : 1;
+                if ((this.association & 0x60) != 0 && stage > 1)
+                    stage--;
+                return (ClubEnums.AssociationImage)stage;
+            }
+            set => this.Association = (byte)((this.association & 0x80) | AssociationStageCounts[(int)value]);
+        }
 
         /// <summary>"Erzrivale" (+0xF4): ID of a club of the same country, <see cref="NoClub"/> for none.</summary>
         public byte ArchRivalId { get => this.archRivalId; set { this.archRivalId = value; this.OnPropertyChanged(nameof(this.ArchRivalId)); } }
