@@ -82,6 +82,12 @@
     <Compile Include="Controller\ClubController.cs" />
     <Compile Include="Controller\ClubRecords.cs" />
     <Compile Include="Controller\TransferList.cs" />
+    <Compile Include="Controller\LiveMatch.cs" />
+    <Compile Include="Controller\QuizHelper.cs" />
+    <Compile Include="Controller\InterviewEffectsDisplay.cs" />
+    <Compile Include="Controller\InterviewEffectsFix.cs" />
+    <Compile Include="Controller\GoalLimitBytes.cs" />
+    <Compile Include="Controller\GoalLimitPatch.cs" />
     <Compile Include="Controller\GameRates.cs" />
     <Compile Include="Controller\ClubSquads.cs" />
     <Compile Include="Controller\EntityController.cs" />
@@ -136,6 +142,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\CountryMap.cs" />
+    <Compile Include="View\QuizMark.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\MechanicsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="View\JerseyView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -162,6 +174,10 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\ClubView.Association.cs">
+      <DependentUpon>ClubView.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ClubView.LiveMatch.cs">
       <DependentUpon>ClubView.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
