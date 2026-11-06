@@ -73,8 +73,8 @@ namespace A2G_Trainer.Controller
                    GameProcessNames.Any(name => string.Equals(name, processName, StringComparison.OrdinalIgnoreCase));
         }
 
-        // Process properties throw for processes that exit meanwhile or can't be queried.
-        private static string SafeGet(Func<string> get)
+        /// <summary>Reads a process property, or null if it throws (the process exited meanwhile or can't be queried).</summary>
+        internal static string SafeGet(Func<string> get)
         {
             try
             {

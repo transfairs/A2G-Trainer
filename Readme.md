@@ -45,6 +45,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - ✅ **Contract, injury and suspension values persist** in the savegame: contract term, injury days and type (with the game's names), injury-prone, banned matches, doping, yellow cards, national caps and retirement from the national team; buy price and home club of loaned players; season statistics; put players of any club on the transfer list or take them off
 - ✅ **Player transfers**: move a player to another club as a transfer, loan or loan with purchase option, carried out by the game's own transfer functions at the next Tagesabschluss
 - ✅ Runs on **Windows XP** (built against `.NET Framework 4.0`)
+- ✅ Runs under **Wine/Proton** (e.g. Lutris) alongside the game
 - ✅ **Resizable window**: drag it larger or maximize it, and all content (fields, lists, fonts, help) grows with it
 - ✅ **Club editing** (name, finances, stadium details, board, standing with the association and the public, the budget screen's settings incl. law firms, slush fund, loans, investments, share price, overdraft limit, the association's requirements, the licence and the club's locks (bribery, short camp, sponsor, scouts), and the savegame's interest rates, investment indices and costs) for your own and **any other club**: pick country and club below the tabs  
 - ✅ **Live match**: bench, substitutions made, attitude, hardness and effort while the game plays the own club's match
@@ -69,6 +70,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 **To run the trainer**
 - On **Windows XP**, make sure [.NET Framework 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17718) is installed.  
 - On **Windows 11**, no additional installation is necessary.  
+- Under **Wine/Proton** (e.g. Lutris), start the trainer in the same prefix as the game; Wine Mono is enough.  
 
 **To build/test from source**
 - **Visual Studio 2019+** (Community is fine) with the **.NET desktop development** workload, *or* the standalone [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with the same workload. Either gives you the full MSBuild toolchain this project needs. See the note in **Testing** below on why the plain `dotnet` SDK CLI can't build it end-to-end.

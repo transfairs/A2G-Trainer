@@ -248,6 +248,29 @@ namespace A2G_Trainer.Tests
                 trainer.OpenSaveGame(path);
                 Assert.False(trainer.SaveSaveGame(Path.Combine(this.directory, "fehlt", "x.gld")));
                 Assert.Equal(new[] { "Spielstand öffnen", "Spielstand öffnen", "Spielstand speichern" }, messages);
+
+                // The file dialogs (one window for all of them: each costs the x86 test host ~20 MB).
+                // "Speichern unter": cancelled nothing is written, confirmed the savegame goes to the new file.
+                string copy = Path.Combine(this.directory, "kopie.gld");
+                using (DialogDriver.Cancel())
+                    Call(trainer, "SaveSaveGameAsToolStripMenuItem_Click", null, EventArgs.Empty);
+                Assert.False(File.Exists(copy));
+                using (DialogDriver.ConfirmFile(copy))
+                    Call(trainer, "SaveSaveGameAsToolStripMenuItem_Click", null, EventArgs.Empty);
+                Assert.True(File.Exists(copy));
+                Assert.Equal(copy, trainer.SaveGameView.Editor.File.Path);
+
+                // "Öffnen": with a running game the dialog starts in its folder; cancelled the savegame stays,
+                // confirmed (without a game) the chosen file is opened.
+                trainer.Anstoss.Process = System.Diagnostics.Process.GetCurrentProcess();
+                using (DialogDriver.Cancel())
+                    Call(trainer, "OpenSaveGameToolStripMenuItem_Click", null, EventArgs.Empty);
+                Assert.Equal(copy, trainer.SaveGameView.Editor.File.Path);
+                trainer.Anstoss.Process = null;
+                using (DialogDriver.ConfirmFile(path))
+                    Call(trainer, "OpenSaveGameToolStripMenuItem_Click", null, EventArgs.Empty);
+                Assert.Equal(path, trainer.SaveGameView.Editor.File.Path);
+                Assert.Equal(3, messages.Count);
             }
         });
 

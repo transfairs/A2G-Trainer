@@ -33,5 +33,14 @@ namespace A2G_Trainer.Tests
         {
             Assert.False(ProcessController.IsGameCandidate(name, title));
         }
+
+        [Fact]
+        public void SafeGet_GivesNull_ForAProcessThatCantBeQueried()
+        {
+            // A Process object without a process behind it throws, like one that exited meanwhile.
+            Assert.Null(ProcessController.SafeGet(() => new System.Diagnostics.Process().ProcessName));
+            Assert.Equal(System.Diagnostics.Process.GetCurrentProcess().ProcessName,
+                ProcessController.SafeGet(() => System.Diagnostics.Process.GetCurrentProcess().ProcessName));
+        }
     }
 }

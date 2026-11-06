@@ -203,6 +203,26 @@ namespace A2G_Trainer.Tests
                 trainer.Anstoss.Process = new Process();
                 Assert.Null(saveGameFolder.Invoke(trainer, null));
 
+                // Without a game the user picks the game folder: cancelled nothing opens, picked the highscores open from there.
+                trainer.Anstoss.Process = null;
+                Assert.Null(saveGameFolder.Invoke(trainer, null));
+                string picked = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "a2g-picked-" + Guid.NewGuid().ToString("N"));
+                System.IO.Directory.CreateDirectory(System.IO.Path.Combine(picked, "texte"));
+                try
+                {
+                    using (DialogDriver.Cancel())
+                        InvokeHandler(trainer, "HighscoresToolStripMenuItem_Click", null);
+                    Assert.Equal(title, trainer.Text);
+                    using (DialogDriver.ConfirmFolder(picked))
+                        InvokeHandler(trainer, "HighscoresToolStripMenuItem_Click", null);
+                    Assert.EndsWith("Highscores", trainer.Text);
+                    Assert.Equal(picked, trainer.HighscoreView.Files.Folder);
+                }
+                finally
+                {
+                    System.IO.Directory.Delete(picked, true);
+                }
+
                 // Highscores open straight from the running game's folder.
                 string folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "a2g-gamefolder-" + Guid.NewGuid().ToString("N"));
                 System.IO.Directory.CreateDirectory(System.IO.Path.Combine(folder, "texte"));
