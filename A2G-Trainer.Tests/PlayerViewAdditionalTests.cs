@@ -1,5 +1,6 @@
 using AnstossTrainer.Shared.Tests;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -171,6 +172,26 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(previouslySelected.Id, ((Player)playerListView.Items[1].Tag).Id);
             }
         });
+        [Fact]
+        public void RefreshPlayerListView_ShowsTheAmateursOnTheirOwnBackground() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                fake.RoutePointerSlot(Settings.ClubAddress[0]);
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_CLUB[ClubEnums.AddressKey.PLAYER_COUNT], new byte[] { 2 });
+                fake.WriteDisplayCacheBytes(AddressPresets.OWN_CLUB[ClubEnums.AddressKey.AMATEUR_PLAYER_COUNT], new byte[] { 1 });
+
+                trainer.PlayerView.RefreshPlayerListView(PlayerEnums.AddressType.OWN);
+
+                ListView playerListView = GetPrivateField<ListView>(trainer.PlayerView, "PlayerListView");
+                Assert.Equal(3, playerListView.Items.Count);
+                Assert.Equal(new[] { false, false, true }, playerListView.Items.Cast<ListViewItem>().Select(item => ((Player)item.Tag).IsAmateur));
+                Assert.NotEqual(PlayerView.AmateurBackColor, playerListView.Items[1].BackColor);
+                Assert.Equal(PlayerView.AmateurBackColor, playerListView.Items[2].BackColor);
+            }
+        });
+
         [Fact]
         public void ReloadBtnClick_CalledASecondTime_StillDoesNotThrow() => StaThread.Run(() =>
         {

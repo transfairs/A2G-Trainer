@@ -123,7 +123,8 @@ namespace A2G_Trainer.Tests
             {
                 WriteClub(fake, 1, "Eintracht", PlayerEnums.Country.Deutschland, 1, new ushort[] { 20, 21 }, new ushort[] { 22 });
 
-                Assert.Equal(new ushort[] { 20, 21, 22 }, ClubSquads.SquadIds(fake.Memory, FixedAddresses.For(fake.Memory), Club(fake, "Eintracht")));
+                Assert.Equal(new ushort[] { 20, 21, 22 }, ClubSquads.SquadIds(fake.Memory, FixedAddresses.For(fake.Memory), Club(fake, "Eintracht"), out int squadCount));
+                Assert.Equal(2, squadCount);
 
                 fake.WriteModuleBytes(Record(1) + Settings.ClubRecordSquadCountOffset, BitConverter.GetBytes((short)-1));
                 fake.WriteModuleBytes(Record(1) + Settings.ClubRecordAmateurCountOffset, new byte[] { 200 });
@@ -151,7 +152,8 @@ namespace A2G_Trainer.Tests
                 BitConverter.GetBytes(fake.ModuleBase + copy).CopyTo(slot, (int)Settings.ClubCachePointerOffset);
                 fake.WriteModuleBytes(Settings.ClubCacheTableOffset + Settings.ClubCacheStride, slot);
 
-                Assert.Equal(new ushort[] { 25, 26 }, ClubSquads.SquadIds(fake.Memory, FixedAddresses.For(fake.Memory), Club(fake, "Eintracht")));
+                Assert.Equal(new ushort[] { 25, 26 }, ClubSquads.SquadIds(fake.Memory, FixedAddresses.For(fake.Memory), Club(fake, "Eintracht"), out int squadCount));
+                Assert.Equal(1, squadCount);
             }
         }
 
@@ -309,6 +311,22 @@ namespace A2G_Trainer.Tests
                 Assert.Equal("", controller.EntityList[0].Firstname);
                 Assert.Equal("Thierry", controller.EntityList[1].Firstname);
                 Assert.True(controller.IsStillLoaded(controller.EntityList[0]));
+            }
+        }
+
+        [Fact]
+        public void RecordList_MarksTheAmateurs_ButNoYouthPlayer()
+        {
+            using (FakeModule fake = NewFake())
+            {
+                WriteClub(fake, 2, "Arsenal", PlayerEnums.Country.England, 4, new ushort[] { 30, 31 }, new ushort[] { 32 });
+                WriteYouth(fake, 2, new ushort[] { 33 });
+
+                PlayerController squad = new PlayerController(fake.Memory, Club(fake, "Arsenal"), isGog: false, PlayerEnums.AddressType.CLUB);
+                PlayerController youth = new PlayerController(fake.Memory, Club(fake, "Arsenal"), isGog: false, PlayerEnums.AddressType.TRAINEE);
+
+                Assert.Equal(new[] { false, false, true }, squad.EntityList.Select(p => p.IsAmateur));
+                Assert.False(youth.EntityList.Single().IsAmateur);
             }
         }
 

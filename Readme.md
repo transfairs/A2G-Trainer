@@ -37,7 +37,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 
 ## 🛠 Features
 - ✅ Live memory editing of *Anstoss 2 Gold*
-- ✅ **Edit all players** and **amateurs** of **any club**: pick country and club above the player list, no need to open the club in the game first
+- ✅ **Edit all players** and **amateurs** of **any club**: pick country and club above the player list, no need to open the club in the game first; amateurs are highlighted in pale yellow
 - ✅ Edit player attributes, positions and skills
 - ✅ Supports multiplexed bitfields (skills etc.)
 - ✅ **Edit the youth players (Jugendspieler)** of your own or any other club, without opening them in the game first

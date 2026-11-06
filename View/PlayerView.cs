@@ -744,6 +744,12 @@ namespace A2G_Trainer.View
                 this.LoadPlayerList(this.playerController.Type, this.playerController.RecordClub);
         }
 
+        /// <summary>
+        /// Background of the amateurs' rows in the player list. A pale tint keeps the black text at full
+        /// contrast; a text color can't differ enough from both the background and the other players.
+        /// </summary>
+        internal static readonly System.Drawing.Color AmateurBackColor = System.Drawing.Color.FromArgb(0xFF, 0xF1, 0xC1);
+
         // OWN/OPPONENT read the roster slots the game fills for them; CLUB/TRAINEE list <paramref name="club"/>
         // (or, if this savegame hasn't got it, the own club) from the records.
         private void LoadPlayerList(PlayerEnums.AddressType type, ClubSquads.Entry club)
@@ -776,6 +782,8 @@ namespace A2G_Trainer.View
                 listViewItem.SubItems.Add(p.ToString());
                 listViewItem.SubItems.Add(p.Level.ToString());
                 listViewItem.Tag = p;
+                if (p.IsAmateur)
+                    listViewItem.BackColor = AmateurBackColor;
                 this.PlayerListView.Items.Add(listViewItem);
 
                 if (player != null && p.Id == player.Id)

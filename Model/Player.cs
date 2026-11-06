@@ -35,6 +35,9 @@ namespace A2G_Trainer.Model
         /// </summary>
         internal uint? WorkingCopy { get; set; }
 
+        /// <summary>True for a player of the club's amateurs (listed after the squad), not of its squad.</summary>
+        internal bool IsAmateur { get; set; }
+
         /// <summary>Resolved memory addresses for this player's fields.</summary>
         public Addresses Addresses { get => this.addresses; set { this.addresses = value; this.OnPropertyChanged(nameof(this.Addresses)); } }
         private Addresses addresses;

@@ -68,8 +68,16 @@ namespace A2G_Trainer.Controller
         /// the clubs all the time, and a released working copy's player pointers can already point at
         /// other players; the record's IDs stay right.
         /// </summary>
-        internal static List<ushort> SquadIds(ProcessMemory memory, FixedAddresses fixedAddresses, Entry club, bool fromRecord = false)
+        internal static List<ushort> SquadIds(ProcessMemory memory, FixedAddresses fixedAddresses, Entry club, bool fromRecord = false) =>
+            SquadIds(memory, fixedAddresses, club, out _, fromRecord);
+
+        /// <summary>
+        /// As <see cref="SquadIds(ProcessMemory, FixedAddresses, Entry, bool)"/>; <paramref name="squadCount"/>
+        /// is the number of squad players, the IDs after them are the amateurs'.
+        /// </summary>
+        internal static List<ushort> SquadIds(ProcessMemory memory, FixedAddresses fixedAddresses, Entry club, out int squadCount, bool fromRecord = false)
         {
+            squadCount = 0;
             if (fixedAddresses == null)
                 return new List<ushort>();
 
@@ -77,12 +85,14 @@ namespace A2G_Trainer.Controller
             if (workingCopy != 0)
             {
                 List<ushort> ids = PointedIds(memory, workingCopy + Settings.ClubSquadOffset, Count(memory, workingCopy + Settings.ClubSquadCountOffset, 2, Settings.ClubSquadCapacity));
+                squadCount = ids.Count;
                 ids.AddRange(PointedIds(memory, workingCopy + Settings.ClubAmateursOffset, Count(memory, workingCopy + Settings.ClubAmateurCountOffset, 1, Settings.ClubAmateurCapacity)));
                 return ids;
             }
 
             uint record = fixedAddresses.Runtime(memory, Settings.ClubRecordTableOffset) + (uint)club.Index * Settings.ClubRecordStride;
             List<ushort> squad = Ids(memory, record + Settings.ClubRecordSquadOffset, Count(memory, record + Settings.ClubRecordSquadCountOffset, 2, Settings.ClubSquadCapacity));
+            squadCount = squad.Count;
             squad.AddRange(Ids(memory, record + Settings.ClubRecordAmateursOffset, Count(memory, record + Settings.ClubRecordAmateurCountOffset, 1, Settings.ClubAmateurCapacity)));
             return squad;
         }

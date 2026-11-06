@@ -48,12 +48,22 @@ namespace A2G_Trainer.Controller
             if (club == null || fixedAddresses == null || !new PlayerRecordResolver(memory).IsAvailable)
                 return;
 
-            List<ushort> ids = type == PlayerEnums.AddressType.TRAINEE
-                ? ClubSquads.YouthIds(memory, fixedAddresses, club)
-                : ClubSquads.SquadIds(memory, fixedAddresses, club);
+            int squadCount;
+            List<ushort> ids;
+            if (type == PlayerEnums.AddressType.TRAINEE)
+            {
+                ids = ClubSquads.YouthIds(memory, fixedAddresses, club);
+                squadCount = ids.Count;
+            }
+            else
+                ids = ClubSquads.SquadIds(memory, fixedAddresses, club, out squadCount);
             Dictionary<ushort, uint> workingCopies = ClubSquads.PlayerWorkingCopies(memory, fixedAddresses);
-            foreach (ushort id in ids)
-                this.EntityList.Add(this.GetRecordEntity(id, workingCopies.TryGetValue(id, out uint copy) ? copy : (uint?)null));
+            for (int i = 0; i < ids.Count; i++)
+            {
+                Player player = this.GetRecordEntity(ids[i], workingCopies.TryGetValue(ids[i], out uint copy) ? copy : (uint?)null);
+                player.IsAmateur = i >= squadCount;
+                this.EntityList.Add(player);
+            }
             Logger.Debug($"{club.Name} ({club.Country}/{club.Id}): {this.EntityList.Count} players from the records ({type}).");
         }
 
@@ -87,7 +97,9 @@ namespace A2G_Trainer.Controller
                 {
                     offset = Tools.SumHex(new string[] { this.EntityList.Last().Offset, Settings.PlayerOffset });
                 }
-                this.EntityList.Add(this.GetEntity(offset, this.Type));
+                Player player = this.GetEntity(offset, this.Type);
+                player.IsAmateur = i >= club.PlayerCount;
+                this.EntityList.Add(player);
             }
 
             // While the layout is unverified, GetEntity's persistent reads were skipped, so the list
