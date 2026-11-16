@@ -514,6 +514,68 @@ namespace A2G_Trainer.Controller
         private static readonly byte[] goalHomeBrakePattern = GoalLimitBytes.HomeBrakePattern;
         private static readonly byte[] goalAwayBrakePattern = GoalLimitBytes.AwayBrakePattern;
 
+        // Overconfidence (original build). FUN_005f3d30(match, home club, away club), called by
+        // FUN_005f0120 (all matches of a day) and FUN_005f17b0 (a single match), sets up a match before
+        // the pre-match screens: each team's overall factor (team block +0x1C, home +0x70 / away +0x158
+        // from the match) is 100, but a team more than 10 (or 20) strength points better than its
+        // opponent gets 90/80/70 by chance. A successful pre-match speech sets it back to 100 (checked
+        // live). OverconfidenceRule redirects both calls (each followed by add esp, 0xC) to a stub that
+        // calls the function and then sets the factor of human teams (club +0x86) and of their
+        // opponents. The pattern is the function's first instructions (2007 CD/GOG: +0x4960; the call
+        // sites move by +0x3CA1 and +0x4950, read live 16.11.2026).
+        private const uint matchInitFunctionOffset = 0x1F3D30;   // FUN_005f3d30
+        private static readonly uint[] matchInitCallSiteOffsets = { 0x1F082F, 0x1F19FB };
+        private const uint matchTeamFactorOffset   = 0x1C;       // Int16 in a team block, 100 = normal
+        private const uint clubHumanOffset         = 0x86;       // club working copy: manager number, 0 = computer
+        private static readonly byte[] matchInitPattern = { 0x81, 0xEC, 0xA4, 0x00, 0x00, 0x00, 0x66, 0x33, 0xC0, 0x53, 0x55, 0x56,
+            0x8B, 0xB4, 0x24, 0xB4, 0x00, 0x00, 0x00, 0x8B, 0xAC, 0x24, 0xBC, 0x00, 0x00, 0x00, 0x57, 0x66, 0x3B, 0x46, 0x24 };
+        private static readonly byte[] matchInitCallTrailPattern = { 0x83, 0xC4, 0x0C };
+
+        // Pre-match speeches (original build). The table 0x6B7D50 (static, 44 x 0x14: +8 text ID,
+        // +0xC/+0xD defence/attack %, +0xE hardness or 99, +0xF uses per season or 99, +0x10 flags)
+        // and the club's uses left (club +0x1448 + number * 2). The speech dialog (resource 0xE7,
+        // object on the stack: +0x7FE0 club, +0x7FE4 opponent, +0x7FE8/+0x7FEC own/opposing team block,
+        // +0x7FF0 match, +0x7FF4 1 = home) fills its list in FUN_004c35d0, one call of FUN_005c2490
+        // (thiscall list: text, colour 0xFFFFFF, number; esi = the dialog) per speech; the list keeps
+        // up to 0xC0 bytes of each text. SpeechEffectsDisplay redirects that call. The pattern is the
+        // instructions around it (2007 CD/GOG: call +0x2200, function +0x2D30, read live 16.11.2026).
+        // The game checks the chosen speech in FUN_004c3a20 (cdecl: club, opponent, own team block,
+        // opposing team block, match, home), speech number at club +0x1440. Once the switch over the
+        // speeches has decided ([esp+0x10] = 1 if it fits), it releases the manager (call FUN_005ba7a0
+        // at 0x4C497B) before it builds its first stack object - SpeechEffectsDisplay redirects that
+        // call too, to run the check for each speech in the list and leave it there. The patterns are the
+        // function's first instructions and the instructions around that call (2007 CD/GOG: both +0x2200,
+        // the release function moved like the list function, read live 17.11.2026).
+        // From speech 28 on, a fitting speech then still needs a roll: FUN_00645ed0(100) (0..99) must
+        // not exceed the manager's motivation skill * 6 + 10 (Int16 at manager +0x189A + level * 0xC,
+        // level byte +0x22; 0x4C4A19), so the chance is skill * 6 + 11 % - the released manager is the
+        // one the roll reads.
+        // A club with full data (the human managers' clubs) has a slot k at record +0x92; its fields
+        // lie at 0x796D2C + (k - 1) * 0x4210 + working-copy offset (k = 1 checked live for +0x1440..).
+        private const uint speechTableOffset          = 0x2B7D50;
+        private const uint speechListCallSiteOffset   = 0x0C36EB;   // E8 rel32 -> FUN_005c2490 in FUN_004c35d0
+        private const uint speechListFunctionOffset   = 0x1C2490;   // FUN_005c2490
+        private const uint speechDialogClubOffset     = 0x7FE0;
+        private const uint clubSpeechUsesOffset       = 0x1448;
+        private const uint clubTeamIdOffset           = 0x102;
+        private const uint clubCountryOffset          = 0x103;
+        private const uint speechCheckFunctionOffset  = 0x0C3A20;   // FUN_004c3a20
+        private const uint speechCheckReleaseSiteOffset = 0x0C497B; // E8 rel32 -> FUN_005ba7a0 in FUN_004c3a20
+        private const uint speechCheckReleaseFunctionOffset = 0x1BA7A0; // FUN_005ba7a0
+        private const uint clubSpeechOffset           = 0x1440;
+        private const uint managerMotivationOffset    = 0x189A;
+        private const uint managerMotivationStride    = 0x0C;
+        private const uint managerMotivationLevelOffset = 0x22;
+        private const uint clubRecordDataSlotOffset   = 0x92;
+        private const uint clubDataOffset             = 0x396D2C;
+        private const uint clubDataStride             = 0x4210;
+        private static readonly byte[] speechListCallLeadPattern  = { 0x8B, 0x4C, 0x24, 0x14, 0x68, 0xFF, 0xFF, 0xFF, 0x00, 0x52 };
+        private static readonly byte[] speechListCallTrailPattern = { 0x8B, 0x44, 0x24, 0x14, 0x45 };
+        private static readonly byte[] speechCheckPattern = { 0xB8, 0xA4, 0x17, 0x00, 0x00 };
+        private static readonly byte[] speechCheckPatternTrail = { 0x55, 0x8B, 0xAC, 0x24, 0xAC, 0x17, 0x00, 0x00 };
+        private static readonly byte[] speechCheckReleaseLeadPattern = { 0xC7, 0x44, 0x24, 0x10, 0x01, 0x00, 0x00, 0x00, 0x8B, 0x74, 0x24, 0x1C, 0x56 };
+        private static readonly byte[] speechCheckReleaseTrailPattern = { 0x83, 0xC4, 0x04, 0x8D, 0x8C, 0x24, 0xA0, 0x06, 0x00, 0x00, 0x6A, 0x00, 0xE8 };
+
         // National coach (original build). The game's own takeover FUN_005cf1e0(ID, country), leave
         // FUN_005cf340(ID) and friendly candidates FUN_005cf3e0() (all cdecl) also set up the national
         // team's line-up and tactics and the three friendly dates' opponents to choose from, which the
@@ -817,6 +879,35 @@ namespace A2G_Trainer.Controller
         internal static byte[] GoalLimitPattern            { get => (byte[])goalLimitPattern.Clone(); }
         internal static byte[] GoalHomeBrakePattern        { get => (byte[])goalHomeBrakePattern.Clone(); }
         internal static byte[] GoalAwayBrakePattern        { get => (byte[])goalAwayBrakePattern.Clone(); }
+        internal static uint MatchInitFunctionOffset       { get => matchInitFunctionOffset; }
+        internal static uint[] MatchInitCallSiteOffsets    { get => (uint[])matchInitCallSiteOffsets.Clone(); }
+        internal static uint MatchTeamFactorOffset         { get => matchTeamFactorOffset; }
+        internal static uint ClubHumanOffset               { get => clubHumanOffset; }
+        internal static byte[] MatchInitPattern            { get => (byte[])matchInitPattern.Clone(); }
+        internal static byte[] MatchInitCallTrailPattern   { get => (byte[])matchInitCallTrailPattern.Clone(); }
+        internal static uint SpeechTableOffset             { get => speechTableOffset; }
+        internal static uint SpeechListCallSiteOffset      { get => speechListCallSiteOffset; }
+        internal static uint SpeechListFunctionOffset      { get => speechListFunctionOffset; }
+        internal static uint SpeechDialogClubOffset        { get => speechDialogClubOffset; }
+        internal static uint ClubSpeechUsesOffset          { get => clubSpeechUsesOffset; }
+        internal static uint ClubTeamIdOffset              { get => clubTeamIdOffset; }
+        internal static uint ClubCountryOffset             { get => clubCountryOffset; }
+        internal static uint SpeechCheckFunctionOffset     { get => speechCheckFunctionOffset; }
+        internal static uint SpeechCheckReleaseSiteOffset  { get => speechCheckReleaseSiteOffset; }
+        internal static uint SpeechCheckReleaseFunctionOffset { get => speechCheckReleaseFunctionOffset; }
+        internal static uint ClubSpeechOffset              { get => clubSpeechOffset; }
+        internal static uint ManagerMotivationOffset       { get => managerMotivationOffset; }
+        internal static uint ManagerMotivationStride       { get => managerMotivationStride; }
+        internal static uint ManagerMotivationLevelOffset  { get => managerMotivationLevelOffset; }
+        internal static uint ClubRecordDataSlotOffset      { get => clubRecordDataSlotOffset; }
+        internal static uint ClubDataOffset                { get => clubDataOffset; }
+        internal static uint ClubDataStride                { get => clubDataStride; }
+        internal static byte[] SpeechListCallLeadPattern   { get => (byte[])speechListCallLeadPattern.Clone(); }
+        internal static byte[] SpeechListCallTrailPattern  { get => (byte[])speechListCallTrailPattern.Clone(); }
+        internal static byte[] SpeechCheckPattern          { get => (byte[])speechCheckPattern.Clone(); }
+        internal static byte[] SpeechCheckPatternTrail     { get => (byte[])speechCheckPatternTrail.Clone(); }
+        internal static byte[] SpeechCheckReleaseLeadPattern { get => (byte[])speechCheckReleaseLeadPattern.Clone(); }
+        internal static byte[] SpeechCheckReleaseTrailPattern { get => (byte[])speechCheckReleaseTrailPattern.Clone(); }
         internal static uint[] TransferMarketCallSiteOffsets { get => (uint[])transferMarketCallSiteOffsets.Clone(); }
         internal static uint TransferMarketFunctionOffset  { get => transferMarketFunctionOffset; }
         internal static uint TransferDeadlineCallSiteOffset { get => transferDeadlineCallSiteOffset; }

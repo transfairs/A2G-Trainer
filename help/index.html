@@ -111,7 +111,7 @@
             <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Die Jugend jedes Vereins, ohne Umweg über das Spiel.</p></a>
             <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Nationalmannschaft, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
             <a class="toc-card" href="#ligen" data-jump="ligen"><h3>Ligen</h3><p>Die Tabellen aller 13 Ligen, der Endstand ausgewürfelter Ligen, Lizenz und Punktabzug, Meister der Länder ohne Liga.</p></a>
-            <a class="toc-card" href="#mechaniken" data-jump="mechaniken"><h3>Spielmechaniken</h3><p>Quiz- und Interviewhilfe, Torgrenzen und Jobangebote, direkt im laufenden Spiel.</p></a>
+            <a class="toc-card" href="#mechaniken" data-jump="mechaniken"><h3>Spielmechaniken</h3><p>Quiz-, Interview- und Ansprachehilfe, Torgrenzen, Überheblichkeit und Jobangebote, direkt im laufenden Spiel.</p></a>
             <a class="toc-card" href="#tipps" data-jump="tipps"><h3>Tipps &amp; Tricks</h3><p>Kleine Kniffe, die Zeit sparen.</p></a>
             <a class="toc-card" href="#faq" data-jump="faq"><h3>Fehlerbehebung</h3><p>Häufige Fragen und Lösungen, inklusive Logdatei.</p></a>
             <a class="toc-card" href="#changelog" data-jump="changelog"><h3>Changelog</h3><p>Was sich von Version zu Version geändert hat.</p></a>
@@ -398,9 +398,10 @@
         <div class="subpanel" data-sub="live">
           <fieldset class="groupbox">
             <legend>Live-Spiel</legend>
-            <p>Während das Spiel ein Spiel des angezeigten Vereins mit menschlicher Beteiligung austrägt, zeigt der Tab Minute, Spielstand und Gegner. „Werte neuladen“ liest den Stand neu, „Speichern“ schreibt, was Sie auf diesem Tab geändert haben, und nur das: Das Spiel läuft weiter, ein unverändertes Feld würde sonst einen inzwischen neueren Stand überschreiben.</p>
+            <p>Während das Spiel ein Spiel des angezeigten Vereins mit menschlicher Beteiligung austrägt oder für den Anpfiff vorbereitet hat (zum Beispiel während der Mannschaftssitzung), zeigt der Tab Minute, Spielstand und Gegner. „Werte neuladen“ liest den Stand neu, „Speichern“ schreibt, was Sie auf diesem Tab geändert haben, und nur das: Das Spiel läuft weiter, ein unverändertes Feld würde sonst einen inzwischen neueren Stand überschreiben.</p>
             <dl class="field-list">
               <dt>Einstellung / Härte / Einsatz</dt><dd>Die Taktik in diesem Spiel; das Spiel übernimmt sie ab der nächsten Minute. Der Computer ändert sie danach für diesen Verein nicht mehr.</dd>
+              <dt>Überheblichkeit: Eigene / Gegner</dt><dd>Wie viel Stärke die Überheblichkeit in diesem Spiel kostet. Ist eine Mannschaft deutlich stärker als ihr Gegner (mehr als 10 bzw. 20 Punkte), würfelt das Spiel vor dem Anpfiff, ob sie den Gegner unterschätzt; dann spielt sie mit 10, 20 oder 30 % weniger Stärke. Eine erfolgreiche Ansprache in der Mannschaftssitzung hebt das ganz auf. Wirkt, wenn vor dem Anpfiff gespeichert; ein leeres Feld steht für einen Wert, den das Spiel nicht vorsieht, oder ein noch nicht vorbereitetes Spiel. Für alle Spiele auf einmal gibt es die Regel unter <a href="#mechaniken" data-jump="mechaniken">Spielmechaniken</a>.</dd>
               <dt>Wechsel bisher</dt><dd>Wie oft schon gewechselt wurde (höchstens 3). Mit 0 dürfen Sie wieder dreimal wechseln.</dd>
               <dt>Ersatzbank</dt><dd>Die sieben Plätze der Bank. Zur Auswahl stehen Spieler des Kaders, die nicht in der Aufstellung stehen und in diesem Spiel nicht vom Platz gestellt wurden, auch bereits ausgewechselte Spieler; wer schon auf einem anderen Platz sitzt, fehlt in der Liste. „–“ lässt den Platz leer.</dd>
             </dl>
@@ -1038,6 +1039,22 @@
             <legend>Spielengine</legend>
             <dl class="field-list">
               <dt>Torgrenzen aufheben</dt><dd>Das Spiel lässt eine Mannschaft bis zur 45. Minute nur treffen, solange sie weniger als 6 Tore hat, danach weniger als 10. Ab 7 Toren halbiert es außerdem ihre Torchancen. Mit dem Häkchen fallen die Halbierung weg und die Grenze steigt auf 15 Tore, für alle Vereine. Mehr kann das Spiel nicht speichern: Aus 16 Toren würde in Tabelle und Statistik eine 0. Der Trainer ändert dafür den Programmcode des laufenden Spiels; ohne Häkchen und beim Schließen des Trainers stellt er den Originalcode wieder her. Nach einem Neustart des Spiels gelten die Grenzen wieder. Wie oft eine Mannschaft zu Chancen kommt, entscheidet weiter ihre Stärke. Dauerhaft und ohne Trainer hebt das eigenständige Programm <strong>A2G-Patch</strong> die Grenzen auf; dann ist das Häkchen schon gesetzt, und das Schließen des Trainers lässt die Grenzen aufgehoben.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Überheblichkeit</legend>
+            <p>Ist eine Mannschaft deutlich stärker als ihr Gegner (mehr als 10 bzw. 20 Punkte), würfelt das Spiel vor jedem Spiel, ob sie den Gegner unterschätzt, und zieht ihr dann 10, 20 oder 30 % ihrer Stärke ab. Eine erfolgreiche Ansprache in der Mannschaftssitzung hebt den Abzug für dieses Spiel wieder auf.</p>
+            <dl class="field-list">
+              <dt>Eigene Teams</dt><dd>Gilt für die Mannschaften der menschlichen Spieler, Verein wie Nationalelf. „Wie im Spiel“ lässt das Spiel würfeln, „Keine“ schaltet die Überheblichkeit ab, −10/−20/−30 % setzt den Abzug fest, auch wenn die Mannschaft gar nicht Favorit ist.</dd>
+              <dt>Deren Gegner</dt><dd>Dasselbe für die Gegner der menschlichen Mannschaften. Spiele zwischen zwei Computer-Mannschaften bleiben, wie das Spiel sie würfelt.</dd>
+            </dl>
+            <p>Der Trainer setzt den Wert bei jedem Spiel gleich nach dem Würfeln, auch ohne Mannschaftssitzung. Dafür leitet er im laufenden Spiel die Spielvorbereitung über ein kleines Zusatzprogramm um; beim Schließen des Trainers gilt wieder „Wie im Spiel“. Den Wert eines einzelnen Spiels zeigt und ändert der Reiter <em>Live-Spiel</em> beim Verein.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Mannschaftssitzung</legend>
+            <p>Vor einem Spiel können Sie der Mannschaft eine Ansprache halten. Jede Ansprache passt nur in bestimmten Lagen, etwa gegen einen deutlich stärkeren Gegner, nach einer Niederlagenserie oder im Abstiegskampf. Viele lassen sich nur ein- bis dreimal pro Saison halten. Eine unpassende Ansprache bewirkt nichts, verbraucht aber trotzdem einen Einsatz. Ab Nr. 28, den Motivationsansprachen, würfelt das Spiel bei einer passenden Ansprache zusätzlich gegen die Motivationsfähigkeit des Managers. Gelingt eine Ansprache, stärkt sie Abwehr und Angriff um ihre Prozente, ändert unter Umständen die Härte und hebt eine Überheblichkeit für dieses Spiel auf.</p>
+            <dl class="field-list">
+              <dt>Wirkung der Ansprachen anzeigen</dt><dd>Färbt im Dialog der Mannschaftssitzung jede Ansprache ein: grün, wenn sie in der aktuellen Lage passt, rot, wenn nicht, grau, wenn sie in dieser Saison aufgebraucht ist. Das Urteil stammt vom Spiel selbst: Der Trainer lässt für jede Ansprache die Prüfung des Spiels probeweise laufen und bricht sie ab, bevor sie etwas bewirkt. Auswahl und Restanzahl bleiben dabei unverändert. Vor dem Text steht, was die Ansprache bewirkt. „+3%“ heißt drei Prozent mehr für Abwehr und Angriff, „+2/0“ zwei Prozent für die Abwehr und nichts für den Angriff. „hart“, „normal“ oder „sanft“ ist die Härte, die die Mannschaft danach spielt. „2x“ heißt, dass die Ansprache in dieser Saison noch zweimal gehalten werden kann. Bei passenden Motivationsansprachen steht dahinter in Klammern, mit welcher Wahrscheinlichkeit der Wurf gelingt, zum Beispiel „(71%)“: Motivationsfähigkeit × 6 + 11 %, höchstens 100 %. Dafür leitet der Trainer im laufenden Spiel zwei Programmaufrufe über ein kleines Zusatzprogramm um. Ohne Häkchen sieht der Dialog wie im Original aus. Lässt sich das Häkchen nicht setzen, erkennt der Trainer den Spielcode dieser Version nicht.</dd>
             </dl>
           </fieldset>
           <fieldset class="groupbox">
