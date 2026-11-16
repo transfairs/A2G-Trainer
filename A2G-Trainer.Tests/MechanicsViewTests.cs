@@ -215,6 +215,23 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(1, own.SelectedIndex);
                 Assert.Equal(4, opponents.SelectedIndex);
 
+                // The speech display unticks itself where the game's code is unknown, works once it is
+                // there and lists the clubs of the trainer menu's managers.
+                CheckBox speeches = Field<CheckBox>(view, "speechDisplayInput");
+                speeches.Checked = true;
+                Assert.False(speeches.Checked);
+                SpeechEffectsDisplayTests.WriteOriginalCalls(fake);
+                speeches.Checked = true;
+                SpeechEffectsDisplay speechDisplay = Field<SpeechEffectsDisplay>(view, "speechDisplay");
+                Assert.True(speechDisplay.Enabled);
+                SetField(view, "trainers", new List<KeyValuePair<int, Coach>>
+                {
+                    new KeyValuePair<int, Coach>(0, new Coach { CurrentCountry = PlayerEnums.Country.Deutschland, CurrentClubId = 1 }),
+                    new KeyValuePair<int, Coach>(1, null),
+                    new KeyValuePair<int, Coach>(2, new Coach()),
+                });
+                speechDisplay.Tick();
+
                 // Closing the trainer takes the patches back.
                 fix.Checked = true;
                 goals.Checked = true;
@@ -222,6 +239,7 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(0, view.Memory.ReadBytesAtAddress(stub + InterviewEffectsFix.FlagOffset, 1)[0]);
                 Assert.False(new GoalLimitPatch(fake.Memory).IsEnabled);
                 Assert.Equal(new byte[] { 0, 0 }, view.Memory.ReadBytesAtAddress(ruleStub + OverconfidenceRule.OwnOffset, 2));
+                Assert.False(speechDisplay.Enabled);
             }
         });
 

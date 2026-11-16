@@ -60,6 +60,19 @@ namespace A2G_Trainer.Controller
             return fixedAddresses.Runtime(memory, Settings.ClubRecordTableOffset) + (uint)(first + clubId) * Settings.ClubRecordStride;
         }
 
+        /// <summary>
+        /// Address of the working-copy field at <paramref name="working"/> in the full data the game keeps
+        /// for the human managers' clubs (slot at record +0x92), or null for a club without them.
+        /// </summary>
+        internal static uint? DataField(ProcessMemory memory, FixedAddresses fixedAddresses, PlayerEnums.Country country, int clubId, uint working)
+        {
+            uint? record = RecordAddress(memory, fixedAddresses, country, clubId);
+            byte[] slot = record.HasValue ? memory.ReadBytesAtAddress(record.Value + Settings.ClubRecordDataSlotOffset, 1) : null;
+            if (slot == null || slot[0] == 0)
+                return null;
+            return fixedAddresses.Runtime(memory, Settings.ClubDataOffset) + (uint)(slot[0] - 1) * Settings.ClubDataStride + working;
+        }
+
         /// <summary>Addresses of every working copy of the club in the game's club cache.</summary>
         internal static List<uint> WorkingCopies(ProcessMemory memory, FixedAddresses fixedAddresses, PlayerEnums.Country country, int clubId)
         {

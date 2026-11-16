@@ -139,6 +139,24 @@ namespace A2G_Trainer.Controller
             public uint[] CallSites { get; set; }
         }
 
+        /// <summary>The speech dialog's list code in this build, or null if it couldn't be found.</summary>
+        public SpeechListCode SpeechList { get; }
+
+        /// <summary>Module-relative addresses of the code SpeechEffectsDisplay hooks (see Settings).</summary>
+        internal sealed class SpeechListCode
+        {
+            /// <summary>The call (E8 rel32) that adds a speech to the dialog's list.</summary>
+            public uint CallSite { get; set; }
+            /// <summary>The list function it originally goes to (FUN_005c2490 in the original build).</summary>
+            public uint Function { get; set; }
+            /// <summary>The game's check of the chosen speech (FUN_004c3a20 in the original build).</summary>
+            public uint CheckFunction { get; set; }
+            /// <summary>The call (E8 rel32) in the check that releases the manager once the speech is judged.</summary>
+            public uint ReleaseSite { get; set; }
+            /// <summary>The release function it originally goes to (FUN_005ba7a0 in the original build).</summary>
+            public uint ReleaseFunction { get; set; }
+        }
+
         /// <summary>Module-relative offset of the trainer pool (co-trainers), or null if it couldn't be found.</summary>
         public uint? CoachPoolTable { get; }
         /// <summary>Module-relative offset of the goalkeeper trainer table, or null if it couldn't be found.</summary>
@@ -146,8 +164,9 @@ namespace A2G_Trainer.Controller
 
         internal FixedAddresses(uint runtimeShift, uint staticShift, JobOfferCode jobOffer, TransferCode transfer, NationalCoachCode nationalCoach = null,
             uint? coachPoolTable = null, uint? goalkeeperCoachTable = null, InterviewCode interview = null, GoalLimitCode goalLimit = null,
-            MatchInitCode matchInit = null)
+            MatchInitCode matchInit = null, SpeechListCode speechList = null)
         {
+            this.SpeechList = speechList;
             this.MatchInit = matchInit;
             this.GoalLimit = goalLimit;
             this.RuntimeShift = runtimeShift;
@@ -203,6 +222,14 @@ namespace A2G_Trainer.Controller
             {
                 Function = Settings.MatchInitFunctionOffset,
                 CallSites = Settings.MatchInitCallSiteOffsets,
+            },
+            new SpeechListCode
+            {
+                CallSite = Settings.SpeechListCallSiteOffset,
+                Function = Settings.SpeechListFunctionOffset,
+                CheckFunction = Settings.SpeechCheckFunctionOffset,
+                ReleaseSite = Settings.SpeechCheckReleaseSiteOffset,
+                ReleaseFunction = Settings.SpeechCheckReleaseFunctionOffset,
             });
 
         /// <summary>Absolute address of runtime data at the original build's module-relative <paramref name="offset"/>.</summary>
@@ -294,7 +321,66 @@ namespace A2G_Trainer.Controller
             Logger.Warn(matchInit != null
                 ? $"FixedAddresses: Spielvorbereitung 0x{matchInit.Function:X} (Aufrufe {string.Join(", ", matchInit.CallSites.Select(s => $"0x{s:X}"))})."
                 : "FixedAddresses: Spielvorbereitung nicht eindeutig gefunden.");
-            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit, matchInit);
+            SpeechListCode speechList = DiscoverSpeechList(memory);
+            Logger.Warn(speechList != null
+                ? $"FixedAddresses: Ansprachen-Liste: Aufruf 0x{speechList.CallSite:X}, Liste 0x{speechList.Function:X}, Prüfung 0x{speechList.CheckFunction:X}, Freigabe 0x{speechList.ReleaseSite:X} -> 0x{speechList.ReleaseFunction:X}."
+                : "FixedAddresses: Ansprachen-Liste nicht eindeutig gefunden.");
+            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit, matchInit, speechList);
+        }
+
+        // The speech list's call is the only CALL rel32 in the search window between "mov ecx, [esp+0x14] /
+        // push 0xFFFFFF / push edx" and "mov eax, [esp+0x14] / inc ebp"; the speech check starts with
+        // "mov eax, 0x17A4 / call (stack probe) / push ebp / mov ebp, [esp+0x17AC]"; its release call is
+        // the only CALL rel32 between "mov [esp+0x10], 1 / mov esi, [esp+0x1C] / push esi" and "add esp, 4 /
+        // lea ecx, [esp+0x6A0] / push 0 / call". The two redirected calls go to the game's functions or
+        // to an installed SpeechEffectsDisplay stub, which keeps their addresses.
+        private static SpeechListCode DiscoverSpeechList(ProcessMemory memory)
+        {
+            uint? site = FindCallBetween(memory, Settings.SpeechListCallSiteOffset, Settings.SpeechListCallLeadPattern, Settings.SpeechListCallTrailPattern);
+            uint? probe = FindCallBetween(memory, Settings.SpeechCheckFunctionOffset, Settings.SpeechCheckPattern, Settings.SpeechCheckPatternTrail);
+            uint? release = FindCallBetween(memory, Settings.SpeechCheckReleaseSiteOffset, Settings.SpeechCheckReleaseLeadPattern, Settings.SpeechCheckReleaseTrailPattern);
+            if (!site.HasValue || !probe.HasValue || !release.HasValue)
+                return null;
+            uint? function = CallTarget(memory, site.Value);
+            uint? releaseFunction = CallTarget(memory, release.Value);
+            if (!function.HasValue || !releaseFunction.HasValue)
+                return null;
+            return new SpeechListCode
+            {
+                CallSite = site.Value,
+                Function = unchecked((SpeechEffectsDisplay.ListFunctionOf(memory, function.Value) ?? function.Value) - memory.ModuleBase),
+                CheckFunction = probe.Value - (uint)Settings.SpeechCheckPattern.Length,
+                ReleaseSite = release.Value,
+                ReleaseFunction = unchecked((SpeechEffectsDisplay.ReleaseFunctionOf(memory, releaseFunction.Value) ?? releaseFunction.Value) - memory.ModuleBase),
+            };
+        }
+
+        // The module-relative offset of the only CALL rel32 in the search window around originalOffset
+        // that has lead right before and trail right after it; null if there is none or more than one.
+        private static uint? FindCallBetween(ProcessMemory memory, uint originalOffset, byte[] lead, byte[] trail)
+        {
+            byte[] window = ReadWindow(memory, originalOffset, out uint windowStart);
+            if (window == null)
+                return null;
+            uint? site = null;
+            for (int i = lead.Length; i + 5 + trail.Length <= window.Length; i++)
+            {
+                if (window[i] != 0xE8 || !Matches(window, i - lead.Length, lead) || !Matches(window, i + 5, trail))
+                    continue;
+                if (site.HasValue)
+                    return null;
+                site = windowStart + (uint)i;
+            }
+            return site;
+        }
+
+        // Where the CALL rel32 at the module-relative site goes (absolute), or null if it can't be read.
+        private static uint? CallTarget(ProcessMemory memory, uint site)
+        {
+            byte[] call = memory.ReadBytesAtAddress(memory.ModuleBase + site, 5);
+            if (call == null || call[0] != 0xE8)
+                return null;
+            return unchecked((uint)(memory.ModuleBase + site + 5 + BitConverter.ToInt32(call, 1)));
         }
 
         // The match set-up is found by its first instructions; its call sites as the only calls to it

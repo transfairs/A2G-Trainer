@@ -484,6 +484,24 @@ namespace A2G_Trainer.Tests
             }
         }
 
+        // The full data of a human manager's club: slot k at record +0x92, k = 0 means none.
+        [Fact]
+        public void ClubRecords_DataField_LiesInTheFullDataOfTheClubsSlot()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                SeedOwnClub(fake);
+                FixedAddresses fixedAddresses = FixedAddresses.For(fake.Memory);
+                Assert.Null(ClubRecords.DataField(fake.Memory, fixedAddresses, Country, OwnId, Settings.ClubSpeechUsesOffset));
+
+                fake.WriteModuleBytes(Record(OwnId) + Settings.ClubRecordDataSlotOffset, new byte[] { 3 });
+
+                Assert.Equal(fake.ModuleBase + Settings.ClubDataOffset + 2 * Settings.ClubDataStride + Settings.ClubSpeechUsesOffset,
+                    ClubRecords.DataField(fake.Memory, fixedAddresses, Country, OwnId, Settings.ClubSpeechUsesOffset));
+                Assert.Null(ClubRecords.DataField(fake.Memory, fixedAddresses, Country, 3, Settings.ClubSpeechUsesOffset));
+            }
+        }
+
         [Fact]
         public void ClubRecords_SkipsAnUnreadableRecordInTheCountryList()
         {

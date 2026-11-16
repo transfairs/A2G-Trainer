@@ -12,8 +12,8 @@ namespace A2G_Trainer.View
 {
     /// <summary>
     /// "Spielmechaniken": what works on the running game's code instead of its data and so can't go
-    /// into a savegame - the quiz and interview helps, the lifted goal limits, the overconfidence rule
-    /// and the requested job offer. The switches are taken back when the trainer closes and are gone with the game.
+    /// into a savegame - the quiz, interview and speech helps, the lifted goal limits, the
+    /// overconfidence rule and the requested job offer. The switches are taken back when the trainer closes and are gone with the game.
     /// Built in code, laid out like the other views: one tab, "Werte neuladen" below it.
     /// </summary>
     public class MechanicsView : EntityView
@@ -21,7 +21,7 @@ namespace A2G_Trainer.View
         private readonly TabControl tabControl;
         private readonly Button reloadButton;
         private readonly Label noticeLabel;
-        private readonly CheckBox quizHelpInput, interviewDisplayInput, interviewFixInput, goalLimitInput;
+        private readonly CheckBox quizHelpInput, interviewDisplayInput, interviewFixInput, goalLimitInput, speechDisplayInput;
         private readonly GroupBox jobOfferBox;
         private readonly ComboBox jobOfferTrainerInput, jobOfferCountryInput, jobOfferClubInput;
         private readonly ComboBox overconfidenceOwnInput, overconfidenceOpponentInput;
@@ -33,6 +33,7 @@ namespace A2G_Trainer.View
         private readonly InterviewEffectsFix interviewFix;
         private readonly GoalLimitPatch goalLimitPatch;
         private readonly OverconfidenceRule overconfidenceRule;
+        private readonly SpeechEffectsDisplay speechDisplay;
 
         // The managers the job offer can go to (see Trainer.RefreshTrainerMenu) and the one chosen.
         private List<KeyValuePair<int, Coach>> trainers = new List<KeyValuePair<int, Coach>>();
@@ -86,6 +87,11 @@ namespace A2G_Trainer.View
             this.interviewFix = new InterviewEffectsFix(this.Memory);
             this.goalLimitPatch = new GoalLimitPatch(this.Memory);
             this.overconfidenceRule = new OverconfidenceRule(this.Memory);
+            // The human managers' clubs, as the trainer menu lists them.
+            this.speechDisplay = new SpeechEffectsDisplay(this.Memory, () => this.trainers
+                .Where(t => t.Value != null && t.Value.CurrentClubId != 0)
+                .Select(t => new KeyValuePair<PlayerEnums.Country, ushort>(t.Value.CurrentCountry, t.Value.CurrentClubId))
+                .ToList());
 
             this.tabControl = new TabControl { Name = "MainTabControl", Location = new Point(20, 13), Size = new Size(594, 372) };
             TabPage generalTab = new TabPage { Text = "Allgemein", UseVisualStyleBackColor = true, AutoScroll = true, Padding = new Padding(3) };
@@ -131,6 +137,16 @@ namespace A2G_Trainer.View
                 rule.SelectedIndexChanged += (s, e) => this.ApplyOverconfidenceRule();
             }
 
+            GroupBox speechBox = new GroupBox { Text = "Mannschaftssitzung", Location = new Point(284, 184), Size = new Size(272, 76) };
+            this.speechDisplayInput = new CheckBox { Text = "Wirkung der Ansprachen anzeigen", Location = new Point(10, 20), AutoSize = true };
+            this.speechDisplayInput.CheckedChanged += (s, e) =>
+            {
+                // Stays unticked where the game's code isn't as expected (see the log).
+                if (!this.speechDisplay.SetEnabled(this.speechDisplayInput.Checked))
+                    this.speechDisplayInput.Checked = false;
+            };
+            speechBox.Controls.Add(this.speechDisplayInput);
+
             this.jobOfferBox = new GroupBox { Text = "Jobangebot anfordern", Location = new Point(284, 6), Size = new Size(272, 172) };
             this.jobOfferTrainerInput = AddChoice(this.jobOfferBox, "Trainer", 20);
             this.jobOfferCountryInput = AddChoice(this.jobOfferBox, "Land", 47);
@@ -147,7 +163,7 @@ namespace A2G_Trainer.View
             GroupBox noticeBox = new GroupBox { Text = "Hinweis", Location = new Point(6, 266), Size = new Size(550, 46) };
             this.noticeLabel = new Label { Name = "NoticeLabel", AutoSize = true, Location = new Point(7, 21), Text = "Diese Funktionen wirken nur, solange A2G-Trainer und Spiel laufen." };
             noticeBox.Controls.Add(this.noticeLabel);
-            generalTab.Controls.AddRange(new Control[] { quizBox, interviewBox, engineBox, overconfidenceBox, this.jobOfferBox, noticeBox });
+            generalTab.Controls.AddRange(new Control[] { quizBox, interviewBox, engineBox, overconfidenceBox, this.jobOfferBox, speechBox, noticeBox });
 
             this.reloadButton = new Button { Name = "ReloadBtn", Text = "Werte neuladen", Location = new Point(20, 391), Size = new Size(114, 23), UseVisualStyleBackColor = true };
             this.reloadButton.Click += (s, e) => this.RefreshValues();
@@ -158,6 +174,7 @@ namespace A2G_Trainer.View
             {
                 this.quizHelper.Dispose();
                 this.interviewDisplay.Dispose();
+                this.speechDisplay.Dispose();
                 if (this.interviewFixInput.Checked)
                     this.interviewFix.SetEnabled(false);
                 if (this.goalLimitLifted)

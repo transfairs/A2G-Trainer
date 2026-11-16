@@ -1299,5 +1299,100 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(Settings.MatchInitCallSiteOffsets.Select((s, i) => s + GogMatchInitSiteShifts[i]), FixedAddresses.For(fake.Memory).MatchInit.CallSites);
             }
         }
+
+        // The speech dialog's code in the 2007 CD/GOG build (read live 16./17.11.2026): list call and
+        // check +0x2200, list function +0x2D30, release function +0x2D80.
+        private const uint GogSpeechShift = 0x2200;
+        private const uint GogSpeechListFunctionShift = 0x2D30;
+        private const uint GogSpeechReleaseFunctionShift = 0x2D80;
+
+        // Plants the list call, the check's start and its release call; with a stub, both calls go to it.
+        private static void PlantSpeechCode(FakeModule fake, uint? stub = null, bool withCheck = true, bool twice = false)
+        {
+            uint site = Settings.SpeechListCallSiteOffset + GogSpeechShift;
+            uint list = Settings.SpeechListFunctionOffset + GogSpeechListFunctionShift;
+            fake.WriteModuleBytes(site - (uint)Settings.SpeechListCallLeadPattern.Length, Bytes(Settings.SpeechListCallLeadPattern,
+                stub.HasValue ? Call(fake.ModuleBase + site, stub.Value + SpeechEffectsDisplay.CodeOffset) : Call(site, list),
+                Settings.SpeechListCallTrailPattern));
+            if (twice)
+                fake.WriteModuleBytes(site + 0x100 - (uint)Settings.SpeechListCallLeadPattern.Length, Bytes(Settings.SpeechListCallLeadPattern,
+                    Call(site + 0x100, list), Settings.SpeechListCallTrailPattern));
+            if (withCheck)
+            {
+                uint check = Settings.SpeechCheckFunctionOffset + GogSpeechShift;
+                fake.WriteModuleBytes(check, Bytes(Settings.SpeechCheckPattern, Call(check + 5, 0x256AE0), Settings.SpeechCheckPatternTrail));
+            }
+            uint release = Settings.SpeechCheckReleaseSiteOffset + GogSpeechShift;
+            uint releaseFunction = Settings.SpeechCheckReleaseFunctionOffset + GogSpeechReleaseFunctionShift;
+            fake.WriteModuleBytes(release - (uint)Settings.SpeechCheckReleaseLeadPattern.Length, Bytes(Settings.SpeechCheckReleaseLeadPattern,
+                stub.HasValue ? Call(fake.ModuleBase + release, stub.Value + SpeechEffectsDisplay.ReleaseCodeOffset) : Call(release, releaseFunction),
+                Settings.SpeechCheckReleaseTrailPattern));
+        }
+
+        private static void AssertGogSpeechCode(FixedAddresses found)
+        {
+            Assert.Equal(Settings.SpeechListCallSiteOffset + GogSpeechShift, found.SpeechList.CallSite);
+            Assert.Equal(Settings.SpeechListFunctionOffset + GogSpeechListFunctionShift, found.SpeechList.Function);
+            Assert.Equal(Settings.SpeechCheckFunctionOffset + GogSpeechShift, found.SpeechList.CheckFunction);
+            Assert.Equal(Settings.SpeechCheckReleaseSiteOffset + GogSpeechShift, found.SpeechList.ReleaseSite);
+            Assert.Equal(Settings.SpeechCheckReleaseFunctionOffset + GogSpeechReleaseFunctionShift, found.SpeechList.ReleaseFunction);
+        }
+
+        [Fact]
+        public void For_CalibratedGog_FindsTheSpeechDialogCode()
+        {
+            Assert.Equal(Settings.SpeechListCallSiteOffset, FixedAddresses.Original.SpeechList.CallSite);
+            Assert.Equal(Settings.SpeechCheckReleaseFunctionOffset, FixedAddresses.Original.SpeechList.ReleaseFunction);
+
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantSpeechCode(fake);
+
+                AssertGogSpeechCode(FixedAddresses.For(fake.Memory));
+            }
+        }
+
+        [Fact]
+        public void For_GogWithTheSpeechDisplayInstalled_StillFindsTheGamesFunctions()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                uint stub = fake.Memory.AllocateExecutable(SpeechEffectsDisplay.StubSize).Value;
+                fake.Memory.WriteBytesAtAddress(stub, SpeechEffectsDisplay.BuildStub(stub,
+                    fake.ModuleBase + Settings.SpeechListFunctionOffset + GogSpeechListFunctionShift,
+                    fake.ModuleBase + Settings.SpeechCheckFunctionOffset + GogSpeechShift,
+                    fake.ModuleBase + Settings.SpeechCheckReleaseFunctionOffset + GogSpeechReleaseFunctionShift));
+                PlantSpeechCode(fake, stub);
+
+                AssertGogSpeechCode(FixedAddresses.For(fake.Memory));
+            }
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void For_GogWithoutUniqueSpeechDialogCode_HasNone(bool withCheck, bool twice)
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantSpeechCode(fake, withCheck: withCheck, twice: twice);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).SpeechList);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheSpeechDialogCode_HasNone()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).SpeechList);
+            }
+        }
     }
 }
