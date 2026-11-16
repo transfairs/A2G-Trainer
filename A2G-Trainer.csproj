@@ -96,6 +96,8 @@
     <Compile Include="Controller\GameCalendar.cs" />
     <Compile Include="Controller\JobOfferInjector.cs" />
     <Compile Include="Controller\LeagueController.cs" />
+    <Compile Include="Controller\LeagueTables.cs" />
+    <Compile Include="Controller\EuropeanCupEntries.cs" />
     <Compile Include="Controller\NationalCoachInjector.cs" />
     <Compile Include="Controller\NationalSquads.cs" />
     <Compile Include="Controller\ProcessMemory.A2.cs" />
@@ -120,6 +122,7 @@
     <Compile Include="Model\CoachCompetencyLevel.cs" />
     <Compile Include="Model\LeagueEnums.cs" />
     <Compile Include="Model\LeagueSettings.cs" />
+    <Compile Include="Model\LeagueTable.cs" />
     <Compile Include="Model\Stock.cs" />
     <Compile Include="Model\Highscores.cs" />
     <Compile Include="Model\ClubEnums.cs" />
@@ -155,6 +158,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\HighscoreView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\LeagueView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\MechanicsView.cs">

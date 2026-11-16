@@ -18,6 +18,24 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
+        public void PointDeductions_SitInTheLicenceByteAndAreCapped()
+        {
+            Club club = new Club { Licence = 0x90 };
+
+            club.PointDeduction = 5;
+            club.NextSeasonPointDeduction = 1;
+            Assert.Equal((byte)0x97, club.Licence);
+            Assert.Equal(3, club.PointDeduction);
+            Assert.Equal(1, club.NextSeasonPointDeduction);
+
+            club.PointDeduction = -1;
+            club.NextSeasonPointDeduction = 9;
+            Assert.Equal((byte)0x9C, club.Licence);
+            Assert.True(club.LicenceRefused);
+            Assert.Equal(9, Club.DeductionPoints(Club.MaxDeductionStep));
+        }
+
+        [Fact]
         public void IsClubMember_NullPlayer_ReturnsFalse()
         {
             Club club = new Club { Id = 5, Country = PlayerEnums.Country.Deutschland };

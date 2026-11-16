@@ -78,7 +78,6 @@ namespace A2G_Trainer.View
 
             GroupBox changeBox = new GroupBox { Text = "Letzte Leveländerung", Location = new Point(6, 248), Size = new Size(280, 94) };
             this.AddLevelInput(changeBox, "Saison (Index)", nameof(CoachLevelState.LastChangeSeason), 7, 20, false);
-            this.AddLevelInput(changeBox, "Halbwoche", nameof(CoachLevelState.LastChangeHalfWeek), 7, 46, false);
             this.prepareLevelUpButton = new Button { Text = "Aufstieg vorbereiten", Location = new Point(140, 68), Size = new Size(134, 23) };
             this.prepareLevelUpButton.Click += (s, e) =>
             {

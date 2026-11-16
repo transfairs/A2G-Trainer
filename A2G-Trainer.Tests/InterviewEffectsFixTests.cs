@@ -48,13 +48,16 @@ namespace A2G_Trainer.Tests
                 InterviewEffectsFix fix = new InterviewEffectsFix(fake.Memory);
 
                 Assert.True(fix.IsSupported);
+                Assert.False(fix.IsEnabled);
                 Assert.True(fix.SetEnabled(true));
+                Assert.True(fix.IsEnabled);
                 uint stub = Stub(fake);
                 Assert.Equal(InterviewEffectsFix.Signature, fake.Memory.ReadBytesAtAddress(stub, InterviewEffectsFix.Signature.Length));
                 Assert.Equal(stub + InterviewEffectsFix.MoraleCodeOffset, CallTarget(fake, Settings.InterviewMoraleCallSiteOffset));
                 Assert.Equal(1, Flag(fake));
 
                 Assert.True(fix.SetEnabled(false));
+                Assert.False(fix.IsEnabled);
                 Assert.Equal(0, Flag(fake));
                 // On again: the same stub, no second redirect.
                 Assert.True(new InterviewEffectsFix(fake.Memory).SetEnabled(true));

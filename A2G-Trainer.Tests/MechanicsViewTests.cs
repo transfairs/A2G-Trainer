@@ -62,6 +62,14 @@ namespace A2G_Trainer.Tests
                 ToolStripItem entry = menu.Items["spielmechanikenToolStripMenuItem"];
                 Assert.Equal(menu.Items.IndexOf(menu.Items["spielstandToolStripMenuItem"]) - 1, menu.Items.IndexOf(entry));
 
+                // "Ligen" sits right before it and shows the league view.
+                ToolStripItem leagues = menu.Items["ligenToolStripMenuItem"];
+                Assert.Equal(menu.Items.IndexOf(entry) - 1, menu.Items.IndexOf(leagues));
+                leagues.PerformClick();
+                Panel leagueContent = (Panel)typeof(Trainer).GetField("ContentPanel", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(trainer);
+                Assert.Contains(trainer.LeagueView, leagueContent.Controls.Cast<Control>());
+                Assert.EndsWith("Ligen", trainer.Text);
+
                 entry.PerformClick();
 
                 MechanicsView view = trainer.MechanicsView;
@@ -228,6 +236,26 @@ namespace A2G_Trainer.Tests
                 view.Dispose();
 
                 Assert.True(new GoalLimitPatch(fake.Memory).IsEnabled);
+            }
+        });
+
+        // Applied by A2G-Patch (its stub, flag set): the box shows it, closing leaves it on.
+        [Fact]
+        public void InterviewEffects_AppliedOutsideTheTrainer_StayOnWhenItCloses() => StaThread.Run(() =>
+        {
+            using (Trainer trainer = new Trainer())
+            using (FakeModule fake = new FakeModule(memory: trainer.Memory))
+            {
+                InterviewEffectsFixTests.WriteOriginalCalls(fake);
+                CoachViewTests.SeedLeagueAndStock(fake);
+                Assert.True(new InterviewEffectsFix(fake.Memory).SetEnabled(true));
+                MechanicsView view = trainer.MechanicsView;
+
+                view.RefreshValues();
+                Assert.True(Field<CheckBox>(view, "interviewFixInput").Checked);
+                view.Dispose();
+
+                Assert.True(new InterviewEffectsFix(fake.Memory).IsEnabled);
             }
         });
     }

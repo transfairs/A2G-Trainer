@@ -540,13 +540,44 @@ namespace A2G_Trainer.Model
         }
         private byte association;
 
-        /// <summary>The licence byte (+0xFF) as stored; bit 7 means the licence for the new season was refused.</summary>
+        /// <summary>
+        /// The licence byte (+0xFF, record +0xF5) as stored: bits 0-1 the points deducted this season,
+        /// bits 2-3 those for the next season (the season start moves them down and clears the rest,
+        /// FUN_0063c960), bit 7 the licence for the new season was refused.
+        /// </summary>
         public byte Licence
         {
             get => this.licence;
-            set { this.licence = value; this.OnPropertyChanged(nameof(this.Licence)); this.OnPropertyChanged(nameof(this.LicenceRefused)); }
+            set
+            {
+                this.licence = value;
+                this.OnPropertyChanged(nameof(this.Licence));
+                this.OnPropertyChanged(nameof(this.LicenceRefused));
+                this.OnPropertyChanged(nameof(this.PointDeduction));
+                this.OnPropertyChanged(nameof(this.NextSeasonPointDeduction));
+            }
         }
         private byte licence;
+
+        /// <summary>Highest deduction step: 3 x 3 = 9 points, the most the licence byte holds.</summary>
+        public const int MaxDeductionStep = 3;
+
+        /// <summary>Points the game deducts for a step (FUN_00615780: step x 3).</summary>
+        public static int DeductionPoints(int step) => step * 3;
+
+        /// <summary>Points deducted this season, as a step 0-3 (3 points each; bits 0-1 of <see cref="Licence"/>).</summary>
+        public int PointDeduction
+        {
+            get => this.licence & 3;
+            set => this.Licence = (byte)((this.licence & ~3) | (Math.Max(0, Math.Min(MaxDeductionStep, value)) & 3));
+        }
+
+        /// <summary>Points to deduct next season, as a step 0-3 (bits 2-3 of <see cref="Licence"/>).</summary>
+        public int NextSeasonPointDeduction
+        {
+            get => (this.licence >> 2) & 3;
+            set => this.Licence = (byte)((this.licence & ~0xC) | ((Math.Max(0, Math.Min(MaxDeductionStep, value)) & 3) << 2));
+        }
 
         /// <summary>Whether the licence for the new season was refused (bit 7 of <see cref="Licence"/>).</summary>
         public bool LicenceRefused

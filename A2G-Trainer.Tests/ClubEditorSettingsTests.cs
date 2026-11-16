@@ -1044,6 +1044,17 @@ namespace A2G_Trainer.Tests
             Field<CheckBox>(view, "licenceRefusedInput").Checked = false;
             Assert.False(club.LicenceRefused);
 
+            // The deductions of this and the next season sit in the same byte (bit 4 stays).
+            ComboBox deduction = Field<ComboBox>(view, "pointDeductionInput");
+            ComboBox nextDeduction = Field<ComboBox>(view, "nextPointDeductionInput");
+            Assert.Equal(0, deduction.SelectedIndex);
+            Assert.Equal(0, nextDeduction.SelectedIndex);
+            deduction.SelectedIndex = 2;
+            nextDeduction.SelectedIndex = 3;
+            Assert.Equal((byte)0x1E, club.Licence);
+            Assert.Equal(2, club.PointDeduction);
+            Assert.Equal(3, club.NextSeasonPointDeduction);
+
             // Locks: the bribery bits and the camp, as set in the game.
             var locks = Field<List<KeyValuePair<CheckBox, Func<Club, bool>>>>(view, "lockInputs");
             Assert.Equal(4, locks.Count);

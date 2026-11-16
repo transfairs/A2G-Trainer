@@ -14,11 +14,11 @@ namespace A2G_Trainer.Controller
     /// The game keeps three things per bonus country (FUN_006441e0): the count, the country list
     /// and, parallel to it, each country's league system, which the matchday and table code
     /// (FUN_00597ba0, FUN_0063aeb0, FUN_006414f0) uses instead of looking it up again. All three
-    /// are written together. A country's clubs and leagues are only loaded at the start of a new
-    /// game, and only for the countries chosen then (FUN_005b04d0 loads ttra/Prom*.sav per active
-    /// country). So switching a country off is safe - its league data stays where it is, since
-    /// every league system has a fixed place - but switching one on is only allowed while its top
-    /// league still has clubs in memory, i.e. it was chosen at the start (and switched off later).
+    /// are written together. The clubs and leagues of all five league countries are loaded at the
+    /// start of a new game (FUN_005afa90, FUN_005b0ab0); only the goalkeeper coaches and celebrities
+    /// (ttra/Prom*.sav, FUN_005b04d0) come for the countries chosen then. So switching a country off
+    /// is safe - its league data stays where it is, since every league system has a fixed place -
+    /// and switching one on is only allowed while its top league has clubs in memory.
     /// </remarks>
     public class LeagueController : EntityController<LeagueSettings>
     {

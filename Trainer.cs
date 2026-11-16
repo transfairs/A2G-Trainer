@@ -29,6 +29,7 @@ namespace A2G_Trainer
         private SaveGameView saveGameView;
         internal HighscoreView HighscoreView { get; private set; }
         internal MechanicsView MechanicsView { get; private set; }
+        internal LeagueView LeagueView { get; private set; }
 
         protected readonly ProcessController processController;
 
@@ -50,6 +51,7 @@ namespace A2G_Trainer
             this.ClubView.ClubChosen += this.ClubView_ClubChosen;
             this.CoachView = new CoachView(this.memory, this.processController);
             this.MechanicsView = new MechanicsView(this.memory, this.processController);
+            this.LeagueView = new LeagueView(this.memory, this.processController);
 
             this.HelpView = new HelpView();
             this.SaveGameView = new SaveGameView();
@@ -64,6 +66,9 @@ namespace A2G_Trainer
             ToolStripMenuItem mechanics = new ToolStripMenuItem { Name = "spielmechanikenToolStripMenuItem", Text = "Spielmechaniken" };
             mechanics.Click += this.MechanicsToolStripMenuItem_Click;
             this.menuStrip.Items.Insert(this.menuStrip.Items.IndexOf(this.spielstandToolStripMenuItem), mechanics);
+            ToolStripMenuItem leagues = new ToolStripMenuItem { Name = "ligenToolStripMenuItem", Text = "Ligen" };
+            leagues.Click += this.LeaguesToolStripMenuItem_Click;
+            this.menuStrip.Items.Insert(this.menuStrip.Items.IndexOf(mechanics), leagues);
             // The savegame editor and the highscores are not released yet: the menu is hidden and
             // its shortcuts cleared (a hidden item still answers them), the code stays in place.
             this.spielstandToolStripMenuItem.Visible = false;
@@ -76,7 +81,7 @@ namespace A2G_Trainer
             // switched on in the game (see MechanicsView) is taken back when the trainer closes.
             this.Disposed += (s, e) =>
             {
-                foreach (Control view in new Control[] { this.PlayerView, this.ClubView, this.CoachView, this.MechanicsView, this.HelpView, this.SaveGameView, this.HighscoreView })
+                foreach (Control view in new Control[] { this.PlayerView, this.ClubView, this.CoachView, this.LeagueView, this.MechanicsView, this.HelpView, this.SaveGameView, this.HighscoreView })
                     view.Dispose();
             };
 
@@ -146,6 +151,10 @@ namespace A2G_Trainer
         private void MechanicsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Open(this.MechanicsView, "Spielmechaniken", this.MechanicsView.RefreshValues);
+        }
+        private void LeaguesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Open(this.LeagueView, "Ligen", this.LeagueView.RefreshValues);
         }
         private void OtherClubDataToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -92,6 +92,7 @@ namespace A2G_Trainer.Tests
             // Association: nothing imposed, every limit locked.
             Assert.All(Field<Dictionary<ClubEnums.Requirement, CheckBox>>(view, "requirementInputs").Values, c => Assert.False(c.Checked));
             Assert.False(Field<CheckBox>(view, "licenceRefusedInput").Checked);
+            Assert.Equal(-1, Field<ComboBox>(view, "pointDeductionInput").SelectedIndex);
             Assert.All(Field<List<KeyValuePair<CheckBox, Func<Club, bool>>>>(view, "lockInputs"), l => Assert.False(l.Key.Checked));
             Assert.False(Field<TextBox>(view, "debtLimitInput").Enabled);
 
@@ -112,6 +113,8 @@ namespace A2G_Trainer.Tests
             Field<List<KeyValuePair<CheckBox, Func<Club, bool>>>>(view, "lockInputs")[0].Key.Checked = true;
             Field<Dictionary<ClubEnums.Requirement, CheckBox>>(view, "requirementInputs")[ClubEnums.Requirement.DebtLimit].Checked = true;
             Field<CheckBox>(view, "licenceRefusedInput").Checked = true;
+            Field<ComboBox>(view, "pointDeductionInput").SelectedIndex = 1;
+            Field<ComboBox>(view, "nextPointDeductionInput").SelectedIndex = 1;
             ComboBox rival = Field<ComboBox>(view, "ArchRivalInput");
             rival.SelectedIndex = 0;
             Commit(rival);

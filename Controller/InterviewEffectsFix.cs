@@ -66,6 +66,19 @@ namespace A2G_Trainer.Controller
         /// <summary>Whether the fix is available for the attached build.</summary>
         internal bool IsSupported => this.Addresses?.Interview != null;
 
+        /// <summary>
+        /// Whether the game runs with the fix on: by the trainer, or by A2G-Patch, which puts the same
+        /// stub into the exe or (2007 CD) into memory with its flag set.
+        /// </summary>
+        internal bool IsEnabled
+        {
+            get
+            {
+                uint? stub = this.FindInstalledStub();
+                return stub.HasValue && this.memory.ReadBytesAtAddress(stub.Value + FlagOffset, 1)?[0] > 0;
+            }
+        }
+
         /// <summary>Switches the fix on (installing the stub if needed) or off. Returns whether that succeeded.</summary>
         internal bool SetEnabled(bool enabled)
         {

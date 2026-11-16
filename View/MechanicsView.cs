@@ -43,6 +43,8 @@ namespace A2G_Trainer.View
         // Whether the trainer lifted the goal limits itself: only then it restores them on closing,
         // not where A2G-Patch lifted them (exe or msvfw32.dll) and the switch just shows that.
         private bool goalLimitLifted;
+        // The same for the interview effects (A2G-Patch puts in the same stub, flag set).
+        private bool interviewFixApplied;
 
         private static Label AddLabel(Control box, string text, int x, int y)
         {
@@ -100,8 +102,11 @@ namespace A2G_Trainer.View
             this.interviewFixInput.CheckedChanged += (s, e) =>
             {
                 // Stays unticked where the game's code isn't as expected (see the log).
+                if (this.showing)
+                    return;
                 if (!this.interviewFix.SetEnabled(this.interviewFixInput.Checked))
                     this.interviewFixInput.Checked = false;
+                this.interviewFixApplied = this.interviewFixInput.Checked;
             };
             interviewBox.Controls.AddRange(new Control[] { this.interviewDisplayInput, this.interviewFixInput });
 
@@ -145,7 +150,7 @@ namespace A2G_Trainer.View
             {
                 this.quizHelper.Dispose();
                 this.interviewDisplay.Dispose();
-                if (this.interviewFixInput.Checked)
+                if (this.interviewFixApplied)
                     this.interviewFix.SetEnabled(false);
                 if (this.goalLimitLifted)
                     this.goalLimitPatch.SetEnabled(false);
@@ -177,6 +182,8 @@ namespace A2G_Trainer.View
                 // The patch lives in the game, which may have been restarted meanwhile.
                 this.goalLimitInput.Checked = running && this.goalLimitPatch.IsEnabled;
                 this.goalLimitLifted &= this.goalLimitInput.Checked;
+                this.interviewFixInput.Checked = running && this.interviewFix.IsEnabled;
+                this.interviewFixApplied &= this.interviewFixInput.Checked;
             }
             finally
             {

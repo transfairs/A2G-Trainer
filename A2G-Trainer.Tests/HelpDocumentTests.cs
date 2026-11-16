@@ -14,7 +14,7 @@ namespace A2G_Trainer.Tests
         {
             HelpDocument help = HelpDocument.FromResource();
 
-            Assert.Equal(new[] { "Erste Schritte", "Verein", "Spieler", "Jugendspieler", "Trainer & Liga", "Spielmechaniken", "Tipps & Tricks", "Fehlerbehebung / FAQ" },
+            Assert.Equal(new[] { "Erste Schritte", "Verein", "Spieler", "Jugendspieler", "Trainer & Liga", "Ligen", "Spielmechaniken", "Tipps & Tricks", "Fehlerbehebung / FAQ" },
                 help.Pages.Select(p => p.Title));
             HelpDocument.Page club = help.Pages.Single(p => p.Title == "Verein");
             Assert.Contains("Kalkulation", club.Sections.Select(s => s.Key));
@@ -74,7 +74,7 @@ namespace A2G_Trainer.Tests
                 view.EnsureHelpLoaded();
                 view.EnsureHelpLoaded();
                 TabControl main = (TabControl)view.Controls["MainTabControl"];
-                Assert.Equal(8, main.TabPages.Count);
+                Assert.Equal(9, main.TabPages.Count);
                 TabPage club = main.TabPages.Cast<TabPage>().Single(t => t.Text == "Verein");
                 TabControl sections = Assert.IsType<TabControl>(Assert.Single(club.Controls.Cast<Control>()));
                 Assert.Contains("Kalkulation", sections.TabPages.Cast<TabPage>().Select(t => t.Text));

@@ -17,6 +17,7 @@ namespace A2G_Trainer.View
         private readonly Dictionary<ClubEnums.Requirement, CheckBox> requirementInputs = new Dictionary<ClubEnums.Requirement, CheckBox>();
         private TextBox spectatorLimitInput, debtLimitInput, transferSurplusInput, transferLimitInput, salaryLimitInput;
         private CheckBox licenceRefusedInput;
+        private ComboBox pointDeductionInput, nextPointDeductionInput;
         private readonly List<KeyValuePair<CheckBox, Func<Club, bool>>> lockInputs = new List<KeyValuePair<CheckBox, Func<Club, bool>>>();
         private TextBox shortCampsInput, sponsorRequestsInput, scoutSpendingInput;
         // Set while the requirement boxes are filled from the club, so their handlers don't write back.
@@ -33,6 +34,19 @@ namespace A2G_Trainer.View
             };
             box.Controls.Add(check);
             return new KeyValuePair<CheckBox, Func<Club, bool>>(check, get);
+        }
+
+        /// <summary>The choices of a points deduction, by step: "keiner", "3 Punkte" … "9 Punkte".</summary>
+        internal static string[] DeductionChoices() =>
+            Enumerable.Range(0, Club.MaxDeductionStep + 1).Select(step => step == 0 ? "keiner" : $"{Club.DeductionPoints(step)} Punkte").ToArray();
+
+        private static ComboBox AddDeductionChoice(Control box, string text, int y)
+        {
+            box.Controls.Add(new Label { Text = text, Location = new Point(10, y + 3), AutoSize = true });
+            ComboBox combo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Location = new Point(156, y), Size = new Size(72, 21) };
+            combo.Items.AddRange(DeductionChoices());
+            box.Controls.Add(combo);
+            return combo;
         }
 
         private void BuildAssociationTab()
@@ -72,16 +86,28 @@ namespace A2G_Trainer.View
             this.transferSurplusInput.TextChanged += this.Int16Range_TextChanged;
             this.transferLimitInput.TextChanged += this.Int16Range_TextChanged;
 
-            GroupBox licenceBox = new GroupBox { Text = "Lizenz", Location = new Point(342, 6), Size = new Size(238, 50) };
+            GroupBox licenceBox = new GroupBox { Text = "Lizenz", Location = new Point(342, 6), Size = new Size(238, 98) };
             this.licenceRefusedInput = new CheckBox { Text = "Lizenz verweigert", Location = new Point(10, 20), AutoSize = true };
             this.licenceRefusedInput.CheckedChanged += (s, e) =>
             {
                 if (!this.showingRequirements && !this.showingBlock && this.club != null)
                     this.club.LicenceRefused = this.licenceRefusedInput.Checked;
             };
+            this.pointDeductionInput = AddDeductionChoice(licenceBox, "Punktabzug diese Saison", 44);
+            this.pointDeductionInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (!this.showingRequirements && !this.showingBlock && this.club != null && this.pointDeductionInput.SelectedIndex >= 0)
+                    this.club.PointDeduction = this.pointDeductionInput.SelectedIndex;
+            };
+            this.nextPointDeductionInput = AddDeductionChoice(licenceBox, "Punktabzug nächste Saison", 70);
+            this.nextPointDeductionInput.SelectedIndexChanged += (s, e) =>
+            {
+                if (!this.showingRequirements && !this.showingBlock && this.club != null && this.nextPointDeductionInput.SelectedIndex >= 0)
+                    this.club.NextSeasonPointDeduction = this.nextPointDeductionInput.SelectedIndex;
+            };
             licenceBox.Controls.Add(this.licenceRefusedInput);
 
-            GroupBox locksBox = new GroupBox { Text = "Sperren", Location = new Point(342, 62), Size = new Size(238, 200) };
+            GroupBox locksBox = new GroupBox { Text = "Sperren", Location = new Point(342, 110), Size = new Size(238, 200) };
             this.lockInputs.Add(this.AddLockCheck(locksBox, "Schiri-Bestechung versucht", 20, c => (c.Bribery & 0x80) != 0, (c, on) => c.Bribery = (byte)(on ? c.Bribery | 0x80 : c.Bribery & 0x7F)));
             this.lockInputs.Add(this.AddLockCheck(locksBox, "Gegner-Bestechung angefragt", 44, c => (c.Bribery & 0x20) != 0, (c, on) => c.Bribery = (byte)(on ? c.Bribery | 0x20 : c.Bribery & 0xDF)));
             this.lockInputs.Add(this.AddLockCheck(locksBox, "Gegner bezahlt", 68, c => (c.Bribery & 0x10) != 0, (c, on) => c.Bribery = (byte)(on ? c.Bribery | 0x10 : c.Bribery & 0xEF)));
@@ -126,6 +152,8 @@ namespace A2G_Trainer.View
                 foreach (KeyValuePair<ClubEnums.Requirement, CheckBox> entry in this.requirementInputs)
                     entry.Value.Checked = this.club != null && this.club.HasRequirement(entry.Key);
                 this.licenceRefusedInput.Checked = this.club != null && this.club.LicenceRefused;
+                this.pointDeductionInput.SelectedIndex = this.club?.PointDeduction ?? -1;
+                this.nextPointDeductionInput.SelectedIndex = this.club?.NextSeasonPointDeduction ?? -1;
                 foreach (KeyValuePair<CheckBox, Func<Club, bool>> entry in this.lockInputs)
                     entry.Key.Checked = this.club != null && entry.Value(this.club);
             }

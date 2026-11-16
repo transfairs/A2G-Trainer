@@ -40,6 +40,7 @@
           <li><a href="#spieler" data-target="spieler">Spieler</a></li>
           <li><a href="#jugend" data-target="jugend">Jugendspieler</a></li>
           <li><a href="#trainer" data-target="trainer">Trainer &amp; Liga</a></li>
+          <li><a href="#ligen" data-target="ligen">Ligen</a></li>
           <li><a href="#mechaniken" data-target="mechaniken">Spielmechaniken</a></li>
           <li><a href="#tipps" data-target="tipps">Tipps &amp; Tricks</a></li>
           <li><a href="#faq" data-target="faq">Fehlerbehebung / FAQ</a></li>
@@ -109,6 +110,7 @@
             <a class="toc-card" href="#spieler" data-jump="spieler"><h3>Spieler</h3><p>Kader, Gegner und jeden anderen Verein editieren: Fähigkeiten, Vertrag, Verfassung.</p></a>
             <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Die Jugend jedes Vereins, ohne Umweg über das Spiel.</p></a>
             <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Nationalmannschaft, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
+            <a class="toc-card" href="#ligen" data-jump="ligen"><h3>Ligen</h3><p>Die Tabellen aller 13 Ligen, der Endstand ausgewürfelter Ligen, Lizenz und Punktabzug, Meister der Länder ohne Liga.</p></a>
             <a class="toc-card" href="#mechaniken" data-jump="mechaniken"><h3>Spielmechaniken</h3><p>Quiz- und Interviewhilfe, Torgrenzen und Jobangebote, direkt im laufenden Spiel.</p></a>
             <a class="toc-card" href="#tipps" data-jump="tipps"><h3>Tipps &amp; Tricks</h3><p>Kleine Kniffe, die Zeit sparen.</p></a>
             <a class="toc-card" href="#faq" data-jump="faq"><h3>Fehlerbehebung</h3><p>Häufige Fragen und Lösungen, inklusive Logdatei.</p></a>
@@ -375,7 +377,11 @@
           </fieldset>
           <fieldset class="groupbox">
             <legend>Lizenz</legend>
-            <p><strong>Lizenz verweigert</strong> zeigt, dass der Verband dem Verein die Lizenz für die neue Saison verweigert hat. Ohne Häkchen gilt sie als erteilt, wie beim Lizenzverfahren des Spiels.</p>
+            <p><strong>Lizenz verweigert</strong> zeigt, dass der Verband dem Verein die Lizenz für die neue Saison verweigert hat. Ohne Häkchen gilt sie als erteilt, wie beim Lizenzverfahren des Spiels. Ein Verein ohne Lizenz steht in der Abschlusstabelle immer ganz unten, egal wie viele Punkte er hat, und steigt zum Saisonende ab; in Deutschland und England geht ein Erstligist ohne Lizenz sogar zwei Ligen tiefer. Das Spiel prüft die Lizenzen selbst rund 7 Wochen vor Saisonende, und zwar im Haupt- und in den Zusatzländern; ein danach gesetztes Häkchen bleibt bis zum Saisonwechsel stehen.</p>
+            <dl class="field-list">
+              <dt>Punktabzug diese Saison</dt><dd>Keiner, 3, 6 oder 9 Punkte. Die Tabelle zieht ihn sofort ab, nie unter 0 Punkte. Mehr als 9 Punkte kann das Spiel nicht speichern.</dd>
+              <dt>Punktabzug nächste Saison</dt><dd>Den vergibt das Spiel im Lizenzverfahren als Strafe. Beim Saisonstart wird er zum Abzug der neuen Saison; der alte Abzug und die Lizenzverweigerung verfallen dann.</dd>
+            </dl>
           </fieldset>
           <fieldset class="groupbox">
             <legend>Sperren</legend>
@@ -948,7 +954,7 @@
           </fieldset>
           <fieldset class="groupbox">
             <legend>Abstieg und letzte Leveländerung</legend>
-            <p>Die Abstiegsgründe (Saisonziel verfehlt, Abstiegsplatz, Lizenzstrafe, Schulden) vergibt das Spiel am Saisonende; jeder kostet bei der nächsten Wertung ein Level und wird dabei gelöscht. Entlassungen und Rücktritte zählt es für die Saison und die Vorsaison. „Saison (Index)“ und „Halbwoche“ der letzten Leveländerung bestimmen die Wartezeit von acht Wochen.</p>
+            <p>Die Abstiegsgründe (Saisonziel verfehlt, Abstiegsplatz, Lizenzstrafe, Schulden) vergibt das Spiel am Saisonende; jeder kostet bei der nächsten Wertung ein Level und wird dabei gelöscht. Entlassungen und Rücktritte zählt es für die Saison und die Vorsaison. „Saison (Index)“ ist die Saison der letzten Leveländerung; nach einer Leveländerung wartet das Spiel acht Wochen bis zur nächsten.</p>
             <p><strong>Aufstieg vorbereiten</strong> löscht alle Abstiegsgründe, Entlassungen und Rücktritte, legt die letzte Leveländerung in die Vorsaison, setzt die Marke „Turniersieg“ und füllt Sieges- und Ungeschlagen-Serie. Nach dem Speichern steigt der Manager bei der nächsten wöchentlichen Wertung auf, ab Level 4 nur, wenn sein Verein im Soll liegt. Das Spiel vergibt danach wie gewohnt die neuen Kompetenzpunkte.</p>
           </fieldset>
         </div>
@@ -957,6 +963,51 @@
           <fieldset class="groupbox">
             <legend>Mehrere menschliche Manager im selben Spielstand</legend>
             <p>Enthält der geladene Spielstand mehr als einen aktiven menschlichen Manager (Hot-Seat-Modus), erscheint im Menü <span class="menu-path">Trainer</span> für jeden davon ein eigener Eintrag. Jeder Manager hat dabei seinen eigenen Verein und sein eigenes Aktienportfolio.</p>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- ===================== LIGEN ===================== -->
+      <section class="panel" id="panel-ligen">
+        <div class="panel-header">
+          <h1>Ligen</h1>
+          <p class="lead">Erreichbar über <span class="menu-path">Ligen</span>. Das Spiel speichert keine Punkte: Jede Tabelle rechnet es aus den Ergebnissen der Liga neu, und genau so rechnet sie auch der Trainer. „Werte neuladen“ liest alle Ligen neu.</p>
+        </div>
+        <div class="subtabs">
+          <button data-sub="tabellen" class="active">Tabellen</button>
+          <button data-sub="europapokal">Europapokal</button>
+        </div>
+
+        <div class="subpanel active" data-sub="tabellen">
+          <fieldset class="groupbox">
+            <legend>Die Arten von Ligen</legend>
+            <p>Oben wählen Sie eine der 13 Ligen (Deutschland 6, England 3, Frankreich 2, Italien und Spanien je 1). Daneben steht, wie das Spiel ihre Saison entscheidet:</p>
+            <dl class="field-list">
+              <dt>gespielt</dt><dd>Alle Ligen des Hauptlands und die 1. Liga jedes Zusatzlands. Das Spiel trägt die Ergebnisse Spieltag für Spieltag ein.</dd>
+              <dt>Ergebnisse beim Saisonstart ausgewürfelt</dt><dd>Die unteren Ligen eines Zusatzlands. Das Spiel würfelt beim Saisonstart sofort alle Ergebnisse aus; die Abschlusstabelle steht also vom ersten Tag an fest, und erst beim Saisonwechsel liest das Spiel sie wieder und lässt danach auf- und absteigen. Die zehn hellgelb hinterlegten Vereine sind die ersten zehn der Vereinsliste dieser Liga: Gegen alle anderen gewinnen sie immer 2:0, deshalb landen sie immer auf den Plätzen 1 bis 10. Das sind die „spielbaren“ bzw. in Division Two die „aufstiegsfähigen“ Vereine. Wer nächste Saison zu diesen zehn gehört, ergibt sich aus der Reihenfolge, in der das Spiel beim Saisonwechsel die neuen Vereinslisten füllt; Aufsteiger aus der Liga darunter und Vereine, die neu in die Liga kommen, stehen dabei hinten.</dd>
+              <dt>ausgewürfelt, ohne Auf- und Abstieg</dt><dd>Die unteren Ligen eines Landes, das weder Haupt- noch Zusatzland ist. Das Spiel würfelt auch hier jedes Jahr Ergebnisse aus, lässt aber niemanden auf- oder absteigen: Die Vereinslisten bleiben von Saison zu Saison gleich. Ändern lässt sich hier deshalb nichts.</dd>
+              <dt>ohne Spiele, Reihenfolge der Vereinsliste</dt><dd>Die 1. Liga eines Landes, das weder Haupt- noch Zusatzland ist. Hier gibt es keine Ergebnisse.</dd>
+            </dl>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Endstand</legend>
+            <p>Nur bei einer ausgewürfelten Liga eines Zusatzlands und vor dem Saisonende: Verein in der Tabelle anklicken, mit <span class="btn-tag">Nach oben</span> und <span class="btn-tag">Nach unten</span> an den gewünschten Platz schieben und mit <span class="btn-tag">Reihenfolge festlegen</span> übernehmen. Der Trainer schreibt dann neue Ergebnisse für die ganze Saison: Jeder Verein gewinnt zu Hause gegen alle, die unter ihm stehen, und spielt auswärts gegen sie unentschieden, sodass zwischen zwei Plätzen immer genau 3 Punkte liegen. Beim Saisonwechsel steigen die Vereine nach dieser Tabelle auf und ab. So lässt sich etwa ein Verein, der sonst nie über Platz 10 hinauskäme, zum Aufsteiger machen. Bei gespielten Ligen geht das nicht, weil die kommenden Spieltage die Ergebnisse wieder überschreiben würden.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Lizenz</legend>
+            <p>Für den angeklickten Verein einer gespielten Liga oder einer ausgewürfelten Liga eines Zusatzlands. <strong>Lizenz verweigert</strong> und <strong>Punktabzug</strong> (keiner, 3, 6 oder 9 Punkte) schreibt der Trainer sofort ins Spiel, die Tabelle rechnet gleich neu. Ein Verein ohne Lizenz steht grau ganz unten und steigt zum Saisonende ab; in einer ausgewürfelten Liga rückt damit der Nächste in die zehn „spielbaren“ Plätze nach. Dieselben Werte stehen auch unter Verein → Verband. Beim Saisonstart verfallen Lizenzverweigerung und Abzug der alten Saison.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="europapokal">
+          <fieldset class="groupbox">
+            <legend>Saison</legend>
+            <p>Zeigt, ob der Europapokal schon ausgelost ist, und wenn nicht, in wie vielen Wochen ungefähr. Das Spiel lost ihn rund 6 Wochen nach dem Saisonstart aus.</p>
+          </fieldset>
+          <fieldset class="groupbox">
+            <legend>Länder ohne Liga</legend>
+            <p>Die übrigen europäischen Länder (z. B. Holland, Belgien, Schottland) haben keine Liga, keine Tabelle und keine Punkte. Meister und Pokalsieger lost das Spiel bei jedem Saisonstart neu aus, und zwar nur nach der Reihenfolge der Vereine des Landes, nicht nach ihrer Stärke; der letzte Verein eines Landes wird dabei nie Meister. Gleich danach setzt es die Vereine in die Lostöpfe für Champions League, Pokal der Pokalsieger, UEFA-Pokal und UI-Cup.</p>
+            <p>Land, <strong>Meister</strong> und <strong>Pokalsieger</strong> wählen und <span class="btn-tag">Übernehmen</span>. Der Trainer tauscht den gewählten Verein dann überall, wo die Qualifikation die Vereine dieses Landes führt, mit dem bisherigen Titelträger, sodass keiner doppelt antritt. Das wirkt nur zwischen Saisonstart und Auslosung, also in den ersten rund 6 Wochen der Saison; sonst sind die Felder gesperrt. Einen Titel vor dem Saisonstart zu setzen hätte keinen Sinn, das Spiel lost ihn beim Saisonstart neu aus. Ob der Meister direkt in die Champions League kommt oder nur in die Qualifikation, entscheidet die Fünfjahreswertung des Landes.</p>
           </fieldset>
         </div>
       </section>

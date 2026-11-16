@@ -204,6 +204,59 @@ namespace A2G_Trainer.Controller
         private const uint bonusCountryCountOffset     = 0x42663E;
         private const uint bonusCountryListOffset      = 0x426644;
 
+        // League tables (docs/savegame-format.md, "Ligatabellen, Punktabzug, Lizenzentzug, Meister
+        // ohne Liga"). The game keeps no points: every table is computed from a league's result grid
+        // (FUN_00615780). Per league (leagueTableOffset + index * leagueStride): Int16 club count +0,
+        // matchdays +2, country +4, matchdays played +6, club IDs from +0xA (a club's place in that
+        // list is its "list position"), the grid from +0x48A as [home][away] x 2 bytes, byte 0 =
+        // home goals * 16 + away goals, 0xFF = not played. Leagues below the top one outside the main
+        // country are rolled in full at the season start (FUN_0063c960 -> FUN_005c91f0) and only read
+        // again at the season end, where the list positions 0-9 always beat the others 2:0.
+        private const uint leagueMatchdaysOffset       = 0x2;
+        private const uint leagueCountryOffset         = 0x4;
+        private const uint leaguePlayedOffset          = 0x6;
+        private const uint leagueGridOffset            = 0x48A;
+        private const int  leagueMaxClubs              = 24;
+        private const int  leagueCount                 = 13;
+        private const uint mainCountryOffset           = 0x426640;
+        // Half-weeks of the season (Int16, FUN_005e5e00): 0 at the season start (FUN_00597ba0), the
+        // European cup draws at 0x0C, the season end at 0x62; 999 while the season end waits for the
+        // next season's start.
+        private const uint halfWeekOffset              = 0x42666A;
+        private const short halfWeekCupDraw            = 0x0C;
+        private const short halfWeekSeasonEnd          = 0x62;
+        // European countries without league table: clubs per country (static byte table, #17), the
+        // first index of the country's clubs in the non-playable club records (byte per country, #16,
+        // from 1; record = base + (first + team) * stride, name at +0, country +0x73).
+        private const uint europeanClubCountOffset     = 0x2C18C8;
+        private const uint europeanFirstClubOffset     = 0x4265D0;
+        private const uint europeanClubBaseOffset      = 0x7F3D58;
+        private const uint europeanClubStride          = 0x138;
+        private const uint europeanClubCountryOffset   = 0x73;
+        // Their titles, a team index byte per country, drawn anew at every season start
+        // (FUN_004200e0): champion #43, cup winner #44, runner-up, and up to four
+        // more teams for the UEFA cup (#46, four bytes per country).
+        private const uint cupChampionOffset           = 0x303068;
+        private const uint cupWinnerOffset             = 0x302A00;
+        private const uint cupRunnerUpOffset           = 0x3005E0;
+        private const uint cupFurtherTeamsOffset       = 0x3008D0;
+        // Where the qualified teams wait for the draws at half-week 0x0C (FUN_0041a310), each entry
+        // byte country, byte 0, Int16 team: Champions League #39, UI cup list, Cup Winners' Cup #40,
+        // UI cup seeds #110, UEFA cup #41, reserve #42; and the UI cup pairings #54 drawn right away
+        // from the second season on (0xE bytes each, teams at +0 and +4).
+        private static readonly KeyValuePair<uint, int>[] cupPotLists =
+        {
+            new KeyValuePair<uint, int>(0x300AA0, 40),
+            new KeyValuePair<uint, int>(0x300B48, 24),
+            new KeyValuePair<uint, int>(0x300BA8, 32),
+            new KeyValuePair<uint, int>(0x300C28, 20),
+            new KeyValuePair<uint, int>(0x300C78, 120),
+            new KeyValuePair<uint, int>(0x302F18, 60),
+        };
+        private const uint uiCupPairingsOffset         = 0x300648;
+        private const int  uiCupPairings               = 46;
+        private const uint cupPairingStride            = 0xE;
+
         // Job offers (original build). The daily processing FUN_005e5e00 first generates the week's
         // offers (FUN_00627390 -> FUN_00625c40, which also empties both offer lists) and right
         // after that presents them (call to FUN_006296f0 at jobOfferPresentCallSiteOffset). An offer
@@ -720,6 +773,29 @@ namespace A2G_Trainer.Controller
         internal static uint LeagueClubIdsOffset          { get => leagueClubIdsOffset; }
         internal static uint BonusCountryCountOffset      { get => bonusCountryCountOffset; }
         internal static uint BonusCountryListOffset       { get => bonusCountryListOffset; }
+        internal static uint LeagueMatchdaysOffset        { get => leagueMatchdaysOffset; }
+        internal static uint LeagueCountryOffset          { get => leagueCountryOffset; }
+        internal static uint LeaguePlayedOffset           { get => leaguePlayedOffset; }
+        internal static uint LeagueGridOffset             { get => leagueGridOffset; }
+        internal static int  LeagueMaxClubs               { get => leagueMaxClubs; }
+        internal static int  LeagueCount                  { get => leagueCount; }
+        internal static uint MainCountryOffset            { get => mainCountryOffset; }
+        internal static uint HalfWeekOffset               { get => halfWeekOffset; }
+        internal static short HalfWeekCupDraw             { get => halfWeekCupDraw; }
+        internal static short HalfWeekSeasonEnd           { get => halfWeekSeasonEnd; }
+        internal static uint EuropeanClubCountOffset      { get => europeanClubCountOffset; }
+        internal static uint EuropeanFirstClubOffset      { get => europeanFirstClubOffset; }
+        internal static uint EuropeanClubBaseOffset       { get => europeanClubBaseOffset; }
+        internal static uint EuropeanClubStride           { get => europeanClubStride; }
+        internal static uint EuropeanClubCountryOffset    { get => europeanClubCountryOffset; }
+        internal static uint CupChampionOffset            { get => cupChampionOffset; }
+        internal static uint CupWinnerOffset              { get => cupWinnerOffset; }
+        internal static uint CupRunnerUpOffset            { get => cupRunnerUpOffset; }
+        internal static uint CupFurtherTeamsOffset        { get => cupFurtherTeamsOffset; }
+        internal static IEnumerable<KeyValuePair<uint, int>> CupPotLists { get => cupPotLists; }
+        internal static uint UiCupPairingsOffset          { get => uiCupPairingsOffset; }
+        internal static int  UiCupPairings                { get => uiCupPairings; }
+        internal static uint CupPairingStride             { get => cupPairingStride; }
         internal static uint JobOfferPresentCallSiteOffset { get => jobOfferPresentCallSiteOffset; }
         internal static uint JobOfferPresentFunctionOffset { get => jobOfferPresentFunctionOffset; }
         internal static uint JobOfferAddFunctionOffset     { get => jobOfferAddFunctionOffset; }
