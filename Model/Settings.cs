@@ -461,6 +461,23 @@ namespace A2G_Trainer.Controller
         private static readonly byte[] goalHomeBrakePattern = GoalLimitBytes.HomeBrakePattern;
         private static readonly byte[] goalAwayBrakePattern = GoalLimitBytes.AwayBrakePattern;
 
+        // Overconfidence (original build). FUN_005f3d30(match, home club, away club), called by
+        // FUN_005f0120 (all matches of a day) and FUN_005f17b0 (a single match), sets up a match before
+        // the pre-match screens: each team's overall factor (team block +0x1C, home +0x70 / away +0x158
+        // from the match) is 100, but a team more than 10 (or 20) strength points better than its
+        // opponent gets 90/80/70 by chance. A successful pre-match speech sets it back to 100 (checked
+        // live). OverconfidenceRule redirects both calls (each followed by add esp, 0xC) to a stub that
+        // calls the function and then sets the factor of human teams (club +0x86) and of their
+        // opponents. The pattern is the function's first instructions (2007 CD/GOG: +0x4960; the call
+        // sites move by +0x3CA1 and +0x4950, read live 16.11.2026).
+        private const uint matchInitFunctionOffset = 0x1F3D30;   // FUN_005f3d30
+        private static readonly uint[] matchInitCallSiteOffsets = { 0x1F082F, 0x1F19FB };
+        private const uint matchTeamFactorOffset   = 0x1C;       // Int16 in a team block, 100 = normal
+        private const uint clubHumanOffset         = 0x86;       // club working copy: manager number, 0 = computer
+        private static readonly byte[] matchInitPattern = { 0x81, 0xEC, 0xA4, 0x00, 0x00, 0x00, 0x66, 0x33, 0xC0, 0x53, 0x55, 0x56,
+            0x8B, 0xB4, 0x24, 0xB4, 0x00, 0x00, 0x00, 0x8B, 0xAC, 0x24, 0xBC, 0x00, 0x00, 0x00, 0x57, 0x66, 0x3B, 0x46, 0x24 };
+        private static readonly byte[] matchInitCallTrailPattern = { 0x83, 0xC4, 0x0C };
+
         // National coach (original build). The game's own takeover FUN_005cf1e0(ID, country), leave
         // FUN_005cf340(ID) and friendly candidates FUN_005cf3e0() (all cdecl) also set up the national
         // team's line-up and tactics and the three friendly dates' opponents to choose from, which the
@@ -741,6 +758,12 @@ namespace A2G_Trainer.Controller
         internal static byte[] GoalLimitPattern            { get => (byte[])goalLimitPattern.Clone(); }
         internal static byte[] GoalHomeBrakePattern        { get => (byte[])goalHomeBrakePattern.Clone(); }
         internal static byte[] GoalAwayBrakePattern        { get => (byte[])goalAwayBrakePattern.Clone(); }
+        internal static uint MatchInitFunctionOffset       { get => matchInitFunctionOffset; }
+        internal static uint[] MatchInitCallSiteOffsets    { get => (uint[])matchInitCallSiteOffsets.Clone(); }
+        internal static uint MatchTeamFactorOffset         { get => matchTeamFactorOffset; }
+        internal static uint ClubHumanOffset               { get => clubHumanOffset; }
+        internal static byte[] MatchInitPattern            { get => (byte[])matchInitPattern.Clone(); }
+        internal static byte[] MatchInitCallTrailPattern   { get => (byte[])matchInitCallTrailPattern.Clone(); }
         internal static uint[] TransferMarketCallSiteOffsets { get => (uint[])transferMarketCallSiteOffsets.Clone(); }
         internal static uint TransferMarketFunctionOffset  { get => transferMarketFunctionOffset; }
         internal static uint TransferDeadlineCallSiteOffset { get => transferDeadlineCallSiteOffset; }

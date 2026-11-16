@@ -127,14 +127,28 @@ namespace A2G_Trainer.Controller
             public uint AwayBrakeSite { get; set; }
         }
 
+        /// <summary>The match set-up code in this build, or null if it couldn't be found.</summary>
+        public MatchInitCode MatchInit { get; }
+
+        /// <summary>Module-relative addresses of the code OverconfidenceRule hooks (see Settings).</summary>
+        internal sealed class MatchInitCode
+        {
+            /// <summary>The match set-up (FUN_005f3d30 in the original build).</summary>
+            public uint Function { get; set; }
+            /// <summary>Its two call sites (E8 rel32), each followed by add esp, 0xC.</summary>
+            public uint[] CallSites { get; set; }
+        }
+
         /// <summary>Module-relative offset of the trainer pool (co-trainers), or null if it couldn't be found.</summary>
         public uint? CoachPoolTable { get; }
         /// <summary>Module-relative offset of the goalkeeper trainer table, or null if it couldn't be found.</summary>
         public uint? GoalkeeperCoachTable { get; }
 
         internal FixedAddresses(uint runtimeShift, uint staticShift, JobOfferCode jobOffer, TransferCode transfer, NationalCoachCode nationalCoach = null,
-            uint? coachPoolTable = null, uint? goalkeeperCoachTable = null, InterviewCode interview = null, GoalLimitCode goalLimit = null)
+            uint? coachPoolTable = null, uint? goalkeeperCoachTable = null, InterviewCode interview = null, GoalLimitCode goalLimit = null,
+            MatchInitCode matchInit = null)
         {
+            this.MatchInit = matchInit;
             this.GoalLimit = goalLimit;
             this.RuntimeShift = runtimeShift;
             this.StaticShift = staticShift;
@@ -184,6 +198,11 @@ namespace A2G_Trainer.Controller
                 LimitSite = Settings.GoalLimitSiteOffset,
                 HomeBrakeSite = Settings.GoalHomeBrakeSiteOffset,
                 AwayBrakeSite = Settings.GoalAwayBrakeSiteOffset,
+            },
+            new MatchInitCode
+            {
+                Function = Settings.MatchInitFunctionOffset,
+                CallSites = Settings.MatchInitCallSiteOffsets,
             });
 
         /// <summary>Absolute address of runtime data at the original build's module-relative <paramref name="offset"/>.</summary>
@@ -271,7 +290,25 @@ namespace A2G_Trainer.Controller
             Logger.Warn(goalLimit != null
                 ? $"FixedAddresses: Torgrenzen: Grenze 0x{goalLimit.LimitSite:X}, Bremse Heim 0x{goalLimit.HomeBrakeSite:X}, Gast 0x{goalLimit.AwayBrakeSite:X}."
                 : "FixedAddresses: Torgrenzen-Code nicht eindeutig gefunden.");
-            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit);
+            MatchInitCode matchInit = DiscoverMatchInit(memory);
+            Logger.Warn(matchInit != null
+                ? $"FixedAddresses: Spielvorbereitung 0x{matchInit.Function:X} (Aufrufe {string.Join(", ", matchInit.CallSites.Select(s => $"0x{s:X}"))})."
+                : "FixedAddresses: Spielvorbereitung nicht eindeutig gefunden.");
+            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit, matchInit);
+        }
+
+        // The match set-up is found by its first instructions; its call sites as the only calls to it
+        // (or to an installed OverconfidenceRule stub) followed by add esp, 0xC - both lie within the
+        // search window around the first one.
+        private static MatchInitCode DiscoverMatchInit(ProcessMemory memory)
+        {
+            uint? function = FindUnique(memory, Settings.MatchInitFunctionOffset, Settings.MatchInitPattern);
+            if (!function.HasValue)
+                return null;
+            uint[] originalSites = Settings.MatchInitCallSiteOffsets;
+            List<uint> sites = FindCalls(memory, originalSites[0], function.Value, new byte[0], Settings.MatchInitCallTrailPattern,
+                OverconfidenceRule.CodeOffset, OverconfidenceRule.Signature);
+            return sites?.Count == originalSites.Length ? new MatchInitCode { Function = function.Value, CallSites = sites.ToArray() } : null;
         }
 
         // The patterns end before the bytes GoalLimitPatch rewrites, so they're found patched or not.

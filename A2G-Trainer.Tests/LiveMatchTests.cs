@@ -68,6 +68,29 @@ namespace A2G_Trainer.Tests
             }
         }
 
+        // The own club plays away: its factor is the away block's (+0x158), the opponent's the home block's (+0x70).
+        [Fact]
+        public void Factors_AreReadAndWrittenForTheClubAndItsOpponent()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                ClubEditorSettingsTests.SeedOwnClub(fake);
+                SeedMatch(fake);
+                uint match = Table + Settings.MatchStride;
+                fake.WriteModuleBytes(match + OverconfidenceRule.HomeFactorOffset, BitConverter.GetBytes((short)100));
+                fake.WriteModuleBytes(match + OverconfidenceRule.AwayFactorOffset, BitConverter.GetBytes((short)70));
+                LiveMatch live = Find(fake);
+
+                Assert.Equal((short)70, live.Factor);
+                Assert.Equal((short)100, live.OpponentFactor);
+
+                live.Factor = 100;
+                live.OpponentFactor = 80;
+                Assert.Equal((short)100, BitConverter.ToInt16(fake.ReadModuleBytes(match + OverconfidenceRule.AwayFactorOffset, 2), 0));
+                Assert.Equal((short)80, BitConverter.ToInt16(fake.ReadModuleBytes(match + OverconfidenceRule.HomeFactorOffset, 2), 0));
+            }
+        }
+
         [Fact]
         public void Bench_WithoutAWorkingCopy_ComesFromTheRecord()
         {
@@ -171,6 +194,21 @@ namespace A2G_Trainer.Tests
                 apply.Invoke(view, null);
                 Assert.Equal((byte)6, fake.ReadModuleBytes(match + 0x16C, 1)[0]);
                 Assert.Equal((byte)2, fake.ReadModuleBytes(match + 0x170, 1)[0]);
+
+                // Overconfidence: the seeded match has no factors yet (0, not offered), so both show empty.
+                System.Windows.Forms.ComboBox factor = Field<System.Windows.Forms.ComboBox>(view, "liveFactorInput");
+                System.Windows.Forms.ComboBox opponentFactor = Field<System.Windows.Forms.ComboBox>(view, "liveOpponentFactorInput");
+                Assert.Equal(-1, factor.SelectedIndex);
+                fake.WriteModuleBytes(match + OverconfidenceRule.AwayFactorOffset, BitConverter.GetBytes((short)80));
+                fake.WriteModuleBytes(match + OverconfidenceRule.HomeFactorOffset, BitConverter.GetBytes((short)100));
+                show.Invoke(view, new object[] { Find(fake) });
+                Assert.Equal(2, factor.SelectedIndex);
+                Assert.Equal(0, opponentFactor.SelectedIndex);
+                factor.SelectedIndex = 0;
+                opponentFactor.SelectedIndex = 3;
+                apply.Invoke(view, null);
+                Assert.Equal((short)100, BitConverter.ToInt16(fake.ReadModuleBytes(match + OverconfidenceRule.AwayFactorOffset, 2), 0));
+                Assert.Equal((short)70, BitConverter.ToInt16(fake.ReadModuleBytes(match + OverconfidenceRule.HomeFactorOffset, 2), 0));
 
                 // The places show the players, not their IDs.
                 System.Windows.Forms.ComboBox place = Field<System.Windows.Forms.ComboBox[]>(view, "liveBenchInputs")[0];

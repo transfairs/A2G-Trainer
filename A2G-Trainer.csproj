@@ -86,6 +86,8 @@
     <Compile Include="Controller\QuizHelper.cs" />
     <Compile Include="Controller\InterviewEffectsDisplay.cs" />
     <Compile Include="Controller\InterviewEffectsFix.cs" />
+    <Compile Include="Controller\OverconfidenceRule.cs" />
+    <Compile Include="Controller\X86Assembler.cs" />
     <Compile Include="Controller\GoalLimitBytes.cs" />
     <Compile Include="Controller\GoalLimitPatch.cs" />
     <Compile Include="Controller\GameRates.cs" />

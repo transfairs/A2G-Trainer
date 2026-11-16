@@ -12,8 +12,8 @@ namespace A2G_Trainer.View
 {
     /// <summary>
     /// "Spielmechaniken": what works on the running game's code instead of its data and so can't go
-    /// into a savegame - the quiz and interview helps, the lifted goal limits and the requested job
-    /// offer. The switches are taken back when the trainer closes and are gone with the game.
+    /// into a savegame - the quiz and interview helps, the lifted goal limits, the overconfidence rule
+    /// and the requested job offer. The switches are taken back when the trainer closes and are gone with the game.
     /// Built in code, laid out like the other views: one tab, "Werte neuladen" below it.
     /// </summary>
     public class MechanicsView : EntityView
@@ -24,6 +24,7 @@ namespace A2G_Trainer.View
         private readonly CheckBox quizHelpInput, interviewDisplayInput, interviewFixInput, goalLimitInput;
         private readonly GroupBox jobOfferBox;
         private readonly ComboBox jobOfferTrainerInput, jobOfferCountryInput, jobOfferClubInput;
+        private readonly ComboBox overconfidenceOwnInput, overconfidenceOpponentInput;
         private readonly Button jobOfferButton;
         private readonly Label jobOfferStatus;
 
@@ -31,6 +32,7 @@ namespace A2G_Trainer.View
         private readonly InterviewEffectsDisplay interviewDisplay;
         private readonly InterviewEffectsFix interviewFix;
         private readonly GoalLimitPatch goalLimitPatch;
+        private readonly OverconfidenceRule overconfidenceRule;
 
         // The managers the job offer can go to (see Trainer.RefreshTrainerMenu) and the one chosen.
         private List<KeyValuePair<int, Coach>> trainers = new List<KeyValuePair<int, Coach>>();
@@ -83,6 +85,7 @@ namespace A2G_Trainer.View
             this.interviewDisplay = new InterviewEffectsDisplay(this.Memory);
             this.interviewFix = new InterviewEffectsFix(this.Memory);
             this.goalLimitPatch = new GoalLimitPatch(this.Memory);
+            this.overconfidenceRule = new OverconfidenceRule(this.Memory);
 
             this.tabControl = new TabControl { Name = "MainTabControl", Location = new Point(20, 13), Size = new Size(594, 372) };
             TabPage generalTab = new TabPage { Text = "Allgemein", UseVisualStyleBackColor = true, AutoScroll = true, Padding = new Padding(3) };
@@ -118,6 +121,16 @@ namespace A2G_Trainer.View
             };
             engineBox.Controls.Add(this.goalLimitInput);
 
+            GroupBox overconfidenceBox = new GroupBox { Text = "Überheblichkeit", Location = new Point(6, 184), Size = new Size(272, 76) };
+            this.overconfidenceOwnInput = AddChoice(overconfidenceBox, "Eigene Teams", 20);
+            this.overconfidenceOpponentInput = AddChoice(overconfidenceBox, "Deren Gegner", 47);
+            foreach (ComboBox rule in new[] { this.overconfidenceOwnInput, this.overconfidenceOpponentInput })
+            {
+                rule.Items.AddRange(OverconfidenceRule.RuleNames.Cast<object>().ToArray());
+                rule.SelectedIndex = 0;
+                rule.SelectedIndexChanged += (s, e) => this.ApplyOverconfidenceRule();
+            }
+
             this.jobOfferBox = new GroupBox { Text = "Jobangebot anfordern", Location = new Point(284, 6), Size = new Size(272, 172) };
             this.jobOfferTrainerInput = AddChoice(this.jobOfferBox, "Trainer", 20);
             this.jobOfferCountryInput = AddChoice(this.jobOfferBox, "Land", 47);
@@ -131,10 +144,10 @@ namespace A2G_Trainer.View
             this.jobOfferBox.Enabled = false;
 
             // Both columns end at the same height; the notice spans them right below.
-            GroupBox noticeBox = new GroupBox { Text = "Hinweis", Location = new Point(6, 184), Size = new Size(550, 46) };
+            GroupBox noticeBox = new GroupBox { Text = "Hinweis", Location = new Point(6, 266), Size = new Size(550, 46) };
             this.noticeLabel = new Label { Name = "NoticeLabel", AutoSize = true, Location = new Point(7, 21), Text = "Diese Funktionen wirken nur, solange A2G-Trainer und Spiel laufen." };
             noticeBox.Controls.Add(this.noticeLabel);
-            generalTab.Controls.AddRange(new Control[] { quizBox, interviewBox, engineBox, this.jobOfferBox, noticeBox });
+            generalTab.Controls.AddRange(new Control[] { quizBox, interviewBox, engineBox, overconfidenceBox, this.jobOfferBox, noticeBox });
 
             this.reloadButton = new Button { Name = "ReloadBtn", Text = "Werte neuladen", Location = new Point(20, 391), Size = new Size(114, 23), UseVisualStyleBackColor = true };
             this.reloadButton.Click += (s, e) => this.RefreshValues();
@@ -149,7 +162,28 @@ namespace A2G_Trainer.View
                     this.interviewFix.SetEnabled(false);
                 if (this.goalLimitLifted)
                     this.goalLimitPatch.SetEnabled(false);
+                if (this.overconfidenceOwnInput.SelectedIndex > 0 || this.overconfidenceOpponentInput.SelectedIndex > 0)
+                    this.overconfidenceRule.SetRule(0, 0);
             };
+        }
+
+        // Sends both rules to the game; where that isn't possible (other build, see the log) both go back to the game's dice.
+        private void ApplyOverconfidenceRule()
+        {
+            if (this.showing)
+                return;
+            if (this.overconfidenceRule.SetRule(OverconfidenceRule.RuleValue(this.overconfidenceOwnInput.SelectedIndex),
+                    OverconfidenceRule.RuleValue(this.overconfidenceOpponentInput.SelectedIndex)))
+                return;
+            this.showing = true;
+            try
+            {
+                this.overconfidenceOwnInput.SelectedIndex = this.overconfidenceOpponentInput.SelectedIndex = 0;
+            }
+            finally
+            {
+                this.showing = false;
+            }
         }
 
         /// <summary>The managers of the savegame (slot, coach), offered for the job offer; keeps the one chosen where it's still there.</summary>
@@ -177,6 +211,12 @@ namespace A2G_Trainer.View
                 // The patch lives in the game, which may have been restarted meanwhile.
                 this.goalLimitInput.Checked = running && this.goalLimitPatch.IsEnabled;
                 this.goalLimitLifted &= this.goalLimitInput.Checked;
+                // The rule lives in the game, which may have been restarted meanwhile.
+                byte own = 0, opponent = 0;
+                if (running)
+                    this.overconfidenceRule.ReadRule(out own, out opponent);
+                this.overconfidenceOwnInput.SelectedIndex = OverconfidenceRule.RuleIndex(own);
+                this.overconfidenceOpponentInput.SelectedIndex = OverconfidenceRule.RuleIndex(opponent);
             }
             finally
             {

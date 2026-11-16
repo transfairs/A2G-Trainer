@@ -9,8 +9,9 @@ using System.Windows.Forms;
 namespace A2G_Trainer.View
 {
     /// <summary>
-    /// "Live-Spiel" tab: the bench, the substitutions made and attitude, hardness and effort of the
-    /// club shown while the game plays its match (see <see cref="LiveMatch"/>). The view's "Werte
+    /// "Live-Spiel" tab: the bench, the substitutions made, attitude, hardness and effort and the
+    /// overconfidence of both teams, shown while the game plays the club's match or has set it up
+    /// for kick-off (see <see cref="LiveMatch"/>). The view's "Werte
     /// neuladen" reads the match again, "Speichern" writes what was changed here - only that, since
     /// the match goes on meanwhile. Built in code, like the budget tab.
     /// </summary>
@@ -19,9 +20,9 @@ namespace A2G_Trainer.View
         private TabPage liveTab;
         private Label liveStatusValue;
         private TextBox liveSubstitutionsInput;
-        private ComboBox liveAttitudeInput, liveHardnessInput, liveEffortInput;
+        private ComboBox liveAttitudeInput, liveHardnessInput, liveEffortInput, liveFactorInput, liveOpponentFactorInput;
         private readonly ComboBox[] liveBenchInputs = new ComboBox[LiveMatch.BenchSize];
-        private GroupBox liveTacticsBox, liveBenchBox;
+        private GroupBox liveTacticsBox, liveBenchBox, liveFactorBox;
         private LiveMatch liveMatch;
         // What was changed on the tab since the match was read; Save writes only these.
         private readonly HashSet<Control> liveChanged = new HashSet<Control>();
@@ -100,6 +101,12 @@ namespace A2G_Trainer.View
                 combo.SelectedIndexChanged += this.LiveInput_Changed;
             this.liveSubstitutionsInput.TextChanged += this.LiveInput_Changed;
 
+            this.liveFactorBox = new GroupBox { Text = "Überheblichkeit", Location = new Point(6, 170), Size = new Size(270, 76) };
+            this.liveFactorInput = AddLiveChoice(this.liveFactorBox, "Eigene", 20, OverconfidenceRule.FactorNames);
+            this.liveOpponentFactorInput = AddLiveChoice(this.liveFactorBox, "Gegner", 46, OverconfidenceRule.FactorNames);
+            this.liveFactorInput.SelectedIndexChanged += this.LiveInput_Changed;
+            this.liveOpponentFactorInput.SelectedIndexChanged += this.LiveInput_Changed;
+
             this.liveBenchBox = new GroupBox { Text = "Ersatzbank", Location = new Point(282, 36), Size = new Size(298, 210) };
             for (int i = 0; i < LiveMatch.BenchSize; i++)
             {
@@ -109,7 +116,7 @@ namespace A2G_Trainer.View
                 this.liveBenchBox.Controls.Add(this.liveBenchInputs[i]);
             }
 
-            this.liveTab.Controls.AddRange(new Control[] { this.liveStatusValue, this.liveTacticsBox, this.liveBenchBox });
+            this.liveTab.Controls.AddRange(new Control[] { this.liveStatusValue, this.liveTacticsBox, this.liveFactorBox, this.liveBenchBox });
             this.ClubTabControl.Controls.Add(this.liveTab);
         }
 
@@ -126,7 +133,7 @@ namespace A2G_Trainer.View
             this.liveMatch = match;
             FixedAddresses fixedAddresses = match != null ? FixedAddresses.For(this.Memory) : null;
             bool live = this.liveMatch != null;
-            this.liveTacticsBox.Enabled = this.liveBenchBox.Enabled = live;
+            this.liveTacticsBox.Enabled = this.liveBenchBox.Enabled = this.liveFactorBox.Enabled = live;
             this.showingLive = true;
             try
             {
@@ -146,6 +153,9 @@ namespace A2G_Trainer.View
                 this.liveHardnessInput.SelectedIndex = Math.Min(this.liveMatch.Hardness, (byte)(LiveMatch.HardnessNames.Length - 1));
                 this.liveEffortInput.SelectedIndex = Math.Min(this.liveMatch.Effort, (byte)(LiveMatch.EffortNames.Length - 1));
                 this.liveSubstitutionsInput.Text = this.liveMatch.Substitutions.ToString();
+                // A factor the list doesn't offer shows as empty.
+                this.liveFactorInput.SelectedIndex = Array.IndexOf(OverconfidenceRule.Factors, (byte)Math.Max((short)0, Math.Min(this.liveMatch.Factor, (short)255)));
+                this.liveOpponentFactorInput.SelectedIndex = Array.IndexOf(OverconfidenceRule.Factors, (byte)Math.Max((short)0, Math.Min(this.liveMatch.OpponentFactor, (short)255)));
 
                 // The squad from the record: the engine's working copy of the club is only complete
                 // while it handles this club's move.
@@ -174,6 +184,10 @@ namespace A2G_Trainer.View
                 this.liveMatch.Hardness = (byte)this.liveHardnessInput.SelectedIndex;
             if (this.liveChanged.Contains(this.liveEffortInput) && this.liveEffortInput.SelectedIndex >= 0)
                 this.liveMatch.Effort = (byte)this.liveEffortInput.SelectedIndex;
+            if (this.liveChanged.Contains(this.liveFactorInput) && this.liveFactorInput.SelectedIndex >= 0)
+                this.liveMatch.Factor = OverconfidenceRule.Factors[this.liveFactorInput.SelectedIndex];
+            if (this.liveChanged.Contains(this.liveOpponentFactorInput) && this.liveOpponentFactorInput.SelectedIndex >= 0)
+                this.liveMatch.OpponentFactor = OverconfidenceRule.Factors[this.liveOpponentFactorInput.SelectedIndex];
             if (this.liveChanged.Contains(this.liveSubstitutionsInput) && byte.TryParse(this.liveSubstitutionsInput.Text, out byte substitutions))
                 this.liveMatch.Substitutions = substitutions;
             if (this.liveBenchInputs.Any(this.liveChanged.Contains))

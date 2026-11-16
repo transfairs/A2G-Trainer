@@ -164,6 +164,7 @@ namespace A2G_Trainer.Tests
             {
                 // The interview calls InterviewEffectsFix redirects and the goal limits, as in the unpatched game.
                 InterviewEffectsFixTests.WriteOriginalCalls(fake);
+                OverconfidenceRuleTests.WriteOriginalCalls(fake);
                 GoalLimitPatchTests.PlantGoalLimitCode(fake, Settings.GoalLimitSiteOffset, Settings.GoalHomeBrakeSiteOffset, Settings.GoalAwayBrakeSiteOffset, GoalLimitPatchTests.OriginalLimit);
                 CoachViewTests.SeedLeagueAndStock(fake);
                 MechanicsView view = trainer.MechanicsView;
@@ -202,12 +203,25 @@ namespace A2G_Trainer.Tests
                 goals.Checked = false;
                 Assert.False(new GoalLimitPatch(fake.Memory).IsEnabled);
 
+                // The overconfidence rules go to the game's stub, also over a refresh.
+                ComboBox own = Field<ComboBox>(view, "overconfidenceOwnInput");
+                ComboBox opponents = Field<ComboBox>(view, "overconfidenceOpponentInput");
+                Assert.Equal(0, own.SelectedIndex);
+                own.SelectedIndex = 1;
+                opponents.SelectedIndex = 4;
+                uint ruleStub = OverconfidenceRuleTests.Stub(fake);
+                Assert.Equal(new byte[] { 100, 70 }, view.Memory.ReadBytesAtAddress(ruleStub + OverconfidenceRule.OwnOffset, 2));
+                view.RefreshValues();
+                Assert.Equal(1, own.SelectedIndex);
+                Assert.Equal(4, opponents.SelectedIndex);
+
                 // Closing the trainer takes the patches back.
                 fix.Checked = true;
                 goals.Checked = true;
                 view.Dispose();
                 Assert.Equal(0, view.Memory.ReadBytesAtAddress(stub + InterviewEffectsFix.FlagOffset, 1)[0]);
                 Assert.False(new GoalLimitPatch(fake.Memory).IsEnabled);
+                Assert.Equal(new byte[] { 0, 0 }, view.Memory.ReadBytesAtAddress(ruleStub + OverconfidenceRule.OwnOffset, 2));
             }
         });
 
@@ -225,6 +239,10 @@ namespace A2G_Trainer.Tests
 
                 view.RefreshValues();
                 Assert.True(Field<CheckBox>(view, "goalLimitInput").Checked);
+                // Without the match set-up's calls in place the rule can't be set and goes back to the game's dice.
+                ComboBox own = Field<ComboBox>(view, "overconfidenceOwnInput");
+                own.SelectedIndex = 2;
+                Assert.Equal(0, own.SelectedIndex);
                 view.Dispose();
 
                 Assert.True(new GoalLimitPatch(fake.Memory).IsEnabled);

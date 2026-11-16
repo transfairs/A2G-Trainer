@@ -144,37 +144,13 @@ namespace A2G_Trainer.Controller
             return signature != null && signature.SequenceEqual(Signature) ? stub : (uint?)null;
         }
 
-        // x86 code with short forward jumps to labels.
-        private sealed class Assembler
-        {
-            private readonly List<byte> code = new List<byte>();
-            private readonly Dictionary<string, int> labels = new Dictionary<string, int>();
-            private readonly List<KeyValuePair<int, string>> jumps = new List<KeyValuePair<int, string>>();
-
-            public void Emit(params byte[] bytes) => this.code.AddRange(bytes);
-            public void Dword(uint value) => this.code.AddRange(BitConverter.GetBytes(value));
-            public void Jump(byte opcode, string label)
-            {
-                this.Emit(opcode, 0x00);
-                this.jumps.Add(new KeyValuePair<int, string>(this.code.Count - 1, label));
-            }
-            public void Mark(string label) => this.labels[label] = this.code.Count;
-
-            public byte[] ToArray()
-            {
-                foreach (KeyValuePair<int, string> jump in this.jumps)
-                    this.code[jump.Key] = (byte)(this.labels[jump.Value] - (jump.Key + 1));
-                return this.code.ToArray();
-            }
-        }
-
         /// <summary>Builds the complete stub (data + code) for the given absolute addresses - see the class remarks.</summary>
         internal static byte[] BuildStub(uint stubBase, uint engine, uint context, uint apply, uint moneyFactor, uint morale)
         {
             byte[] stub = new byte[StubSize];
             Array.Copy(Signature, stub, Signature.Length);
 
-            Assembler a = new Assembler();
+            X86Assembler a = new X86Assembler();
             a.Emit(0x80, 0x3D); a.Dword(stubBase + FlagOffset); a.Emit(0x00);      // cmp byte [flag], 0
             a.Jump(0x74, "zero");                                                  // je zero
             a.Emit(0xA1); a.Dword(engine);                                         // mov eax, [engine]
@@ -214,7 +190,7 @@ namespace A2G_Trainer.Controller
             // Fixed length; it fits before MoraleCodeOffset (the tests run both entries).
             a.ToArray().CopyTo(stub, CodeOffset);
 
-            Assembler m = new Assembler();
+            X86Assembler m = new X86Assembler();
             m.Emit(0x80, 0x7C, 0x24, 0x0B, (byte)(FineMarker >> 24));             // cmp byte [esp+0xB], 0x40
             m.Jump(0x75, "morale");                                                // jne morale
             m.Emit(0x8B, 0x44, 0x24, 0x08);                                        // mov eax, [esp+8]

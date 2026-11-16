@@ -1225,5 +1225,79 @@ namespace A2G_Trainer.Tests
             Assert.False((bool)matches.Invoke(null, new object[] { data, 3, pattern }));
         }
         #endregion
+
+        // Where the 2007 CD has the match set-up (run.exe, read live on 16.11.2026).
+        private const uint GogMatchInitShift = 0x4960;
+        private static readonly uint[] GogMatchInitSiteShifts = { 0x3CA1, 0x4950 };
+
+        // FUN_005f3d30's first instructions and its two calls, each followed by add esp, 0xC; with a
+        // stub, the calls go there instead.
+        private static void PlantMatchInitCode(FakeModule fake, uint? stub = null, int calls = 2)
+        {
+            uint function = Settings.MatchInitFunctionOffset + GogMatchInitShift;
+            fake.WriteModuleBytes(function, Settings.MatchInitPattern);
+            for (int i = 0; i < calls; i++)
+            {
+                uint site = Settings.MatchInitCallSiteOffsets[i] + GogMatchInitSiteShifts[i];
+                fake.WriteModuleBytes(site, Bytes(
+                    stub.HasValue ? Call(fake.ModuleBase + site, stub.Value + OverconfidenceRule.CodeOffset) : Call(site, function),
+                    Settings.MatchInitCallTrailPattern));
+            }
+        }
+
+        [Fact]
+        public void For_CalibratedGog_FindsTheMatchSetUp()
+        {
+            Assert.Equal(Settings.MatchInitFunctionOffset, FixedAddresses.Original.MatchInit.Function);
+            Assert.Equal(Settings.MatchInitCallSiteOffsets, FixedAddresses.Original.MatchInit.CallSites);
+
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantMatchInitCode(fake);
+
+                FixedAddresses found = FixedAddresses.For(fake.Memory);
+
+                Assert.Equal(Settings.MatchInitFunctionOffset + GogMatchInitShift, found.MatchInit.Function);
+                Assert.Equal(Settings.MatchInitCallSiteOffsets.Select((s, i) => s + GogMatchInitSiteShifts[i]), found.MatchInit.CallSites);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithOnlyOneCallOfTheMatchSetUp_HasNoMatchSetUp()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                PlantMatchInitCode(fake, calls: 1);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).MatchInit);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithoutTheMatchSetUp_HasNoMatchSetUp()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+
+                Assert.Null(FixedAddresses.For(fake.Memory).MatchInit);
+            }
+        }
+
+        [Fact]
+        public void For_GogWithTheOverconfidenceRuleInstalled_StillFindsTheCallSites()
+        {
+            using (FakeModule fake = new FakeModule())
+            {
+                MakeGog(fake);
+                uint stub = fake.Memory.AllocateExecutable(OverconfidenceRule.StubSize).Value;
+                fake.Memory.WriteBytesAtAddress(stub, OverconfidenceRule.Signature);
+                PlantMatchInitCode(fake, stub);
+
+                Assert.Equal(Settings.MatchInitCallSiteOffsets.Select((s, i) => s + GogMatchInitSiteShifts[i]), FixedAddresses.For(fake.Memory).MatchInit.CallSites);
+            }
+        }
     }
 }

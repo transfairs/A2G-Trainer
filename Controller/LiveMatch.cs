@@ -118,6 +118,26 @@ namespace A2G_Trainer.Controller
         /// <summary>Effort 0..6, see <see cref="EffortNames"/>.</summary>
         public byte Effort { get => this.ReadByte(EffortOffset); set => this.WriteTactic(EffortOffset, value, EffortNames.Length); }
 
+        /// <summary>
+        /// The club's overall factor (100 = full strength): the game lowers it to 90/80/70 by chance
+        /// when the club is much stronger than its opponent (overconfidence, see OverconfidenceRule) and a
+        /// successful pre-match speech sets it back to 100. Set before kick-off (FUN_005f3d30).
+        /// </summary>
+        public short Factor
+        {
+            get => ReadInt16(this.memory.ReadBytesAtAddress(this.Team + OverconfidenceRule.HomeFactorOffset, 2));
+            set => this.memory.WriteBytesAtAddress(this.Team + OverconfidenceRule.HomeFactorOffset, BitConverter.GetBytes(value));
+        }
+
+        /// <summary>The opponent's overall factor, as <see cref="Factor"/>.</summary>
+        public short OpponentFactor
+        {
+            get => ReadInt16(this.memory.ReadBytesAtAddress(this.OpponentTeam + OverconfidenceRule.HomeFactorOffset, 2));
+            set => this.memory.WriteBytesAtAddress(this.OpponentTeam + OverconfidenceRule.HomeFactorOffset, BitConverter.GetBytes(value));
+        }
+
+        private uint OpponentTeam => this.match + (this.IsHome ? AwayShift : 0);
+
         private byte ReadByte(uint offset) => this.memory.ReadBytesAtAddress(this.Team + offset, 1)?[0] ?? 0;
 
         // A changed tactic also marks the team as one the computer must not change it for (bit 4
