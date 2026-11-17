@@ -37,7 +37,9 @@ namespace A2G_Trainer.View
         // A choice of plan days, shown with weekday and date.
         private sealed class DayChoice
         {
+            /// <summary>The plan day this choice stands for.</summary>
             public int Day { get; set; }
+            /// <summary>The day as shown in the drop-down (weekday and date).</summary>
             public string Text { get; set; }
             public override string ToString() => this.Text;
         }

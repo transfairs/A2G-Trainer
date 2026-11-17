@@ -32,6 +32,9 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 <td align="center" width="33%"><img src="docs/Spielmechaniken.png" width="260"><br><sub><b>Game mechanics</b> — quiz &amp; interview help, goal limits, job offers</sub></td>
 <td align="center" width="33%"><img src="docs/Help.png" width="260"><br><sub><b>Help</b> — built in, same content as the online help</sub></td>
 </tr>
+<tr>
+<td align="center" width="33%"><img src="docs/Ligen.png" width="260"><br><sub><b>Leagues</b> — tables, final orders, licence &amp; points deductions</sub></td>
+</tr>
 </table>
 </div>
 
@@ -124,17 +127,23 @@ Plain `dotnet build`/`dotnet test` **fails outright** on this project (`MSB3822`
 msbuild A2G-Trainer.Tests/A2G-Trainer.Tests.csproj /t:Restore,Build /p:Configuration=Debug
 dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --no-build --no-restore
 ```
-For coverage, add the collector once and pass the same flag to that build:
+On a fresh clone, run `/t:Restore` and `/t:Build` as two separate `msbuild` calls if `dotnet test` reports that no tests are available.
+
+The test host is 32-bit, and with the whole suite in one process it can run out of address space (unrelated tests then fail with `VirtualAlloc failed` or `OutOfMemoryException`). If that happens, run the suite in two halves:
 ```bash
-dotnet add A2G-Trainer.Tests package coverlet.collector
-msbuild A2G-Trainer.Tests/A2G-Trainer.Tests.csproj /t:Restore,Build /p:Configuration=Debug
+dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --no-build --no-restore --filter "FullyQualifiedName~A2G_Trainer.Tests.C|FullyQualifiedName~A2G_Trainer.Tests.P|FullyQualifiedName~A2G_Trainer.Tests.F"
+dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --no-build --no-restore --filter "FullyQualifiedName!~A2G_Trainer.Tests.C&FullyQualifiedName!~A2G_Trainer.Tests.P&FullyQualifiedName!~A2G_Trainer.Tests.F"
+```
+For coverage (the test project already references `coverlet.collector`), build with portable PDBs, otherwise coverlet can't read the symbols and reports nothing for the trainer:
+```bash
+msbuild A2G-Trainer.Tests/A2G-Trainer.Tests.csproj /t:Rebuild /p:Configuration=Debug /p:DebugType=portable
 dotnet test A2G-Trainer.Tests/A2G-Trainer.Tests.csproj --no-build --no-restore --collect:"XPlat Code Coverage"
 
 # turn the raw XML into a browsable report (one-time tool install)
 dotnet tool install -g dotnet-reportgenerator-globaltool
 reportgenerator -reports:"A2G-Trainer.Tests/TestResults/**/coverage.cobertura.xml" -targetdir:coveragereport -reporttypes:Html
 ```
-Open `coveragereport/index.html` for a per-file/method/line breakdown.
+Open `coveragereport/index.html` for a per-file/method/line breakdown. When the suite ran in two halves, `reportgenerator` takes both XML files, but it keeps the better half per line instead of adding up the branches, so its branch figure can be lower than the real one.
 
 > `msbuild` here means the **full Visual Studio MSBuild**, not the one bundled with the dotnet SDK; make sure the one on your `PATH` resolves there (a "Developer Command Prompt for VS" or a machine with only VS installed gets this right automatically; run `where msbuild` if unsure).
 

@@ -310,7 +310,9 @@ namespace A2G_Trainer.View
         /// <summary>A country in the European cup tab's list.</summary>
         internal sealed class CountryItem
         {
+            /// <summary>The country this list entry stands for.</summary>
             public PlayerEnums.Country Country { get; }
+            /// <summary>Creates the list entry for a country; it shows the country's name.</summary>
             public CountryItem(PlayerEnums.Country country) { this.Country = country; }
             public override string ToString() => PlayerEnums.GetDescription(this.Country);
         }
