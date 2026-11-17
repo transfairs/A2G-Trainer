@@ -157,6 +157,18 @@ namespace A2G_Trainer.Controller
             public uint ReleaseFunction { get; set; }
         }
 
+        /// <summary>The appointment lock code in this build, or null if it couldn't be found.</summary>
+        public AppointmentLockCode AppointmentLock { get; }
+
+        /// <summary>Module-relative addresses of the code AppointmentLocks rewrites (see Settings).</summary>
+        internal sealed class AppointmentLockCode
+        {
+            /// <summary>The check for 3 negotiations a week (FUN_00634720 in the original build).</summary>
+            public uint WeeklyFunction { get; set; }
+            /// <summary>The limit's byte in both checks of the limit per selling club ("cmp byte [...], 3").</summary>
+            public uint[] ClubLimitSites { get; set; }
+        }
+
         /// <summary>Module-relative offset of the trainer pool (co-trainers), or null if it couldn't be found.</summary>
         public uint? CoachPoolTable { get; }
         /// <summary>Module-relative offset of the goalkeeper trainer table, or null if it couldn't be found.</summary>
@@ -164,8 +176,9 @@ namespace A2G_Trainer.Controller
 
         internal FixedAddresses(uint runtimeShift, uint staticShift, JobOfferCode jobOffer, TransferCode transfer, NationalCoachCode nationalCoach = null,
             uint? coachPoolTable = null, uint? goalkeeperCoachTable = null, InterviewCode interview = null, GoalLimitCode goalLimit = null,
-            MatchInitCode matchInit = null, SpeechListCode speechList = null)
+            MatchInitCode matchInit = null, SpeechListCode speechList = null, AppointmentLockCode appointmentLock = null)
         {
+            this.AppointmentLock = appointmentLock;
             this.SpeechList = speechList;
             this.MatchInit = matchInit;
             this.GoalLimit = goalLimit;
@@ -230,6 +243,15 @@ namespace A2G_Trainer.Controller
                 CheckFunction = Settings.SpeechCheckFunctionOffset,
                 ReleaseSite = Settings.SpeechCheckReleaseSiteOffset,
                 ReleaseFunction = Settings.SpeechCheckReleaseFunctionOffset,
+            },
+            new AppointmentLockCode
+            {
+                WeeklyFunction = Settings.WeeklyLimitFunctionOffset,
+                ClubLimitSites = new[]
+                {
+                    Settings.ClubLimitSiteOffset + (uint)Settings.ClubLimitPattern.Length,
+                    Settings.ClubLimitSite2Offset + (uint)Settings.ClubLimitPattern2.Length,
+                },
             });
 
         /// <summary>Absolute address of runtime data at the original build's module-relative <paramref name="offset"/>.</summary>
@@ -325,7 +347,27 @@ namespace A2G_Trainer.Controller
             Logger.Warn(speechList != null
                 ? $"FixedAddresses: Ansprachen-Liste: Aufruf 0x{speechList.CallSite:X}, Liste 0x{speechList.Function:X}, Prüfung 0x{speechList.CheckFunction:X}, Freigabe 0x{speechList.ReleaseSite:X} -> 0x{speechList.ReleaseFunction:X}."
                 : "FixedAddresses: Ansprachen-Liste nicht eindeutig gefunden.");
-            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit, matchInit, speechList);
+            AppointmentLockCode appointmentLock = DiscoverAppointmentLock(memory);
+            Logger.Warn(appointmentLock != null
+                ? $"FixedAddresses: Terminsperren: Woche 0x{appointmentLock.WeeklyFunction:X}, je Verein {string.Join(", ", appointmentLock.ClubLimitSites.Select(s => $"0x{s:X}"))}."
+                : "FixedAddresses: Terminsperren nicht eindeutig gefunden.");
+            return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit, matchInit, speechList, appointmentLock);
+        }
+
+        // The patterns leave out what AppointmentLocks rewrites (the weekly check's first 6 bytes, the
+        // limit byte per selling club), so they're found patched or not.
+        private static AppointmentLockCode DiscoverAppointmentLock(ProcessMemory memory)
+        {
+            uint? weekly = FindUnique(memory, Settings.WeeklyLimitFunctionOffset + (uint)Settings.WeeklyLimitEntry.Length, Settings.WeeklyLimitPattern);
+            uint? club = FindUnique(memory, Settings.ClubLimitSiteOffset, Settings.ClubLimitPattern);
+            uint? club2 = FindUnique(memory, Settings.ClubLimitSite2Offset, Settings.ClubLimitPattern2);
+            if (!weekly.HasValue || !club.HasValue || !club2.HasValue)
+                return null;
+            return new AppointmentLockCode
+            {
+                WeeklyFunction = weekly.Value - (uint)Settings.WeeklyLimitEntry.Length,
+                ClubLimitSites = new[] { club.Value + (uint)Settings.ClubLimitPattern.Length, club2.Value + (uint)Settings.ClubLimitPattern2.Length },
+            };
         }
 
         // The speech list's call is the only CALL rel32 in the search window between "mov ecx, [esp+0x14] /

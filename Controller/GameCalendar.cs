@@ -66,9 +66,21 @@ namespace A2G_Trainer.Controller
         /// days, looked up in the game's own calendar table the way the game packs it - or null if
         /// that day lies outside the table.
         /// </summary>
-        public Tuple<short, short> EndDateForInjuredDays(ushort injuredDays)
+        public Tuple<short, short> EndDateForInjuredDays(ushort injuredDays) => this.DateFromToday(injuredDays);
+
+        /// <summary>The date <paramref name="days"/> days from today (negative: before), from the game's calendar table; null outside it.</summary>
+        public DateTime? Date(int days)
         {
-            int dayIndex = this.DayCounter + injuredDays;
+            Tuple<short, short> date = this.DateFromToday(days);
+            return date == null ? (DateTime?)null : new DateTime(date.Item1, 1, 1).AddDays(date.Item2);
+        }
+
+        // (year, day of year) from the game's calendar table, null outside it.
+        private Tuple<short, short> DateFromToday(int days)
+        {
+            int dayIndex = this.DayCounter + days;
+            if (dayIndex < 0)
+                return null;
             byte[] entry = this.memory.ReadBytesAtAddress(this.memory.ModuleBase + Settings.CalendarTableOffset + this.shift + (uint)dayIndex * 4, 4);
             if (entry == null)
                 return null;
