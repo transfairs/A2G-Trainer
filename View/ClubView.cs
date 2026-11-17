@@ -33,6 +33,7 @@ namespace A2G_Trainer.View
             this.InitEditorSettings();
             this.BuildBudgetTab();
             this.BuildAssociationTab();
+            this.BuildAppointmentTab();
             this.BuildLiveMatchTab();
             this.clubSelection = new ClubSelection(this.ClubCountryInput, this.ClubInput);
             this.clubSelection.Picked += this.ClubPicked;
@@ -449,6 +450,7 @@ namespace A2G_Trainer.View
                 this.ShowBudget();
                 this.ShowRequirements();
                 this.ShowLiveMatch();
+                this.ShowAppointments();
                 this.clubSelection.Show(this.clubController.RecordClub
                     ?? (string.IsNullOrEmpty(this.club.ClubName) ? null : this.clubSelection.Find(this.club.Country, this.club.Id)));
             }

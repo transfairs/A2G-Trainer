@@ -111,7 +111,7 @@
             <a class="toc-card" href="#jugend" data-jump="jugend"><h3>Jugendspieler</h3><p>Die Jugend jedes Vereins, ohne Umweg über das Spiel.</p></a>
             <a class="toc-card" href="#trainer" data-jump="trainer"><h3>Trainer &amp; Liga</h3><p>Manager, Aktien, Nationalmannschaft, Länder­einstellungen und Hot-Seat-Unterstützung.</p></a>
             <a class="toc-card" href="#ligen" data-jump="ligen"><h3>Ligen</h3><p>Die Tabellen aller 13 Ligen, der Endstand ausgewürfelter Ligen, Lizenz und Punktabzug, Meister der Länder ohne Liga.</p></a>
-            <a class="toc-card" href="#mechaniken" data-jump="mechaniken"><h3>Spielmechaniken</h3><p>Quiz-, Interview- und Ansprachehilfe, Torgrenzen, Überheblichkeit und Jobangebote, direkt im laufenden Spiel.</p></a>
+            <a class="toc-card" href="#mechaniken" data-jump="mechaniken"><h3>Spielmechaniken</h3><p>Quiz-, Interview- und Ansprachehilfe, Torgrenzen, Überheblichkeit, Jobangebote und Terminsperren, direkt im laufenden Spiel.</p></a>
             <a class="toc-card" href="#tipps" data-jump="tipps"><h3>Tipps &amp; Tricks</h3><p>Kleine Kniffe, die Zeit sparen.</p></a>
             <a class="toc-card" href="#faq" data-jump="faq"><h3>Fehlerbehebung</h3><p>Häufige Fragen und Lösungen, inklusive Logdatei.</p></a>
             <a class="toc-card" href="#changelog" data-jump="changelog"><h3>Changelog</h3><p>Was sich von Version zu Version geändert hat.</p></a>
@@ -140,6 +140,7 @@
           <button data-sub="kalkulation">Kalkulation</button>
           <button data-sub="bank">Bank &amp; Börse</button>
           <button data-sub="verband">Verband</button>
+          <button data-sub="termine">Terminplaner</button>
           <button data-sub="live">Live-Spiel</button>
         </div>
 
@@ -392,6 +393,19 @@
               <dt>Spielerbeobachter (DM)</dt><dd>In dieser Saison für Spielerbeobachter ausgegeben; ab 2 Mio. DM lässt das Spiel keine weiteren zu.</dd>
             </dl>
             <p>Die Sabotage gegen einen Mitspieler und die abgelehnten Einbürgerungen stehen beim Manager, siehe <a href="#trainer" data-jump="trainer:karriere">Trainer → Karriere</a>.</p>
+          </fieldset>
+        </div>
+
+        <div class="subpanel" data-sub="termine">
+          <fieldset class="groupbox">
+            <legend>Terminplaner</legend>
+            <p>Die Termine der nächsten sechs Wochen aus dem Terminplaner des Spiels, für einen Verein mit menschlichem Manager. Die Spalte „Plan“ sagt, ob der Termin beim Trainer, beim Manager oder bei beiden steht. Jeder Knopf auf diesem Tab ändert das Spiel sofort und liest den Plan danach neu; „Speichern“ braucht es hier nicht. Was geklappt hat oder nicht, steht unter dem linken Kasten.</p>
+            <dl class="field-list">
+              <dt>Absagen</dt><dd>Sagt den ausgewählten Termin ab. Verhandlungstermine, Vertragsverlängerungen, Gespräche mit Jugendspielern und Amateuren und Freundschaftsspiele führt das Spiel in eigenen Listen und hält sie nach diesen Listen ab, auch wenn sie im Plan fehlen. Der Trainer nimmt sie deshalb dort heraus und erst dann aus dem Plan. Ein abgesagtes Freundschaftsspiel gibt seinen Platz frei, gegen denselben Gegner vermittelt das Spiel aber erst nach 42 Tagen wieder eins. Bei einer Trainingswoche oder einem Trainingslager verschwindet wie im Spiel nur der Eintrag, die Trainingseinheiten der Tage bleiben.</dd>
+              <dt>Verschieben</dt><dd>Legt den ausgewählten Termin auf einen anderen Tag. Zur Auswahl stehen die Tage ab morgen, an denen weder beim Trainer noch beim Manager etwas anderes steht; ein Trainingslager nur auf einen Sonntag, mit seinen Trainingseinheiten. Ein Termin, der heute oder früher begonnen hat, lässt sich nur noch absagen.</dd>
+              <dt>Neuer Termin</dt><dd>Legt einen Termin an, ebenfalls nur an Tagen ab morgen, an denen in beiden Plänen nichts steht. <em>Trainingslager</em>: eine Woche ab einem Sonntag, Lagerart Kondition oder Regeneration und einer der Orte des Spiels; die Trainingseinheiten stammen aus der Vorlage des Spiels, Kosten und Wirkung rechnet das Spiel beim Ablauf ab. <em>Freundschaftsspiel</em>: Land und Gegner, Spielort und Antrittsprämie; 0 heißt, die Einnahmen werden geteilt. Der Gegner darf an dem Tag kein anderes Freundschaftsspiel haben. <em>Fanclubtreffen</em>, <em>Vereinsfest</em> und <em>Tag der offenen Tür</em> stehen nur im Plan.</dd>
+            </dl>
+            <p>Liga- und Länderspiele, Turniere, das Verbandsgericht und Termine anderer Manager baut das Spiel selbst immer wieder auf; sie stehen in der Liste, lassen sich aber nicht ändern. Die Grenzen beim Vereinbaren von Verhandlungen hebt <a href="#mechaniken" data-jump="mechaniken">Spielmechaniken</a> → <em>Termine</em> auf.</p>
           </fieldset>
         </div>
 
@@ -1052,7 +1066,7 @@
           </fieldset>
           <fieldset class="groupbox">
             <legend>Mannschaftssitzung</legend>
-            <p>Vor einem Spiel können Sie der Mannschaft eine Ansprache halten. Jede Ansprache passt nur in bestimmten Lagen, etwa gegen einen deutlich stärkeren Gegner, nach einer Niederlagenserie oder im Abstiegskampf. Viele lassen sich nur ein- bis dreimal pro Saison halten. Eine unpassende Ansprache bewirkt nichts, verbraucht aber trotzdem einen Einsatz. Ab Nr. 28, den Motivationsansprachen, würfelt das Spiel bei einer passenden Ansprache zusätzlich gegen die Motivationsfähigkeit des Managers. Gelingt eine Ansprache, stärkt sie Abwehr und Angriff um ihre Prozente, ändert unter Umständen die Härte und hebt eine Überheblichkeit für dieses Spiel auf.</p>
+            <p>Vor einem Spiel können Sie der Mannschaft eine Ansprache halten. Jede Ansprache passt nur in bestimmten Lagen, etwa gegen einen deutlich stärkeren Gegner, nach einer Niederlagenserie oder im Abstiegskampf. Viele lassen sich nur ein- bis dreimal pro Saison halten. Eine unpassende Ansprache bewirkt nichts, verbraucht aber trotzdem einen Einsatz. Mit dem Patch „Ansprachen“ aus <strong>A2G-Patch</strong> kostet sie die Mannschaft stattdessen ihre Prozente in Abwehr und Angriff, so wie die Hilfe des Spiels es androht. Ab Nr. 28, den Motivationsansprachen, würfelt das Spiel bei einer passenden Ansprache zusätzlich gegen die Motivationsfähigkeit des Managers. Gelingt eine Ansprache, stärkt sie Abwehr und Angriff um ihre Prozente, ändert unter Umständen die Härte und hebt eine Überheblichkeit für dieses Spiel auf.</p>
             <dl class="field-list">
               <dt>Wirkung der Ansprachen anzeigen</dt><dd>Färbt im Dialog der Mannschaftssitzung jede Ansprache ein: grün, wenn sie in der aktuellen Lage passt, rot, wenn nicht, grau, wenn sie in dieser Saison aufgebraucht ist. Das Urteil stammt vom Spiel selbst: Der Trainer lässt für jede Ansprache die Prüfung des Spiels probeweise laufen und bricht sie ab, bevor sie etwas bewirkt. Auswahl und Restanzahl bleiben dabei unverändert. Vor dem Text steht, was die Ansprache bewirkt. „+3%“ heißt drei Prozent mehr für Abwehr und Angriff, „+2/0“ zwei Prozent für die Abwehr und nichts für den Angriff. „hart“, „normal“ oder „sanft“ ist die Härte, die die Mannschaft danach spielt. „2x“ heißt, dass die Ansprache in dieser Saison noch zweimal gehalten werden kann. Bei passenden Motivationsansprachen steht dahinter in Klammern, mit welcher Wahrscheinlichkeit der Wurf gelingt, zum Beispiel „(71%)“: Motivationsfähigkeit × 6 + 11 %, höchstens 100 %. Dafür leitet der Trainer im laufenden Spiel zwei Programmaufrufe über ein kleines Zusatzprogramm um. Ohne Häkchen sieht der Dialog wie im Original aus. Lässt sich das Häkchen nicht setzen, erkennt der Trainer den Spielcode dieser Version nicht.</dd>
             </dl>
@@ -1063,6 +1077,15 @@
             <p>Voraussetzungen, damit das Spiel das Angebot anzeigt: Der Manager hat gerade einen Verein, und für die nächste Saison ist kein Wechsel eingetragen („Kein Wechsel“). Angeboten werden nur Vereine aus dem Hauptland (jede Liga) und den Zusatzländern (1. Liga). In der Original- und der GOG-Version; bei anderen Versionen (z. B. der 2007er-CD), sobald der Trainer beim Verbinden ihre Adressen bestätigen konnte.</p>
             <p>Annehmen kann der Manager ein Angebot nur, wenn er eine Freigabeklausel hat, der Vorstand ihn freigegeben hat oder sein Vertrag ausläuft. Trifft nichts davon zu, setzt der Trainer beim Anfordern automatisch die Freigabeklausel. Ob und warum etwas nicht geklappt hat, steht direkt unter dem Knopf.</p>
             <p>Technisch leitet der Trainer dafür im laufenden Spiel einen einzigen Programmaufruf über ein kleines Zusatzprogramm um; an den Spieldateien ändert sich nichts. Nach einem Neustart des Spiels ist die Umleitung wieder weg und wird beim nächsten Anfordern neu gesetzt. Speichern Sie vor dem ersten Ausprobieren. Bis zum nächsten Tagesabschluss muss das Spiel weiterlaufen, sonst kommt das Angebot nicht.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Terminsperren (Tab „Termine“)</legend>
+            <p>Grenzen, die das Spiel beim Vereinbaren von Verhandlungsterminen setzt. Der Trainer ändert dafür den Programmcode des laufenden Spiels; beim Schließen des Trainers und nach einem Neustart des Spiels gelten wieder die Grenzen des Spiels.</p>
+            <dl class="field-list">
+              <dt>Verhandlungen je Woche</dt><dd>Ein Verein kann an höchstens drei Verhandlungen einer Woche beteiligt sein, als abgebender wie als bietender Verein („Sie haben bereits 3 Verhandlungstermine in dieser Woche“). „Für eigene Vereine aufheben“ nimmt die Grenze den Vereinen der menschlichen Manager, ein ausgebuchter Computerverein bleibt ausgebucht. „Für alle Vereine aufheben“ gilt auch für die Computervereine untereinander, die dann mehr miteinander verhandeln.</dd>
+              <dt>Höchstens 3 Termine je abgebendem Verein aufheben</dt><dd>Nach drei vereinbarten Verhandlungsterminen mit Spielern desselben Vereins in einer Saison meldet das Spiel, der Verein würde den Spieler „unter keinen Umständen freigeben“. Es zählt schon der Termin, nicht erst der Kauf, und erst zur neuen Saison wieder von vorn. Eigentlich soll das Spiel den Zähler jeden Monat halbieren, halbiert durch einen Fehler aber die falschen Werte; das behebt der Patch „Verhandlungssperre“ aus <strong>A2G-Patch</strong>. Mit dem Häkchen gibt es diese Grenze nicht mehr.</dd>
+            </dl>
           </fieldset>
 
           <img class="screenshot" src="img/Spielmechaniken.png" alt="Spielmechaniken: Quiz- und Interviewhilfe, Torgrenzen und Jobangebot" style="max-width:420px">

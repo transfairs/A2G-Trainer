@@ -13,7 +13,7 @@ namespace A2G_Trainer.View
     /// <summary>
     /// "Spielmechaniken": what works on the running game's code instead of its data and so can't go
     /// into a savegame - the quiz, interview and speech helps, the lifted goal limits, the
-    /// overconfidence rule and the requested job offer. The switches are taken back when the trainer closes and are gone with the game.
+    /// overconfidence rule, the requested job offer and, on the "Termine" tab, the appointment locks. The switches are taken back when the trainer closes and are gone with the game.
     /// Built in code, laid out like the other views: one tab, "Werte neuladen" below it.
     /// </summary>
     public class MechanicsView : EntityView
@@ -25,6 +25,8 @@ namespace A2G_Trainer.View
         private readonly GroupBox jobOfferBox;
         private readonly ComboBox jobOfferTrainerInput, jobOfferCountryInput, jobOfferClubInput;
         private readonly ComboBox overconfidenceOwnInput, overconfidenceOpponentInput;
+        private readonly ComboBox weeklyLimitInput;
+        private readonly CheckBox clubLimitInput;
         private readonly Button jobOfferButton;
         private readonly Label jobOfferStatus;
 
@@ -34,6 +36,7 @@ namespace A2G_Trainer.View
         private readonly GoalLimitPatch goalLimitPatch;
         private readonly OverconfidenceRule overconfidenceRule;
         private readonly SpeechEffectsDisplay speechDisplay;
+        private readonly AppointmentLocks appointmentLocks;
 
         // The managers the job offer can go to (see Trainer.RefreshTrainerMenu) and the one chosen.
         private List<KeyValuePair<int, Coach>> trainers = new List<KeyValuePair<int, Coach>>();
@@ -48,6 +51,8 @@ namespace A2G_Trainer.View
         private bool goalLimitLifted;
         // The same for the interview effects (A2G-Patch puts in the same stub, flag set).
         private bool interviewFixApplied;
+        // Whether the trainer lifted the limit per selling club, so it restores it on closing.
+        private bool clubLimitLifted;
 
         private static Label AddLabel(Control box, string text, int x, int y)
         {
@@ -89,6 +94,7 @@ namespace A2G_Trainer.View
             this.interviewFix = new InterviewEffectsFix(this.Memory);
             this.goalLimitPatch = new GoalLimitPatch(this.Memory);
             this.overconfidenceRule = new OverconfidenceRule(this.Memory);
+            this.appointmentLocks = new AppointmentLocks(this.Memory);
             // The human managers' clubs, as the trainer menu lists them.
             this.speechDisplay = new SpeechEffectsDisplay(this.Memory, () => this.trainers
                 .Where(t => t.Value != null && t.Value.CurrentClubId != 0)
@@ -170,6 +176,34 @@ namespace A2G_Trainer.View
             noticeBox.Controls.Add(this.noticeLabel);
             generalTab.Controls.AddRange(new Control[] { quizBox, interviewBox, engineBox, overconfidenceBox, this.jobOfferBox, speechBox, noticeBox });
 
+            TabPage appointmentTab = new TabPage { Text = "Termine", UseVisualStyleBackColor = true, AutoScroll = true, Padding = new Padding(3) };
+            this.tabControl.TabPages.Add(appointmentTab);
+            GroupBox lockBox = new GroupBox { Text = "Terminsperren", Location = new Point(6, 6), Size = new Size(550, 76) };
+            AddLabel(lockBox, "Verhandlungen je Woche", 7, 20);
+            this.weeklyLimitInput = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Location = new Point(160, 20), Size = new Size(200, 21) };
+            this.weeklyLimitInput.Items.AddRange(AppointmentLocks.WeeklyModeNames.Cast<object>().ToArray());
+            this.weeklyLimitInput.SelectedIndex = 0;
+            this.weeklyLimitInput.SelectedIndexChanged += (s, e) =>
+            {
+                // Back to the game's limit where that isn't possible (other build, see the log).
+                if (this.showing)
+                    return;
+                if (!this.appointmentLocks.SetWeeklyMode((byte)this.weeklyLimitInput.SelectedIndex))
+                    this.ShowWithoutHandlers(() => this.weeklyLimitInput.SelectedIndex = 0);
+            };
+            this.clubLimitInput = new CheckBox { Text = "Höchstens 3 Termine je abgebendem Verein aufheben", Location = new Point(10, 49), AutoSize = true };
+            this.clubLimitInput.CheckedChanged += (s, e) =>
+            {
+                // Stays unticked where the game's code isn't as expected (see the log).
+                if (this.showing)
+                    return;
+                if (!this.appointmentLocks.SetClubLimitLifted(this.clubLimitInput.Checked))
+                    this.ShowWithoutHandlers(() => this.clubLimitInput.Checked = false);
+                this.clubLimitLifted = this.clubLimitInput.Checked;
+            };
+            lockBox.Controls.AddRange(new Control[] { this.weeklyLimitInput, this.clubLimitInput });
+            appointmentTab.Controls.Add(lockBox);
+
             this.reloadButton = new Button { Name = "ReloadBtn", Text = "Werte neuladen", Location = new Point(20, 391), Size = new Size(114, 23), UseVisualStyleBackColor = true };
             this.reloadButton.Click += (s, e) => this.RefreshValues();
 
@@ -186,7 +220,26 @@ namespace A2G_Trainer.View
                     this.goalLimitPatch.SetEnabled(false);
                 if (this.overconfidenceOwnInput.SelectedIndex > 0 || this.overconfidenceOpponentInput.SelectedIndex > 0)
                     this.overconfidenceRule.SetRule(0, 0);
+                if (this.weeklyLimitInput.SelectedIndex > 0)
+                    this.appointmentLocks.SetWeeklyMode(0);
+                if (this.clubLimitLifted)
+                    this.appointmentLocks.SetClubLimitLifted(false);
             };
+        }
+
+        // Changes a switch without its handler acting on the game.
+        private void ShowWithoutHandlers(Action change)
+        {
+            bool showing = this.showing;
+            this.showing = true;
+            try
+            {
+                change();
+            }
+            finally
+            {
+                this.showing = showing;
+            }
         }
 
         // Sends both rules to the game; where that isn't possible (other build, see the log) both go back to the game's dice.
@@ -241,6 +294,11 @@ namespace A2G_Trainer.View
                     this.overconfidenceRule.ReadRule(out own, out opponent);
                 this.overconfidenceOwnInput.SelectedIndex = OverconfidenceRule.RuleIndex(own);
                 this.overconfidenceOpponentInput.SelectedIndex = OverconfidenceRule.RuleIndex(opponent);
+                // The locks live in the game too.
+                byte weekly = running ? this.appointmentLocks.WeeklyMode : (byte)0;
+                this.weeklyLimitInput.SelectedIndex = weekly < AppointmentLocks.WeeklyModeNames.Length ? weekly : 0;
+                this.clubLimitInput.Checked = running && this.appointmentLocks.IsClubLimitLifted;
+                this.clubLimitLifted &= this.clubLimitInput.Checked;
             }
             finally
             {

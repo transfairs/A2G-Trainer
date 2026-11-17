@@ -569,6 +569,44 @@ namespace A2G_Trainer.Controller
         private const uint clubRecordDataSlotOffset   = 0x92;
         private const uint clubDataOffset             = 0x396D2C;
         private const uint clubDataStride             = 0x4210;
+
+        // Terminplaner (see docs/savegame-format.md, "Terminplaner"). Each human-run club keeps two plans
+        // over 42 days from the reference day 0x42666E: the trainer's (working copy +0xA30, 12 bytes a
+        // day) and the manager's (+0xC28, 8 bytes), plus three training units a day (+0xD78). The data
+        // block per human club (slot 1-4 at record +0x92, 0x393FF0 + (slot - 1) * 0x4210) holds the
+        // same at +0x1440, +0x1638 and +0x1F28; the game shifts all of it by a week on Sunday
+        // (FUN_005904a0). Days 0-6 are also in each human manager's week overview (working copy
+        // +0x1834, record +0x2064, 12 bytes a day). The plan only shows most appointments: the
+        // negotiations, test matches and so on take place from their own lists below.
+        private const uint planReferenceDayOffset     = 0x42666E;
+        private const uint clubTrainerPlanOffset      = 0xA30;
+        private const uint clubManagerPlanOffset      = 0xC28;
+        private const uint clubTrainingUnitsOffset    = 0xD78;
+        private const uint clubManagerOffset          = 0x87;
+        private const uint clubPlanDataOffset         = 0x393FF0;
+        private const uint clubPlanDataTrainerOffset  = 0x1440;
+        private const uint clubPlanDataManagerOffset  = 0x1638;
+        private const uint clubPlanDataUnitsOffset    = 0x1F28;
+        private const uint coachSlotWeekOffset        = 0x1834;
+        private const uint coachRecordWeekOffset      = 0x2064;
+        private const uint negotiationListOffset      = 0x8A96C8;   // #70: Int16 count, 2 free, 200 x 0x48
+        private const uint extensionListOffset        = 0x8ACF10;   // #71: Int16 count, 30 x (Int16 day, Int16 player)
+        private const uint youthTalkListOffset        = 0x478E30;   // #90: Int16 count, 28 x 8
+        private const uint amateurTalkListOffset      = 0x476EC8;   // #91: like #90
+        private const uint testMatchTableOffset       = 0x42CCE8;   // #62: 300 x 0x14
+        private const uint friendlyPairListOffset     = 0x303D78;   // #113: Int16 count, 50 x 10
+
+        // Appointment locks. FUN_00634720 (thiscall: list, day, club; ret 8) answers whether a club takes
+        // part in 3 negotiations of a week; the pattern is its code after the first 6 bytes, which
+        // AppointmentLocks overwrites with a jump. The limit per selling club is "cmp byte [club +
+        // manager + 0x1080], 3" at two places in the transfer dialogs; the patterns end right before the 3.
+        private const uint weeklyLimitFunctionOffset  = 0x234720;
+        private static readonly byte[] weeklyLimitPattern = { 0x33, 0xD2, 0x66, 0x39, 0x13, 0x89, 0x54, 0x24, 0x04, 0x89, 0x54, 0x24, 0x08, 0x7E, 0x70, 0x57, 0x56, 0x55 };
+        private static readonly byte[] weeklyLimitEntry   = { 0x83, 0xEC, 0x08, 0x53, 0x8B, 0xD9 };
+        private const uint clubLimitSiteOffset        = 0x0CF0DF;
+        private const uint clubLimitSite2Offset       = 0x13E557;
+        private static readonly byte[] clubLimitPattern   = { 0x0F, 0xBF, 0x42, 0x1A, 0x80, 0xBC, 0x18, 0x80, 0x10, 0x00, 0x00 };
+        private static readonly byte[] clubLimitPattern2  = { 0x24, 0x6A, 0x01, 0x00, 0x0F, 0xBF, 0x42, 0x1A, 0x80, 0xBC, 0x08, 0x80, 0x10, 0x00, 0x00 };
         private static readonly byte[] speechListCallLeadPattern  = { 0x8B, 0x4C, 0x24, 0x14, 0x68, 0xFF, 0xFF, 0xFF, 0x00, 0x52 };
         private static readonly byte[] speechListCallTrailPattern = { 0x8B, 0x44, 0x24, 0x14, 0x45 };
         private static readonly byte[] speechCheckPattern = { 0xB8, 0xA4, 0x17, 0x00, 0x00 };
@@ -902,6 +940,30 @@ namespace A2G_Trainer.Controller
         internal static uint ClubRecordDataSlotOffset      { get => clubRecordDataSlotOffset; }
         internal static uint ClubDataOffset                { get => clubDataOffset; }
         internal static uint ClubDataStride                { get => clubDataStride; }
+        internal static uint PlanReferenceDayOffset        { get => planReferenceDayOffset; }
+        internal static uint ClubTrainerPlanOffset         { get => clubTrainerPlanOffset; }
+        internal static uint ClubManagerPlanOffset         { get => clubManagerPlanOffset; }
+        internal static uint ClubTrainingUnitsOffset       { get => clubTrainingUnitsOffset; }
+        internal static uint ClubManagerOffset             { get => clubManagerOffset; }
+        internal static uint ClubPlanDataOffset            { get => clubPlanDataOffset; }
+        internal static uint ClubPlanDataTrainerOffset     { get => clubPlanDataTrainerOffset; }
+        internal static uint ClubPlanDataManagerOffset     { get => clubPlanDataManagerOffset; }
+        internal static uint ClubPlanDataUnitsOffset       { get => clubPlanDataUnitsOffset; }
+        internal static uint CoachSlotWeekOffset           { get => coachSlotWeekOffset; }
+        internal static uint CoachRecordWeekOffset         { get => coachRecordWeekOffset; }
+        internal static uint NegotiationListOffset         { get => negotiationListOffset; }
+        internal static uint ExtensionListOffset           { get => extensionListOffset; }
+        internal static uint YouthTalkListOffset           { get => youthTalkListOffset; }
+        internal static uint AmateurTalkListOffset         { get => amateurTalkListOffset; }
+        internal static uint TestMatchTableOffset          { get => testMatchTableOffset; }
+        internal static uint FriendlyPairListOffset        { get => friendlyPairListOffset; }
+        internal static uint WeeklyLimitFunctionOffset     { get => weeklyLimitFunctionOffset; }
+        internal static byte[] WeeklyLimitPattern          { get => (byte[])weeklyLimitPattern.Clone(); }
+        internal static byte[] WeeklyLimitEntry            { get => (byte[])weeklyLimitEntry.Clone(); }
+        internal static uint ClubLimitSiteOffset           { get => clubLimitSiteOffset; }
+        internal static uint ClubLimitSite2Offset          { get => clubLimitSite2Offset; }
+        internal static byte[] ClubLimitPattern            { get => (byte[])clubLimitPattern.Clone(); }
+        internal static byte[] ClubLimitPattern2           { get => (byte[])clubLimitPattern2.Clone(); }
         internal static byte[] SpeechListCallLeadPattern   { get => (byte[])speechListCallLeadPattern.Clone(); }
         internal static byte[] SpeechListCallTrailPattern  { get => (byte[])speechListCallTrailPattern.Clone(); }
         internal static byte[] SpeechCheckPattern          { get => (byte[])speechCheckPattern.Clone(); }

@@ -98,12 +98,15 @@ namespace A2G_Trainer.Tests
                     Assert.False(Field<CheckBox>(detached, "goalLimitInput").Checked);
 
                     // Where the game's code can't be patched, the boxes don't stay ticked.
-                    foreach (string name in new[] { "interviewFixInput", "goalLimitInput" })
+                    foreach (string name in new[] { "interviewFixInput", "goalLimitInput", "clubLimitInput" })
                     {
                         CheckBox box = Field<CheckBox>(detached, name);
                         box.Checked = true;
                         Assert.False(box.Checked);
                     }
+                    ComboBox weekly = Field<ComboBox>(detached, "weeklyLimitInput");
+                    weekly.SelectedIndex = 1;
+                    Assert.Equal(0, weekly.SelectedIndex);
                 }
             }
         });
@@ -173,6 +176,7 @@ namespace A2G_Trainer.Tests
                 // The interview calls InterviewEffectsFix redirects and the goal limits, as in the unpatched game.
                 InterviewEffectsFixTests.WriteOriginalCalls(fake);
                 OverconfidenceRuleTests.WriteOriginalCalls(fake);
+                AppointmentLocksTests.WriteOriginalCode(fake);
                 GoalLimitPatchTests.PlantGoalLimitCode(fake, Settings.GoalLimitSiteOffset, Settings.GoalHomeBrakeSiteOffset, Settings.GoalAwayBrakeSiteOffset, GoalLimitPatchTests.OriginalLimit);
                 CoachViewTests.SeedLeagueAndStock(fake);
                 MechanicsView view = trainer.MechanicsView;
@@ -223,6 +227,22 @@ namespace A2G_Trainer.Tests
                 Assert.Equal(1, own.SelectedIndex);
                 Assert.Equal(4, opponents.SelectedIndex);
 
+                // The appointment locks too.
+                ComboBox weekly = Field<ComboBox>(view, "weeklyLimitInput");
+                CheckBox clubLimit = Field<CheckBox>(view, "clubLimitInput");
+                Assert.Equal(AppointmentLocks.WeeklyModeNames.Length, weekly.Items.Count);
+                weekly.SelectedIndex = 2;
+                clubLimit.Checked = true;
+                AppointmentLocks locks = new AppointmentLocks(fake.Memory);
+                Assert.Equal(2, locks.WeeklyMode);
+                Assert.True(locks.IsClubLimitLifted);
+                view.RefreshValues();
+                Assert.Equal(2, weekly.SelectedIndex);
+                Assert.True(clubLimit.Checked);
+                clubLimit.Checked = false;
+                Assert.False(locks.IsClubLimitLifted);
+                clubLimit.Checked = true;
+
                 // The speech display unticks itself where the game's code is unknown, works once it is
                 // there and lists the clubs of the trainer menu's managers.
                 CheckBox speeches = Field<CheckBox>(view, "speechDisplayInput");
@@ -248,6 +268,8 @@ namespace A2G_Trainer.Tests
                 Assert.False(new GoalLimitPatch(fake.Memory).IsEnabled);
                 Assert.Equal(new byte[] { 0, 0 }, view.Memory.ReadBytesAtAddress(ruleStub + OverconfidenceRule.OwnOffset, 2));
                 Assert.False(speechDisplay.Enabled);
+                Assert.Equal(0, locks.WeeklyMode);
+                Assert.False(locks.IsClubLimitLifted);
             }
         });
 

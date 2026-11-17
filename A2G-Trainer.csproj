@@ -87,6 +87,8 @@
     <Compile Include="Controller\InterviewEffectsDisplay.cs" />
     <Compile Include="Controller\InterviewEffectsFix.cs" />
     <Compile Include="Controller\OverconfidenceRule.cs" />
+    <Compile Include="Controller\AppointmentLocks.cs" />
+    <Compile Include="Controller\AppointmentPlan.cs" />
     <Compile Include="Controller\PreMatchSpeeches.cs" />
     <Compile Include="Controller\SpeechEffectsDisplay.cs" />
     <Compile Include="Controller\X86Assembler.cs" />
@@ -196,6 +198,10 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\ClubView.Association.cs">
+      <DependentUpon>ClubView.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ClubView.Appointments.cs">
       <DependentUpon>ClubView.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
