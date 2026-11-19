@@ -86,9 +86,16 @@ namespace A2G_Trainer.Controller
         // Coach.MaxTrainers slots for a non-empty Firstname.
         private const uint activeTrainerCountOffset = 0x426666;
 
+        // Same savegame block, 0x46 bytes earlier: 5 Int16, entry N (1..count) is the Mitspieler ID
+        // at place N of the turn order, -1 if unused (FUN_005b9d90 "GetMitspielerNachReihenfolge").
+        // The IDs need not be 1..count: a savegame with one manager can keep him as ID 4 while the
+        // working copy of ID 1 still holds a manager of an earlier game (seen live 2026-11-19).
+        private const uint mitspielerOrderTableOffset = 0x426620;
+
         // Human trainers/"Mitspieler" (found by decompiling the original build's
-        // GetMitspieler/PutMitspieler pair, FUN_005b9df0/FUN_005ba2e0). Each Mitspieler ID (1-based,
-        // so trainer slot N is ID N+1) has two copies at fixed module-relative addresses:
+        // GetMitspieler/PutMitspieler pair, FUN_005b9df0/FUN_005ba2e0). Each Mitspieler ID (1-based;
+        // trainer slot N is the ID at place N+1 of mitspielerOrderTableOffset, see
+        // CoachController.MitspielerIdOf) has two copies at fixed module-relative addresses:
         //   coachSlotTableOffset + ID*coachSlotStride: the working copy the game (and the Trainer-Menü)
         //     reads and edits. The 0x857800 found for slot 0 is exactly this for ID 1.
         //   coachRecordTableOffset + ID*coachRecordStride: the saved record - the only copy written to
@@ -824,6 +831,7 @@ namespace A2G_Trainer.Controller
         internal static uint PlayerRecordAgeOffset        { get => playerRecordAgeOffset; }
         internal static uint AgeReferenceYearOffset       { get => ageReferenceYearOffset; }
         internal static uint ActiveTrainerCountOffset     { get => activeTrainerCountOffset; }
+        internal static uint MitspielerOrderTableOffset   { get => mitspielerOrderTableOffset; }
         internal static uint CoachSlotTableOffset         { get => coachSlotTableOffset; }
         internal static uint CoachSlotStride              { get => coachSlotStride; }
         internal static uint CoachRecordTableOffset       { get => coachRecordTableOffset; }

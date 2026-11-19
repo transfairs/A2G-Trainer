@@ -45,10 +45,12 @@ namespace A2G_Trainer.Controller
         {
             this.isGog = isGog;
             this.trainerIndex = trainerIndex;
+            this.mitspielerId = MitspielerIdOf(memory, trainerIndex);
             this.settings = Settings.ClubAddress;
             this.UpdateBaseAddress(type);
             this.fixedAddresses = FixedAddresses.For(memory);
-            this.Coach = this.GetEntity((trainerIndex * TrainerSlotStride).ToString("X"), type);
+            // The club pointer path (builds without fixed addresses) reaches ID 1 at slot offset 0.
+            this.Coach = this.GetEntity(((this.mitspielerId - 1) * TrainerSlotStride).ToString("X"), type);
         }
 
         /// <summary>Reads this trainer slot's identity, stocks, and wealth from memory.</summary>
@@ -139,7 +141,7 @@ namespace A2G_Trainer.Controller
                 this.loadedNationalTeam = coach.NationalTeam;
                 this.ReadFriendlies(coach);
                 // A takeover the game hasn't carried out yet shows as the coach's national team.
-                PlayerEnums.Country? pending = this.HasFixedAddresses ? new NationalCoachInjector(this.memory).PendingCountry(this.trainerIndex) : null;
+                PlayerEnums.Country? pending = this.HasFixedAddresses ? new NationalCoachInjector(this.memory).PendingCountry(this.mitspielerId) : null;
                 coach.IsNationalTeamPending = pending.HasValue;
                 if (pending.HasValue)
                     coach.NationalTeam = pending.Value;
@@ -165,8 +167,32 @@ namespace A2G_Trainer.Controller
             return byteOffset.ToString("X");
         }
 
-        // Mitspieler IDs are 1-based: trainer slot 0 is ID 1 (see Settings.CoachSlotTableOffset).
-        private uint MitspielerId => (uint)this.trainerIndex + 1;
+        /// <summary>Mitspieler ID (1-based) of this trainer slot, see <see cref="MitspielerIdOf"/>.</summary>
+        internal int MitspielerId => this.mitspielerId;
+        private uint RecordId => (uint)this.mitspielerId;
+        private readonly int mitspielerId;
+
+        /// <summary>
+        /// Mitspieler ID of the trainer slot <paramref name="trainerIndex"/> (the place in the game's
+        /// turn order, 0-based), read from the game's order table (Settings.MitspielerOrderTableOffset).
+        /// Falls back to slot + 1 if the table can't be read or holds no valid ID there.
+        /// </summary>
+        internal static int MitspielerIdOf(ProcessMemory memory, int trainerIndex)
+        {
+            uint? countOffset = memory.Layout?.ActiveTrainerCountOffset;
+            if (countOffset.HasValue && trainerIndex >= 0 && trainerIndex < Coach.MaxTrainers)
+            {
+                uint table = countOffset.Value - Settings.ActiveTrainerCountOffset + Settings.MitspielerOrderTableOffset;
+                byte[] entry = memory.ReadBytesAtAddress(memory.ModuleBase + table + (uint)(trainerIndex + 1) * 2, 2);
+                if (entry != null)
+                {
+                    short id = BitConverter.ToInt16(entry, 0);
+                    if (id >= 1 && id <= Coach.MaxTrainers)
+                        return id;
+                }
+            }
+            return trainerIndex + 1;
+        }
 
         private static uint ToSlotOffset(string presetOffset) => Convert.ToUInt32(presetOffset, 16) - PointerRelativeSlotBase;
 
@@ -177,7 +203,7 @@ namespace A2G_Trainer.Controller
         private bool HasFixedAddresses => this.fixedAddresses != null;
 
         private uint WorkingCopyAddress(uint slotOffset) =>
-            this.Fixed.Runtime(this.memory, Settings.CoachSlotTableOffset) + this.MitspielerId * Settings.CoachSlotStride + slotOffset;
+            this.Fixed.Runtime(this.memory, Settings.CoachSlotTableOffset) + this.RecordId * Settings.CoachSlotStride + slotOffset;
 
         // Where the saved record keeps the field at slotOffset: the same offset within the
         // Mitspieler's record, except for the competency table, which lives in its own array, and the
@@ -186,9 +212,9 @@ namespace A2G_Trainer.Controller
         {
             uint competencyStart = (uint)CompetencyTableOffset - PointerRelativeSlotBase;
             if (slotOffset >= competencyStart)
-                return this.Fixed.Runtime(this.memory, Settings.CoachCompetencyRecordOffset) + this.MitspielerId * Settings.CoachCompetencyRecordStride + (slotOffset - competencyStart);
+                return this.Fixed.Runtime(this.memory, Settings.CoachCompetencyRecordOffset) + this.RecordId * Settings.CoachCompetencyRecordStride + (slotOffset - competencyStart);
 
-            uint record = this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.MitspielerId * Settings.CoachRecordStride;
+            uint record = this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.RecordId * Settings.CoachRecordStride;
             if (slotOffset >= Settings.CoachSlotLevelBlockOffset && slotOffset < Settings.CoachSlotLevelBlockOffset + Settings.CoachLevelBlockLength)
                 return record + Settings.CoachRecordLevelBlockOffset + (slotOffset - Settings.CoachSlotLevelBlockOffset);
             if (slotOffset >= Settings.CoachSlotFlagsOffset && slotOffset < Settings.CoachSlotFlagsOffset + Settings.CoachFlagsLength)
@@ -196,9 +222,9 @@ namespace A2G_Trainer.Controller
             return record + slotOffset;
         }
 
-        private uint CoachRecord => this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.MitspielerId * Settings.CoachRecordStride;
+        private uint CoachRecord => this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.RecordId * Settings.CoachRecordStride;
 
-        private uint NaturalisationTable => this.Fixed.Runtime(this.memory, Settings.NaturalisationTableOffset) + this.MitspielerId * Settings.NaturalisationTableStride;
+        private uint NaturalisationTable => this.Fixed.Runtime(this.memory, Settings.NaturalisationTableOffset) + this.RecordId * Settings.NaturalisationTableStride;
 
         // A working-copy field by its offset within the working copy (no AddressKey of its own).
         private byte[] ReadSlot(Coach coach, uint slotOffset, int length) => this.ReadField(coach, (PointerRelativeSlotBase + slotOffset).ToString("X"), length);
@@ -300,7 +326,7 @@ namespace A2G_Trainer.Controller
         }
 
         private uint AchievementsAddress =>
-            this.Fixed.Runtime(this.memory, Settings.CoachAchievementsOffset) + this.MitspielerId * Settings.CoachAchievementsStride;
+            this.Fixed.Runtime(this.memory, Settings.CoachAchievementsOffset) + this.RecordId * Settings.CoachAchievementsStride;
 
         // The Fortbildung result as read, so a save only moves the level mark when it was changed.
         private CoachEnums.TrainingResult readTrainingResult;
@@ -354,12 +380,12 @@ namespace A2G_Trainer.Controller
         // The image has no working copy - the game reads and assigns it only in the per-ID block
         // (see Settings.CoachImageRecordOffset).
         private uint ImageAddress =>
-            this.Fixed.Runtime(this.memory, Settings.CoachImageRecordOffset) + this.MitspielerId * Settings.CoachCompetencyRecordStride;
+            this.Fixed.Runtime(this.memory, Settings.CoachImageRecordOffset) + this.RecordId * Settings.CoachCompetencyRecordStride;
 
         // The national coach fields sit past the working copy's end, in the saved record only
         // (except the country, see Settings.CoachSlotNationalTeamOffset).
         private uint NationalRecordAddress(uint recordOffset) =>
-            this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.MitspielerId * Settings.CoachRecordStride + recordOffset;
+            this.Fixed.Runtime(this.memory, Settings.CoachRecordTableOffset) + this.RecordId * Settings.CoachRecordStride + recordOffset;
 
         // The national team as read, so Save knows which team's coach posts to clear on a change.
         private PlayerEnums.Country loadedNationalTeam = PlayerEnums.Country.Sonstige;
@@ -383,7 +409,7 @@ namespace A2G_Trainer.Controller
             {
                 if (i == trainerIndex)
                     continue;
-                byte[] entry = memory.ReadBytesAtAddress(NationalCoachEntryAddress(memory, fixedAddresses, (uint)i + 1), 4);
+                byte[] entry = memory.ReadBytesAtAddress(NationalCoachEntryAddress(memory, fixedAddresses, (uint)MitspielerIdOf(memory, i)), 4);
                 if (entry != null && entry[0] != 0 && BitConverter.ToUInt16(entry, 2) == Settings.NationalTeamClubId)
                     teams.Add((PlayerEnums.Country)entry[0]);
             }
@@ -405,7 +431,7 @@ namespace A2G_Trainer.Controller
         // the game didn't carry out itself (see NationalCoachInjector).
         private bool HasNoFriendlyCandidates()
         {
-            uint block = this.Fixed.Runtime(this.memory, Settings.NationalFriendlyBlockOffset) + this.MitspielerId * Settings.NationalFriendlyBlockStride;
+            uint block = this.Fixed.Runtime(this.memory, Settings.NationalFriendlyBlockOffset) + this.RecordId * Settings.NationalFriendlyBlockStride;
             byte[] candidates = this.memory.ReadBytesAtAddress(block, Settings.NationalFriendlyCandidatesLength);
             return candidates != null && candidates.All(b => b == 0);
         }
@@ -429,7 +455,7 @@ namespace A2G_Trainer.Controller
             NationalCoachInjector injector = new NationalCoachInjector(this.memory);
             bool needsGame = country != this.loadedNationalTeam || (this.Coach.IsNationalCoach && this.HasNoFriendlyCandidates());
             if (injector.IsSupported && (needsGame || this.Coach.IsNationalTeamPending)
-                && injector.Request(this.trainerIndex, country, this.Coach.NationalSalary, this.Coach.NationalRoundBonus))
+                && injector.Request(this.mitspielerId, country, this.Coach.NationalSalary, this.Coach.NationalRoundBonus))
             {
                 this.Coach.IsNationalTeamPending = true;
                 this.WriteNationalContract();
@@ -448,7 +474,7 @@ namespace A2G_Trainer.Controller
                     BitConverter.GetBytes(Settings.NationalTeamClubId).CopyTo(entry, 2);
                     this.WriteNationalTeamCoachPosts(country, (byte)this.MitspielerId);
                 }
-                this.memory.WriteBytesAtAddress(NationalCoachEntryAddress(this.memory, this.Fixed, this.MitspielerId), entry);
+                this.memory.WriteBytesAtAddress(NationalCoachEntryAddress(this.memory, this.Fixed, this.RecordId), entry);
                 Logger.Debug($"Coach slot {this.trainerIndex}: national team {this.loadedNationalTeam} -> {country}.");
                 this.loadedNationalTeam = country;
             }
@@ -655,7 +681,7 @@ namespace A2G_Trainer.Controller
             }
         }
 
-        private uint FriendlyBlock => this.Fixed.Runtime(this.memory, Settings.NationalFriendlyBlockOffset) + this.MitspielerId * Settings.NationalFriendlyBlockStride;
+        private uint FriendlyBlock => this.Fixed.Runtime(this.memory, Settings.NationalFriendlyBlockOffset) + this.RecordId * Settings.NationalFriendlyBlockStride;
 
         // The three friendlies of a national coach (see NationalFriendly). The game's own dialog only
         // offers the three drawn candidates and locks once a result exists or the match is 4 days

@@ -43,7 +43,7 @@ namespace A2G_Trainer.Tests
                 WriteOriginalCall(fake);
                 JobOfferInjector injector = new JobOfferInjector(fake.Memory);
 
-                JobOfferInjector.RequestResult result = injector.Request(EmployedCoach(), trainerIndex: 1, PlayerEnums.Country.England, 7);
+                JobOfferInjector.RequestResult result = injector.Request(EmployedCoach(), mitspielerId: 2, PlayerEnums.Country.England, 7);
 
                 Assert.Equal(JobOfferInjector.RequestResult.Requested, result);
                 uint stub = CallTarget(fake) - JobOfferInjector.CodeOffset;
@@ -87,9 +87,9 @@ namespace A2G_Trainer.Tests
                 WriteOriginalCall(fake);
                 JobOfferInjector injector = new JobOfferInjector(fake.Memory);
 
-                injector.Request(EmployedCoach(), 0, PlayerEnums.Country.England, 7);
+                injector.Request(EmployedCoach(), 1, PlayerEnums.Country.England, 7);
                 uint first = CallTarget(fake);
-                injector.Request(EmployedCoach(), 0, PlayerEnums.Country.England, 8);
+                injector.Request(EmployedCoach(), 1, PlayerEnums.Country.England, 8);
 
                 Assert.Equal(first, CallTarget(fake));
             }
@@ -103,11 +103,11 @@ namespace A2G_Trainer.Tests
                 WriteOriginalCall(fake);
                 JobOfferInjector injector = new JobOfferInjector(fake.Memory);
 
-                Assert.Equal(JobOfferInjector.RequestResult.NotEmployed, injector.Request(new Coach(), 0, PlayerEnums.Country.England, 7));
+                Assert.Equal(JobOfferInjector.RequestResult.NotEmployed, injector.Request(new Coach(), 1, PlayerEnums.Country.England, 7));
                 Coach pending = EmployedCoach();
                 pending.CountryNextSeason = PlayerEnums.Country.England;
-                Assert.Equal(JobOfferInjector.RequestResult.ChangePending, injector.Request(pending, 0, PlayerEnums.Country.England, 7));
-                Assert.Equal(JobOfferInjector.RequestResult.SameClub, injector.Request(EmployedCoach(), 0, PlayerEnums.Country.Deutschland, 5));
+                Assert.Equal(JobOfferInjector.RequestResult.ChangePending, injector.Request(pending, 1, PlayerEnums.Country.England, 7));
+                Assert.Equal(JobOfferInjector.RequestResult.SameClub, injector.Request(EmployedCoach(), 1, PlayerEnums.Country.Deutschland, 5));
 
                 Assert.Equal(PresentFunction(fake), CallTarget(fake));
                 Assert.False(injector.IsRequestPending());
@@ -122,7 +122,7 @@ namespace A2G_Trainer.Tests
                 WriteOriginalCall(fake);
                 fake.Memory.Layout = new PersistentLayout(null, null, null, null, isVerified: true);
 
-                Assert.Equal(JobOfferInjector.RequestResult.NotSupported, new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 0, PlayerEnums.Country.England, 7));
+                Assert.Equal(JobOfferInjector.RequestResult.NotSupported, new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 1, PlayerEnums.Country.England, 7));
                 Assert.Equal(PresentFunction(fake), CallTarget(fake));
             }
         }
@@ -134,7 +134,7 @@ namespace A2G_Trainer.Tests
             {
                 fake.WriteModuleBytes(Settings.JobOfferPresentCallSiteOffset, new byte[] { 0x90, 0x90, 0x90, 0x90, 0x90 });
 
-                Assert.Equal(JobOfferInjector.RequestResult.HookFailed, new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 0, PlayerEnums.Country.England, 7));
+                Assert.Equal(JobOfferInjector.RequestResult.HookFailed, new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 1, PlayerEnums.Country.England, 7));
                 Assert.Equal(new byte[] { 0x90, 0x90, 0x90, 0x90, 0x90 }, fake.ReadModuleBytes(Settings.JobOfferPresentCallSiteOffset, 5));
             }
         }
@@ -149,7 +149,7 @@ namespace A2G_Trainer.Tests
                 byte[] foreign = new byte[] { 0xE8 }.Concat(BitConverter.GetBytes(rel)).ToArray();
                 fake.WriteModuleBytes(Settings.JobOfferPresentCallSiteOffset, foreign);
 
-                Assert.Equal(JobOfferInjector.RequestResult.HookFailed, new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 0, PlayerEnums.Country.England, 7));
+                Assert.Equal(JobOfferInjector.RequestResult.HookFailed, new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 1, PlayerEnums.Country.England, 7));
                 Assert.Equal(foreign, fake.ReadModuleBytes(Settings.JobOfferPresentCallSiteOffset, 5));
             }
         }
@@ -174,7 +174,7 @@ namespace A2G_Trainer.Tests
             try
             {
                 fake.Memory.mProc.Handle = limited;
-                return new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 0, PlayerEnums.Country.England, 7);
+                return new JobOfferInjector(fake.Memory).Request(EmployedCoach(), 1, PlayerEnums.Country.England, 7);
             }
             finally
             {

@@ -2818,6 +2818,46 @@
           </Offsets>
         </CheatEntry>
         <CheatEntry>
+          <ID>1006</ID>
+          <Description>"Zugreihenfolge Platz 1: Mitspieler-ID (-1 = frei)"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3922</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>1007</ID>
+          <Description>"Zugreihenfolge Platz 2: Mitspieler-ID (-1 = frei)"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3924</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>1008</ID>
+          <Description>"Zugreihenfolge Platz 3: Mitspieler-ID (-1 = frei)"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3926</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>1009</ID>
+          <Description>"Zugreihenfolge Platz 4: Mitspieler-ID (-1 = frei)"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>anstoss2.exe+400710</Address>
+          <Offsets>
+            <Offset>3928</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
           <ID>906</ID>
           <Description>"Startjahr des Spielstands"</Description>
           <ShowAsSigned>0</ShowAsSigned>

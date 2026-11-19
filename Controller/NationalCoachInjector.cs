@@ -74,39 +74,40 @@ namespace A2G_Trainer.Controller
         private uint CallSite => this.memory.ModuleBase + this.code.CallSite;
         private uint ContinueFunction => this.memory.ModuleBase + this.code.Continue;
 
-        private static uint SlotOffset(int trainerIndex) => (uint)(SlotsOffset + trainerIndex * SlotSize);
+        // The stub has one slot per Mitspieler ID 1-4, in that order.
+        private static uint SlotOffset(int mitspielerId) => (uint)(SlotsOffset + (mitspielerId - 1) * SlotSize);
 
         /// <summary>
-        /// Requests that the trainer in slot <paramref name="trainerIndex"/> becomes national coach of
+        /// Requests that the Mitspieler <paramref name="mitspielerId"/> (1-based) becomes national coach of
         /// <paramref name="country"/> (or, with Sonstige, ends the job) at the next daily processing,
         /// with the given contract. Returns false if the redirect couldn't be set up.
         /// </summary>
-        public bool Request(int trainerIndex, PlayerEnums.Country country, int salary, int bonus)
+        public bool Request(int mitspielerId, PlayerEnums.Country country, int salary, int bonus)
         {
-            if (!this.IsSupported || trainerIndex < 0 || trainerIndex >= Coach.MaxTrainers)
+            if (!this.IsSupported || mitspielerId < 1 || mitspielerId > Coach.MaxTrainers)
                 return false;
             uint? stub = this.EnsureInstalled();
             if (!stub.HasValue)
                 return false;
 
-            uint id = (uint)trainerIndex + 1;
+            uint id = (uint)mitspielerId;
             uint salaryAddress = this.fixedAddresses.Runtime(this.memory, Settings.CoachRecordTableOffset) + id * Settings.CoachRecordStride + Settings.CoachRecordNationalSalaryOffset;
-            uint slot = stub.Value + SlotOffset(trainerIndex);
+            uint slot = stub.Value + SlotOffset(mitspielerId);
             uint[] values = { (uint)country, unchecked((uint)salary), unchecked((uint)bonus), salaryAddress };
             this.memory.WriteBytesAtAddress(slot + CountryOffset, values.SelectMany(BitConverter.GetBytes).ToArray());
             // Flag last: the stub reads the slot only once it sees the flag.
             this.memory.WriteBytesAtAddress(slot + FlagOffset, BitConverter.GetBytes(1u));
-            Logger.Debug($"NationalCoachInjector: trainer slot {trainerIndex} -> national team {country} at the next daily processing (stub 0x{stub.Value:X}).");
+            Logger.Debug($"NationalCoachInjector: Mitspieler {mitspielerId} -> national team {country} at the next daily processing (stub 0x{stub.Value:X}).");
             return true;
         }
 
-        /// <summary>The national team requested for the trainer that the game hasn't taken over yet, or null if there's none.</summary>
-        public PlayerEnums.Country? PendingCountry(int trainerIndex)
+        /// <summary>The national team requested for the Mitspieler <paramref name="mitspielerId"/> that the game hasn't taken over yet, or null if there's none.</summary>
+        public PlayerEnums.Country? PendingCountry(int mitspielerId)
         {
             uint? stub = this.FindInstalledStub();
-            if (!stub.HasValue || trainerIndex < 0 || trainerIndex >= Coach.MaxTrainers)
+            if (!stub.HasValue || mitspielerId < 1 || mitspielerId > Coach.MaxTrainers)
                 return null;
-            byte[] slot = this.memory.ReadBytesAtAddress(stub.Value + SlotOffset(trainerIndex), 8);
+            byte[] slot = this.memory.ReadBytesAtAddress(stub.Value + SlotOffset(mitspielerId), 8);
             if (slot == null || slot[FlagOffset] == 0)
                 return null;
             return (PlayerEnums.Country)BitConverter.ToUInt32(slot, CountryOffset);
@@ -171,10 +172,10 @@ namespace A2G_Trainer.Controller
             BitConverter.GetBytes(continueTo).CopyTo(stub, ContinueOffset);
 
             List<byte> code = new List<byte>();
-            for (int index = 0; index < Coach.MaxTrainers; index++)
+            for (int mitspielerId = 1; mitspielerId <= Coach.MaxTrainers; mitspielerId++)
             {
-                uint slot = stubBase + SlotOffset(index);
-                byte[] id = BitConverter.GetBytes((uint)index + 1);
+                uint slot = stubBase + SlotOffset(mitspielerId);
+                byte[] id = BitConverter.GetBytes((uint)mitspielerId);
 
                 code.AddRange(Join(new byte[] { 0x80, 0x3D }, BitConverter.GetBytes(slot + FlagOffset), new byte[] { 0x00 }));   // cmp byte [flag], 0
                 int skip = Jump(code, 0x74);                                                                                       // je next

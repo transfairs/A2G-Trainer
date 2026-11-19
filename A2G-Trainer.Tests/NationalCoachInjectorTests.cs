@@ -55,8 +55,8 @@ namespace A2G_Trainer.Tests
                 WriteOriginalCall(fake);
                 NationalCoachInjector injector = new NationalCoachInjector(fake.Memory);
 
-                Assert.True(injector.Request(1, PlayerEnums.Country.Deutschland, 1000000, 250000));
-                Assert.True(injector.Request(1, PlayerEnums.Country.Italien, 2000000, 300000));
+                Assert.True(injector.Request(2, PlayerEnums.Country.Deutschland, 1000000, 250000));
+                Assert.True(injector.Request(2, PlayerEnums.Country.Italien, 2000000, 300000));
 
                 uint stub = CallTarget(fake) - NationalCoachInjector.CodeOffset;
                 Assert.Equal(NationalCoachInjector.Signature, fake.Memory.ReadBytesAtAddress(stub, 8));
@@ -64,10 +64,10 @@ namespace A2G_Trainer.Tests
                 uint slot = stub + NationalCoachInjector.SlotsOffset + NationalCoachInjector.SlotSize;
                 uint salaryAddress = fake.ModuleBase + Settings.CoachRecordTableOffset + 2 * Settings.CoachRecordStride + Settings.CoachRecordNationalSalaryOffset;
                 Assert.Equal(new uint[] { 1, 28, 2000000, 300000, salaryAddress }, Enumerable.Range(0, 5).Select(i => UInt32At(fake, slot + (uint)i * 4)));
-                Assert.Equal(PlayerEnums.Country.Italien, injector.PendingCountry(1));
-                Assert.Null(injector.PendingCountry(0));
-                Assert.Null(injector.PendingCountry(Coach.MaxTrainers));
-                Assert.False(injector.Request(-1, PlayerEnums.Country.Italien, 0, 0));
+                Assert.Equal(PlayerEnums.Country.Italien, injector.PendingCountry(2));
+                Assert.Null(injector.PendingCountry(1));
+                Assert.Null(injector.PendingCountry(Coach.MaxTrainers + 1));
+                Assert.False(injector.Request(0, PlayerEnums.Country.Italien, 0, 0));
             }
         }
 
@@ -80,8 +80,8 @@ namespace A2G_Trainer.Tests
                 fake.WriteModuleBytes(Settings.OfferGenerateCallSiteOffset, new byte[] { 0xE8 }.Concat(BitConverter.GetBytes(rel)).ToArray());
                 NationalCoachInjector injector = new NationalCoachInjector(fake.Memory);
 
-                Assert.False(injector.Request(0, PlayerEnums.Country.Italien, 0, 0));
-                Assert.Null(injector.PendingCountry(0));
+                Assert.False(injector.Request(1, PlayerEnums.Country.Italien, 0, 0));
+                Assert.Null(injector.PendingCountry(1));
                 Assert.Equal(fake.ModuleBase + 0x10000, CallTarget(fake));
             }
         }
@@ -96,8 +96,8 @@ namespace A2G_Trainer.Tests
                 NationalCoachInjector injector = new NationalCoachInjector(fake.Memory);
 
                 Assert.False(injector.IsSupported);
-                Assert.False(injector.Request(0, PlayerEnums.Country.Italien, 0, 0));
-                Assert.Null(injector.PendingCountry(0));
+                Assert.False(injector.Request(1, PlayerEnums.Country.Italien, 0, 0));
+                Assert.Null(injector.PendingCountry(1));
             }
         }
 
@@ -105,7 +105,7 @@ namespace A2G_Trainer.Tests
         public void Request_WithoutACallAtTheCallSite_Fails()
         {
             using (FakeModule fake = new FakeModule())
-                Assert.False(new NationalCoachInjector(fake.Memory).Request(0, PlayerEnums.Country.Italien, 0, 0));
+                Assert.False(new NationalCoachInjector(fake.Memory).Request(1, PlayerEnums.Country.Italien, 0, 0));
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -192,7 +192,7 @@ namespace A2G_Trainer.Tests
                 CoachController controller = new CoachController(fake.Memory, isGog: false, PlayerEnums.AddressType.OWN, trainerIndex: 0);
 
                 controller.Save();
-                Assert.Equal(PlayerEnums.Country.Deutschland, new NationalCoachInjector(fake.Memory).PendingCountry(0));
+                Assert.Equal(PlayerEnums.Country.Deutschland, new NationalCoachInjector(fake.Memory).PendingCountry(1));
             }
         }
 

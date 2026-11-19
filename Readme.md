@@ -56,7 +56,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - ✅ **Club identity, jersey sets and map**: short name, chant, fan name, city, article/preposition, fan base, fan type, board, arch rival and fan friendship; both jersey sets as in the game's data editor; the club's position on a map of its country, which decides how many (away) fans come to a match  
 - ✅ **Stadium editor** with up to 2 × 32,767 seats per block, a top-down plan of all twelve blocks, and the town's construction grant  
 - ✅ **Freeze condition & freshness** in the Team tab so they stay fixed while you play  
-- ✅ **Multi-trainer (hot-seat) support**
+- ✅ **Multi-trainer (hot-seat) support**: one entry per human manager in the Trainer menu, in the game's turn order
 - ✅ **Coach editing** (manager image, level, age, difficulty incl. lifting the game's once-per-game lock, nerves, standing with public, fans and media, the champion bet, the national team's friendlies, and stocks, including new positions in clubs listed on the stock market)
 - ✅ **Career**: game mode (fixed years, career, endless), start year, retirement age, the Managerfortbildung result, titles and setbacks, the manager's event flags and locks (money taken, sabotage, naturalisation), the weekly level evaluation with a one-click level-up; and the new-game option "Mit Entlassungen"
 - ✅ **Coach contract**: salary and bonuses, season goal, extras, release clause, the board's trust (0–100), and a club for next season that the game's season change actually accepts

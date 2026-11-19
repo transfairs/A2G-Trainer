@@ -78,14 +78,18 @@ namespace A2G_Trainer.Controller
         public string ClubName(PlayerEnums.Country country, byte id) =>
             this.ClubNames(country).TryGetValue(id, out string name) ? name : "-";
 
-        /// <summary>The human trainers of the savegame (Mitspieler IDs 1..count).</summary>
+        /// <summary>The human trainers of the savegame, in turn order (Mitspieler IDs from the order table).</summary>
         public IList<SaveGameCoach> Coaches
         {
             get
             {
                 int count = this.File.ReadInt16(SaveGameFile.ModuleBase + Settings.ActiveTrainerCountOffset);
                 count = Math.Max(0, Math.Min(Coach.MaxTrainers, count));
-                return Enumerable.Range(1, count).Select(id => new SaveGameCoach(this, id)).ToList();
+                return Enumerable.Range(1, count).Select(place =>
+                {
+                    int id = this.File.ReadInt16(SaveGameFile.ModuleBase + Settings.MitspielerOrderTableOffset + (uint)place * 2);
+                    return new SaveGameCoach(this, id >= 1 && id <= Coach.MaxTrainers ? id : place);
+                }).ToList();
             }
         }
 

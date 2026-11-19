@@ -30,11 +30,11 @@ namespace A2G_Trainer.Tests
                 uint site = fake.ModuleBase + Settings.OfferGenerateCallSiteOffset;
                 fake.WriteModuleBytes(Settings.OfferGenerateCallSiteOffset, Call(site, fake.ModuleBase + EdgeStub + NationalCoachInjector.CodeOffset));
                 NationalCoachInjector injector = new NationalCoachInjector(fake.Memory);
-                Assert.Equal(PlayerEnums.Country.Italien, injector.PendingCountry(0));
+                Assert.Equal(PlayerEnums.Country.Italien, injector.PendingCountry(1));
 
                 fake.MakeModuleRegionUnreadable(EdgePage, 1);
 
-                Assert.Null(injector.PendingCountry(0));
+                Assert.Null(injector.PendingCountry(1));
                 Assert.Equal(fake.ModuleBase + EdgeStub, injector.EnsureInstalled());
             }
         }
@@ -75,10 +75,10 @@ namespace A2G_Trainer.Tests
                 NationalCoachInjector injector = new NationalCoachInjector(fake.Memory);
                 Assert.True(injector.IsSupported);
 
-                Assert.False(injector.Request(0, PlayerEnums.Country.Italien, 1000, 100));
+                Assert.False(injector.Request(1, PlayerEnums.Country.Italien, 1000, 100));
 
                 Assert.Equal(call, fake.Memory.ReadBytesAtAddress(page.Address, 5));
-                Assert.Null(injector.PendingCountry(0));
+                Assert.Null(injector.PendingCountry(1));
             }
         }
     }

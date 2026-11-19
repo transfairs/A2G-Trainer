@@ -84,10 +84,10 @@ namespace A2G_Trainer.Controller
 
         /// <summary>
         /// Requests a job offer from <paramref name="clubId"/> in <paramref name="country"/> for the
-        /// trainer in slot <paramref name="trainerIndex"/> (Mitspieler ID = slot + 1), checked against
-        /// the conditions under which the game presents offers at all.
+        /// Mitspieler <paramref name="mitspielerId"/> (1-based), checked against the conditions under
+        /// which the game presents offers at all.
         /// </summary>
-        public RequestResult Request(Coach coach, int trainerIndex, PlayerEnums.Country country, byte clubId)
+        public RequestResult Request(Coach coach, int mitspielerId, PlayerEnums.Country country, byte clubId)
         {
             if (!this.IsSupported)
                 return RequestResult.NotSupported;
@@ -102,11 +102,11 @@ namespace A2G_Trainer.Controller
             if (!stub.HasValue)
                 return RequestResult.HookFailed;
 
-            uint[] arguments = { (uint)trainerIndex + 1, (uint)country, clubId, OfferKind };
+            uint[] arguments = { (uint)mitspielerId, (uint)country, clubId, OfferKind };
             this.memory.WriteBytesAtAddress(stub.Value + ArgumentsOffset, arguments.SelectMany(BitConverter.GetBytes).ToArray());
             // Flag last: the stub reads the arguments only once it sees the flag.
             this.memory.WriteBytesAtAddress(stub.Value + FlagOffset, BitConverter.GetBytes(1u));
-            Logger.Debug($"JobOfferInjector: offer requested for trainer slot {trainerIndex} from {country}/{clubId} (stub 0x{stub.Value:X}).");
+            Logger.Debug($"JobOfferInjector: offer requested for Mitspieler {mitspielerId} from {country}/{clubId} (stub 0x{stub.Value:X}).");
             return RequestResult.Requested;
         }
 

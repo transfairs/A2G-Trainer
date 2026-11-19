@@ -374,7 +374,7 @@ namespace A2G_Trainer.View
             if (this.coach == null || !(this.jobOfferCountryInput.SelectedValue is PlayerEnums.Country country) || !(this.jobOfferClubInput.SelectedItem is Club club))
                 return;
 
-            JobOfferInjector.RequestResult result = new JobOfferInjector(this.Memory).Request(this.coach, this.trainerIndex, country, club.Id);
+            JobOfferInjector.RequestResult result = new JobOfferInjector(this.Memory).Request(this.coach, CoachController.MitspielerIdOf(this.Memory, this.trainerIndex), country, club.Id);
             bool clauseSet = result == JobOfferInjector.RequestResult.Requested && this.coachController != null && this.coachController.EnsureCanNegotiateOffers();
             this.jobOfferStatus.Text = JobOfferMessage(result, club.ClubName, clauseSet);
         }
