@@ -48,7 +48,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - ✅ **Contract, injury and suspension values persist** in the savegame: contract term, injury days and type (with the game's names), injury-prone, banned matches, doping, yellow cards, national caps and retirement from the national team; buy price and home club of loaned players; season statistics; put players of any club on the transfer list or take them off
 - ✅ **Player transfers**: move a player to another club as a transfer, loan or loan with purchase option, carried out by the game's own transfer functions at the next Tagesabschluss
 - ✅ Runs on **Windows XP** (built against `.NET Framework 4.0`)
-- ✅ Runs on **Windows 2000** as the separate `A2G-Trainer-Win2000.exe` (built against `.NET Framework 2.0`, same features)
+- ✅ Runs on **Windows 2000, 98 SE and ME** as the separate `A2G-Trainer-Win2000.exe` (built against `.NET Framework 2.0`, same features)
 - ✅ Runs under **Wine/Proton** (e.g. Lutris) alongside the game
 - ✅ **Resizable window**: drag it larger or maximize it, and all content (fields, lists, fonts, help) grows with it
 - ✅ **Club editing** (name, finances, stadium details, board, standing with the association and the public, the budget screen's settings incl. law firms, slush fund, loans, investments, share price, overdraft limit, the association's requirements, the licence and points deductions and the club's locks (bribery, short camp, sponsor, scouts), and the savegame's interest rates, investment indices and costs) for your own and **any other club**: pick country and club below the tabs  
@@ -75,7 +75,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 
 **To run the trainer**
 - On **Windows XP**, make sure [.NET Framework 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17718) is installed.  
-- On **Windows 2000** (Service Pack 4), use `A2G-Trainer-Win2000.exe` (included in every release and in `A2G-Trainer-Latest.zip`) and make sure .NET Framework 2.0 is installed.  
+- On **Windows 2000** (Service Pack 4), **98 SE** and **ME**, use `A2G-Trainer-Win2000.exe` (included in every release and in `A2G-Trainer-Latest.zip`) and make sure .NET Framework 2.0 is installed. On 98 SE and ME that is .NET Framework 2.0 without a service pack, and only the 1999 version of the game runs there.  
 - On **Windows 11**, no additional installation is necessary.  
 - Under **Wine/Proton** (e.g. Lutris), start the trainer in the same prefix as the game; Wine Mono is enough.  
 

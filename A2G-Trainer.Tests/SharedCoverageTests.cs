@@ -119,6 +119,42 @@ namespace A2G_Trainer.Tests
             }
         });
 
+        // Whether any pixel inside the item's bounds has exactly the given colour.
+        private static bool Shows(Bitmap strip, ToolStripItem item, Color colour)
+        {
+            for (int x = item.Bounds.Left; x < item.Bounds.Right; x++)
+                for (int y = item.Bounds.Top; y < item.Bounds.Bottom; y++)
+                    if (strip.GetPixel(x, y).ToArgb() == colour.ToArgb())
+                        return true;
+            return false;
+        }
+
+        [Fact]
+        public void NavigationArrows_AreDrawn_InTheTextColourOrGreyWhenDisabled() => StaThread.Run(() =>
+        {
+            using (KeyShell shell = new KeyShell(arrows: true))
+            using (UserControl first = new UserControl())
+            using (UserControl second = new UserControl())
+            {
+                shell.Strip.ForeColor = Color.FromArgb(0x12, 0x34, 0x56);
+                shell.Go(first, "Erste");
+                shell.Go(second, "Zweite");   // back enabled, forward disabled
+                shell.CreateControl();
+                shell.Strip.PerformLayout();
+                ToolStripItem back = shell.Strip.Items["backToolStripMenuItem"];
+                ToolStripItem forward = shell.Strip.Items["forwardToolStripMenuItem"];
+                Assert.Equal("◀", back.Text);   // kept for the size and the accessible name
+
+                using (Bitmap strip = new Bitmap(shell.Strip.Width, shell.Strip.Height))
+                {
+                    shell.Strip.DrawToBitmap(strip, new Rectangle(Point.Empty, strip.Size));
+                    Assert.True(Shows(strip, back, shell.Strip.ForeColor));
+                    Assert.True(Shows(strip, forward, SystemColors.GrayText));
+                    Assert.False(Shows(strip, forward, shell.Strip.ForeColor));
+                }
+            }
+        });
+
         [Fact]
         public void ProcessCmdKey_WithArrows_HandlesOnlyAltLeftAndRight() => StaThread.Run(() =>
         {

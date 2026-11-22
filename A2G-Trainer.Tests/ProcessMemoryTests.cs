@@ -96,11 +96,12 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
-        public void OpenProcess_NonPositivePid_ReturnsFalse()
+        public void OpenProcess_ZeroOrUnknownNegativePid_ReturnsFalse()
         {
             ProcessMemory memory = new ProcessMemory();
 
             Assert.False(memory.OpenProcess(0));
+            // Negative IDs are valid on Windows 9x; on NT there is no such process.
             Assert.False(memory.OpenProcess(-1));
         }
 
@@ -125,6 +126,53 @@ namespace A2G_Trainer.Tests
             // Re-attaching to the same, already-open process is a cheap no-op that still succeeds.
             Assert.True(memory.OpenProcess(pid));
             Assert.Equal(pid, memory.mProc.Process.Id);
+        }
+
+        // Windows 9x path: a page-file mapping plus a copy of its handle in the game. Here the "game"
+        // is the test process itself, where the mapped view is ordinary memory.
+        private static uint? AllocateShared(ProcessMemory memory, int size)
+        {
+            bool before = ProcessMemory.UseSharedArena;
+            ProcessMemory.UseSharedArena = true;
+            try
+            {
+                return memory.AllocateExecutable(size);
+            }
+            finally
+            {
+                ProcessMemory.UseSharedArena = before;
+            }
+        }
+
+        [Fact]
+        public void AllocateExecutable_SharedArena_GivesWritableMemory()
+        {
+            ProcessMemory memory = new ProcessMemory();
+            Assert.True(memory.OpenProcess(Process.GetCurrentProcess().Id));
+
+            uint? block = AllocateShared(memory, 0x100);
+
+            Assert.True(block.HasValue);
+            byte[] data = { 0xC3, 0x90, 0x90, 0xCC };
+            memory.WriteBytesAtAddress(block.Value, data);
+            Assert.Equal(data, memory.ReadBytesAtAddress(block.Value, data.Length));
+        }
+
+        [Fact]
+        public void AllocateExecutable_SharedArena_WithoutHandleInGame_ReturnsNull()
+        {
+            // No process attached: the mapping can't be handed to the game, so nothing is allocated.
+            Assert.Null(AllocateShared(new ProcessMemory(), 0x100));
+        }
+
+        [Fact]
+        public void AllocateExecutable_SharedArena_EmptySize_ReturnsNull()
+        {
+            ProcessMemory memory = new ProcessMemory();
+            Assert.True(memory.OpenProcess(Process.GetCurrentProcess().Id));
+
+            // A page-file mapping of size zero is refused.
+            Assert.Null(AllocateShared(memory, 0));
         }
     }
 }
