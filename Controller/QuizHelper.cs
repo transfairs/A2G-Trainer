@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -156,7 +157,7 @@ namespace A2G_Trainer.Controller
         {
             bool unchanged = buttons == null ? this.shownButtons == null
                 : this.shownButtons != null && right == this.shownRight
-                    && ((IStructuralEquatable)buttons).Equals(this.shownButtons, EqualityComparer<Rectangle>.Default);
+                    && buttons.SequenceEqual(this.shownButtons);
             if (this.ui == null || unchanged)
                 return;
             this.shownButtons = buttons;

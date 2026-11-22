@@ -30,7 +30,7 @@ namespace A2G_Trainer.Model
 
             foreach (string hex in hexValues)
             {
-                if (string.IsNullOrWhiteSpace(hex))
+                if (string.IsNullOrEmpty(hex?.Trim()))
                     continue;
 
                 output += ParseToken(hex);

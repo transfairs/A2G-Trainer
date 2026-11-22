@@ -858,7 +858,7 @@ namespace A2G_Trainer.View
                     const int maxLines = 4;
                     IEnumerable<string> shown = nameWarnings.Take(maxLines);
                     int hidden = nameWarnings.Count - maxLines;
-                    string text = string.Join(Environment.NewLine + Environment.NewLine, shown)
+                    string text = string.Join(Environment.NewLine + Environment.NewLine, shown.ToArray())
                         + (hidden > 0 ? $"{Environment.NewLine}{Environment.NewLine}... und {hidden} weitere" : "");
 
                     MessageBox.Show(this, text, "Nicht dauerhaft gespeichert", MessageBoxButtons.OK, MessageBoxIcon.Warning);

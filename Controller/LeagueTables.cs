@@ -153,7 +153,7 @@ namespace A2G_Trainer.Controller
                 return false;
             table.SetResults(order);
             memory.WriteBytesAtAddress(LeagueAddress(memory, fixedAddresses, table.Index) + Settings.LeagueGridOffset, table.Grid);
-            Logger.Info($"Ligatabelle {table.Name}: Ergebnisse für die Reihenfolge {string.Join(",", order)} geschrieben.");
+            Logger.Info($"Ligatabelle {table.Name}: Ergebnisse für die Reihenfolge {string.Join(",", order.Select(n => n.ToString()).ToArray())} geschrieben.");
             return true;
         }
 

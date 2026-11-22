@@ -321,7 +321,7 @@ namespace A2G_Trainer.Controller
                     ? $"Jobangebot: Aufruf 0x{jobOffer.PresentCallSite:X}, Anzeige 0x{jobOffer.PresentFunction:X}, Eintragen 0x{jobOffer.AddFunction:X}, "
                     : "Jobangebot-Code nicht eindeutig gefunden, ") +
                 (transfer != null
-                    ? $"Wechsel: Markt 0x{transfer.MarketFunction:X} (Aufrufe {string.Join(", ", transfer.MarketCallSites.Select(s => $"0x{s:X}"))}), Frist 0x{transfer.DeadlineFunction:X} (Aufruf 0x{transfer.DeadlineCallSite:X}), Wechsel 0x{transfer.Move:X}, Leihe 0x{transfer.Loan:X}."
+                    ? $"Wechsel: Markt 0x{transfer.MarketFunction:X} (Aufrufe {string.Join(", ", transfer.MarketCallSites.Select(s => $"0x{s:X}").ToArray())}), Frist 0x{transfer.DeadlineFunction:X} (Aufruf 0x{transfer.DeadlineCallSite:X}), Wechsel 0x{transfer.Move:X}, Leihe 0x{transfer.Loan:X}."
                     : "Wechsel-Code nicht eindeutig gefunden."));
             NationalCoachCode nationalCoach = DiscoverNationalCoach(memory, runtimeShift, jobOffer);
             Logger.Warn(nationalCoach != null
@@ -341,7 +341,7 @@ namespace A2G_Trainer.Controller
                 : "FixedAddresses: Torgrenzen-Code nicht eindeutig gefunden.");
             MatchInitCode matchInit = DiscoverMatchInit(memory);
             Logger.Warn(matchInit != null
-                ? $"FixedAddresses: Spielvorbereitung 0x{matchInit.Function:X} (Aufrufe {string.Join(", ", matchInit.CallSites.Select(s => $"0x{s:X}"))})."
+                ? $"FixedAddresses: Spielvorbereitung 0x{matchInit.Function:X} (Aufrufe {string.Join(", ", matchInit.CallSites.Select(s => $"0x{s:X}").ToArray())})."
                 : "FixedAddresses: Spielvorbereitung nicht eindeutig gefunden.");
             SpeechListCode speechList = DiscoverSpeechList(memory);
             Logger.Warn(speechList != null
@@ -349,7 +349,7 @@ namespace A2G_Trainer.Controller
                 : "FixedAddresses: Ansprachen-Liste nicht eindeutig gefunden.");
             AppointmentLockCode appointmentLock = DiscoverAppointmentLock(memory);
             Logger.Warn(appointmentLock != null
-                ? $"FixedAddresses: Terminsperren: Woche 0x{appointmentLock.WeeklyFunction:X}, je Verein {string.Join(", ", appointmentLock.ClubLimitSites.Select(s => $"0x{s:X}"))}."
+                ? $"FixedAddresses: Terminsperren: Woche 0x{appointmentLock.WeeklyFunction:X}, je Verein {string.Join(", ", appointmentLock.ClubLimitSites.Select(s => $"0x{s:X}").ToArray())}."
                 : "FixedAddresses: Terminsperren nicht eindeutig gefunden.");
             return new FixedAddresses(runtimeShift, staticShift, jobOffer, transfer, nationalCoach, coachPool, goalkeeperCoaches, interview, goalLimit, matchInit, speechList, appointmentLock);
         }

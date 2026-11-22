@@ -48,6 +48,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 - ✅ **Contract, injury and suspension values persist** in the savegame: contract term, injury days and type (with the game's names), injury-prone, banned matches, doping, yellow cards, national caps and retirement from the national team; buy price and home club of loaned players; season statistics; put players of any club on the transfer list or take them off
 - ✅ **Player transfers**: move a player to another club as a transfer, loan or loan with purchase option, carried out by the game's own transfer functions at the next Tagesabschluss
 - ✅ Runs on **Windows XP** (built against `.NET Framework 4.0`)
+- ✅ Runs on **Windows 2000** as the separate `A2G-Trainer-Win2000.exe` (built against `.NET Framework 2.0`, same features)
 - ✅ Runs under **Wine/Proton** (e.g. Lutris) alongside the game
 - ✅ **Resizable window**: drag it larger or maximize it, and all content (fields, lists, fonts, help) grows with it
 - ✅ **Club editing** (name, finances, stadium details, board, standing with the association and the public, the budget screen's settings incl. law firms, slush fund, loans, investments, share price, overdraft limit, the association's requirements, the licence and points deductions and the club's locks (bribery, short camp, sponsor, scouts), and the savegame's interest rates, investment indices and costs) for your own and **any other club**: pick country and club below the tabs  
@@ -74,6 +75,7 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 
 **To run the trainer**
 - On **Windows XP**, make sure [.NET Framework 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17718) is installed.  
+- On **Windows 2000** (Service Pack 4), use `A2G-Trainer-Win2000.exe` (included in every release and in `A2G-Trainer-Latest.zip`) and make sure .NET Framework 2.0 is installed.  
 - On **Windows 11**, no additional installation is necessary.  
 - Under **Wine/Proton** (e.g. Lutris), start the trainer in the same prefix as the game; Wine Mono is enough.  
 
@@ -98,8 +100,9 @@ Built specifically to run even on legacy systems. Tested working from **Windows 
 1. Open the solution in **Visual Studio 2019**  
 2. Ensure the target framework is **.NET Framework 4.0**  
 3. Build the project (`Release|x86` recommended for XP). There's no separate configuration per game release: the trainer identifies the game build itself (from the main module's PE header, see `Controller/GameBuild.cs`), so the one build handles the original, GOG and 2007 CD releases.  
-4. Optional: run the test suite (see **Testing** below) to verify core logic before building a release  
-5. Building from the CLI instead of Visual Studio? See the note under **Testing**. A plain `dotnet build` fails on this project, use `msbuild` as shown there.  
+4. Windows 2000 build: `msbuild A2G-Trainer.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86 /p:Win2000=true` compiles the same sources against .NET Framework 2.0 into `bin\Win2000\Release\`. The folder `Shared\Compat\` (from the Shared submodule) supplies the framework parts .NET 2.0 lacks (LINQ, `Func`/`Action`, `HashSet`, `Tuple` and a few .NET 4.0 methods) and is only compiled into that build. Code that uses further .NET 3.5/4.0 APIs breaks this build; the Shared CI, the Shared update workflow and the release workflow build it too.  
+5. Optional: run the test suite (see **Testing** below) to verify core logic before building a release  
+6. Building from the CLI instead of Visual Studio? See the note under **Testing**. A plain `dotnet build` fails on this project, use `msbuild` as shown there.  
 
 ## 🧱 Project layout
 This trainer shares its foundation with the [A3-Trainer](https://github.com/transfairs/A3-Trainer) for *Anstoss 3*:

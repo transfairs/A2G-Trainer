@@ -126,7 +126,7 @@ namespace A2G_Trainer.View
             {
                 ulong bits = EnumMembers.Bits(value);
                 List<string> names = EnumMembers.Flags(this.EnumType, context?.Instance).Where(m => (bits & m.Value) != 0).Select(m => m.Text).ToList();
-                return names.Count == 0 ? "keine" : string.Join(", ", names);
+                return names.Count == 0 ? "keine" : string.Join(", ", names.ToArray());
             }
             return base.ConvertTo(context, culture, value, destinationType);
         }

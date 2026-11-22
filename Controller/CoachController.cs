@@ -759,7 +759,7 @@ namespace A2G_Trainer.Controller
             for (int i = 0; i < Coach.MaxTrainers; i++)
             {
                 Coach coach = new CoachController(memory, isGog, type, i).Coach;
-                bool isActive = liveCount.HasValue ? i < liveCount.Value : !string.IsNullOrWhiteSpace(coach.Firstname);
+                bool isActive = liveCount.HasValue ? i < liveCount.Value : !string.IsNullOrEmpty(coach.Firstname?.Trim());
                 if (isActive)
                     trainers.Add(new KeyValuePair<int, Coach>(i, coach));
             }

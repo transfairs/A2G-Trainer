@@ -128,7 +128,7 @@ namespace A2G_Trainer.Controller
         private bool TryCalibrateLayout()
         {
             PersistentLayout current = this.memory.Layout;
-            string signature = string.Join(",", this.EntityList.Select(p => $"{p.NameRecordId}:{p.Level}:{(byte)p.Position}"));
+            string signature = string.Join(",", this.EntityList.Select(p => $"{p.NameRecordId}:{p.Level}:{(byte)p.Position}").ToArray());
             if (signature == current.FailedCalibrationSignature)
                 return false;
 
@@ -724,7 +724,7 @@ namespace A2G_Trainer.Controller
                 return $"Rückennummern gehen von 1 bis 99 ({outOfRange}: {outOfRange.Jersey}).";
             IGrouping<byte, Player> twice = players.GroupBy(p => p.Jersey).FirstOrDefault(g => g.Count() > 1);
             if (twice != null)
-                return $"Bitte jede Rückennummer nur einmal vergeben! (Nr. {twice.Key}: {string.Join(", ", twice)})";
+                return $"Bitte jede Rückennummer nur einmal vergeben! (Nr. {twice.Key}: {string.Join(", ", twice.Select(p => p.ToString()).ToArray())})";
             return null;
         }
 

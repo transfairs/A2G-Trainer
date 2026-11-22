@@ -205,7 +205,7 @@ namespace A2G_Trainer.Controller
             uint? field = record.HasValue ? ClubRecords.RecordField(record.Value, Settings.ClubBenchOffset, data.Length) : null;
             if (field.HasValue)
                 this.memory.WriteBytesAtAddress(field.Value, data);
-            Logger.Debug($"LiveMatch: bench of {this.Country}/{this.ClubId} set to {string.Join(", ", bench)}.");
+            Logger.Debug($"LiveMatch: bench of {this.Country}/{this.ClubId} set to {string.Join(", ", bench.Select(n => n.ToString()).ToArray())}.");
         }
 
         private static short ReadInt16(byte[] bytes) => bytes != null ? BitConverter.ToInt16(bytes, 0) : (short)0;

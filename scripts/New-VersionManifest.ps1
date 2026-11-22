@@ -39,6 +39,7 @@ $manifest = [ordered]@{
     publishedAt = $publishedAt
     assets      = [ordered]@{
         exe       = "$base/A2G-Trainer-$Tag.exe"
+        exeWin2000 = "$base/A2G-Trainer-$Tag-Win2000.exe"
         ct        = "$base/A2G-Trainer-$Tag.ct"
         ctGog     = "$base/A2G-Trainer-$Tag-GOG.ct"
         zip       = "$latestBase/A2G-Trainer-Latest.zip"

@@ -95,7 +95,7 @@ namespace A2G_Trainer.Controller
                 if (part != null)
                     parts.Add(part);
             }
-            return " [" + (parts.Count > 0 ? string.Join(", ", parts) : "keine Wirkung") + "]";
+            return " [" + (parts.Count > 0 ? string.Join(", ", parts.ToArray()) : "keine Wirkung") + "]";
         }
 
         // What a pair does with InterviewEffectsFix (FUN_004f87f0, with 10 and 12 as the fix maps them);

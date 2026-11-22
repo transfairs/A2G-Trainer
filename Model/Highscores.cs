@@ -245,7 +245,7 @@ namespace A2G_Trainer.Model
 
         internal static void ParseDate(string text, byte[] data, int at)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrEmpty(text?.Trim()))
             {
                 Array.Clear(data, at, 4);
                 return;

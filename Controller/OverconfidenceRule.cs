@@ -114,7 +114,7 @@ namespace A2G_Trainer.Controller
                 if (!this.memory.WriteCode(site + 1, BitConverter.GetBytes(unchecked((int)(stub.Value + CodeOffset - (site + 5))))))
                     return null;
             }
-            Logger.Debug($"OverconfidenceRule: redirected {string.Join(", ", sites.Select(s => $"0x{s:X}"))} to a stub at 0x{stub.Value:X}.");
+            Logger.Debug($"OverconfidenceRule: redirected {string.Join(", ", sites.Select(s => $"0x{s:X}").ToArray())} to a stub at 0x{stub.Value:X}.");
             return stub;
         }
 

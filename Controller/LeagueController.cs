@@ -107,7 +107,7 @@ namespace A2G_Trainer.Controller
             if (active.Count == oldCount && active.All(c => c.WasActive))
                 return skipped;
 
-            Logger.Debug($"Saving bonus countries: {string.Join(", ", active.Select(c => c.Country))}");
+            Logger.Debug($"Saving bonus countries: {string.Join(", ", active.Select(c => c.Country.ToString()).ToArray())}");
 
             // The game reads the count first and then that many slots - so a shrinking list gets its
             // new count before the slots are rewritten, a growing one only after they're in place.
