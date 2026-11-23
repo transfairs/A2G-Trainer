@@ -43,7 +43,7 @@ namespace A2G_Trainer.Controller
         /// <summary>The factors the rules offer: none, 10, 20 or 30 % overconfidence.</summary>
         internal static readonly byte[] Factors = { 100, 90, 80, 70 };
         /// <summary>The names of <see cref="Factors"/>: how much strength the overconfidence costs.</summary>
-        internal static readonly string[] FactorNames = { "Keine", "−10 %", "−20 %", "−30 %" };
+        internal static readonly string[] FactorNames = { "Keine", "–10 %", "–20 %", "–30 %" };
         /// <summary>The choices of a rule: the game's dice (0), then <see cref="FactorNames"/>.</summary>
         internal static readonly string[] RuleNames = new[] { "Wie im Spiel" }.Concat(FactorNames).ToArray();
 

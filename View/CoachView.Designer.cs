@@ -119,8 +119,8 @@ namespace A2G_Trainer.View
             this.NationalSquadCountryInput = new System.Windows.Forms.ComboBox();
             this.NationalSquadLabel = new System.Windows.Forms.Label();
             this.NationalSquadList = new System.Windows.Forms.ListBox();
-            this.NationalSquadAddBtn = new System.Windows.Forms.Button();
-            this.NationalSquadRemoveBtn = new System.Windows.Forms.Button();
+            this.NationalSquadAddBtn = new A2G_Trainer.View.ArrowButton();
+            this.NationalSquadRemoveBtn = new A2G_Trainer.View.ArrowButton();
             this.NationalCandidatesLabel = new System.Windows.Forms.Label();
             this.NationalCandidatesList = new System.Windows.Forms.ListBox();
             this.NationalSquadStatus = new System.Windows.Forms.Label();
@@ -904,7 +904,8 @@ namespace A2G_Trainer.View
             this.NationalSquadAddBtn.Name = "NationalSquadAddBtn";
             this.NationalSquadAddBtn.Size = new System.Drawing.Size(82, 23);
             this.NationalSquadAddBtn.TabIndex = 35;
-            this.NationalSquadAddBtn.Text = "◄ Aufnehmen";
+            this.NationalSquadAddBtn.ArrowLeft = true;
+            this.NationalSquadAddBtn.Text = "Aufnehmen";
             this.NationalSquadAddBtn.UseVisualStyleBackColor = true;
             //
             // NationalSquadRemoveBtn
@@ -913,7 +914,7 @@ namespace A2G_Trainer.View
             this.NationalSquadRemoveBtn.Name = "NationalSquadRemoveBtn";
             this.NationalSquadRemoveBtn.Size = new System.Drawing.Size(82, 23);
             this.NationalSquadRemoveBtn.TabIndex = 36;
-            this.NationalSquadRemoveBtn.Text = "Streichen ►";
+            this.NationalSquadRemoveBtn.Text = "Streichen";
             this.NationalSquadRemoveBtn.UseVisualStyleBackColor = true;
             //
             // NationalCandidatesLabel
@@ -1284,8 +1285,8 @@ namespace A2G_Trainer.View
         private System.Windows.Forms.ComboBox NationalSquadCountryInput;
         private System.Windows.Forms.Label NationalSquadLabel;
         private System.Windows.Forms.ListBox NationalSquadList;
-        private System.Windows.Forms.Button NationalSquadAddBtn;
-        private System.Windows.Forms.Button NationalSquadRemoveBtn;
+        private A2G_Trainer.View.ArrowButton NationalSquadAddBtn;
+        private A2G_Trainer.View.ArrowButton NationalSquadRemoveBtn;
         private System.Windows.Forms.Label NationalCandidatesLabel;
         private System.Windows.Forms.ListBox NationalCandidatesList;
         private System.Windows.Forms.Label NationalSquadStatus;

@@ -171,6 +171,9 @@
     <Compile Include="View\StadiumPlan.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="View\ArrowButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\ClubSelection.cs" />
     <Compile Include="View\ClubMap.cs">
       <SubType>Component</SubType>
