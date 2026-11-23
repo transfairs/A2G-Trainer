@@ -41,6 +41,19 @@ namespace A2G_Trainer.Tests
         }
 
         [Fact]
+        public void Entry_NullDate_ClearsTheDate()
+        {
+            HighscoreFiles files = HighscoreFiles.Load(this.folder);
+            HighscoreEntry entry = files.Entries(9)[2];
+            entry.Date = "01.07.2001";
+            Assert.Equal("01.07.2001", entry.Date);
+
+            entry.Date = null;
+
+            Assert.Equal(string.Empty, entry.Date);
+        }
+
+        [Fact]
         public void SeasonRecord_FourByteValue_AndNullManager()
         {
             HighscoreFiles files = HighscoreFiles.Load(this.folder);
